@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Science Curriculum — Grades 5–12</title>
-<meta name="description" content="A story-driven science curriculum for grades 5 through 12. From gases to quantum mechanics, threaded through 500 years of discovery.">
+<title>First Principles — Grades 5 to University</title>
+<meta name="description" content="A story-driven first-principles curriculum for grades 5 to university. From gases to quantum mechanics, threaded through 500 years of discovery.">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -54,6 +54,34 @@
     line-height: 1.7;
     max-width: 600px;
     margin-bottom: 56px;
+  }
+
+  .lead-quotes {
+    margin: -28px 0 56px;
+  }
+
+  .lead-quote {
+    border-left: 2px solid #ddd;
+    padding: 6px 0 6px 18px;
+    color: #555;
+    font-style: italic;
+    font-size: 15px;
+    line-height: 1.65;
+    margin: 0 0 18px;
+    max-width: 620px;
+  }
+
+  .lead-quote:last-child {
+    margin-bottom: 0;
+  }
+
+  .quote-attr {
+    display: block;
+    font-style: normal;
+    font-size: 12px;
+    color: #999;
+    letter-spacing: 0.04em;
+    margin-top: 8px;
   }
 
   /* ── HERO ── */
@@ -188,29 +216,120 @@
     color: #777;
   }
 
-  /* ── EDUCATORS ── */
-  .educators-list {
+  /* ── PHASE BANNER ── */
+  .phase-banner {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 28px 40px;
+    grid-template-columns: 56px 1fr;
+    gap: 28px;
+    align-items: baseline;
+    padding: 36px 0 14px;
   }
 
-  .educator {
-    padding: 18px 0;
-    border-top: 1px solid #f0f0f0;
-  }
+  .phase-banner:first-child { padding-top: 4px; }
 
-  .educator-name {
-    font-size: 16px;
+  .phase-banner-num {
+    font-size: 38px;
     font-weight: 600;
-    color: #111;
+    color: #e8e8e8;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    text-align: right;
+  }
+
+  .phase-banner-tag {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #aaa;
     margin-bottom: 4px;
   }
 
+  .phase-banner-title {
+    font-size: 17px;
+    font-weight: 500;
+    color: #333;
+    line-height: 1.4;
+  }
+
+  /* ── EDUCATORS · YouTube cards ── */
+  .educators-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .educator-card {
+    display: flex;
+    gap: 14px;
+    padding: 14px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    text-decoration: none;
+    color: inherit;
+    background: #fff;
+    transition: border-color 0.18s, background 0.18s;
+    align-items: flex-start;
+  }
+
+  .educator-card:hover {
+    border-color: #ccc;
+    background: #fafafa;
+  }
+
+  .educator-thumb {
+    flex-shrink: 0;
+    width: 72px;
+    height: 72px;
+    background: #ff0033;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .educator-thumb svg {
+    width: 30px;
+    height: 30px;
+    fill: currentColor;
+    position: relative;
+    z-index: 1;
+  }
+
+  .educator-thumb::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #ff0033 0%, #cc0029 100%);
+    z-index: 0;
+  }
+
+  .educator-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .educator-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 2px;
+    line-height: 1.3;
+  }
+
+  .educator-handle {
+    font-size: 11px;
+    color: #ff0033;
+    margin-bottom: 6px;
+    letter-spacing: 0.02em;
+  }
+
   .educator-role {
-    font-size: 13px;
+    font-size: 12px;
     color: #777;
-    line-height: 1.5;
+    line-height: 1.45;
   }
 
   /* ── PHILOSOPHY ── */
@@ -439,9 +558,9 @@
 <!-- HERO -->
 <!-- ═══════════════════════════════════════════════ -->
 <section class="section hero" id="hero">
-  <div class="hero-label">A curriculum for Grades 5–12</div>
-  <h1 class="hero-title">Science<br>Curriculum.</h1>
-  <p class="hero-subtitle">From Aristotle to Einstein ...</p>
+  <div class="hero-label">A curriculum for Grades 5 to University</div>
+  <h1 class="hero-title">First<br>Principles.</h1>
+  <p class="hero-subtitle">From Aristotle to Einstein — derive the fundamental laws of nature.</p>
   <a href="#skeleton" class="scroll-btn">Begin <span class="arrow">↓</span></a>
 </section>
 
@@ -451,13 +570,22 @@
 <!-- ═══════════════════════════════════════════════ -->
 <section class="section" id="skeleton">
   <div class="section-tag">The skeleton</div>
-  <h2 class="section-title">Six discovery chains.<br>Eight years of school.</h2>
-  <p class="section-lead">Each chain is a single historical move — a new tool or observation that unlocked the next era of science. The skeleton is short on purpose.</p>
+  <h2 class="section-title">Curriculum</h2>
+ 
 
   <div class="skeleton-list">
 
+    <!-- ── PHASE 1 ── -->
+    <div class="phase-banner">
+      <div class="phase-banner-num">1</div>
+      <div>
+        <div class="phase-banner-tag">Phase 1 · Grades 5–8 · any starting order</div>
+        <div class="phase-banner-title">Foundations — matter, motion, measurement</div>
+      </div>
+    </div>
+
     <div class="skeleton-row">
-      <div class="skeleton-num">0</div>
+      <div class="skeleton-num">1</div>
       <div>
         <div class="skeleton-label">Prologue · Grades 5–6</div>
         <div class="skeleton-title">Before science — why it didn't happen sooner</div>
@@ -467,15 +595,15 @@
     <div class="skeleton-row">
       <div class="skeleton-num">1</div>
       <div>
-        <div class="skeleton-label">Chain 1 · Grades 6–7</div>
+        <div class="skeleton-label">Chain · Grades 6–7</div>
         <div class="skeleton-title">Gases <span class="skeleton-arrow">→</span> mass conservation <span class="skeleton-arrow">→</span> atomic theory</div>
       </div>
     </div>
 
     <div class="skeleton-row">
-      <div class="skeleton-num">2</div>
+      <div class="skeleton-num">1</div>
       <div>
-        <div class="skeleton-label">Chain 2 · Grades 7–8</div>
+        <div class="skeleton-label">Chain · Grades 7–8</div>
         <div class="skeleton-title">Telescope + momentum <span class="skeleton-arrow">→</span> Newton's laws</div>
       </div>
     </div>
@@ -485,26 +613,35 @@
       <span class="skeleton-milestone-text">End of Grade 8 — Vilnius Lyceum entry exam</span>
     </div>
 
-    <div class="skeleton-row">
-      <div class="skeleton-num">3</div>
+    <!-- ── PHASE 2 ── -->
+    <div class="phase-banner">
+      <div class="phase-banner-num">2</div>
       <div>
-        <div class="skeleton-label">Chain 3 · Grades 8–9</div>
+        <div class="phase-banner-tag">Phase 2 · Grades 8–12 · any starting order</div>
+        <div class="phase-banner-title">Modern physics — fields, particles, the quantum world</div>
+      </div>
+    </div>
+
+    <div class="skeleton-row">
+      <div class="skeleton-num">2</div>
+      <div>
+        <div class="skeleton-label">Chain · Grades 8–9</div>
         <div class="skeleton-title">Light + electrical tools <span class="skeleton-arrow">→</span> EM unification</div>
       </div>
     </div>
 
     <div class="skeleton-row">
-      <div class="skeleton-num">4</div>
+      <div class="skeleton-num">2</div>
       <div>
-        <div class="skeleton-label">Chain 4 · Grades 9–10</div>
+        <div class="skeleton-label">Chain · Grades 9–10</div>
         <div class="skeleton-title">Tools + chemistry <span class="skeleton-arrow">→</span> particles, atom model</div>
       </div>
     </div>
 
     <div class="skeleton-row">
-      <div class="skeleton-num">5</div>
+      <div class="skeleton-num">2</div>
       <div>
-        <div class="skeleton-label">Chain 5 · Grades 10–12</div>
+        <div class="skeleton-label">Chain · Grades 10–12</div>
         <div class="skeleton-title">Electron + light <span class="skeleton-arrow">→</span> relativity + quantum mechanics</div>
       </div>
     </div>
@@ -528,35 +665,59 @@
 
   <div class="educators-list">
 
-    <div class="educator">
-      <div class="educator-name">Sean Carroll</div>
-      <div class="educator-role">Theoretical physicist · The Biggest Ideas in the Universe · physics backbone</div>
-    </div>
+    <a class="educator-card" href="https://www.youtube.com/@seancarroll" target="_blank" rel="noopener">
+      <div class="educator-thumb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      <div class="educator-info">
+        <div class="educator-name">Sean Carroll</div>
+        <div class="educator-handle">@seancarroll</div>
+        <div class="educator-role">Theoretical physicist · The Biggest Ideas in the Universe · physics backbone</div>
+      </div>
+    </a>
 
-    <div class="educator">
-      <div class="educator-name">Grant Sanderson</div>
-      <div class="educator-role">3Blue1Brown · visual mathematics from arithmetic to linear algebra</div>
-    </div>
+    <a class="educator-card" href="https://www.youtube.com/@3blue1brown" target="_blank" rel="noopener">
+      <div class="educator-thumb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      <div class="educator-info">
+        <div class="educator-name">Grant Sanderson</div>
+        <div class="educator-handle">@3blue1brown</div>
+        <div class="educator-role">Visual mathematics — arithmetic through linear algebra and beyond</div>
+      </div>
+    </a>
 
-    <div class="educator">
-      <div class="educator-name">Stephen Welch</div>
-      <div class="educator-role">Welch Labs · imaginary numbers, neural networks, deep visual math</div>
-    </div>
+    <a class="educator-card" href="https://www.youtube.com/@WelchLabsVideo" target="_blank" rel="noopener">
+      <div class="educator-thumb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      <div class="educator-info">
+        <div class="educator-name">Stephen Welch</div>
+        <div class="educator-handle">@WelchLabsVideo</div>
+        <div class="educator-role">Welch Labs · imaginary numbers, neural networks, deep visual math</div>
+      </div>
+    </a>
 
-    <div class="educator">
-      <div class="educator-name">Derek Muller</div>
-      <div class="educator-role">Veritasium · physics and counterintuitive ideas, calibrated for intuition</div>
-    </div>
+    <a class="educator-card" href="https://www.youtube.com/@veritasium" target="_blank" rel="noopener">
+      <div class="educator-thumb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      <div class="educator-info">
+        <div class="educator-name">Derek Muller</div>
+        <div class="educator-handle">@veritasium</div>
+        <div class="educator-role">Veritasium · physics and counterintuitive ideas, calibrated for intuition</div>
+      </div>
+    </a>
 
-    <div class="educator">
-      <div class="educator-name">Yuval Noah Harari</div>
-      <div class="educator-role">Sapiens · the cultural conditions that made science possible at all</div>
-    </div>
+    <a class="educator-card" href="https://www.youtube.com/@YuvalNoahHarari" target="_blank" rel="noopener">
+      <div class="educator-thumb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      <div class="educator-info">
+        <div class="educator-name">Yuval Noah Harari</div>
+        <div class="educator-handle">@YuvalNoahHarari</div>
+        <div class="educator-role">Sapiens · the cultural conditions that made science possible at all</div>
+      </div>
+    </a>
 
-    <div class="educator">
-      <div class="educator-name">Richard Feynman</div>
-      <div class="educator-role">Lectures on Physics · the standing reference for how to explain a hard idea</div>
-    </div>
+    <a class="educator-card" href="https://www.youtube.com/results?search_query=richard+feynman+lectures" target="_blank" rel="noopener">
+      <div class="educator-thumb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      <div class="educator-info">
+        <div class="educator-name">Richard Feynman</div>
+        <div class="educator-handle">Lectures · archive search</div>
+        <div class="educator-role">The standing reference for how to explain a hard idea</div>
+      </div>
+    </a>
 
   </div>
 </section>
@@ -673,7 +834,7 @@
   </div>
 
   <div class="footer-bottom">
-    <span>Science Curriculum · Grades 5–12</span>
+    <span>First Principles · Grades 5 to University</span>
     <span>2026 · Living document</span>
   </div>
 </footer>
