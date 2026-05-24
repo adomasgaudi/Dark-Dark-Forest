@@ -555,20 +555,50 @@
     font-style: italic;
   }
 
+  /* Subject divider (Mathematics, Physics) */
   .exam-table .topic-section td {
-    font-size: 9px;
-    letter-spacing: 0.16em;
+    font-size: 11px;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: #999;
-    font-weight: 600;
+    color: #555;
+    font-weight: 700;
     text-align: left;
-    padding: 18px 0 6px;
-    border-bottom: 1px solid #ddd;
+    padding: 24px 0 8px;
+    border-bottom: 2px solid #ccc;
     background: transparent;
   }
 
-  .exam-table .topic-section + tr td {
-    padding-top: 12px;
+  /* Topic divider within a subject (Numbers, Algebra, etc.) */
+  .exam-table .topic-header td {
+    font-size: 12px;
+    color: #333;
+    font-weight: 600;
+    text-align: left;
+    padding: 14px 0 6px;
+    border-bottom: 1px solid #eee;
+    border-top: none;
+    background: transparent;
+  }
+
+  .exam-table .topic-section + tr td,
+  .exam-table .topic-header + tr td {
+    padding-top: 10px;
+  }
+
+  .exam-table td.point-text {
+    font-weight: 400;
+    font-size: 12px;
+    color: #555;
+    padding-left: 14px;
+    position: relative;
+    min-width: 220px;
+  }
+
+  .exam-table td.point-text::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: #ccc;
   }
 
   .exam-legend {
@@ -923,92 +953,8 @@
 
   <p class="milestone-desc">Grade 8→9 is the first hard checkpoint. Top gymnasia test Math + Lithuanian as core; Vilnius Lyceum is the only one to test Physics. NMPP (Grade 8) is diagnostic only — no stakes. PUPP (Grade 10) is mandatory and gates upper secondary.</p>
 
-  <div class="exam-table-wrap">
-    <table class="exam-table">
-      <thead>
-        <tr>
-          <th>Topic</th>
-          <th>NMPP<span class="col-sub">diagnostic</span></th>
-          <th>Vilniaus Licėjus<span class="col-sub">2 hr · 25/25/15/15</span></th>
-          <th>Kauno Jėzuitai<span class="col-sub">60 min · 35/35/15/15%</span></th>
-          <th>Vilniaus Jėzuitai<span class="col-sub">Apr 25, 2026</span></th>
-          <th>Other gymnasia<span class="col-sub">varies</span></th>
-          <th>PUPP<span class="col-sub">Grade 10 gate</span></th>
-        </tr>
-      </thead>
-      <tbody>
-
-        <tr class="topic-section"><td colspan="7">Mathematics</td></tr>
-
-        <tr>
-          <td>Numbers</td>
-          <td><span class="yes">●</span></td>
-          <td><span class="yes">●</span></td>
-          <td><span class="yes">●</span></td>
-          <td><span class="unk">?</span></td>
-          <td><span class="yes">●</span></td>
-          <td><span class="yes">●</span></td>
-        </tr>
-        <tr>
-          <td>Algebra</td>
-          <td><span class="yes">●</span></td>
-          <td><span class="yes">●</span></td>
-          <td><span class="yes">●</span></td>
-          <td><span class="unk">?</span></td>
-          <td><span class="yes">●</span></td>
-          <td><span class="yes">●</span></td>
-        </tr>
-        <tr>
-          <td>Geometry</td>
-          <td><span class="yes">●</span></td>
-          <td><span class="yes">●</span></td>
-          <td><span class="yes">●</span></td>
-          <td><span class="unk">?</span></td>
-          <td><span class="yes">●</span></td>
-          <td><span class="yes">●</span></td>
-        </tr>
-        <tr>
-          <td>Combinatorics</td>
-          <td><span class="yes">●</span></td>
-          <td><span class="yes">●</span></td>
-          <td><span class="yes">●</span></td>
-          <td><span class="unk">?</span></td>
-          <td><span class="yes">●</span></td>
-          <td><span class="no">—</span></td>
-        </tr>
-
-        <tr class="topic-section"><td colspan="7">Physics</td></tr>
-
-        <tr>
-          <td>Structure of matter</td>
-          <td><span class="no">—</span></td>
-          <td><span class="yes">●</span></td>
-          <td><span class="no">—</span></td>
-          <td><span class="unk">?</span></td>
-          <td><span class="elec">○</span></td>
-          <td><span class="no">—</span></td>
-        </tr>
-        <tr>
-          <td>The Universe</td>
-          <td><span class="no">—</span></td>
-          <td><span class="yes">●</span></td>
-          <td><span class="no">—</span></td>
-          <td><span class="unk">?</span></td>
-          <td><span class="elec">○</span></td>
-          <td><span class="no">—</span></td>
-        </tr>
-        <tr>
-          <td>Electricity</td>
-          <td><span class="no">—</span></td>
-          <td><span class="yes">●</span></td>
-          <td><span class="no">—</span></td>
-          <td><span class="unk">?</span></td>
-          <td><span class="elec">○</span></td>
-          <td><span class="no">—</span></td>
-        </tr>
-
-      </tbody>
-    </table>
+  <div class="exam-table-wrap" id="exam-table-8-10-mount">
+    <!-- Rendered from examData8to10 at bottom of file -->
   </div>
 
   <div class="exam-legend">
@@ -1017,160 +963,8 @@
     <span><b style="color:#bbb;">?</b> unpublished</span>
     <span><b style="color:#bbb;">—</b> not tested</span>
   </div>
-  <div class="milestone-grid">
-
-    <div class="ms-col">
-      <div class="ms-col-title">Mathematics · Grade 8 → 9 exam</div>
-
-      <div class="ms-topic">
-        <div class="ms-topic-title" onclick="this.parentElement.classList.toggle('open')">
-          <span class="ms-topic-arrow">▶</span> Topic I · Numbers
-        </div>
-        <div class="ms-topic-body">
-          <ul class="ms-topic-list">
-            <li>Natural numbers and integers (including negative numbers and operations on them)</li>
-            <li>Divisibility rules for 2, 3, 4, 5, 6, 8, 9, 10</li>
-            <li>Prime and composite numbers; prime factorisation</li>
-            <li>Greatest common divisor (GCD) and least common multiple (LCM)</li>
-            <li>Fractions: proper, improper, mixed; add, subtract, multiply, divide</li>
-            <li>Decimals: place value, conversion to and from fractions</li>
-            <li>Ratios and proportions; direct and inverse proportionality</li>
-            <li>Percentages: of a number, increase and decrease, simple interest</li>
-            <li>Powers with positive integer exponents and laws of exponents</li>
-            <li>Square roots and cube roots; perfect squares</li>
-            <li>Scientific notation for very large or very small numbers</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="ms-topic">
-        <div class="ms-topic-title" onclick="this.parentElement.classList.toggle('open')">
-          <span class="ms-topic-arrow">▶</span> Topic II · Algebra
-        </div>
-        <div class="ms-topic-body">
-          <ul class="ms-topic-list">
-            <li>Variables, algebraic expressions, evaluation</li>
-            <li>Like terms and simplification</li>
-            <li>Polynomials: terms, degree, classification (monomial, binomial, trinomial)</li>
-            <li>Polynomial operations: addition, subtraction, multiplication</li>
-            <li>Special products: (a+b)², (a−b)², (a+b)(a−b)</li>
-            <li>Factoring: common factor, grouping, special patterns (difference of squares, perfect square trinomial)</li>
-            <li>Linear equations in one variable: solving and checking</li>
-            <li>Linear inequalities: solving and graphing on a number line</li>
-            <li>Systems of two linear equations: substitution and elimination</li>
-            <li>Word problems: motion (d = v·t), mixture, age, money</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="ms-topic">
-        <div class="ms-topic-title" onclick="this.parentElement.classList.toggle('open')">
-          <span class="ms-topic-arrow">▶</span> Topic III · Geometry
-        </div>
-        <div class="ms-topic-body">
-          <ul class="ms-topic-list">
-            <li>Angle types: acute, right, obtuse, straight, reflex; complementary, supplementary, vertical</li>
-            <li>Parallel lines cut by a transversal: corresponding, alternate interior, alternate exterior, co-interior angles</li>
-            <li>Triangles by sides: scalene, isosceles, equilateral</li>
-            <li>Triangles by angles: acute, right, obtuse</li>
-            <li>Triangle angle sum = 180°; exterior angle theorem</li>
-            <li>Congruence criteria: SSS, SAS, ASA, AAS, RHS</li>
-            <li>Pythagorean theorem and its converse</li>
-            <li>Perimeter and area: rectangle, square, parallelogram, triangle, trapezoid, rhombus</li>
-            <li>Quadrilateral properties and classification</li>
-            <li>Circle: radius, diameter, chord, circumference, area</li>
-            <li>3D solids: cube, cuboid, prism, pyramid, cylinder, cone, sphere</li>
-            <li>Surface area and volume of the above solids</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="ms-topic">
-        <div class="ms-topic-title" onclick="this.parentElement.classList.toggle('open')">
-          <span class="ms-topic-arrow">▶</span> Topic IV · Combinatorics
-        </div>
-        <div class="ms-topic-body">
-          <ul class="ms-topic-list">
-            <li>Fundamental counting principle (multiplication rule)</li>
-            <li>Addition rule for mutually exclusive cases</li>
-            <li>Tree diagrams for systematic counting</li>
-            <li>Simple permutations and arrangements</li>
-            <li>Simple combinations</li>
-            <li>Basic factorial notation</li>
-          </ul>
-          <div class="ms-topic-note">Limited to simple problems at this level.</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="ms-col">
-      <div class="ms-col-title">Physics · Grade 8 → 9 exam</div>
-
-      <div class="ms-topic">
-        <div class="ms-topic-title" onclick="this.parentElement.classList.toggle('open')">
-          <span class="ms-topic-arrow">▶</span> Topic I · Structure of matter
-        </div>
-        <div class="ms-topic-body">
-          <ul class="ms-topic-list">
-            <li>Atomic notation: chemical symbol with mass number A on top, atomic number Z on bottom</li>
-            <li>Atomic number Z = number of protons (defines the element)</li>
-            <li>Mass number A = protons + neutrons</li>
-            <li>Isotopes: same Z, different A (e.g. ¹²C, ¹³C, ¹⁴C)</li>
-            <li><strong>Alpha decay (α):</strong> emits a helium nucleus; A −4, Z −2</li>
-            <li><strong>Beta-minus decay (β⁻):</strong> neutron → proton + electron; A unchanged, Z +1</li>
-            <li><strong>Beta-plus decay (β⁺):</strong> proton → neutron + positron; A unchanged, Z −1</li>
-            <li><strong>Gamma emission (γ):</strong> high-energy photon; A and Z unchanged</li>
-            <li>Half-life: time for half a radioactive sample to decay</li>
-            <li>Nuclear fission: heavy nucleus splits (uranium-235, chain reaction)</li>
-            <li>Nuclear fusion: light nuclei combine into heavier ones (hydrogen → helium in stars)</li>
-            <li>Conservation of atomic and mass numbers in nuclear equations</li>
-            <li>Radiation protection: distance, time, shielding (paper for α, aluminium for β, lead for γ)</li>
-          </ul>
-          <div class="ms-topic-note">Basically: what atoms are made of and how they break apart.</div>
-        </div>
-      </div>
-
-      <div class="ms-topic">
-        <div class="ms-topic-title" onclick="this.parentElement.classList.toggle('open')">
-          <span class="ms-topic-arrow">▶</span> Topic II · The Universe
-        </div>
-        <div class="ms-topic-body">
-          <ul class="ms-topic-list">
-            <li>Hierarchy of cosmic objects: planet, moon, star, planetary system, star cluster, nebula, galaxy, galaxy cluster</li>
-            <li>The Solar System: Sun + 8 planets, moons, asteroid belt</li>
-            <li>Nebulae as stellar nurseries: emission, dark, planetary, supernova remnants</li>
-            <li>Stellar energy source: nuclear fusion of hydrogen into helium (proton-proton chain)</li>
-            <li><strong>Low-mass stars (~Sun):</strong> main sequence → red giant → planetary nebula → white dwarf</li>
-            <li><strong>High-mass stars (≥8 solar masses):</strong> main sequence → red supergiant → supernova → neutron star or black hole</li>
-            <li>Galaxy types: spiral (Milky Way), elliptical, irregular</li>
-            <li>Light-year as a unit of distance</li>
-            <li>The Big Bang and the expanding universe (brief introduction)</li>
-          </ul>
-          <div class="ms-topic-note">Surprisingly deep for a Grade 8 exam — they need to know how stars live and die.</div>
-        </div>
-      </div>
-
-      <div class="ms-topic">
-        <div class="ms-topic-title" onclick="this.parentElement.classList.toggle('open')">
-          <span class="ms-topic-arrow">▶</span> Topic III · Electricity
-        </div>
-        <div class="ms-topic-body">
-          <ul class="ms-topic-list">
-            <li>Electric charge: positive and negative, conservation, unit (coulomb, C)</li>
-            <li>Electric current: rate of charge flow, I = Q/t, unit (ampere, A)</li>
-            <li>Voltage / potential difference: energy per charge, V = W/Q, unit (volt, V)</li>
-            <li>Resistance: opposition to current, R = V/I, unit (ohm, Ω) — Ohm's law</li>
-            <li>Electrical work: W = V·I·t, unit (joule, J)</li>
-            <li>Electrical power: P = V·I, unit (watt, W); kilowatt-hour (kWh) for energy bills</li>
-            <li><strong>Series circuits:</strong> current the same throughout; voltages add; resistances add</li>
-            <li><strong>Parallel circuits:</strong> voltage the same across branches; currents add; 1/R = 1/R₁ + 1/R₂</li>
-            <li>Reading circuit diagrams: symbols for battery, resistor, switch, bulb, ammeter, voltmeter</li>
-            <li>Unit conversions: mA↔A, mV↔V, kΩ↔Ω, kWh↔J</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
+  <div class="milestone-grid" id="scope-view-8-10-mount">
+    <!-- Rendered from examData8to10 at bottom of file -->
   </div>
 
   </div><!-- /.milestone-body -->
@@ -1514,6 +1308,275 @@
   Curriculum spine: 5 discovery chains following the history of science.<br>
   Math thread to be added. Chain 6 to be defined.
 </footer>
+
+
+<!-- ═════════════════════════════════════════════════════════ -->
+<!-- EXAM + SCOPE DATA · Grades 8–10                            -->
+<!-- Single source of truth. Drives both the exam-coverage      -->
+<!-- table and the per-topic scope view.                        -->
+<!--                                                            -->
+<!-- To edit a topic's bullets: find it in examData8to10.       -->
+<!-- To change exam coverage: edit defaultCoverage profile,     -->
+<!--   or add `topicCoverage` to override per topic,            -->
+<!--   or use { text, coverage } object form per point.         -->
+<!-- ═════════════════════════════════════════════════════════ -->
+
+<script>
+
+const examData8to10 = {
+
+  exams: [
+    { id: 'nmpp',  name: 'NMPP',              sub: 'diagnostic' },
+    { id: 'vl',    name: 'Vilniaus Licėjus',  sub: '2 hr · 25/25/15/15' },
+    { id: 'kj',    name: 'Kauno Jėzuitai',    sub: '60 min · 35/35/15/15%' },
+    { id: 'vj',    name: 'Vilniaus Jėzuitai', sub: 'Apr 25, 2026' },
+    { id: 'other', name: 'Other gymnasia',    sub: 'varies' },
+    { id: 'pupp',  name: 'PUPP',              sub: 'Grade 10 gate' }
+  ],
+
+  // Re-usable coverage profiles. Per-subject default; topics or
+  // individual points can override.
+  defaultCoverage: {
+    math:    { nmpp: '●', vl: '●', kj: '●', vj: '?', other: '●', pupp: '●' },
+    physics: { nmpp: '—', vl: '●', kj: '—', vj: '?', other: '○', pupp: '—' }
+  },
+
+  subjects: [
+
+    {
+      name: 'Mathematics',
+      shortName: 'Mathematics · Grade 8 → 9 exam',
+      defaultProfile: 'math',
+      topics: [
+        {
+          name: 'Numbers',
+          points: [
+            'Natural numbers and integers (including negative numbers)',
+            'Divisibility rules for 2, 3, 4, 5, 6, 8, 9, 10',
+            'Prime and composite numbers; prime factorisation',
+            'Greatest common divisor (GCD) and least common multiple (LCM)',
+            'Fractions: proper, improper, mixed; add, subtract, multiply, divide',
+            'Decimals: place value, conversion to and from fractions',
+            'Ratios and proportions; direct and inverse proportionality',
+            'Percentages: of a number, increase and decrease, simple interest',
+            'Powers with positive integer exponents and laws of exponents',
+            'Square roots and cube roots; perfect squares',
+            'Scientific notation for very large or very small numbers'
+          ]
+        },
+        {
+          name: 'Algebra',
+          points: [
+            'Variables, algebraic expressions, evaluation',
+            'Like terms and simplification',
+            'Polynomials: terms, degree, classification (monomial, binomial, trinomial)',
+            'Polynomial operations: addition, subtraction, multiplication',
+            'Special products: (a+b)², (a−b)², (a+b)(a−b)',
+            'Factoring: common factor, grouping, special patterns (difference of squares, perfect square trinomial)',
+            'Linear equations in one variable: solving and checking',
+            'Linear inequalities: solving and graphing on a number line',
+            'Systems of two linear equations: substitution and elimination',
+            'Word problems: motion (d = v·t), mixture, age, money'
+          ]
+        },
+        {
+          name: 'Geometry',
+          points: [
+            'Angle types: acute, right, obtuse, straight, reflex; complementary, supplementary, vertical',
+            'Parallel lines cut by a transversal: corresponding, alternate interior, alternate exterior, co-interior',
+            'Triangles by sides: scalene, isosceles, equilateral',
+            'Triangles by angles: acute, right, obtuse',
+            'Triangle angle sum = 180°; exterior angle theorem',
+            'Congruence criteria: SSS, SAS, ASA, AAS, RHS',
+            'Pythagorean theorem and its converse',
+            'Perimeter and area: rectangle, square, parallelogram, triangle, trapezoid, rhombus',
+            'Quadrilateral properties and classification',
+            'Circle: radius, diameter, chord, circumference, area',
+            '3D solids: cube, cuboid, prism, pyramid, cylinder, cone, sphere',
+            'Surface area and volume of the above solids'
+          ]
+        },
+        {
+          name: 'Combinatorics',
+          note: 'Limited to simple problems at this level.',
+          topicCoverage: { pupp: '—' },  // PUPP syllabus does not include combinatorics
+          points: [
+            'Fundamental counting principle (multiplication rule)',
+            'Addition rule for mutually exclusive cases',
+            'Tree diagrams for systematic counting',
+            'Simple permutations and arrangements',
+            'Simple combinations',
+            'Basic factorial notation'
+          ]
+        }
+      ]
+    },
+
+    {
+      name: 'Physics',
+      shortName: 'Physics · Grade 8 → 9 exam',
+      defaultProfile: 'physics',
+      topics: [
+        {
+          name: 'Structure of matter',
+          note: 'Basically: what atoms are made of and how they break apart.',
+          points: [
+            'Atomic notation: chemical symbol with mass number A on top, atomic number Z on bottom',
+            'Atomic number Z = number of protons (defines the element)',
+            'Mass number A = protons + neutrons',
+            'Isotopes: same Z, different A (e.g. ¹²C, ¹³C, ¹⁴C)',
+            '<strong>Alpha decay (α):</strong> emits a helium nucleus; A −4, Z −2',
+            '<strong>Beta-minus decay (β⁻):</strong> neutron → proton + electron; A unchanged, Z +1',
+            '<strong>Beta-plus decay (β⁺):</strong> proton → neutron + positron; A unchanged, Z −1',
+            '<strong>Gamma emission (γ):</strong> high-energy photon; A and Z unchanged',
+            'Half-life: time for half a radioactive sample to decay',
+            'Nuclear fission: heavy nucleus splits (uranium-235, chain reaction)',
+            'Nuclear fusion: light nuclei combine into heavier ones (hydrogen → helium in stars)',
+            'Conservation of atomic and mass numbers in nuclear equations',
+            'Radiation protection: distance, time, shielding (paper for α, aluminium for β, lead for γ)'
+          ]
+        },
+        {
+          name: 'The Universe',
+          note: 'Surprisingly deep for a Grade 8 exam — they need to know how stars live and die.',
+          points: [
+            'Hierarchy of cosmic objects: planet, moon, star, planetary system, star cluster, nebula, galaxy, galaxy cluster',
+            'The Solar System: Sun + 8 planets, moons, asteroid belt',
+            'Nebulae as stellar nurseries: emission, dark, planetary, supernova remnants',
+            'Stellar energy source: nuclear fusion of hydrogen into helium (proton-proton chain)',
+            '<strong>Low-mass stars (~Sun):</strong> main sequence → red giant → planetary nebula → white dwarf',
+            '<strong>High-mass stars (≥8 solar masses):</strong> main sequence → red supergiant → supernova → neutron star or black hole',
+            'Galaxy types: spiral (Milky Way), elliptical, irregular',
+            'Light-year as a unit of distance',
+            'The Big Bang and the expanding universe (brief introduction)'
+          ]
+        },
+        {
+          name: 'Electricity',
+          points: [
+            'Electric charge: positive and negative, conservation, unit (coulomb, C)',
+            'Electric current: rate of charge flow, I = Q/t, unit (ampere, A)',
+            'Voltage / potential difference: energy per charge, V = W/Q, unit (volt, V)',
+            "Resistance: opposition to current, R = V/I, unit (ohm, Ω) — Ohm's law",
+            'Electrical work: W = V·I·t, unit (joule, J)',
+            'Electrical power: P = V·I, unit (watt, W); kilowatt-hour (kWh) for energy bills',
+            '<strong>Series circuits:</strong> current same throughout; voltages add; resistances add',
+            '<strong>Parallel circuits:</strong> voltage same across branches; currents add; 1/R = 1/R₁ + 1/R₂',
+            'Reading circuit diagrams: symbols for battery, resistor, switch, bulb, ammeter, voltmeter',
+            'Unit conversions: mA↔A, mV↔V, kΩ↔Ω, kWh↔J'
+          ]
+        }
+      ]
+    }
+
+  ]
+};
+
+
+// === RENDER HELPERS ===
+
+function _symbolClass(s) {
+  if (s === '●') return 'yes';
+  if (s === '○') return 'elec';
+  if (s === '?') return 'unk';
+  return 'no';
+}
+
+function _resolveCoverage(data, subject, topic, point) {
+  const subjectDefault = data.defaultCoverage[subject.defaultProfile] || {};
+  const topicCoverage  = Object.assign({}, subjectDefault, topic.topicCoverage || {});
+  if (typeof point === 'object' && point.coverage) {
+    return Object.assign({}, topicCoverage, point.coverage);
+  }
+  return topicCoverage;
+}
+
+function _pointText(point) {
+  return typeof point === 'string' ? point : point.text;
+}
+
+
+// === EXAM CROSS-REFERENCE TABLE ===
+
+function renderExamTable(mountId, data) {
+  const mount = document.getElementById(mountId);
+  if (!mount) return;
+
+  const exams = data.exams;
+  const totalCols = exams.length + 1;
+  let html = '<table class="exam-table"><thead><tr><th>Topic</th>';
+
+  exams.forEach(e => {
+    html += '<th>' + e.name + '<span class="col-sub">' + e.sub + '</span></th>';
+  });
+  html += '</tr></thead><tbody>';
+
+  data.subjects.forEach(subject => {
+    html += '<tr class="topic-section"><td colspan="' + totalCols + '">' + subject.name + '</td></tr>';
+
+    subject.topics.forEach(topic => {
+      html += '<tr class="topic-header"><td colspan="' + totalCols + '">' + topic.name + '</td></tr>';
+
+      topic.points.forEach(point => {
+        const coverage = _resolveCoverage(data, subject, topic, point);
+        html += '<tr><td class="point-text">' + _pointText(point) + '</td>';
+        exams.forEach(e => {
+          const sym = coverage[e.id] || '—';
+          html += '<td><span class="' + _symbolClass(sym) + '">' + sym + '</span></td>';
+        });
+        html += '</tr>';
+      });
+    });
+  });
+
+  html += '</tbody></table>';
+  mount.innerHTML = html;
+}
+
+
+// === PER-TOPIC SCOPE VIEW (2 columns, collapsible topics) ===
+
+function renderScopeView(mountId, data) {
+  const mount = document.getElementById(mountId);
+  if (!mount) return;
+
+  const roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'];
+  let html = '';
+
+  data.subjects.forEach(subject => {
+    html += '<div class="ms-col">';
+    html += '<div class="ms-col-title">' + (subject.shortName || subject.name) + '</div>';
+
+    subject.topics.forEach((topic, idx) => {
+      html += '<div class="ms-topic">';
+      html += '<div class="ms-topic-title" onclick="this.parentElement.classList.toggle(\'open\')">';
+      html += '<span class="ms-topic-arrow">▶</span> Topic ' + roman[idx] + ' · ' + topic.name;
+      html += '</div>';
+      html += '<div class="ms-topic-body">';
+      html += '<ul class="ms-topic-list">';
+      topic.points.forEach(point => {
+        html += '<li>' + _pointText(point) + '</li>';
+      });
+      html += '</ul>';
+      if (topic.note) {
+        html += '<div class="ms-topic-note">' + topic.note + '</div>';
+      }
+      html += '</div></div>';
+    });
+
+    html += '</div>';
+  });
+
+  mount.innerHTML = html;
+}
+
+
+// === MOUNT ===
+
+renderExamTable('exam-table-8-10-mount', examData8to10);
+renderScopeView('scope-view-8-10-mount', examData8to10);
+
+</script>
 
 </body>
 </html>
