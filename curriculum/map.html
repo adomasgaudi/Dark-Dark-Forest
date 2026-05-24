@@ -22,6 +22,76 @@
     padding: 80px 24px 120px;
   }
 
+  /* ── TOP NAV ── */
+  .topnav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid #eee;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+  }
+
+  .topnav-inner {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 0 24px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .nav-back {
+    font-size: 12px;
+    color: #555;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 3px;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .nav-back:hover {
+    background: #f5f5f5;
+    color: #111;
+  }
+
+  .nav-back .nav-arrow {
+    font-size: 13px;
+    transition: transform 0.18s;
+    display: inline-block;
+  }
+
+  .nav-back:hover .nav-arrow {
+    transform: translateX(-3px);
+  }
+
+  .nav-brand {
+    flex: 1;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #111;
+    letter-spacing: -0.01em;
+  }
+
+  .nav-items {
+    display: flex;
+    gap: 14px;
+    min-width: 80px;
+    justify-content: flex-end;
+    /* empty for now — placeholder for future nav links */
+  }
+
   .site-label {
     font-size: 12px;
     letter-spacing: 0.06em;
@@ -289,6 +359,231 @@
 
   .ms-col ul li::before { content: '— '; color: #ccc; }
 
+  /* Milestone outer toggle */
+  .milestone-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    user-select: none;
+    padding: 6px 10px;
+    margin: 0 -10px;
+    border-radius: 4px;
+    transition: background 0.15s;
+  }
+
+  .milestone-header:hover { background: #f7f7f7; }
+
+  .milestone-header .milestone-label,
+  .milestone-header .milestone-title { margin: 0; }
+
+  .milestone-arrow {
+    font-size: 12px;
+    color: #999;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+
+  .milestone.open .milestone-arrow { transform: rotate(90deg); }
+
+  .milestone-body {
+    display: none;
+    margin-top: 16px;
+  }
+
+  .milestone.open .milestone-body { display: block; }
+
+  .ms-topic {
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .ms-topic-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .ms-topic-list li {
+    font-size: 12px;
+    color: #555;
+    line-height: 1.6;
+    padding: 4px 0 4px 14px;
+    position: relative;
+  }
+
+  .ms-topic-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: #ccc;
+  }
+
+  .ms-topic-list li strong {
+    color: #333;
+    font-weight: 600;
+  }
+
+  .ms-topic:last-child { border-bottom: none; }
+
+  .ms-topic-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #222;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 0;
+    user-select: none;
+    transition: color 0.15s;
+  }
+
+  .ms-topic-title:hover { color: #000; }
+
+  .ms-topic-arrow {
+    font-size: 9px;
+    color: #ccc;
+    transition: transform 0.18s;
+    display: inline-block;
+    width: 8px;
+  }
+
+  .ms-topic.open .ms-topic-arrow { transform: rotate(90deg); }
+
+  .ms-topic-body {
+    display: none;
+    padding: 2px 0 12px 18px;
+  }
+
+  .ms-topic.open .ms-topic-body { display: block; }
+
+  .ms-topic-content {
+    font-size: 12px;
+    color: #555;
+    line-height: 1.65;
+    margin-bottom: 4px;
+  }
+
+  .ms-topic-note {
+    font-size: 11px;
+    color: #888;
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  /* ── EXAM LANDSCAPE TABLE ── */
+  .exam-table-wrap {
+    overflow-x: auto;
+    margin: 18px 0 12px;
+  }
+
+  .exam-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+
+  .exam-table th {
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #aaa;
+    font-weight: 600;
+    padding: 8px 4px 10px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    white-space: nowrap;
+  }
+
+  .exam-table th:first-child,
+  .exam-table td:first-child {
+    text-align: left;
+    padding-left: 0;
+  }
+
+  .exam-table th:last-child,
+  .exam-table td:last-child {
+    text-align: left;
+    padding-right: 0;
+  }
+
+  .exam-table td {
+    padding: 10px 4px;
+    text-align: center;
+    border-bottom: 1px solid #f3f3f3;
+    vertical-align: middle;
+  }
+
+  .exam-table tr:last-child td { border-bottom: none; }
+
+  .exam-table td:first-child {
+    font-size: 13px;
+    font-weight: 500;
+    color: #222;
+    min-width: 140px;
+  }
+
+  .exam-table .yes  { color: #16a34a; font-weight: 600; font-size: 14px; }
+  .exam-table .elec { color: #d97706; font-weight: 600; font-size: 14px; }
+  .exam-table .no   { color: #e0e0e0; font-size: 12px; }
+  .exam-table .unk  { color: #bbb; font-weight: 600; }
+
+  .exam-weight {
+    font-size: 10px;
+    color: #888;
+    display: block;
+    font-weight: 400;
+    margin-top: 1px;
+  }
+
+  .exam-note {
+    font-size: 11px;
+    color: #888;
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  .exam-table .col-sub {
+    display: block;
+    margin-top: 3px;
+    font-size: 9px;
+    color: #bbb;
+    letter-spacing: 0;
+    text-transform: none;
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  .exam-table .topic-section td {
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #999;
+    font-weight: 600;
+    text-align: left;
+    padding: 18px 0 6px;
+    border-bottom: 1px solid #ddd;
+    background: transparent;
+  }
+
+  .exam-table .topic-section + tr td {
+    padding-top: 12px;
+  }
+
+  .exam-legend {
+    font-size: 11px;
+    color: #888;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 4px;
+    padding-top: 12px;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .exam-legend span b { color: #444; font-weight: 600; margin-right: 4px; }
+
   /* ── FOOTER ── */
   footer {
     margin-top: 80px;
@@ -299,6 +594,129 @@
     line-height: 1.8;
   }
 
+  /* ── VIDEO SECTION ── */
+  .video-section {
+    margin: 56px 0 64px;
+    padding: 28px 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+  }
+
+  .video-meta {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #aaa;
+    margin-bottom: 6px;
+  }
+
+  .video-title {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 16px;
+  }
+
+  .video-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .video-frame iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  /* Thumbnail-preview fallback (when embed is disabled) */
+  .video-link-card {
+    display: block;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    text-decoration: none;
+  }
+
+  .video-link-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: opacity 0.18s;
+  }
+
+  .video-link-card:hover img {
+    opacity: 0.85;
+  }
+
+  .play-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  .play-button {
+    width: 74px;
+    height: 52px;
+    background: rgba(255, 0, 51, 0.92);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, background 0.2s;
+  }
+
+  .video-link-card:hover .play-button {
+    background: #ff0033;
+    transform: scale(1.06);
+  }
+
+  .play-button svg {
+    width: 26px;
+    height: 26px;
+    fill: #fff;
+    margin-left: 3px;
+  }
+
+  .video-main-point {
+    font-size: 14px;
+    color: #444;
+    line-height: 1.7;
+    padding-left: 14px;
+    border-left: 2px solid #eee;
+    margin-bottom: 14px;
+  }
+
+  .video-main-point strong {
+    color: #111;
+  }
+
+  .video-link {
+    font-size: 12px;
+    color: #777;
+    text-decoration: none;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .video-link:hover {
+    color: #111;
+    border-bottom-color: #111;
+  }
+
   @media (max-width: 600px) {
     .unit { padding-left: 0; }
     .chain-header { grid-template-columns: 24px 1fr; gap: 12px; }
@@ -307,6 +725,14 @@
 </style>
 </head>
 <body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a class="nav-back" href="index.html"><span class="nav-arrow">←</span> Back</a>
+    <div class="nav-brand">First Principles</div>
+    <div class="nav-items"><!-- placeholder for future nav links --></div>
+  </div>
+</nav>
 
 <div class="site-label">Grades 5 to University · Lithuania</div>
 
@@ -330,10 +756,37 @@
 
 
 <!-- ══════════════════════════════════════════ -->
+<!-- FEATURED VIDEO (test embed) -->
+<!-- ══════════════════════════════════════════ -->
+
+<section class="video-section">
+  <div class="video-meta">Featured clip · 0:00–0:36</div>
+  <h2 class="video-title">Featured video</h2>
+
+  <a class="video-link-card" href="https://www.youtube.com/watch?v=EYPapE-3FRw&t=0s" target="_blank" rel="noopener">
+    <img src="https://img.youtube.com/vi/EYPapE-3FRw/maxresdefault.jpg"
+         alt="Featured video thumbnail"
+         onerror="this.src='https://img.youtube.com/vi/EYPapE-3FRw/hqdefault.jpg'">
+    <div class="play-overlay">
+      <div class="play-button">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      </div>
+    </div>
+  </a>
+
+  <div class="video-main-point">
+    <strong>Main point.</strong> [Replace this with the takeaway from the 0:00–0:36 clip — one or two sentences on what the viewer should walk away with.]
+  </div>
+
+  <a class="video-link" href="https://www.youtube.com/watch?v=EYPapE-3FRw&list=PLyQSN7X0ro23NUN9RYBP5xdBYoiv2_5y2&index=1" target="_blank" rel="noopener">Watch full video on YouTube →</a>
+</section>
+
+
+<!-- ══════════════════════════════════════════ -->
 <!-- PRE-CHAIN: BEFORE SCIENCE -->
 <!-- ══════════════════════════════════════════ -->
 
-<div class="chain">
+<div class="chain" id="chain-0">
   <div class="chain-header">
     <div class="chain-num">0</div>
     <div class="chain-meta">
@@ -377,7 +830,7 @@
 <!-- CHAIN 1 -->
 <!-- ══════════════════════════════════════════ -->
 
-<div class="chain">
+<div class="chain" id="chain-1">
   <div class="chain-header">
     <div class="chain-num">1</div>
     <div class="chain-meta">
@@ -418,7 +871,7 @@
 <!-- CHAIN 2 -->
 <!-- ══════════════════════════════════════════ -->
 
-<div class="chain">
+<div class="chain" id="chain-2">
   <div class="chain-header">
     <div class="chain-num">2</div>
     <div class="chain-meta">
@@ -456,36 +909,271 @@
 
 
 <!-- MILESTONE 1 -->
-<div class="milestone">
-  <div class="milestone-label">Milestone · End of Grade 8</div>
-  <div class="milestone-title">Top Gymnasium Entry</div>
-  <div class="milestone-exams">
-    <span class="exam-pill">Lithuanian Language · 25 pts</span>
-    <span class="exam-pill">Mathematics · 25 pts</span>
-    <span class="exam-pill">History · 15 pts</span>
-    <span class="exam-pill">Physics · 15 pts</span>
+<div class="milestone open" id="milestone-grade-8">
+
+  <div class="milestone-header" onclick="this.parentElement.classList.toggle('open')">
+    <div>
+      <div class="milestone-label">Milestones · Grades 8–10</div>
+      <div class="milestone-title">National checkpoint, gymnasium entries, PUPP</div>
+    </div>
+    <span class="milestone-arrow">▶</span>
   </div>
-  <p class="milestone-desc">Benchmark: Vilnius Lyceum entrance exam. Chains 0–2 cover the conceptual ground. Exam-specific precision is drilled on top of intuition already built.</p>
+
+  <div class="milestone-body">
+
+  <p class="milestone-desc">Grade 8→9 is the first hard checkpoint. Top gymnasia test Math + Lithuanian as core; Vilnius Lyceum is the only one to test Physics. NMPP (Grade 8) is diagnostic only — no stakes. PUPP (Grade 10) is mandatory and gates upper secondary.</p>
+
+  <div class="exam-table-wrap">
+    <table class="exam-table">
+      <thead>
+        <tr>
+          <th>Topic</th>
+          <th>NMPP<span class="col-sub">diagnostic</span></th>
+          <th>Vilniaus Licėjus<span class="col-sub">2 hr · 25/25/15/15</span></th>
+          <th>Kauno Jėzuitai<span class="col-sub">60 min · 35/35/15/15%</span></th>
+          <th>Vilniaus Jėzuitai<span class="col-sub">Apr 25, 2026</span></th>
+          <th>Other gymnasia<span class="col-sub">varies</span></th>
+          <th>PUPP<span class="col-sub">Grade 10 gate</span></th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr class="topic-section"><td colspan="7">Mathematics</td></tr>
+
+        <tr>
+          <td>Numbers</td>
+          <td><span class="yes">●</span></td>
+          <td><span class="yes">●</span></td>
+          <td><span class="yes">●</span></td>
+          <td><span class="unk">?</span></td>
+          <td><span class="yes">●</span></td>
+          <td><span class="yes">●</span></td>
+        </tr>
+        <tr>
+          <td>Algebra</td>
+          <td><span class="yes">●</span></td>
+          <td><span class="yes">●</span></td>
+          <td><span class="yes">●</span></td>
+          <td><span class="unk">?</span></td>
+          <td><span class="yes">●</span></td>
+          <td><span class="yes">●</span></td>
+        </tr>
+        <tr>
+          <td>Geometry</td>
+          <td><span class="yes">●</span></td>
+          <td><span class="yes">●</span></td>
+          <td><span class="yes">●</span></td>
+          <td><span class="unk">?</span></td>
+          <td><span class="yes">●</span></td>
+          <td><span class="yes">●</span></td>
+        </tr>
+        <tr>
+          <td>Combinatorics</td>
+          <td><span class="yes">●</span></td>
+          <td><span class="yes">●</span></td>
+          <td><span class="yes">●</span></td>
+          <td><span class="unk">?</span></td>
+          <td><span class="yes">●</span></td>
+          <td><span class="no">—</span></td>
+        </tr>
+
+        <tr class="topic-section"><td colspan="7">Physics</td></tr>
+
+        <tr>
+          <td>Structure of matter</td>
+          <td><span class="no">—</span></td>
+          <td><span class="yes">●</span></td>
+          <td><span class="no">—</span></td>
+          <td><span class="unk">?</span></td>
+          <td><span class="elec">○</span></td>
+          <td><span class="no">—</span></td>
+        </tr>
+        <tr>
+          <td>The Universe</td>
+          <td><span class="no">—</span></td>
+          <td><span class="yes">●</span></td>
+          <td><span class="no">—</span></td>
+          <td><span class="unk">?</span></td>
+          <td><span class="elec">○</span></td>
+          <td><span class="no">—</span></td>
+        </tr>
+        <tr>
+          <td>Electricity</td>
+          <td><span class="no">—</span></td>
+          <td><span class="yes">●</span></td>
+          <td><span class="no">—</span></td>
+          <td><span class="unk">?</span></td>
+          <td><span class="elec">○</span></td>
+          <td><span class="no">—</span></td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <div class="exam-legend">
+    <span><b style="color:#16a34a;">●</b> tested</span>
+    <span><b style="color:#d97706;">○</b> elective or varies by school</span>
+    <span><b style="color:#bbb;">?</b> unpublished</span>
+    <span><b style="color:#bbb;">—</b> not tested</span>
+  </div>
   <div class="milestone-grid">
+
     <div class="ms-col">
-      <div class="ms-col-title">Math by Grade 8</div>
-      <ul>
-        <li>Algebra, equations, inequalities</li>
-        <li>Geometry: area, volume, angles</li>
-        <li>Functions and graphs</li>
-        <li>Basic statistics and probability</li>
-      </ul>
+      <div class="ms-col-title">Mathematics · Grade 8 → 9 exam</div>
+
+      <div class="ms-topic">
+        <div class="ms-topic-title" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ms-topic-arrow">▶</span> Topic I · Numbers
+        </div>
+        <div class="ms-topic-body">
+          <ul class="ms-topic-list">
+            <li>Natural numbers and integers (including negative numbers and operations on them)</li>
+            <li>Divisibility rules for 2, 3, 4, 5, 6, 8, 9, 10</li>
+            <li>Prime and composite numbers; prime factorisation</li>
+            <li>Greatest common divisor (GCD) and least common multiple (LCM)</li>
+            <li>Fractions: proper, improper, mixed; add, subtract, multiply, divide</li>
+            <li>Decimals: place value, conversion to and from fractions</li>
+            <li>Ratios and proportions; direct and inverse proportionality</li>
+            <li>Percentages: of a number, increase and decrease, simple interest</li>
+            <li>Powers with positive integer exponents and laws of exponents</li>
+            <li>Square roots and cube roots; perfect squares</li>
+            <li>Scientific notation for very large or very small numbers</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="ms-topic">
+        <div class="ms-topic-title" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ms-topic-arrow">▶</span> Topic II · Algebra
+        </div>
+        <div class="ms-topic-body">
+          <ul class="ms-topic-list">
+            <li>Variables, algebraic expressions, evaluation</li>
+            <li>Like terms and simplification</li>
+            <li>Polynomials: terms, degree, classification (monomial, binomial, trinomial)</li>
+            <li>Polynomial operations: addition, subtraction, multiplication</li>
+            <li>Special products: (a+b)², (a−b)², (a+b)(a−b)</li>
+            <li>Factoring: common factor, grouping, special patterns (difference of squares, perfect square trinomial)</li>
+            <li>Linear equations in one variable: solving and checking</li>
+            <li>Linear inequalities: solving and graphing on a number line</li>
+            <li>Systems of two linear equations: substitution and elimination</li>
+            <li>Word problems: motion (d = v·t), mixture, age, money</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="ms-topic">
+        <div class="ms-topic-title" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ms-topic-arrow">▶</span> Topic III · Geometry
+        </div>
+        <div class="ms-topic-body">
+          <ul class="ms-topic-list">
+            <li>Angle types: acute, right, obtuse, straight, reflex; complementary, supplementary, vertical</li>
+            <li>Parallel lines cut by a transversal: corresponding, alternate interior, alternate exterior, co-interior angles</li>
+            <li>Triangles by sides: scalene, isosceles, equilateral</li>
+            <li>Triangles by angles: acute, right, obtuse</li>
+            <li>Triangle angle sum = 180°; exterior angle theorem</li>
+            <li>Congruence criteria: SSS, SAS, ASA, AAS, RHS</li>
+            <li>Pythagorean theorem and its converse</li>
+            <li>Perimeter and area: rectangle, square, parallelogram, triangle, trapezoid, rhombus</li>
+            <li>Quadrilateral properties and classification</li>
+            <li>Circle: radius, diameter, chord, circumference, area</li>
+            <li>3D solids: cube, cuboid, prism, pyramid, cylinder, cone, sphere</li>
+            <li>Surface area and volume of the above solids</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="ms-topic">
+        <div class="ms-topic-title" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ms-topic-arrow">▶</span> Topic IV · Combinatorics
+        </div>
+        <div class="ms-topic-body">
+          <ul class="ms-topic-list">
+            <li>Fundamental counting principle (multiplication rule)</li>
+            <li>Addition rule for mutually exclusive cases</li>
+            <li>Tree diagrams for systematic counting</li>
+            <li>Simple permutations and arrangements</li>
+            <li>Simple combinations</li>
+            <li>Basic factorial notation</li>
+          </ul>
+          <div class="ms-topic-note">Limited to simple problems at this level.</div>
+        </div>
+      </div>
     </div>
+
     <div class="ms-col">
-      <div class="ms-col-title">Physics by Grade 8</div>
-      <ul>
-        <li>Mechanics: force, motion, energy</li>
-        <li>Waves and sound</li>
-        <li>Basic electromagnetism</li>
-        <li>Heat and thermodynamics</li>
-      </ul>
+      <div class="ms-col-title">Physics · Grade 8 → 9 exam</div>
+
+      <div class="ms-topic">
+        <div class="ms-topic-title" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ms-topic-arrow">▶</span> Topic I · Structure of matter
+        </div>
+        <div class="ms-topic-body">
+          <ul class="ms-topic-list">
+            <li>Atomic notation: chemical symbol with mass number A on top, atomic number Z on bottom</li>
+            <li>Atomic number Z = number of protons (defines the element)</li>
+            <li>Mass number A = protons + neutrons</li>
+            <li>Isotopes: same Z, different A (e.g. ¹²C, ¹³C, ¹⁴C)</li>
+            <li><strong>Alpha decay (α):</strong> emits a helium nucleus; A −4, Z −2</li>
+            <li><strong>Beta-minus decay (β⁻):</strong> neutron → proton + electron; A unchanged, Z +1</li>
+            <li><strong>Beta-plus decay (β⁺):</strong> proton → neutron + positron; A unchanged, Z −1</li>
+            <li><strong>Gamma emission (γ):</strong> high-energy photon; A and Z unchanged</li>
+            <li>Half-life: time for half a radioactive sample to decay</li>
+            <li>Nuclear fission: heavy nucleus splits (uranium-235, chain reaction)</li>
+            <li>Nuclear fusion: light nuclei combine into heavier ones (hydrogen → helium in stars)</li>
+            <li>Conservation of atomic and mass numbers in nuclear equations</li>
+            <li>Radiation protection: distance, time, shielding (paper for α, aluminium for β, lead for γ)</li>
+          </ul>
+          <div class="ms-topic-note">Basically: what atoms are made of and how they break apart.</div>
+        </div>
+      </div>
+
+      <div class="ms-topic">
+        <div class="ms-topic-title" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ms-topic-arrow">▶</span> Topic II · The Universe
+        </div>
+        <div class="ms-topic-body">
+          <ul class="ms-topic-list">
+            <li>Hierarchy of cosmic objects: planet, moon, star, planetary system, star cluster, nebula, galaxy, galaxy cluster</li>
+            <li>The Solar System: Sun + 8 planets, moons, asteroid belt</li>
+            <li>Nebulae as stellar nurseries: emission, dark, planetary, supernova remnants</li>
+            <li>Stellar energy source: nuclear fusion of hydrogen into helium (proton-proton chain)</li>
+            <li><strong>Low-mass stars (~Sun):</strong> main sequence → red giant → planetary nebula → white dwarf</li>
+            <li><strong>High-mass stars (≥8 solar masses):</strong> main sequence → red supergiant → supernova → neutron star or black hole</li>
+            <li>Galaxy types: spiral (Milky Way), elliptical, irregular</li>
+            <li>Light-year as a unit of distance</li>
+            <li>The Big Bang and the expanding universe (brief introduction)</li>
+          </ul>
+          <div class="ms-topic-note">Surprisingly deep for a Grade 8 exam — they need to know how stars live and die.</div>
+        </div>
+      </div>
+
+      <div class="ms-topic">
+        <div class="ms-topic-title" onclick="this.parentElement.classList.toggle('open')">
+          <span class="ms-topic-arrow">▶</span> Topic III · Electricity
+        </div>
+        <div class="ms-topic-body">
+          <ul class="ms-topic-list">
+            <li>Electric charge: positive and negative, conservation, unit (coulomb, C)</li>
+            <li>Electric current: rate of charge flow, I = Q/t, unit (ampere, A)</li>
+            <li>Voltage / potential difference: energy per charge, V = W/Q, unit (volt, V)</li>
+            <li>Resistance: opposition to current, R = V/I, unit (ohm, Ω) — Ohm's law</li>
+            <li>Electrical work: W = V·I·t, unit (joule, J)</li>
+            <li>Electrical power: P = V·I, unit (watt, W); kilowatt-hour (kWh) for energy bills</li>
+            <li><strong>Series circuits:</strong> current the same throughout; voltages add; resistances add</li>
+            <li><strong>Parallel circuits:</strong> voltage the same across branches; currents add; 1/R = 1/R₁ + 1/R₂</li>
+            <li>Reading circuit diagrams: symbols for battery, resistor, switch, bulb, ammeter, voltmeter</li>
+            <li>Unit conversions: mA↔A, mV↔V, kΩ↔Ω, kWh↔J</li>
+          </ul>
+        </div>
+      </div>
     </div>
+
   </div>
+
+  </div><!-- /.milestone-body -->
 </div>
 
 
@@ -493,7 +1181,7 @@
 <!-- CHAIN 3 -->
 <!-- ══════════════════════════════════════════ -->
 
-<div class="chain">
+<div class="chain" id="chain-3">
   <div class="chain-header">
     <div class="chain-num">3</div>
     <div class="chain-meta">
@@ -538,7 +1226,7 @@
 <!-- CHAIN 4 -->
 <!-- ══════════════════════════════════════════ -->
 
-<div class="chain">
+<div class="chain" id="chain-4">
   <div class="chain-header">
     <div class="chain-num">4</div>
     <div class="chain-meta">
@@ -585,7 +1273,7 @@
 <!-- CHAIN 5 -->
 <!-- ══════════════════════════════════════════ -->
 
-<div class="chain">
+<div class="chain" id="chain-5">
   <div class="chain-header">
     <div class="chain-num">5</div>
     <div class="chain-meta">
@@ -661,17 +1349,126 @@
 
 
 <!-- MILESTONE 2 -->
-<div class="milestone">
-  <div class="milestone-label">Milestone · End of Grade 12</div>
-  <div class="milestone-title">Brandos Egzaminai + International Readiness</div>
-  <div class="milestone-exams">
-    <span class="exam-pill">Lithuanian Language · mandatory</span>
-    <span class="exam-pill">Mathematics · mandatory, extended track</span>
-    <span class="exam-pill">Physics · elective</span>
-    <span class="exam-pill">Chemistry · elective</span>
-    <span class="exam-pill">Biology · elective</span>
+<div class="milestone" id="milestone-grade-12">
+  <div class="milestone-label">Milestones · Grades 11–12</div>
+  <div class="milestone-title">Brandos Egzaminai + international tracks</div>
+  <p class="milestone-desc">Grade 12 splits into the Lithuanian matura (VBE / Brandos) and international tracks: SAT for US applications, IB Diploma offered at Vilnius Lyceum, A-Levels for UK applications. Students completing this curriculum have the conceptual foundation for any of these paths — the exam specifics are the final layer, not the foundation.</p>
+
+  <div class="exam-table-wrap">
+    <table class="exam-table">
+      <thead>
+        <tr>
+          <th>Topic</th>
+          <th>VBE / Brandos<span class="col-sub">Lithuanian matura</span></th>
+          <th>SAT<span class="col-sub">US applications</span></th>
+          <th>IB Diploma<span class="col-sub">Vilnius Lyceum</span></th>
+          <th>A-Levels<span class="col-sub">UK applications</span></th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr class="topic-section"><td colspan="5">Mathematics</td></tr>
+
+        <tr>
+          <td>Calculus</td>
+          <td><span class="yes">●</span></td>
+          <td><span class="no">—</span></td>
+          <td><span class="yes">●</span></td>
+          <td><span class="yes">●</span></td>
+        </tr>
+        <tr>
+          <td>Complex numbers</td>
+          <td><span class="yes">●</span></td>
+          <td><span class="no">—</span></td>
+          <td><span class="yes">●</span></td>
+          <td><span class="elec">○</span></td>
+        </tr>
+        <tr>
+          <td>Sequences and series</td>
+          <td><span class="yes">●</span></td>
+          <td><span class="no">—</span></td>
+          <td><span class="yes">●</span></td>
+          <td><span class="yes">●</span></td>
+        </tr>
+        <tr>
+          <td>Probability and statistics</td>
+          <td><span class="yes">●</span></td>
+          <td><span class="yes">●</span></td>
+          <td><span class="yes">●</span></td>
+          <td><span class="yes">●</span></td>
+        </tr>
+
+        <tr class="topic-section"><td colspan="5">Physics</td></tr>
+
+        <tr>
+          <td>Mechanics + thermodynamics</td>
+          <td><span class="elec">○</span></td>
+          <td><span class="no">—</span></td>
+          <td><span class="elec">○</span></td>
+          <td><span class="elec">○</span></td>
+        </tr>
+        <tr>
+          <td>Electromagnetism</td>
+          <td><span class="elec">○</span></td>
+          <td><span class="no">—</span></td>
+          <td><span class="elec">○</span></td>
+          <td><span class="elec">○</span></td>
+        </tr>
+        <tr>
+          <td>Optics and waves</td>
+          <td><span class="elec">○</span></td>
+          <td><span class="no">—</span></td>
+          <td><span class="elec">○</span></td>
+          <td><span class="elec">○</span></td>
+        </tr>
+        <tr>
+          <td>Quantum intro</td>
+          <td><span class="elec">○</span></td>
+          <td><span class="no">—</span></td>
+          <td><span class="elec">○</span></td>
+          <td><span class="elec">○</span></td>
+        </tr>
+
+        <tr class="topic-section"><td colspan="5">Chemistry</td></tr>
+
+        <tr>
+          <td>Organic chemistry</td>
+          <td><span class="elec">○</span></td>
+          <td><span class="no">—</span></td>
+          <td><span class="elec">○</span></td>
+          <td><span class="elec">○</span></td>
+        </tr>
+        <tr>
+          <td>Reaction kinetics</td>
+          <td><span class="elec">○</span></td>
+          <td><span class="no">—</span></td>
+          <td><span class="elec">○</span></td>
+          <td><span class="elec">○</span></td>
+        </tr>
+        <tr>
+          <td>Electrochemistry</td>
+          <td><span class="elec">○</span></td>
+          <td><span class="no">—</span></td>
+          <td><span class="elec">○</span></td>
+          <td><span class="elec">○</span></td>
+        </tr>
+        <tr>
+          <td>Thermochemistry</td>
+          <td><span class="elec">○</span></td>
+          <td><span class="no">—</span></td>
+          <td><span class="elec">○</span></td>
+          <td><span class="elec">○</span></td>
+        </tr>
+
+      </tbody>
+    </table>
   </div>
-  <p class="milestone-desc">Students completing this curriculum meet Lithuanian matura requirements and have the conceptual foundation to pass SAT subject tests and apply to international universities. The exam specifics are the final layer, not the foundation.</p>
+
+  <div class="exam-legend">
+    <span><b style="color:#16a34a;">●</b> tested</span>
+    <span><b style="color:#d97706;">○</b> elective</span>
+    <span><b style="color:#bbb;">—</b> not tested</span>
+  </div>
   <div class="milestone-grid">
     <div class="ms-col">
       <div class="ms-col-title">Math Grade 12</div>

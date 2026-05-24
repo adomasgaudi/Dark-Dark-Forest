@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>First Principles — Grades 5 to University</title>
-<meta name="description" content="A story-driven first-principles curriculum for grades 5 to university. From gases to quantum mechanics, threaded through 500 years of discovery.">
+<meta name="description" content="First Principles — a science curriculum for grades 5 to university. From Aristotle to Einstein, derive the fundamental laws of nature. Designed to pass exams.">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -158,6 +158,21 @@
     align-items: baseline;
     padding: 28px 0;
     border-bottom: 1px solid #f0f0f0;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.15s;
+    margin: 0 -12px;
+    padding-left: 12px;
+    padding-right: 12px;
+    border-radius: 3px;
+  }
+
+  .skeleton-row:hover {
+    background: #fafafa;
+  }
+
+  .skeleton-row:hover .skeleton-title {
+    color: #000;
   }
 
   .skeleton-row:first-child { padding-top: 0; }
@@ -196,8 +211,17 @@
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 20px 0 20px 84px;
+    padding: 20px 12px 20px 84px;
+    margin: 0 -12px;
     border-bottom: 1px solid #f0f0f0;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 3px;
+    transition: background 0.15s;
+  }
+
+  .skeleton-milestone:hover {
+    background: #fafafa;
   }
 
   .milestone-pill {
@@ -222,7 +246,20 @@
     grid-template-columns: 56px 1fr;
     gap: 28px;
     align-items: baseline;
-    padding: 36px 0 14px;
+    padding: 36px 12px 14px;
+    margin: 0 -12px;
+    border-radius: 3px;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.15s;
+  }
+
+  .phase-banner:hover {
+    background: #fafafa;
+  }
+
+  .phase-banner:hover .phase-banner-title {
+    color: #000;
   }
 
   .phase-banner:first-child { padding-top: 4px; }
@@ -570,86 +607,86 @@
 <!-- ═══════════════════════════════════════════════ -->
 <section class="section" id="skeleton">
   <div class="section-tag">The skeleton</div>
-  <h2 class="section-title">Curriculum</h2>
+  <h2 class="section-title">Curriculum.<br>Designed to pass exams.</h2>
  
 
   <div class="skeleton-list">
 
     <!-- ── PHASE 1 ── -->
-    <div class="phase-banner">
+    <a class="phase-banner" href="map.html#chain-0">
       <div class="phase-banner-num">1</div>
       <div>
         <div class="phase-banner-tag">Phase 1 · Grades 5–8 · any starting order</div>
         <div class="phase-banner-title">Foundations — matter, motion, measurement</div>
       </div>
-    </div>
+    </a>
 
-    <div class="skeleton-row">
+    <a class="skeleton-row" href="map.html#chain-0">
       <div class="skeleton-num">1</div>
       <div>
         <div class="skeleton-label">Prologue · Grades 5–6</div>
         <div class="skeleton-title">Before science — why it didn't happen sooner</div>
       </div>
-    </div>
+    </a>
 
-    <div class="skeleton-row">
+    <a class="skeleton-row" href="map.html#chain-1">
       <div class="skeleton-num">1</div>
       <div>
         <div class="skeleton-label">Chain · Grades 6–7</div>
         <div class="skeleton-title">Gases <span class="skeleton-arrow">→</span> mass conservation <span class="skeleton-arrow">→</span> atomic theory</div>
       </div>
-    </div>
+    </a>
 
-    <div class="skeleton-row">
+    <a class="skeleton-row" href="map.html#chain-2">
       <div class="skeleton-num">1</div>
       <div>
         <div class="skeleton-label">Chain · Grades 7–8</div>
         <div class="skeleton-title">Telescope + momentum <span class="skeleton-arrow">→</span> Newton's laws</div>
       </div>
-    </div>
+    </a>
 
-    <div class="skeleton-milestone">
+    <a class="skeleton-milestone" href="map.html#milestone-grade-8">
       <span class="milestone-pill">Milestone</span>
       <span class="skeleton-milestone-text">End of Grade 8 — Vilnius Lyceum entry exam</span>
-    </div>
+    </a>
 
     <!-- ── PHASE 2 ── -->
-    <div class="phase-banner">
+    <a class="phase-banner" href="map.html#chain-3">
       <div class="phase-banner-num">2</div>
       <div>
         <div class="phase-banner-tag">Phase 2 · Grades 8–12 · any starting order</div>
         <div class="phase-banner-title">Modern physics — fields, particles, the quantum world</div>
       </div>
-    </div>
+    </a>
 
-    <div class="skeleton-row">
+    <a class="skeleton-row" href="map.html#chain-3">
       <div class="skeleton-num">2</div>
       <div>
         <div class="skeleton-label">Chain · Grades 8–9</div>
         <div class="skeleton-title">Light + electrical tools <span class="skeleton-arrow">→</span> EM unification</div>
       </div>
-    </div>
+    </a>
 
-    <div class="skeleton-row">
+    <a class="skeleton-row" href="map.html#chain-4">
       <div class="skeleton-num">2</div>
       <div>
         <div class="skeleton-label">Chain · Grades 9–10</div>
         <div class="skeleton-title">Tools + chemistry <span class="skeleton-arrow">→</span> particles, atom model</div>
       </div>
-    </div>
+    </a>
 
-    <div class="skeleton-row">
+    <a class="skeleton-row" href="map.html#chain-5">
       <div class="skeleton-num">2</div>
       <div>
         <div class="skeleton-label">Chain · Grades 10–12</div>
         <div class="skeleton-title">Electron + light <span class="skeleton-arrow">→</span> relativity + quantum mechanics</div>
       </div>
-    </div>
+    </a>
 
-    <div class="skeleton-milestone">
+    <a class="skeleton-milestone" href="map.html#milestone-grade-12">
       <span class="milestone-pill">Milestone</span>
       <span class="skeleton-milestone-text">End of Grade 12 — Brandos egzaminai + SAT readiness</span>
-    </div>
+    </a>
 
   </div>
 </section>
@@ -737,7 +774,7 @@
       <div class="principle-num">01</div>
       <div>
         <div class="principle-title">Deep forest first</div>
-        <div class="principle-body">Students encounter the inspiring question — quark stars, EM unification, quantum weirdness — before the precision is demanded. The deep destination is the motivation to learn the prerequisites. Krashen's Input Hypothesis applied to science.</div>
+        <div class="principle-body">Students aren't inspired by measuring the mundane. They're inspired by perception-altering ideas that feel within reach of understanding.</div>
       </div>
     </div>
 
@@ -745,7 +782,7 @@
       <div class="principle-num">02</div>
       <div>
         <div class="principle-title">Derive, don't memorize</div>
-        <div class="principle-body">Every "magic formula" has a picture underneath. The quadratic formula falls out of completing the square. The derivative of x² falls out of area growing on two sides. The picture is the curriculum; the formula is the souvenir.</div>
+        <div class="principle-body">Every "magic formula" has a picture underneath. Physics laws, chemical conventions, and especially math formulas are usually handed down as tools for tasks the student never asked to do. Deriving them from first principles lights the belief that you could discover the laws of nature yourself — the way your predecessors did. Spaced repetition and memorization tools should complement understanding, not replace it.</div>
       </div>
     </div>
 
@@ -753,23 +790,7 @@
       <div class="principle-num">03</div>
       <div>
         <div class="principle-title">One coherent story</div>
-        <div class="principle-body">Science as a chain of discoveries, each unlocked by a new tool or observation. Topics aren't a checklist — they're causally linked. The student always knows why this comes after that.</div>
-      </div>
-    </div>
-
-    <div class="principle">
-      <div class="principle-num">04</div>
-      <div>
-        <div class="principle-title">Context creates retention</div>
-        <div class="principle-body">Memorization without context decays. With deep-forest context, the same hook attaches to a rich web and persists. The fix for poor retention is richer context, not better flashcards.</div>
-      </div>
-    </div>
-
-    <div class="principle">
-      <div class="principle-num">05</div>
-      <div>
-        <div class="principle-title">English-language sources</div>
-        <div class="principle-body">The best science explainers — Feynman, Carroll, 3Blue1Brown, Welch Labs, Veritasium — are in English. Designing in translation handicaps the curriculum before it starts.</div>
+        <div class="principle-body">Did Newton really invent calculus from scratch in one summer of quarantine? Did Einstein really write a year of genius papers out of nowhere? Taken without historical context, these stories carve a gap between "geniuses" and the rest of us. Complex ideas are always built from simpler ones. Newton built on Kepler, who got there only after 20 years of Tycho Brahe's data. Einstein built on Poincaré, who built on Lorentz, who built on Maxwell and Faraday. Genius comes in small iterations. The impact and the fame can be disproportionate.</div>
       </div>
     </div>
 
@@ -781,9 +802,7 @@
 <!-- CTA · Enter curriculum -->
 <!-- ═══════════════════════════════════════════════ -->
 <section class="section cta-section" id="enter">
-  <div class="section-tag">Open the map</div>
   <h2 class="section-title">See the full curriculum.</h2>
-  <p class="section-lead">Every chain. Every unit. Every subject thread, mapped to the discovery that unlocked it. Built artifacts marked. Planned artifacts visible.</p>
   <a href="map.html" class="cta-btn">Enter curriculum <span class="arrow">→</span></a>
 </section>
 
@@ -798,7 +817,7 @@
       <div class="footer-block">
         <div class="footer-label">Contact</div>
         <a href="mailto:adomas.gaudi.23@gmail.com" class="contact-email">adomas.gaudi.23@gmail.com</a>
-        <div class="contact-author">Author · Gaudi (Adomas)</div>
+        <div class="contact-author">Author · Adomas Gaudiesius</div>
       </div>
 
       <div class="footer-block">
