@@ -188,6 +188,104 @@
     color: #ccc;
   }
 
+  ul.points ul {
+    list-style: none;
+    margin: 6px 0 4px 4px;
+  }
+
+  ul.points ul li {
+    font-size: 12px;
+    color: #666;
+    padding: 2px 0 2px 14px;
+    border-bottom: none;
+    line-height: 1.6;
+  }
+
+  ul.points ul li::before {
+    content: '·';
+    color: #bbb;
+  }
+
+  /* ── SUB-SECTIONS (in-depth / resources) ── */
+  .sub-section {
+    margin-top: 14px;
+    border-top: 1px solid #f5f5f5;
+  }
+
+  .sub-title {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #aaa;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 0 8px;
+    user-select: none;
+  }
+
+  .sub-title:hover { color: #555; }
+
+  .sub-arrow {
+    font-size: 9px;
+    color: #ccc;
+    transition: transform 0.2s;
+  }
+
+  .sub-section.open .sub-arrow { transform: rotate(90deg); }
+
+  .sub-content {
+    display: none;
+    padding: 4px 0 8px;
+  }
+
+  .sub-section.open .sub-content { display: block; }
+
+  .sub-empty {
+    font-size: 12px;
+    color: #ccc;
+    font-style: italic;
+    padding: 2px 0 6px;
+  }
+
+  /* ── RESOURCES LIST ── */
+  ul.resources {
+    list-style: none;
+    margin-bottom: 4px;
+  }
+
+  ul.resources li {
+    font-size: 13px;
+    padding: 7px 0 7px 20px;
+    position: relative;
+    border-bottom: 1px solid #f8f8f8;
+    line-height: 1.5;
+  }
+
+  ul.resources li::before {
+    content: '↗';
+    position: absolute;
+    left: 0;
+    color: #ccc;
+    font-size: 11px;
+    top: 8px;
+  }
+
+  ul.resources a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+
+  ul.resources a:hover { text-decoration: underline; }
+
+  .resource-meta {
+    display: block;
+    font-size: 11px;
+    color: #999;
+    margin-top: 2px;
+  }
+
   .distilled {
     background: #fafafa;
     border: 1px solid #eee;
@@ -288,10 +386,7 @@
 </head>
 <body>
 
-<div class="site-label">Brain Dump Log · Science Curriculum Project</div>
-
-<h1>Working Notes</h1>
-<p class="intro">Ideas captured from conversation, ordered by session. Solid = agreed and stable. Developing = good thread, not yet complete. Fragment = needs work.</p>
+<h1>Brain dump</h1>
 
 <div class="legend">
   <div class="legend-item"><div class="status-dot" style="background:#16a34a"></div> Solid / agreed</div>
@@ -319,13 +414,34 @@
       <ul class="points">
         <li>Story-driven narrative science curriculum — Grade 5 to university</li>
         <li>Gaudi writes the connective narrative — the "why this matters" between topics</li>
-        <li>Best YouTube educators curated and embedded (Welch Labs, 3Blue1Brown, Veritasium, Carroll, Behiel)</li>
+        <li>Best YouTube educators curated and embedded</li>
         <li>Harari-style opening: humanity's relationship with science as the big story</li>
         <li>Sean Carroll's Biggest Ideas as the physics backbone</li>
-        <li>Dictionary / reference always available on the side — never the main voice</li>
-        <li>Three deliverables: brain dump log (this), curriculum map, student-facing website</li>
-        <li>Curriculum designed in English — best sources are in English, translation is a handicap</li>
+        <li>Three deliverables: brain dump, curriculum map, student website</li>
       </ul>
+
+      <div class="sub-section" id="e1-depth">
+        <div class="sub-title" onclick="toggle('e1-depth')"><span class="sub-arrow">▶</span> In depth</div>
+        <div class="sub-content">
+          <ul class="points">
+            <li>The connective narrative is the value — the "why this matters" tissue between topics that textbooks strip out</li>
+            <li>Dictionary / reference is always available on the side — never the main voice. Precision is a tool, not the destination</li>
+            <li>Curriculum is designed in English — translation is a handicap when the best sources are English-native</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sub-section" id="e1-resources">
+        <div class="sub-title" onclick="toggle('e1-resources')"><span class="sub-arrow">▶</span> Resources</div>
+        <div class="sub-content">
+          <ul class="resources">
+            <li><a href="https://www.youtube.com/@welchlabsvideo" target="_blank">Welch Labs — YouTube channel</a><span class="resource-meta">Imaginary numbers, neural nets, deep visual math</span></li>
+            <li><a href="https://www.youtube.com/@3blue1brown" target="_blank">3Blue1Brown — YouTube channel</a><span class="resource-meta">Visual math foundations (linear algebra, calculus)</span></li>
+            <li><a href="https://www.youtube.com/@veritasium" target="_blank">Veritasium — YouTube channel</a><span class="resource-meta">Physics + counterintuitive ideas</span></li>
+            <li><a href="https://www.youtube.com/@seancarroll" target="_blank">Sean Carroll — YouTube channel</a><span class="resource-meta">Biggest Ideas in the Universe series</span></li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -339,12 +455,30 @@
     <div class="entry-title" onclick="toggle('e2')">Curriculum scope and Lithuanian constraints <span class="toggle-arrow">▶</span></div>
     <div class="entry-content">
       <ul class="points">
-        <li><strong>Milestone 1 — Grade 8 exit:</strong> Vilnius Lyceum entry exam. Math 25pts, Lithuanian 25pts, History 15pts, Physics 15pts</li>
-        <li><strong>Milestone 2 — Grade 12 exit:</strong> Lithuanian brandos egzaminai + SAT / international readiness</li>
-        <li>Subjects in scope: Math, Physics, Chemistry, Human Biology / Biochemistry, History of Science, Philosophy of Science (light touch)</li>
-        <li>Biology scope: human biology and biochemistry only — no botany, zoology, ecology</li>
-        <li>Curriculum assumes English is allowed — Lithuanian frameworks may require adaptation</li>
+        <li><strong>Milestone 1 — Grade 8 exit:</strong> Vilnius Lyceum entry exam</li>
+        <li><strong>Milestone 2 — Grade 12 exit:</strong> brandos egzaminai + SAT</li>
+        <li>Subjects: Math, Physics, Chemistry, Human Biology / Biochemistry, History of Science</li>
+        <li>Biology = human only — no botany, zoology, ecology</li>
+        <li>English-language curriculum, adapted later for Lithuanian frameworks</li>
       </ul>
+
+      <div class="sub-section" id="e2-depth">
+        <div class="sub-title" onclick="toggle('e2-depth')"><span class="sub-arrow">▶</span> In depth</div>
+        <div class="sub-content">
+          <ul class="points">
+            <li>Lyceum exam weights: Math 25pts · Lithuanian 25pts · History 15pts · Physics 15pts. Math + Physics together = 40pts → physics-math thread carries the most weight</li>
+            <li>Philosophy of science enters with a light touch — enough to ask "what makes science different from other knowledge", not a full epistemology unit</li>
+            <li>Botany / zoology / ecology removed by choice — they don't connect tightly to the chemistry → biochemistry → human biology spine the curriculum is built on</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sub-section" id="e2-resources">
+        <div class="sub-title" onclick="toggle('e2-resources')"><span class="sub-arrow">▶</span> Resources</div>
+        <div class="sub-content">
+          <div class="sub-empty">Lithuanian national curriculum standards and brandos egzaminai topic lists — to be collected</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -366,13 +500,60 @@
     <div class="entry-title" onclick="toggle('e3')">Three Pillars of Science <span class="toggle-arrow">▶</span></div>
     <div class="entry-content">
       <ul class="points">
-        <li><strong>1 · Resources</strong> — wealth, time, sponsorship. Smart people exist everywhere. What's rare: smart people with leisure. Medici, Roman patronage, modern universities</li>
-        <li><strong>2 · Mental resources</strong> — curiosity, abstraction, ideology, discrete thinking, natural science boundary. Intelligence ≠ better problem solving. Curiosity does — it makes you investigate opposing ideas</li>
-        <li><strong>3 · Precision</strong> — math, tools, measurement. "Mathematics sharpens your imagination." — Behiel. Aristotle going to check beats Plato thinking alone</li>
+        <li><strong>1 · Resources</strong>
+          <ul>
+            <li>Wealth, time, sponsorship</li>
+            <li>People with interest and free time</li>
+          </ul>
+        </li>
+        <li><strong>2 · Mental resources</strong>
+          <ul>
+            <li>Curiosity</li>
+            <li>Abstraction</li>
+            <li>Ideology</li>
+            <li>Discrete thinking</li>
+            <li>Natural science boundary</li>
+          </ul>
+        </li>
+        <li><strong>3 · Precision</strong>
+          <ul>
+            <li>Math</li>
+            <li>Tools</li>
+            <li>Measurement</li>
+          </ul>
+        </li>
       </ul>
-      <div class="distilled">
-        <div class="distilled-label">Agreed in session</div>
-        <p>Discrete thinking and the natural science boundary both moved into Mental Resources. Three pillars, not five.</p>
+
+      <div class="sub-section" id="e3-depth">
+        <div class="sub-title" onclick="toggle('e3-depth')"><span class="sub-arrow">▶</span> In depth · monologue + quotes</div>
+        <div class="sub-content">
+          <blockquote>
+            "Smart people exist everywhere. What's rare is smart people with leisure. The Medici funded Galileo. Rome funded engineering and aqueducts. The modern research university funds the curious — that's the whole game."
+          </blockquote>
+          <blockquote>
+            "Intelligence doesn't make you a better problem solver in political or ideological domains. It just gives you more arguments for the position you already hold. Curiosity is the real differentiator — it makes you investigate the opposing idea."
+          </blockquote>
+          <blockquote>
+            "Mathematics sharpens your imagination." — Behiel
+          </blockquote>
+          <blockquote>
+            "Aristotle going to check beats Plato thinking alone. The whole shift of science is from armchair reasoning to actually measuring — that's why precision is its own pillar."
+          </blockquote>
+          <div class="distilled">
+            <div class="distilled-label">Agreed in session</div>
+            <p>Discrete thinking and the natural science boundary both moved into Mental Resources. Three pillars, not five.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-section" id="e3-resources">
+        <div class="sub-title" onclick="toggle('e3-resources')"><span class="sub-arrow">▶</span> Resources</div>
+        <div class="sub-content">
+          <ul class="resources">
+            <li><a href="https://www.youtube.com/watch?v=AeNSMJtKGc0&list=PLrxfgDEc2NxZJcWcrxH3jyjUUrJlnoyzX&index=2" target="_blank">Sean Carroll — The Biggest Ideas in the Universe · Lecture 2</a><span class="resource-meta">From the YouTube playlist that became the book series</span></li>
+            <li><a href="https://www.youtube.com/watch?v=PZozMO3wWfo&list=PLrxfgDEc2NxZJcWcrxH3jyjUUrJlnoyzX&index=4" target="_blank">Sean Carroll — The Biggest Ideas in the Universe · Lecture 4</a><span class="resource-meta">From the YouTube playlist that became the book series</span></li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -384,14 +565,33 @@
     <div class="entry-tag">Key idea</div>
   </div>
   <div class="entry-body">
-    <div class="entry-title" onclick="toggle('e4')">The Natural Science Boundary — verbatim <span class="toggle-arrow">▶</span></div>
+    <div class="entry-title" onclick="toggle('e4')">The Natural Science Boundary <span class="toggle-arrow">▶</span></div>
     <div class="entry-content">
-      <blockquote>
-        "The idea of natural science is specifically placed there to identify that we are discussing things that are not supernatural — which means that even if there are unexplainable things, higher powers, and things beyond our comprehension... there are things that are knowable and explainable. Which means that it's a good idea to only focus on the things that are explainable and knowable and just try to expand that field and leave all the unexplained and unknowable things in a different supernatural field."
-      </blockquote>
-      <div class="distilled">
-        <div class="distilled-label">Distilled</div>
-        <p><strong>"Natural science is the agreement to only play the game you can win."</strong> Not claiming the supernatural doesn't exist — bracketing it. Working only in the explainable zone. Then watch that zone expand for 2000 years.</p>
+      <ul class="points">
+        <li>"Natural" in natural science = explicitly not supernatural</li>
+        <li>Not a claim that the supernatural doesn't exist — a decision to bracket it</li>
+        <li>Focus only on the explainable / knowable, then expand that zone</li>
+        <li>The agreement to only play the game you can win</li>
+      </ul>
+
+      <div class="sub-section" id="e4-depth">
+        <div class="sub-title" onclick="toggle('e4-depth')"><span class="sub-arrow">▶</span> In depth · monologue + quotes</div>
+        <div class="sub-content">
+          <blockquote>
+            "The idea of natural science is specifically placed there to identify that we are discussing things that are not supernatural — which means that even if there are unexplainable things, higher powers, and things beyond our comprehension... there are things that are knowable and explainable. Which means that it's a good idea to only focus on the things that are explainable and knowable and just try to expand that field and leave all the unexplained and unknowable things in a different supernatural field."
+          </blockquote>
+          <div class="distilled">
+            <div class="distilled-label">Distilled</div>
+            <p><strong>"Natural science is the agreement to only play the game you can win."</strong> Not claiming the supernatural doesn't exist — bracketing it. Working only in the explainable zone. Then watch that zone expand for 2000 years.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-section" id="e4-resources">
+        <div class="sub-title" onclick="toggle('e4-resources')"><span class="sub-arrow">▶</span> Resources</div>
+        <div class="sub-content">
+          <div class="sub-empty">To be collected — Carroll on naturalism, Harari on shared fictions vs facts</div>
+        </div>
       </div>
     </div>
   </div>
@@ -406,14 +606,34 @@
     <div class="entry-title" onclick="toggle('e5')">Curiosity vs Intelligence <span class="toggle-arrow">▶</span></div>
     <div class="entry-content">
       <ul class="points">
-        <li>Intelligence does not correlate with better political / ideological problem solving</li>
-        <li>More intelligent + more politically inclined = more arguments for your existing position</li>
-        <li>Curiosity is the actual differentiator — makes you investigate opposing ideas regardless of intelligence</li>
-        <li>Abstraction requires curiosity: you cannot hypothesize about a position that is taboo to you</li>
-        <li>Liberty of thought requires absence of hard constraints — religion historically the hardest</li>
+        <li>Intelligence ≠ better political / ideological problem solving</li>
+        <li>Smart + partisan = more arguments for your existing position, not better answers</li>
+        <li>Curiosity is the real differentiator — it investigates the opposing idea</li>
+        <li>Abstraction requires curiosity — you can't hypothesize about a taboo position</li>
+        <li>Liberty of thought needs the absence of hard constraints</li>
       </ul>
-      <div class="warning">TED talk source to find — confirms intelligence / curiosity distinction</div>
-      <div class="warning">Approach to religion must be careful for Lithuanian education context</div>
+
+      <div class="sub-section" id="e5-depth">
+        <div class="sub-title" onclick="toggle('e5-depth')"><span class="sub-arrow">▶</span> In depth · monologue + notes</div>
+        <div class="sub-content">
+          <blockquote>
+            "If you're more politically inclined and more intelligent, you don't end up with a more correct view of the world — you end up with more sophisticated arguments for the view you already had. The differentiator is whether you're curious enough to actually go and look at the other side."
+          </blockquote>
+          <ul class="points">
+            <li>Religion has historically been the hardest constraint on hypothesis space — saying "what if not?" was punishable</li>
+            <li>This is why the Scientific Revolution needed not just curiosity, but a culture where curious hypotheses were safe to voice</li>
+            <li>Approach to religion must be careful for Lithuanian education context — frame as "constraint on hypothesis space," not as critique</li>
+          </ul>
+          <div class="warning">TED talk source to find — confirms intelligence / curiosity distinction</div>
+        </div>
+      </div>
+
+      <div class="sub-section" id="e5-resources">
+        <div class="sub-title" onclick="toggle('e5-resources')"><span class="sub-arrow">▶</span> Resources</div>
+        <div class="sub-content">
+          <div class="sub-empty">TED talk on motivated reasoning / curiosity — to be located</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -427,14 +647,33 @@
     <div class="entry-title" onclick="toggle('e6')">Discrete vs Continuous thinking <span class="toggle-arrow">▶</span></div>
     <div class="entry-content">
       <ul class="points">
-        <li>Continuous thinking: infinite gradation, no smallest part</li>
-        <li>Discrete thinking: everything from smallest indivisible units — "atoms of ideas"</li>
+        <li>Continuous: infinite gradation, no smallest part</li>
+        <li>Discrete: everything composed of smallest indivisible units — "atoms of ideas"</li>
         <li>Find the atoms → build everything else up from them</li>
-        <li>Materials once thought continuous — until atomism. Fields still continuous (Rovelli)</li>
-        <li>Same shift applies to thinking itself: find atomic ideas, compose upward</li>
-        <li>Related: spherical cow approximation (Carroll) — idealizations, generalizations, approximations</li>
-        <li>Related: clockwork universe — state now predicts future. Was "describing → predicting" a real historical mental shift?</li>
+        <li>Matter went from continuous to atomic; fields are still continuous</li>
+        <li>Same shift applies to thinking itself — atomic ideas, compose upward</li>
       </ul>
+
+      <div class="sub-section" id="e6-depth">
+        <div class="sub-title" onclick="toggle('e6-depth')"><span class="sub-arrow">▶</span> In depth · monologue + notes</div>
+        <div class="sub-content">
+          <blockquote>
+            "Once you stop thinking of materials as a continuous fluid and start asking 'what's the smallest piece?', chemistry suddenly makes sense. The same move applies to ideas — find the atomic ones, then everything bigger is a composition."
+          </blockquote>
+          <ul class="points">
+            <li>Related: <strong>spherical cow approximation</strong> (Carroll) — idealizations, generalizations, approximations are themselves a discrete-thinking move</li>
+            <li>Related: <strong>clockwork universe</strong> — state now predicts future state. Was "describing → predicting" a real historical mental shift, or a retrospective story?</li>
+            <li>Rovelli's loop quantum gravity says even space itself may be discrete at the Planck scale — discreteness keeps eating things that looked continuous</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sub-section" id="e6-resources">
+        <div class="sub-title" onclick="toggle('e6-resources')"><span class="sub-arrow">▶</span> Resources</div>
+        <div class="sub-content">
+          <div class="sub-empty">Rovelli on quantum gravity / loop space; Carroll on emergence — to be added</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -447,14 +686,34 @@
   <div class="entry-body">
     <div class="entry-title" onclick="toggle('e7')">Cross-field abstraction — why science needed critical mass <span class="toggle-arrow">▶</span></div>
     <div class="entry-content">
-      <div class="warning">Hypothesis — not confirmed, marked as speculation in session</div>
       <ul class="points">
-        <li>Math is the easiest cross-field connector — the same math is visible across domains</li>
-        <li>Laws of physics and chemistry are everywhere but much harder to notice across fields</li>
-        <li>Hypothesis: expert metalworkers had abstract rules of metalwork but didn't apply them to alchemy or woodworking</li>
-        <li>Generalized truths require comparing discoveries across fields simultaneously</li>
-        <li>Science needed a critical mass: enough people doing enough fields at once to see the connections</li>
+        <li>Math is the easiest cross-field connector — the same equation appears in many domains</li>
+        <li>Physics and chemistry laws are everywhere but harder to notice across fields</li>
+        <li>Generalized truths require comparing discoveries across fields at once</li>
+        <li>Science needed a critical mass — enough people doing enough fields to see connections</li>
       </ul>
+
+      <div class="sub-section" id="e7-depth">
+        <div class="sub-title" onclick="toggle('e7-depth')"><span class="sub-arrow">▶</span> In depth · hypothesis + notes</div>
+        <div class="sub-content">
+          <div class="warning">Hypothesis — not confirmed, marked as speculation in session</div>
+          <blockquote>
+            "A medieval metalworker had detailed rules about how metals behave. But he didn't apply those rules to alchemy, or to woodwork, or to glassmaking. The abstraction step — 'this is the same thing' — needs people who see multiple fields at once."
+          </blockquote>
+          <ul class="points">
+            <li>Single-domain expertise is ancient. Cross-domain abstraction is rare and recent</li>
+            <li>The printing press multiplied the chance that one mind would see two fields' patterns simultaneously</li>
+            <li>Why math is privileged: it strips away domain semantics, leaving only the relational structure</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sub-section" id="e7-resources">
+        <div class="sub-title" onclick="toggle('e7-resources')"><span class="sub-arrow">▶</span> Resources</div>
+        <div class="sub-content">
+          <div class="sub-empty">Historians on craft-knowledge → science transition — to be collected</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -490,6 +749,24 @@
         <span class="artifact exists">● Curriculum map</span>
         <span class="artifact exists">● Brain dump log (this)</span>
       </div>
+
+      <div class="sub-section" id="e8-depth">
+        <div class="sub-title" onclick="toggle('e8-depth')"><span class="sub-arrow">▶</span> In depth · notes</div>
+        <div class="sub-content">
+          <ul class="points">
+            <li>Each artifact is a single-file HTML proof-of-concept, no build tooling — survives standalone</li>
+            <li>The Alchemy game is the highest-fidelity example of "deep forest first" — student plays 17th-century chemistry without modern notation</li>
+            <li>Antibonding → Spinors is the 8-layer ladder showing how far the deep forest can stretch without losing a Grade-5 entry point</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sub-section" id="e8-resources">
+        <div class="sub-title" onclick="toggle('e8-resources')"><span class="sub-arrow">▶</span> Resources</div>
+        <div class="sub-content">
+          <div class="sub-empty">Link each artifact's file path here when the site structure is finalized</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -503,16 +780,40 @@
     <div class="entry-title" onclick="toggle('e9')">Why no earlier Scientific Revolution — Harari + Carroll <span class="toggle-arrow">▶</span></div>
     <div class="entry-content">
       <ul class="points">
-        <li><strong>Harari:</strong> No civilization before ~1500 admitted ignorance. Sacred texts claimed the important things were already known. Scientific Revolution = revolution of ignorance, not knowledge</li>
-        <li><strong>Carroll (math):</strong> You can't do modern physics without tools to write and measure it. Algebra (820 CE), calculus (1665), telescope (1608), pendulum clock (1657)</li>
-        <li><strong>Two phases:</strong> Descriptive (1500–1665) — find patterns without deriving them. Unifying (1665+) — Newton shows Kepler's 3 laws follow from one force equation</li>
-        <li><strong>Key insight:</strong> Math was sufficient by 1300. The bottleneck was cultural — printing press + Reformation + colonial funding converged 1450–1520</li>
-        <li><strong>Carroll (criticality):</strong> Sandpile model — pile self-organizes to critical slope. One grain can trigger nothing or a total avalanche. Science crossed into self-organized criticality ~1665</li>
-        <li><strong>Islamic Golden Age = most poignant near-miss.</strong> Had ~70% of ingredients. Mongol sack of Baghdad (1258) removed grains, pile relaxed back to subcritical</li>
+        <li><strong>Harari:</strong> Scientific Revolution = revolution of ignorance, not knowledge</li>
+        <li><strong>Carroll (math):</strong> Algebra, calculus, telescope, pendulum clock all had to exist</li>
+        <li><strong>Two phases:</strong> Descriptive (1500–1665), Unifying (1665+)</li>
+        <li><strong>Bottleneck was cultural,</strong> not mathematical — math was ready by 1300</li>
+        <li><strong>Carroll (criticality):</strong> sandpile model — science crossed self-organized criticality ~1665</li>
+        <li><strong>Islamic Golden Age</strong> = poignant near-miss, ~70% of ingredients</li>
       </ul>
-      <div class="distilled">
-        <div class="distilled-label">Core thesis</div>
-        <p>The tipping point isn't a year — it's the first moment all ingredients are simultaneously strong. Harari explains what gets grains onto the pile. Carroll explains what happens once criticality is reached.</p>
+
+      <div class="sub-section" id="e9-depth">
+        <div class="sub-title" onclick="toggle('e9-depth')"><span class="sub-arrow">▶</span> In depth · synthesis</div>
+        <div class="sub-content">
+          <ul class="points">
+            <li><strong>Harari:</strong> No civilization before ~1500 admitted ignorance. Sacred texts claimed the important things were already known. The willingness to say "I don't know" was the precondition</li>
+            <li><strong>Carroll (math):</strong> Algebra (820 CE), calculus (1665), telescope (1608), pendulum clock (1657) — modern physics needs both the symbolic language and the measurement tools</li>
+            <li><strong>Two phases:</strong> Descriptive (1500–1665) finds patterns without deriving them. Unifying (1665+) — Newton shows Kepler's 3 laws follow from one force equation</li>
+            <li><strong>Cultural bottleneck:</strong> printing press + Reformation + colonial funding converged 1450–1520. The grains were available earlier; the pile wasn't</li>
+            <li><strong>Sandpile dynamics:</strong> add grains one at a time; nothing happens for a long time, then a single grain triggers a total avalanche. Self-organized criticality is the right metaphor for how science "ignited"</li>
+            <li><strong>Islamic Golden Age:</strong> had ~70% of ingredients. Mongol sack of Baghdad (1258) removed grains, pile relaxed back to subcritical</li>
+          </ul>
+          <div class="distilled">
+            <div class="distilled-label">Core thesis</div>
+            <p>The tipping point isn't a year — it's the first moment all ingredients are simultaneously strong. Harari explains what gets grains onto the pile. Carroll explains what happens once criticality is reached.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-section" id="e9-resources">
+        <div class="sub-title" onclick="toggle('e9-resources')"><span class="sub-arrow">▶</span> Resources</div>
+        <div class="sub-content">
+          <ul class="resources">
+            <li><a href="https://www.ynharari.com/book/sapiens-2/" target="_blank">Harari — Sapiens (ch. 14, "The Discovery of Ignorance")</a><span class="resource-meta">Source for the "revolution of ignorance" framing</span></li>
+            <li><a href="https://www.preposterousuniverse.com/biggestideas/" target="_blank">Sean Carroll — The Biggest Ideas in the Universe (book + lecture series)</a><span class="resource-meta">Source for math-readiness and criticality framing</span></li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -526,15 +827,41 @@
   <div class="entry-body">
     <div class="entry-title" onclick="toggle('e10')">Kerala school — the sharpest argument in the framework <span class="toggle-arrow">▶</span></div>
     <div class="entry-content">
-      <blockquote>
-        Madhava of Sangamagrama developed infinite series for sin, cos, arctan — including what we now call the Taylor series — around 1400 CE, roughly 250 years before Newton and Leibniz.
-      </blockquote>
       <ul class="points">
-        <li>It didn't cascade — no printing press, no empire-funding loop, no critical density of other ingredients</li>
-        <li>Work stayed regional, written in Sanskrit and Malayalam, nearly lost to history</li>
-        <li>Better question than "why did the revolution happen in Europe?" → "why did Kerala NOT trigger one in India?"</li>
-        <li>Proves: math is necessary but not sufficient. The social / criticality arguments do the real work</li>
+        <li>Madhava had Taylor-series-equivalent math by ~1400 CE — 250 years before Newton</li>
+        <li>It didn't cascade — no printing press, no funding loop, no critical density</li>
+        <li>Stayed regional, written in Sanskrit and Malayalam, nearly lost</li>
+        <li>Better question: "why did Kerala NOT trigger a revolution in India?"</li>
+        <li>Proves: math is necessary but not sufficient. The social arguments do the real work</li>
       </ul>
+
+      <div class="sub-section" id="e10-depth">
+        <div class="sub-title" onclick="toggle('e10-depth')"><span class="sub-arrow">▶</span> In depth · the historical fact</div>
+        <div class="sub-content">
+          <blockquote>
+            Madhava of Sangamagrama developed infinite series for sin, cos, arctan — including what we now call the Taylor series — around 1400 CE, roughly 250 years before Newton and Leibniz.
+          </blockquote>
+          <ul class="points">
+            <li>Madhava's school continued for ~200 years after him (Nilakantha, Jyeshthadeva) without triggering broader scientific takeoff</li>
+            <li>The work was rediscovered by Western historians of science only in the 20th century</li>
+            <li>This is the cleanest counterexample to "math is the bottleneck" — the math was there and it sat for 2 centuries</li>
+          </ul>
+          <div class="distilled">
+            <div class="distilled-label">Why it matters for the curriculum</div>
+            <p>Kerala is the killer example for the sandpile / critical-mass argument. Use it whenever a student asks "why didn't this happen earlier?" — because someone <em>did</em> have the math, and nothing happened.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-section" id="e10-resources">
+        <div class="sub-title" onclick="toggle('e10-resources')"><span class="sub-arrow">▶</span> Resources</div>
+        <div class="sub-content">
+          <ul class="resources">
+            <li><a href="https://en.wikipedia.org/wiki/Kerala_school_of_astronomy_and_mathematics" target="_blank">Kerala school of astronomy and mathematics — overview</a><span class="resource-meta">Starting point for source-chasing</span></li>
+            <li><a href="https://en.wikipedia.org/wiki/Madhava_of_Sangamagrama" target="_blank">Madhava of Sangamagrama</a><span class="resource-meta">The mathematician at the centre</span></li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -548,12 +875,33 @@
     <div class="entry-title" onclick="toggle('e11')">Matrix intuition — column view vs row view <span class="toggle-arrow">▶</span></div>
     <div class="entry-content">
       <ul class="points">
-        <li><strong>Row view (textbook):</strong> dot each row with the input vector. Came from solving equations — each row IS one equation. This is where the convention crystallized (Cayley, 1858)</li>
-        <li><strong>Column view (deeper):</strong> each column is a "food profile" or basis direction. Input vector = weights on those columns. Output = weighted sum of columns</li>
-        <li>Both give identical results. Column view is conceptually richer</li>
-        <li>3Blue1Brown: always think of M·x as linear combination of columns — HIGH RELIABILITY</li>
-        <li>The inverse nutrient problem (negative yogurt) shows matrices don't just compute — they reveal when your question is unsolvable in your current space. Same geometry as eigenvectors</li>
+        <li><strong>Row view (textbook):</strong> dot each row with the input vector</li>
+        <li><strong>Column view (deeper):</strong> each column is a basis direction; input = weights</li>
+        <li>Both give identical results — column view is conceptually richer</li>
+        <li>Always think of M·x as a linear combination of columns</li>
+        <li>Matrices reveal when a question is unsolvable in your current space</li>
       </ul>
+
+      <div class="sub-section" id="e11-depth">
+        <div class="sub-title" onclick="toggle('e11-depth')"><span class="sub-arrow">▶</span> In depth · pedagogy</div>
+        <div class="sub-content">
+          <ul class="points">
+            <li><strong>Row view origin:</strong> came from solving systems of equations — each row IS one equation. The convention crystallized with Cayley (1858), which is why textbooks still lead with it</li>
+            <li><strong>Column view origin:</strong> each column is a "food profile" or basis direction. Input vector = how much of each column. Output = the weighted sum</li>
+            <li><strong>The nutrient example:</strong> if columns are foods (their nutrient profiles), then M·x asks "if I eat these quantities, what nutrients do I get?" — the input lives in food-space, the output in nutrient-space</li>
+            <li><strong>The negative-yogurt trick:</strong> the inverse problem ("I want exactly these nutrients, what do I eat?") sometimes requires negative quantities of yogurt. Matrices reveal that your target is outside the span — same geometry that surfaces in eigenvectors and null spaces</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sub-section" id="e11-resources">
+        <div class="sub-title" onclick="toggle('e11-resources')"><span class="sub-arrow">▶</span> Resources</div>
+        <div class="sub-content">
+          <ul class="resources">
+            <li><a href="https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab" target="_blank">3Blue1Brown — Essence of Linear Algebra</a><span class="resource-meta">Canonical visual treatment of the column view</span></li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -572,18 +920,38 @@
     <div class="entry-tag">Core pedagogy · Verbatim</div>
   </div>
   <div class="entry-body">
-    <div class="entry-title" onclick="toggle('e12')">The Deep Forest — verbatim monologue <span class="toggle-arrow">▶</span></div>
+    <div class="entry-title" onclick="toggle('e12')">The Deep Forest — pedagogy core <span class="toggle-arrow">▶</span></div>
     <div class="entry-content">
-      <blockquote>
-        "You go into the deep forest, and you see amazing things, and you try to understand very complicated things. And you can get the idea. You don't need specifics. You can get the idea. You can answer some big questions, and you're trying to find kind of safe spots in the deep, dark forest. And with the deep forest, you don't have to dumb it down. You can show people that there's quantum mechanics and special relativity and that it changes things, but you don't have to explain it all — which is the problem with modern school curriculum is that they're so oriented towards exams that they're afraid to even talk about anything unless you can completely describe it and explain it. Which leaves the student with a lot of information that is not explained and contradictive. And so it leaves only one option, which is to memorize everything, which is not very interesting, which is why students don't want to learn."
-      </blockquote>
       <ul class="points">
-        <li>Even Grade 5 students should encounter quark stars, Planck stars, wave-particle duality</li>
-        <li>The inspiring destination is the motivation to learn the prerequisites</li>
-        <li>Exams are fine — they test specific things, as they should. But they are the wrong starting point</li>
-        <li>Language analogy (Krashen): grammar rules are learned after thousands of hours of exposure, not before. Fluency is automatic and intuitive — not rule-retrieved</li>
-        <li>Physics analogy: learn what matter is and how forces work first. Then ask the specific mathematical question. Context makes the precision memorable</li>
+        <li>Go into the deep forest first — amazing things, complicated ideas, big questions</li>
+        <li>You don't have to dumb it down; you have to not explain everything</li>
+        <li>Even Grade 5 can encounter quark stars, wave-particle duality, special relativity</li>
+        <li>The inspiring destination motivates the prerequisites</li>
+        <li>Exams are fine — they test specifics. They're the wrong starting point</li>
+        <li>Krashen analogy: fluency precedes grammar; intuition precedes rules</li>
       </ul>
+
+      <div class="sub-section" id="e12-depth">
+        <div class="sub-title" onclick="toggle('e12-depth')"><span class="sub-arrow">▶</span> In depth · verbatim monologue</div>
+        <div class="sub-content">
+          <blockquote>
+            "You go into the deep forest, and you see amazing things, and you try to understand very complicated things. And you can get the idea. You don't need specifics. You can get the idea. You can answer some big questions, and you're trying to find kind of safe spots in the deep, dark forest. And with the deep forest, you don't have to dumb it down. You can show people that there's quantum mechanics and special relativity and that it changes things, but you don't have to explain it all — which is the problem with modern school curriculum is that they're so oriented towards exams that they're afraid to even talk about anything unless you can completely describe it and explain it. Which leaves the student with a lot of information that is not explained and contradictive. And so it leaves only one option, which is to memorize everything, which is not very interesting, which is why students don't want to learn."
+          </blockquote>
+          <div class="distilled">
+            <div class="distilled-label">The pedagogy in one line</div>
+            <p>Intuition first, precision later. The deep forest gives you something to be precise <em>about</em>.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-section" id="e12-resources">
+        <div class="sub-title" onclick="toggle('e12-resources')"><span class="sub-arrow">▶</span> Resources</div>
+        <div class="sub-content">
+          <ul class="resources">
+            <li><a href="https://en.wikipedia.org/wiki/Input_hypothesis" target="_blank">Krashen — Input Hypothesis (overview)</a><span class="resource-meta">Foundational source for "exposure precedes rules"</span></li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -594,22 +962,43 @@
     <div class="entry-tag">Math pedagogy · Verbatim</div>
   </div>
   <div class="entry-body">
-    <div class="entry-title" onclick="toggle('e13')">Math as intuition first — verbatim monologue <span class="toggle-arrow">▶</span></div>
+    <div class="entry-title" onclick="toggle('e13')">Math as intuition first <span class="toggle-arrow">▶</span></div>
     <div class="entry-content">
-      <blockquote>
-        "Multiplication is not natural on a line. If you take two meters times two meters, you get four meters squared — that makes sense, you stretch it twice. But if you measure the same thing in millimeters: two thousand times two thousand gives four million. On a line that number becomes enormous. As a square it looks the same — a natural two-by-two. The smaller your units, the more infinitely long the number becomes on the line. So multiplication is only symmetrical in planes, not on lines."
-      </blockquote>
-      <blockquote>
-        "When you try to find the solutions to a quadratic equation, they give you the determinant. They don't explain where it comes from. So I've had a lot of fun trying to reinvent the determinant. What I discovered was completing the square — which connects Pascal's triangle, the two-added-constant-squared, and the derivative of the quadratic function. You connect all of those things and you see why they're useful to one another."
-      </blockquote>
       <ul class="points">
-        <li>Multiplication is naturally 2D — forcing it onto a line breaks intuition and creates unit-dependent nonsense</li>
+        <li>Multiplication is naturally 2D — forcing it onto a line breaks intuition</li>
         <li>Quadratic formula should be derived by completing the square, not memorized</li>
-        <li>Pascal's triangle appears in binomial expansion — never mentioned in school, but it unifies many things</li>
-        <li>Derivative of x² as area growing on two sides simultaneously — 2x falls out geometrically, no rule needed</li>
-        <li>What is raising to a power? Can be decomposed into rotations and stretching</li>
-        <li>Zero and infinity: circular vs linear geometry show their relationship differently</li>
+        <li>Pascal's triangle unifies binomial expansion, completing the square, derivatives</li>
+        <li>Derivative of x² as area growing on two sides — 2x falls out geometrically</li>
+        <li>Raising to a power decomposes into rotation and stretching</li>
+        <li>Zero and infinity: circular vs linear geometry reveal different relationships</li>
       </ul>
+
+      <div class="sub-section" id="e13-depth">
+        <div class="sub-title" onclick="toggle('e13-depth')"><span class="sub-arrow">▶</span> In depth · verbatim monologue</div>
+        <div class="sub-content">
+          <blockquote>
+            "Multiplication is not natural on a line. If you take two meters times two meters, you get four meters squared — that makes sense, you stretch it twice. But if you measure the same thing in millimeters: two thousand times two thousand gives four million. On a line that number becomes enormous. As a square it looks the same — a natural two-by-two. The smaller your units, the more infinitely long the number becomes on the line. So multiplication is only symmetrical in planes, not on lines."
+          </blockquote>
+          <blockquote>
+            "When you try to find the solutions to a quadratic equation, they give you the determinant. They don't explain where it comes from. So I've had a lot of fun trying to reinvent the determinant. What I discovered was completing the square — which connects Pascal's triangle, the two-added-constant-squared, and the derivative of the quadratic function. You connect all of those things and you see why they're useful to one another."
+          </blockquote>
+          <div class="distilled">
+            <div class="distilled-label">Pedagogical principle</div>
+            <p>Derive, don't memorize. Every "magic formula" in school math has a geometric or combinatorial picture underneath. The picture is the curriculum; the formula is the souvenir.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-section" id="e13-resources">
+        <div class="sub-title" onclick="toggle('e13-resources')"><span class="sub-arrow">▶</span> Resources</div>
+        <div class="sub-content">
+          <ul class="resources">
+            <li><a href="https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab" target="_blank">3Blue1Brown — Essence of Linear Algebra</a><span class="resource-meta">Geometric foundations of vectors and transformations</span></li>
+            <li><a href="https://www.youtube.com/playlist?list=PLZHQObOWTQDMsr9K-rj53DwVRMYO3t5Yr" target="_blank">3Blue1Brown — Essence of Calculus</a><span class="resource-meta">Derivative-of-x² as geometric area shown directly</span></li>
+            <li><a href="https://www.youtube.com/@welchlabsvideo" target="_blank">Welch Labs — Imaginary Numbers Are Real</a><span class="resource-meta">For "raising to a power = rotation + stretching"</span></li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -623,14 +1012,37 @@
     <div class="entry-title" onclick="toggle('e14')">Memorization — its role and its limits <span class="toggle-arrow">▶</span></div>
     <div class="entry-content">
       <ul class="points">
-        <li>Memorization works — Anki, spaced repetition, used heavily by doctors and Japanese learners</li>
-        <li>Long-term retention comes from natural re-exposure in the field, not artificial drilling</li>
-        <li>Memorization creates <strong>hooks</strong> — initial anchors that let you recognize things when you encounter them</li>
-        <li>Without context, rote memorization creates hooks that attach to nothing and decay fast</li>
-        <li>With context (the deep forest), the same hook attaches to a rich web — and becomes permanent</li>
-        <li>Krashen's "noticing": you can't hear Japanese pitch accent until you have a hook for it. Once you do, you notice it everywhere. If it has no use, it dies. If it has use, natural exposure sustains it</li>
-        <li>The long-term solution is richer contextual analysis — natural hooks — not better memorization tools</li>
+        <li>Memorization works short-term — Anki, spaced repetition are real tools</li>
+        <li>Long-term retention comes from natural re-exposure, not artificial drilling</li>
+        <li>Memorization creates <strong>hooks</strong> — anchors for future recognition</li>
+        <li>Without context, hooks attach to nothing and decay fast</li>
+        <li>With deep-forest context, the hook attaches to a rich web and persists</li>
+        <li>The fix is richer context, not better memorization tools</li>
       </ul>
+
+      <div class="sub-section" id="e14-depth">
+        <div class="sub-title" onclick="toggle('e14-depth')"><span class="sub-arrow">▶</span> In depth · the Krashen analogy</div>
+        <div class="sub-content">
+          <blockquote>
+            "Krashen's 'noticing' point: you can't hear Japanese pitch accent until you have a hook for it. Once you have the hook, you start hearing it everywhere. If pitch accent has no use in your life, that hook dies. If it has use, natural exposure sustains it forever — you don't need to drill."
+          </blockquote>
+          <ul class="points">
+            <li>Doctors and Japanese learners use Anki heavily — proof memorization scales when you have to load a large discrete corpus</li>
+            <li>But the long-term winners aren't the ones with the best Anki decks — they're the ones who keep encountering the material in real contexts</li>
+            <li>Implication for curriculum: don't try to outcompete Anki on flashcards. Compete on context-richness</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sub-section" id="e14-resources">
+        <div class="sub-title" onclick="toggle('e14-resources')"><span class="sub-arrow">▶</span> Resources</div>
+        <div class="sub-content">
+          <ul class="resources">
+            <li><a href="https://apps.ankiweb.net/" target="_blank">Anki — spaced-repetition flashcards</a><span class="resource-meta">The reference tool for short-term retention</span></li>
+            <li><a href="https://en.wikipedia.org/wiki/Input_hypothesis" target="_blank">Krashen — Input Hypothesis (overview)</a><span class="resource-meta">Source for the "noticing" mechanism</span></li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -644,12 +1056,33 @@
     <div class="entry-title" onclick="toggle('e15')">English as the language of science education <span class="toggle-arrow">▶</span></div>
     <div class="entry-content">
       <ul class="points">
-        <li>Curriculum designed in English — the best sources (Feynman, 3Blue1Brown, Veritasium, Carroll, Behiel) are in English</li>
-        <li>Lack of English deeply limits access to the best knowledge in the world</li>
-        <li>Until a more popular language emerges, English wins by default</li>
-        <li>Russian, Chinese, Spanish, French, German are alternatives — none match English coverage of science</li>
-        <li>Lithuanian frameworks won't accept this — curriculum is designed under the assumption it's allowed; Lithuanians can adapt</li>
+        <li>Curriculum is designed in English</li>
+        <li>The best sources are English-native; translation is a handicap</li>
+        <li>Lack of English limits access to the best knowledge in the world</li>
+        <li>No competing language matches English coverage of science</li>
+        <li>Lithuanian frameworks will need adaptation — that's their problem to solve</li>
       </ul>
+
+      <div class="sub-section" id="e15-depth">
+        <div class="sub-title" onclick="toggle('e15-depth')"><span class="sub-arrow">▶</span> In depth · reasoning</div>
+        <div class="sub-content">
+          <blockquote>
+            "The best educators on the planet right now — Feynman lectures, 3Blue1Brown, Veritasium, Carroll, Behiel — are in English. If you build the curriculum in Lithuanian first, you're not delivering science to Lithuanian kids, you're delivering a downgraded copy of science."
+          </blockquote>
+          <ul class="points">
+            <li>Russian, Chinese, Spanish, French, German are real alternatives — none currently match English coverage of science</li>
+            <li>Until something replaces English as the lingua franca of science, it wins by default</li>
+            <li>The position: design under the assumption English is allowed. Adaptation to Lithuanian comes second, not first</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sub-section" id="e15-resources">
+        <div class="sub-title" onclick="toggle('e15-resources')"><span class="sub-arrow">▶</span> Resources</div>
+        <div class="sub-content">
+          <div class="sub-empty">Citations on English's role as the language of science publication — to be added</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -670,32 +1103,54 @@
   <div class="entry-body">
     <div class="entry-title" onclick="toggle('e16')">Five discovery chains — the historical spine <span class="toggle-arrow">▶</span></div>
     <div class="entry-content">
-      <div class="warning">Belongs in the curriculum map — move when finalized. Math thread is not yet threaded through this chain.</div>
       <div class="chain">
         <div class="chain-item">
           <div class="chain-num">1</div>
-          <div class="chain-text"><strong>Gases → mass conservation → atomic theory</strong> — Lavoisier, Dalton. Phlogiston collapses when you weigh the products. Matter doesn't appear or vanish.</div>
+          <div class="chain-text"><strong>Gases → mass conservation → atomic theory</strong></div>
         </div>
         <div class="chain-item">
           <div class="chain-num">2</div>
-          <div class="chain-text"><strong>Telescope + conservation of momentum → Newton's laws</strong> — Kepler's data + Galileo's experiments + Newton's calculus. Descriptive laws become derivable consequences.</div>
+          <div class="chain-text"><strong>Telescope + momentum → Newton's laws</strong></div>
         </div>
         <div class="chain-item">
           <div class="chain-num">3</div>
-          <div class="chain-text"><strong>Light + electrical tools → EM unification</strong> — Faraday, Maxwell. Four equations about electricity and magnetism. Out falls the speed of light. Light was not mentioned.</div>
+          <div class="chain-text"><strong>Light + electrical tools → EM unification</strong></div>
         </div>
         <div class="chain-item">
           <div class="chain-num">4</div>
-          <div class="chain-text"><strong>Tools + chemistry → particles, atom model</strong> — Cathode rays, Rutherford scattering, Bohr model. The atom has internal structure.</div>
+          <div class="chain-text"><strong>Tools + chemistry → particles, atom model</strong></div>
         </div>
         <div class="chain-item">
           <div class="chain-num">5</div>
-          <div class="chain-text"><strong>Electron + light → relativity + quantum mechanics</strong> — Photoelectric effect, blackbody crisis, de Broglie, Schrödinger. Classical physics breaks completely.</div>
+          <div class="chain-text"><strong>Electron + light → relativity + quantum mechanics</strong></div>
         </div>
       </div>
-      <div class="distilled">
-        <div class="distilled-label">Missing thread</div>
-        <p>Math is not yet mapped onto this chain. Each step required new math to be invented or adopted. That dependency needs to be made explicit — algebra, logarithms, calculus, complex numbers, linear algebra each appear at specific points.</p>
+
+      <div class="sub-section" id="e16-depth">
+        <div class="sub-title" onclick="toggle('e16-depth')"><span class="sub-arrow">▶</span> In depth · each chain unpacked</div>
+        <div class="sub-content">
+          <div class="warning">Belongs in the curriculum map — move when finalized. Math thread is not yet threaded through this chain.</div>
+          <ul class="points">
+            <li><strong>1 · Gases → atomic theory</strong> (Lavoisier, Dalton): phlogiston collapses when you weigh the products. Matter doesn't appear or vanish</li>
+            <li><strong>2 · Newton's laws</strong> (Kepler, Galileo, Newton): Kepler's descriptive laws + Galileo's experiments + Newton's calculus — three separate laws become one equation</li>
+            <li><strong>3 · EM unification</strong> (Faraday, Maxwell): four equations about electricity and magnetism. Out falls the speed of light. Light was not mentioned in the inputs</li>
+            <li><strong>4 · Atom model</strong> (cathode rays, Rutherford, Bohr): the atom has internal structure</li>
+            <li><strong>5 · Quantum + relativity</strong> (photoelectric effect, blackbody, de Broglie, Schrödinger): classical physics breaks completely</li>
+          </ul>
+          <div class="distilled">
+            <div class="distilled-label">Missing thread</div>
+            <p>Math is not yet mapped onto this chain. Each step required new math to be invented or adopted. That dependency needs to be made explicit — algebra, logarithms, calculus, complex numbers, linear algebra each appear at specific points.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-section" id="e16-resources">
+        <div class="sub-title" onclick="toggle('e16-resources')"><span class="sub-arrow">▶</span> Resources</div>
+        <div class="sub-content">
+          <ul class="resources">
+            <li><a href="https://www.preposterousuniverse.com/biggestideas/" target="_blank">Sean Carroll — The Biggest Ideas in the Universe</a><span class="resource-meta">Carroll's series maps closely onto chains 2–5</span></li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -712,13 +1167,31 @@
       <ul class="points">
         <li>Find the TED talk on curiosity vs intelligence</li>
         <li>Thread math through the 5-chain historical spine</li>
-        <li>Is "describing vs predicting" a real historical mental shift? Needs research</li>
+        <li>Is "describing vs predicting" a real historical mental shift?</li>
         <li>How does empiricism fit into the three-pillar structure?</li>
-        <li>Map dependency chain: which philosophical ideas had to come before others?</li>
-        <li>Lithuanian national curriculum standards — actual topic lists for Grade 8 and Grade 12</li>
+        <li>Lithuanian national curriculum standards — Grade 8 and Grade 12 topic lists</li>
         <li>Timeline Part II: 1000 → 1600 (Ibn al-Haytham → Copernicus → Galileo)</li>
         <li>Build student-facing website (document #3)</li>
       </ul>
+
+      <div class="sub-section" id="e17-depth">
+        <div class="sub-title" onclick="toggle('e17-depth')"><span class="sub-arrow">▶</span> In depth · notes</div>
+        <div class="sub-content">
+          <ul class="points">
+            <li><strong>Math through the chain:</strong> each chain step needs a math prerequisite labelled. Algebra for chain 1, calculus for chain 2, vector calculus / PDEs for chain 3, probability + linear algebra for chains 4–5</li>
+            <li><strong>Describing → predicting:</strong> Kepler describes orbits, Newton predicts them. Was this a real cognitive shift for working scientists at the time, or a retrospective narrative? Needs Kuhn or Hacking</li>
+            <li><strong>Empiricism in the three-pillar structure:</strong> probably belongs inside Precision (you only know what you measure), but could also be a Mental Resource (the decision to trust observation over authority)</li>
+            <li><strong>Dependency chain of ideas:</strong> mass conservation must come before atomic theory; observation must come before hypothesis; ignorance must be admissible before research</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sub-section" id="e17-resources">
+        <div class="sub-title" onclick="toggle('e17-resources')"><span class="sub-arrow">▶</span> Resources</div>
+        <div class="sub-content">
+          <div class="sub-empty">Resources will appear here as each open thread gets closed</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
