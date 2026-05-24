@@ -474,9 +474,89 @@
 
   /* ── EXAM LANDSCAPE TABLE ── */
   .exam-table-wrap {
-    overflow-x: auto;
     margin: 18px 0 12px;
   }
+
+  /* Tabs (Math / Physics / Chemistry) */
+  .exam-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 0;
+    flex-wrap: wrap;
+  }
+  .exam-tab {
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: #888;
+    background: none;
+    border: none;
+    padding: 10px 18px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .exam-tab:hover { color: #333; }
+  .exam-tab.active {
+    color: #111;
+    border-bottom-color: #111;
+  }
+
+  /* Lecture-coverage indicators */
+  .exam-tab .tab-lec-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #16a34a;
+    margin-left: 6px;
+    vertical-align: 1px;
+  }
+
+  .row-lec-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #16a34a;
+    margin-right: 8px;
+    vertical-align: 1px;
+    flex-shrink: 0;
+  }
+
+  .exam-table tr.point-row.has-lectures td.point-text {
+    color: #111;
+  }
+  .exam-table tr.point-row:not(.has-lectures) td.point-text {
+    color: #888;
+  }
+  .exam-tab-panel { display: none; }
+  .exam-tab-panel.active {
+    display: block;
+    overflow-x: auto;
+  }
+  .exam-tab-empty {
+    font-size: 13px;
+    color: #999;
+    font-style: italic;
+    padding: 32px 16px;
+    text-align: center;
+    border: 1px dashed #eee;
+    border-radius: 4px;
+    margin-top: 16px;
+  }
+  /* Hint message shown when no tab is selected; auto-hides once one is. */
+  .exam-tabs-hint {
+    font-size: 13px;
+    color: #999;
+    font-style: italic;
+    padding: 24px 4px;
+    text-align: center;
+  }
+  .exam-table-wrap:has(.exam-tab.active) .exam-tabs-hint { display: none; }
 
   .exam-table {
     width: 100%;
@@ -660,75 +740,148 @@
   .lec-pill.bu { border-left: 3px solid #2563eb; }
   .lec-pill.td { border-left: 3px solid #7c3aed; }
 
-  /* ── CURRICULUM TABLE (bottom-up / top-down lecture sequences) ── */
+  /* ── CURRICULUM TABLE (bottom-up / top-down lesson cards) ── */
+  /* Style note: this is intentionally NOT a dense data grid like the     */
+  /* exam table above. Lessons render as soft cards stacked vertically.   */
+  /* Bottom-up cards get a blue accent, top-down get a purple accent.     */
+
   .curriculum-table-wrap {
     margin: 16px 0 24px;
+    background: #fbfbfc;
+    border: 1px solid #eef0f3;
+    border-radius: 8px;
+    padding: 8px;
   }
   .curriculum-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 13px;
   }
-  .curriculum-table th {
-    font-size: 9px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #aaa;
-    font-weight: 600;
-    text-align: left;
-    padding: 8px 10px 10px;
-    border-bottom: 1px solid #ddd;
-    vertical-align: bottom;
-  }
-  .curriculum-table th.col-num { width: 38px; text-align: right; padding-right: 14px; }
-  .curriculum-table th.col-lecture { width: auto; }
+  /* Hide the table header — the row layout speaks for itself */
+  .curriculum-table thead { display: none; }
 
   .curriculum-table td {
-    padding: 12px 10px;
-    border-bottom: 1px solid #f3f3f3;
-    vertical-align: top;
+    padding: 14px 16px;
+    vertical-align: middle;
+    background: #fff;
+  }
+  /* The "gap" between consecutive cards is faked with a thick top border
+     matching the wrapper's background — gives visual breathing room while
+     keeping lec-row + lec-detail visually attached. */
+  .curriculum-table tr.lec-row > td {
+    border-top: 6px solid #fbfbfc;
+  }
+  .curriculum-table tbody tr:first-child > td {
+    border-top: none;
   }
   .curriculum-table td.col-num {
+    width: 56px;
     text-align: right;
     padding-right: 14px;
     color: #ccc;
     font-weight: 600;
-    font-size: 18px;
+    font-size: 22px;
     letter-spacing: -0.02em;
-    line-height: 1.3;
+    line-height: 1;
+    border-left: 3px solid transparent;
   }
 
-  /* Compact lecture row — clickable */
-  .curriculum-table tr.lec-row { cursor: pointer; transition: background 0.12s; }
-  .curriculum-table tr.lec-row:hover { background: #fafafa; }
+  /* Compact lesson card — clickable */
+  .curriculum-table tr.lec-row {
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .curriculum-table tr.lec-row:hover td {
+    box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+  }
+  .curriculum-table tr.lec-row:hover td.col-num {
+    border-left-width: 4px;
+  }
+
+  /* Bottom-up vs top-down accent */
+  .curriculum-table tr.lec-row.bu td.col-num { border-left-color: #2563eb; }
+  .curriculum-table tr.lec-row.td td.col-num { border-left-color: #7c3aed; }
+
+  /* Expand/collapse chevron on the right */
   .curriculum-table tr.lec-row td.col-lecture::after {
-    content: ' +';
+    content: ' ▾';
     color: #ccc;
     font-size: 11px;
-    margin-left: 6px;
+    margin-left: 8px;
+    transition: transform 0.18s, color 0.15s;
+    display: inline-block;
   }
-  .curriculum-table tr.lec-row.open td.col-lecture::after { content: ' −'; color: #555; }
+  .curriculum-table tr.lec-row.open td.col-lecture::after {
+    color: #555;
+    transform: rotate(180deg);
+  }
 
-  /* Page-linked lectures: arrow indicator instead of plus */
-  .curriculum-table tr.lec-row.has-page td.col-lecture::after {
+  /* Page-linked lectures: small ↗ badge next to the title */
+  .curriculum-table tr.lec-row.has-page .lec-id::after {
     content: ' ↗';
     color: #2563eb;
-    font-size: 12px;
+    font-family: inherit;
+    font-size: 11px;
+    margin-left: 4px;
   }
-  .curriculum-table tr.lec-row.has-page:hover td.col-lecture::after { color: #1d4ed8; }
 
-  /* Expanded detail row */
+  /* Open lesson is the row whose detail panel is shown */
+  .curriculum-table tr.lec-row.open td {
+    background: #f6f7f9;
+  }
+  .curriculum-table tr.lec-row.open + tr.lec-detail.open > td {
+    background: #f6f7f9;
+  }
+
+  /* Flash a lecture row when it's the link target (from exam-table pills) */
+  .curriculum-table tr.lec-row:target td {
+    animation: lec-target-flash 1.6s ease-out;
+  }
+  @keyframes lec-target-flash {
+    0%   { background: #fff7d6; }
+    100% { background: #fff; }
+  }
+
+  /* Expanded detail row — visually attached to its lesson row */
   .curriculum-table tr.lec-detail { display: none; }
   .curriculum-table tr.lec-detail.open { display: table-row; }
   .curriculum-table tr.lec-detail > td {
-    background: #fafafa;
-    padding: 16px 14px 20px 52px;
-    border-bottom: 1px solid #eee;
+    background: #f6f7f9;
+    padding: 4px 18px 20px 18px;
+    border-radius: 0 0 5px 5px;
+    margin-top: -6px;
   }
   .lec-detail-inner {
     display: flex;
     flex-direction: column;
     gap: 14px;
+  }
+
+  /* Primary "Open lesson page →" link, sits at top of detail panel */
+  .open-page-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: #2563eb;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    align-self: flex-start;
+    transition: background 0.15s, transform 0.15s;
+  }
+  .open-page-link:hover {
+    background: #1d4ed8;
+  }
+  .open-page-link:hover .open-page-arrow {
+    transform: translateX(3px);
+  }
+  .open-page-arrow {
+    transition: transform 0.2s;
+    display: inline-block;
   }
   .lec-detail-section {
     display: flex;
@@ -771,23 +924,94 @@
     flex-wrap: wrap;
     gap: 5px;
   }
+  /* Topic pill = degree dot + readable topic name + small monospace id tag.
+     Each pill is a link that jumps to that topic's row in the exam table. */
   .topic-pill {
-    font-size: 10px;
-    padding: 2px 7px;
-    border-radius: 3px;
+    font-size: 12px;
+    padding: 5px 10px 5px 6px;
+    border-radius: 4px;
     background: #fff;
-    color: #555;
+    color: #333;
     border: 1px solid #ececec;
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    line-height: 1.4;
-    font-family: 'SF Mono', Consolas, monospace;
+    gap: 8px;
+    line-height: 1.35;
+    transition: border-color 0.15s, transform 0.1s;
+    text-decoration: none;
+    max-width: 100%;
   }
-  .topic-pill .deg { font-size: 11px; line-height: 1; }
+  .topic-pill:hover {
+    border-color: #555;
+    transform: translateY(-1px);
+  }
+  /* 3-tier degree colouring: pill border + bg tinted by degree */
+  .topic-pill.deg-full    { border-color: #bbf7d0; background: #f0fdf4; }
+  .topic-pill.deg-partial { border-color: #fde68a; background: #fffbeb; }
+  .topic-pill.deg-mention { border-color: #ececec; background: #fafafa; color: #888; }
+  .topic-pill .deg {
+    font-size: 13px;
+    line-height: 1;
+    width: 14px;
+    text-align: center;
+    flex-shrink: 0;
+  }
   .topic-pill .deg.full     { color: #16a34a; }
   .topic-pill .deg.partial  { color: #d97706; }
   .topic-pill .deg.mention  { color: #999; }
+  .topic-pill .topic-name {
+    font-weight: 500;
+  }
+  .topic-pill .topic-id-tag {
+    font-family: 'SF Mono', Consolas, monospace;
+    font-size: 10px;
+    color: #999;
+    background: rgba(0, 0, 0, 0.04);
+    padding: 1px 5px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .topic-pill.deg-mention .topic-id-tag { color: #aaa; }
+
+  /* Same id chip, but inline in the exam-table point rows */
+  .exam-table .row-id-tag {
+    margin-left: 6px;
+    vertical-align: 1px;
+    white-space: nowrap;
+  }
+  .exam-table tr.point-row:not(.has-lectures) .row-id-tag {
+    background: rgba(0,0,0,0.02);
+    color: #bbb;
+  }
+
+  /* Inline legend showing what each degree means */
+  .deg-legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+    font-size: 10px;
+    color: #888;
+    padding-top: 8px;
+    margin-top: 4px;
+    border-top: 1px dashed #e8e8e8;
+    width: 100%;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .deg-legend .deg {
+    font-size: 12px;
+    margin-right: 3px;
+  }
+
+  /* Flash an exam-table topic row when jumped to from a topic pill */
+  .exam-table tr.point-row.topic-flash > td {
+    animation: topic-flash-anim 1.6s ease-out;
+  }
+  @keyframes topic-flash-anim {
+    0%   { background: #fff3cd; }
+    100% { background: transparent; }
+  }
 
   .source-pill {
     font-size: 11px;
@@ -987,107 +1211,24 @@
 
 
 
-<!-- Prologue (chain 0) moved to before-science.html.            -->
-<!-- The featured video moved with it.                            -->
-<!-- Link is reached via lectureData8to10.bottomUp[0].page.        -->
-
-
-<!-- ══════════════════════════════════════════ -->
-<!-- CHAIN 1 -->
-<!-- ══════════════════════════════════════════ -->
-
-<div class="chain" id="chain-1">
-  <div class="chain-header">
-    <div class="chain-num">1</div>
-    <div class="chain-meta">
-      <div class="chain-label">Chain 1 · Grades 6–7</div>
-      <div class="chain-title">
-        Gases <span class="chain-arrow">→</span> mass conservation <span class="chain-arrow">→</span> atomic theory
-      </div>
-    </div>
-  </div>
-  <hr class="chain-rule">
-
-  <div class="unit">
-    <div class="grade-note">Grades 6–7</div>
-    <div class="unit-question">When wood burns, most of its mass vanishes into air. Phlogiston theory said it was releasing "fire essence." Lavoisier weighed the products — and phlogiston collapsed. Where did the mass actually go?</div>
-    <div class="subjects">
-      <div class="subject-row">
-        <span class="subject-tag tag-chem">Chemistry</span>
-        <span class="subject-content">What gases are and how they were discovered · Combustion: what is actually happening · Mass conservation: Lavoisier's experiment · From conservation to atomic theory: Dalton · Atoms as the smallest unit — the periodic table as a consequence</span>
-      </div>
-      <div class="subject-row">
-        <span class="subject-tag tag-hist">History of Science</span>
-        <span class="subject-content">Phlogiston theory: wrong but internally logical · Why it took so long to weigh gases · Lavoisier and precision measurement · Dalton's atomic theory as the first modern chemistry</span>
-      </div>
-      <div class="subject-row">
-        <span class="subject-tag tag-phys">Physics</span>
-        <span class="subject-content">States of matter: solid, liquid, gas · Pressure and temperature · <span class="opt">Ideal gas law — qualitative</span></span>
-      </div>
-    </div>
-    <div class="artifacts">
-      <span class="artifact exists">● Alchemy game</span>
-      <span class="artifact">○ Combustion mass visualizer</span>
-    </div>
-  </div>
-</div>
-
-
-<!-- ══════════════════════════════════════════ -->
-<!-- CHAIN 2 -->
-<!-- ══════════════════════════════════════════ -->
-
-<div class="chain" id="chain-2">
-  <div class="chain-header">
-    <div class="chain-num">2</div>
-    <div class="chain-meta">
-      <div class="chain-label">Chain 2 · Grades 7–8</div>
-      <div class="chain-title">
-        Telescope + momentum <span class="chain-arrow">→</span> Newton's laws
-      </div>
-    </div>
-  </div>
-  <hr class="chain-rule">
-
-  <div class="unit">
-    <div class="grade-note">Grades 7–8</div>
-    <div class="unit-question">Kepler had 20 years of raw data on Mars and no calculus. He found the shape of its orbit by brute-force geometry. Then Newton showed all three of Kepler's separate laws are consequences of a single equation. How?</div>
-    <div class="subjects">
-      <div class="subject-row">
-        <span class="subject-tag tag-phys">Physics</span>
-        <span class="subject-content">Force, mass, acceleration — Newton's three laws · Conservation of momentum · Gravity as universal and inverse-square · Orbits as falling in a curve · <span class="opt">Galileo's inclined plane — experimental method</span></span>
-      </div>
-      <div class="subject-row">
-        <span class="subject-tag tag-hist">History of Science</span>
-        <span class="subject-content">Telescope as the enabling tool · Tycho Brahe's data, Kepler's geometry · Galileo vs Aristotle: going to check beats thinking alone · Why logarithms mattered to Kepler · Newton unifies terrestrial and celestial mechanics</span>
-      </div>
-      <div class="subject-row">
-        <span class="subject-tag tag-math">Math</span>
-        <span class="subject-content">Multiplication as area, not a line · Ratios and proportionality · What is a function · <span class="opt">Calculus preview: rate of change as geometry</span></span>
-      </div>
-    </div>
-    <div class="artifacts">
-      <span class="artifact">○ Kepler orbit simulator</span>
-      <span class="artifact">○ Galileo inclined plane</span>
-    </div>
-  </div>
-</div>
+<!-- Chains 0, 1, 2 (Prologue · Gases→atoms · Newton's laws) moved -->
+<!-- to dedicated pages: before-science.html, gases-to-atoms.html, -->
+<!-- newton-laws.html — reached via lectureData8to10.bottomUp page  -->
+<!-- links.                                                        -->
 
 
 <!-- MILESTONE 1 -->
-<div class="milestone open" id="milestone-grade-8">
+<div class="milestone" id="milestone-grade-8">
 
   <div class="milestone-header" onclick="this.parentElement.classList.toggle('open')">
     <div>
-      <div class="milestone-label">Milestones · Grades 8–10</div>
-      <div class="milestone-title">National checkpoint, gymnasium entries, PUPP</div>
+      <div class="milestone-label">Official · Grades 8–12</div>
+      <div class="milestone-title">All exams cross-reference</div>
     </div>
     <span class="milestone-arrow">▶</span>
   </div>
 
   <div class="milestone-body">
-
-  <p class="milestone-desc">Grade 8→9 is the first hard checkpoint. Top gymnasia test Math + Lithuanian as core; Vilnius Lyceum is the only one to test Physics. NMPP (Grade 8) is diagnostic only — no stakes. PUPP (Grade 10) is mandatory and gates upper secondary.</p>
 
   <div class="exam-table-wrap" id="exam-table-8-10-mount">
     <!-- Rendered from examData8to10 at bottom of file -->
@@ -1099,28 +1240,25 @@
     <span><b style="color:#bbb;">?</b> unpublished</span>
     <span><b style="color:#bbb;">—</b> not tested</span>
   </div>
-  <div class="milestone-grid" id="scope-view-8-10-mount">
-    <!-- Rendered from examData8to10 at bottom of file -->
-  </div>
 
   </div><!-- /.milestone-body -->
 </div>
 
 
 <!-- ══════════════════════════════════════════ -->
-<!-- BOTTOM-UP CURRICULUM (Grades 8–10)         -->
+<!-- BOTTOM-UP CURRICULUM (Grades 5–12)         -->
 <!-- ══════════════════════════════════════════ -->
 
-<section class="milestone" id="curriculum-bottom-up-8-10">
+<section class="milestone" id="curriculum-bottom-up">
   <div class="milestone-header" onclick="this.parentElement.classList.toggle('open')">
     <div>
-      <div class="milestone-label">Bottom-up curriculum · Grades 8–10</div>
-      <div class="milestone-title">Walk the history. Each idea cracks open the next.</div>
+      <div class="milestone-label">Bottom-up curriculum · Grades 5–12</div>
+      <div class="milestone-title">The natural discovery of science</div>
     </div>
     <span class="milestone-arrow">▶</span>
   </div>
   <div class="milestone-body">
-    <p class="milestone-desc">Lectures in the order humans actually figured things out. Each row shows which exam topics it covers and which top-down lectures cover the same material.</p>
+    <p class="milestone-desc">Lectures in the order humans actually figured things out. Each row shows which exam topics it covers.</p>
     <div class="curriculum-table-wrap" id="curriculum-bu-8-10-mount">
       <!-- Rendered from lectureData8to10.bottomUp -->
     </div>
@@ -1134,13 +1272,13 @@
 
 
 <!-- ══════════════════════════════════════════ -->
-<!-- TOP-DOWN CURRICULUM (Grades 8–10)          -->
+<!-- TOP-DOWN CURRICULUM (Grades 5–12)          -->
 <!-- ══════════════════════════════════════════ -->
 
-<section class="milestone" id="curriculum-top-down-8-10">
+<section class="milestone" id="curriculum-top-down">
   <div class="milestone-header" onclick="this.parentElement.classList.toggle('open')">
     <div>
-      <div class="milestone-label">Top-down curriculum · Grades 8–10</div>
+      <div class="milestone-label">Top-down curriculum · Grades 5–12</div>
       <div class="milestone-title">Start from modern laws. Watch the world fall into place.</div>
     </div>
     <span class="milestone-arrow">▶</span>
@@ -1159,336 +1297,15 @@
 </section>
 
 
-<!-- ══════════════════════════════════════════ -->
-<!-- CHAIN 3 -->
-<!-- ══════════════════════════════════════════ -->
-
-<div class="chain" id="chain-3">
-  <div class="chain-header">
-    <div class="chain-num">3</div>
-    <div class="chain-meta">
-      <div class="chain-label">Chain 3 · Grades 8–9</div>
-      <div class="chain-title">
-        Light + electrical tools <span class="chain-arrow">→</span> EM unification
-      </div>
-    </div>
-  </div>
-  <hr class="chain-rule">
-
-  <div class="unit">
-    <div class="grade-note">Grades 8–9</div>
-    <div class="unit-question">Maxwell wrote four equations about electricity and magnetism. Out fell the speed of light. He had not mentioned light at all. How do two separate phenomena turn out to be one thing?</div>
-    <div class="subjects">
-      <div class="subject-row">
-        <span class="subject-tag tag-phys">Physics</span>
-        <span class="subject-content">What is a wave: amplitude, frequency, phase · Electric charge and Coulomb's law · Magnetic fields from moving charges · Faraday's induction · The electromagnetic spectrum · Maxwell's unification — qualitative · <span class="opt">Maxwell's equations written out</span></span>
-      </div>
-      <div class="subject-row">
-        <span class="subject-tag tag-hist">History of Science</span>
-        <span class="subject-content">Faraday: experiment over mathematics · Maxwell: mathematics over experiment · How new instruments (galvanometer, capacitor, coil) made electricity visible and measurable</span>
-      </div>
-      <div class="subject-row">
-        <span class="subject-tag tag-math">Math</span>
-        <span class="subject-content">Vectors: direction matters · Sine waves and the unit circle · Complex numbers as rotations · <span class="opt">Calculus: derivatives and integrals</span></span>
-      </div>
-      <div class="subject-row">
-        <span class="subject-tag tag-chem">Chemistry</span>
-        <span class="subject-content">Electrochemistry and batteries · Electron flow as current</span>
-      </div>
-    </div>
-    <div class="artifacts">
-      <span class="artifact">○ Wave interference visualizer</span>
-      <span class="artifact">○ Field visualizer</span>
-    </div>
-  </div>
-</div>
+<!-- Chains 3, 4, 5 moved to dedicated pages:                     -->
+<!-- em-unification.html, atom-model.html, modern-physics.html    -->
+<!-- — reached via lectureData8to10.bottomUp page links            -->
+<!-- (bu-04, bu-05, bu-06).                                        -->
 
 
-<!-- ══════════════════════════════════════════ -->
-<!-- CHAIN 4 -->
-<!-- ══════════════════════════════════════════ -->
-
-<div class="chain" id="chain-4">
-  <div class="chain-header">
-    <div class="chain-num">4</div>
-    <div class="chain-meta">
-      <div class="chain-label">Chain 4 · Grades 9–10</div>
-      <div class="chain-title">
-        Tools + chemistry <span class="chain-arrow">→</span> particles, atom model
-      </div>
-    </div>
-  </div>
-  <hr class="chain-rule">
-
-  <div class="unit">
-    <div class="grade-note">Grades 9–10</div>
-    <div class="unit-question">Thomson fires electrons through a vacuum tube and finds something smaller than an atom. Rutherford fires alpha particles at gold foil — most go straight through, a few bounce back. The atom is almost entirely empty space. What is inside?</div>
-    <div class="subjects">
-      <div class="subject-row">
-        <span class="subject-tag tag-phys">Physics</span>
-        <span class="subject-content">Cathode rays and the discovery of the electron · Rutherford scattering experiment · Bohr model: electrons in quantized orbits · Why atoms don't collapse — the stability problem · <span class="opt">Spectral lines as a fingerprint of atoms</span></span>
-      </div>
-      <div class="subject-row">
-        <span class="subject-tag tag-chem">Chemistry</span>
-        <span class="subject-content">Periodic table derived from atomic structure · Electron shells and chemical bonding · MO theory: bonding vs antibonding orbitals · Why H₂ forms but He₂ doesn't · <span class="opt">Why O₂ is paramagnetic</span></span>
-      </div>
-      <div class="subject-row">
-        <span class="subject-tag tag-hist">History of Science</span>
-        <span class="subject-content">Vacuum tubes and cathode rays as enabling tools · Thomson, Rutherford, Bohr — three models in 20 years · How chemistry and physics were forced into the same room</span>
-      </div>
-      <div class="subject-row">
-        <span class="subject-tag tag-math">Math</span>
-        <span class="subject-content">Matrices as operators · Eigenvectors — intuition first · <span class="opt">Complex numbers: full treatment</span></span>
-      </div>
-    </div>
-    <div class="artifacts">
-      <span class="artifact exists">● Antibonding → spinors path</span>
-      <span class="artifact exists">● Matrices workbook</span>
-      <span class="artifact">○ Rutherford scattering simulator</span>
-      <span class="artifact">○ Orbital shape visualizer</span>
-    </div>
-  </div>
-</div>
-
-
-<!-- ══════════════════════════════════════════ -->
-<!-- CHAIN 5 -->
-<!-- ══════════════════════════════════════════ -->
-
-<div class="chain" id="chain-5">
-  <div class="chain-header">
-    <div class="chain-num">5</div>
-    <div class="chain-meta">
-      <div class="chain-label">Chain 5 · Grades 10–12</div>
-      <div class="chain-title">
-        Electron + light <span class="chain-arrow">→</span> relativity + quantum mechanics
-      </div>
-    </div>
-  </div>
-  <hr class="chain-rule">
-
-  <div class="unit">
-    <div class="grade-note">Grades 10–11 · Quantum</div>
-    <div class="unit-question">Classical physics predicts that a hot object should radiate infinite energy. It doesn't. Planck's fix was desperate — he assumed energy comes in discrete chunks. Einstein confirmed it with the photoelectric effect. Classical physics is broken. What replaces it?</div>
-    <div class="subjects">
-      <div class="subject-row">
-        <span class="subject-tag tag-phys">Physics</span>
-        <span class="subject-content">Blackbody radiation: the ultraviolet catastrophe · Photoelectric effect: light as particles · De Broglie: matter as waves · Schrödinger equation — qualitative · Heisenberg uncertainty principle · Pauli exclusion from antisymmetry · <span class="opt">Spinors: the electron needs 720° to return to its original state</span> · <span class="opt">Stern-Gerlach experiment</span></span>
-      </div>
-      <div class="subject-row">
-        <span class="subject-tag tag-chem">Chemistry</span>
-        <span class="subject-content">Electron orbitals: why those shapes · Periodic table as quantum consequence · Why noble gases don't bond · Nodes as rotations in the complex plane</span>
-      </div>
-      <div class="subject-row">
-        <span class="subject-tag tag-math">Math</span>
-        <span class="subject-content">Euler's formula e^iθ = cosθ + i sinθ · Imaginary numbers as physically real rotations · <span class="opt">Matrices as operators on state vectors</span></span>
-      </div>
-    </div>
-    <div class="artifacts">
-      <span class="artifact exists">● Antibonding → spinors full path</span>
-      <span class="artifact">○ Blackbody curve visualizer</span>
-      <span class="artifact">○ Double-slit simulator</span>
-    </div>
-  </div>
-
-  <div class="unit">
-    <div class="grade-note">Grade 11 · Relativity</div>
-    <div class="unit-question">Maxwell's equations give a fixed speed for light. Fixed relative to what? Einstein took it seriously — the speed of light is the same for everyone, always. This breaks time, space, and mass as we understood them.</div>
-    <div class="subjects">
-      <div class="subject-row">
-        <span class="subject-tag tag-phys">Physics</span>
-        <span class="subject-content">The problem with Maxwell + Newtonian mechanics · Speed of light: invariant and why this matters · Time dilation · Length contraction · E = mc²: derivation sketch · <span class="opt">General relativity: gravity as spacetime curvature</span></span>
-      </div>
-      <div class="subject-row">
-        <span class="subject-tag tag-math">Math</span>
-        <span class="subject-content">Spacetime interval: the invariant quantity · Lorentz transformation · <span class="opt">4-vectors</span></span>
-      </div>
-    </div>
-    <div class="artifacts">
-      <span class="artifact">○ Spacetime diagram</span>
-      <span class="artifact">○ Twin paradox visualizer</span>
-    </div>
-  </div>
-
-  <div class="unit">
-    <div class="grade-note">Grades 11–12 · Human Biology</div>
-    <div class="unit-question">A protein is a chain of atoms. Its shape determines its function. For 50 years nobody could predict the shape from the sequence alone. AI just solved it — using physics.</div>
-    <div class="subjects">
-      <div class="subject-row">
-        <span class="subject-tag tag-bio">Human Biology</span>
-        <span class="subject-content">DNA: information stored in chemistry · Proteins: amino acids and folding · Enzymes as molecular machines · Cell membrane as selective barrier · ATP and the mitochondria</span>
-      </div>
-      <div class="subject-row">
-        <span class="subject-tag tag-chem">Chemistry</span>
-        <span class="subject-content">Organic chemistry: carbon's versatility · Hydrogen bonds in biological structures · Acids, bases and pH in the body · <span class="opt">Drug-receptor binding as molecular geometry</span></span>
-      </div>
-    </div>
-    <div class="artifacts">
-      <span class="artifact">○ Protein folding visualizer</span>
-    </div>
-  </div>
-</div>
-
-
-<!-- MILESTONE 2 -->
-<div class="milestone" id="milestone-grade-12">
-  <div class="milestone-label">Milestones · Grades 11–12</div>
-  <div class="milestone-title">Brandos Egzaminai + international tracks</div>
-  <p class="milestone-desc">Grade 12 splits into the Lithuanian matura (VBE / Brandos) and international tracks: SAT for US applications, IB Diploma offered at Vilnius Lyceum, A-Levels for UK applications. Students completing this curriculum have the conceptual foundation for any of these paths — the exam specifics are the final layer, not the foundation.</p>
-
-  <div class="exam-table-wrap">
-    <table class="exam-table">
-      <thead>
-        <tr>
-          <th>Topic</th>
-          <th>VBE / Brandos<span class="col-sub">Lithuanian matura</span></th>
-          <th>SAT<span class="col-sub">US applications</span></th>
-          <th>IB Diploma<span class="col-sub">Vilnius Lyceum</span></th>
-          <th>A-Levels<span class="col-sub">UK applications</span></th>
-        </tr>
-      </thead>
-      <tbody>
-
-        <tr class="topic-section"><td colspan="5">Mathematics</td></tr>
-
-        <tr>
-          <td>Calculus</td>
-          <td><span class="yes">●</span></td>
-          <td><span class="no">—</span></td>
-          <td><span class="yes">●</span></td>
-          <td><span class="yes">●</span></td>
-        </tr>
-        <tr>
-          <td>Complex numbers</td>
-          <td><span class="yes">●</span></td>
-          <td><span class="no">—</span></td>
-          <td><span class="yes">●</span></td>
-          <td><span class="elec">○</span></td>
-        </tr>
-        <tr>
-          <td>Sequences and series</td>
-          <td><span class="yes">●</span></td>
-          <td><span class="no">—</span></td>
-          <td><span class="yes">●</span></td>
-          <td><span class="yes">●</span></td>
-        </tr>
-        <tr>
-          <td>Probability and statistics</td>
-          <td><span class="yes">●</span></td>
-          <td><span class="yes">●</span></td>
-          <td><span class="yes">●</span></td>
-          <td><span class="yes">●</span></td>
-        </tr>
-
-        <tr class="topic-section"><td colspan="5">Physics</td></tr>
-
-        <tr>
-          <td>Mechanics + thermodynamics</td>
-          <td><span class="elec">○</span></td>
-          <td><span class="no">—</span></td>
-          <td><span class="elec">○</span></td>
-          <td><span class="elec">○</span></td>
-        </tr>
-        <tr>
-          <td>Electromagnetism</td>
-          <td><span class="elec">○</span></td>
-          <td><span class="no">—</span></td>
-          <td><span class="elec">○</span></td>
-          <td><span class="elec">○</span></td>
-        </tr>
-        <tr>
-          <td>Optics and waves</td>
-          <td><span class="elec">○</span></td>
-          <td><span class="no">—</span></td>
-          <td><span class="elec">○</span></td>
-          <td><span class="elec">○</span></td>
-        </tr>
-        <tr>
-          <td>Quantum intro</td>
-          <td><span class="elec">○</span></td>
-          <td><span class="no">—</span></td>
-          <td><span class="elec">○</span></td>
-          <td><span class="elec">○</span></td>
-        </tr>
-
-        <tr class="topic-section"><td colspan="5">Chemistry</td></tr>
-
-        <tr>
-          <td>Organic chemistry</td>
-          <td><span class="elec">○</span></td>
-          <td><span class="no">—</span></td>
-          <td><span class="elec">○</span></td>
-          <td><span class="elec">○</span></td>
-        </tr>
-        <tr>
-          <td>Reaction kinetics</td>
-          <td><span class="elec">○</span></td>
-          <td><span class="no">—</span></td>
-          <td><span class="elec">○</span></td>
-          <td><span class="elec">○</span></td>
-        </tr>
-        <tr>
-          <td>Electrochemistry</td>
-          <td><span class="elec">○</span></td>
-          <td><span class="no">—</span></td>
-          <td><span class="elec">○</span></td>
-          <td><span class="elec">○</span></td>
-        </tr>
-        <tr>
-          <td>Thermochemistry</td>
-          <td><span class="elec">○</span></td>
-          <td><span class="no">—</span></td>
-          <td><span class="elec">○</span></td>
-          <td><span class="elec">○</span></td>
-        </tr>
-
-      </tbody>
-    </table>
-  </div>
-
-  <div class="exam-legend">
-    <span><b style="color:#16a34a;">●</b> tested</span>
-    <span><b style="color:#d97706;">○</b> elective</span>
-    <span><b style="color:#bbb;">—</b> not tested</span>
-  </div>
-  <div class="milestone-grid">
-    <div class="ms-col">
-      <div class="ms-col-title">Math Grade 12</div>
-      <ul>
-        <li>Calculus: derivatives, integrals</li>
-        <li>Complex numbers</li>
-        <li>Sequences and series</li>
-        <li>Probability and statistics</li>
-      </ul>
-    </div>
-    <div class="ms-col">
-      <div class="ms-col-title">Physics Grade 12</div>
-      <ul>
-        <li>Mechanics and thermodynamics</li>
-        <li>Electromagnetism</li>
-        <li>Optics and waves</li>
-        <li>Modern physics: quantum intro</li>
-      </ul>
-    </div>
-    <div class="ms-col">
-      <div class="ms-col-title">Chemistry Grade 12</div>
-      <ul>
-        <li>Organic chemistry</li>
-        <li>Reaction kinetics</li>
-        <li>Electrochemistry</li>
-        <li>Thermochemistry</li>
-      </ul>
-    </div>
-    <div class="ms-col">
-      <div class="ms-col-title">Biology Grade 12</div>
-      <ul>
-        <li>Cell biology and genetics</li>
-        <li>Human physiology</li>
-        <li>Biochemistry foundations</li>
-      </ul>
-    </div>
-  </div>
-</div>
+<!-- Grade 11–12 milestone removed — its content (VBE, SAT, IB,    -->
+<!-- A-Levels columns + G12 syllabus topics) is now in the unified  -->
+<!-- exam-landscape table inside #milestone-grade-8 above.          -->
 
 <footer>
   First Principles · Grades 5 to University · Lithuania<br>
@@ -1514,28 +1331,50 @@
 const examData8to10 = {
 
   exams: [
-    { id: 'nmpp',  name: 'NMPP',              sub: 'diagnostic' },
-    { id: 'vl',    name: 'Vilniaus Licėjus',  sub: '2 hr · 25/25/15/15' },
-    { id: 'kj',    name: 'Kauno Jėzuitai',    sub: '60 min · 35/35/15/15%' },
-    { id: 'vj',    name: 'Vilniaus Jėzuitai', sub: 'Apr 25, 2026' },
-    { id: 'other', name: 'Other gymnasia',    sub: 'varies' },
-    { id: 'pupp',  name: 'PUPP',              sub: 'Grade 10 gate' }
+    // Grade 8-10
+    { id: 'nmpp',    name: 'NMPP',              sub: 'G8 diagnostic' },
+    { id: 'vl',      name: 'Vilniaus Licėjus',  sub: 'G8→9 · 2 hr' },
+    { id: 'kj',      name: 'Kauno Jėzuitai',    sub: 'G8→9 · 60 min' },
+    { id: 'vj',      name: 'Vilniaus Jėzuitai', sub: 'G8→9 · Apr 2026' },
+    { id: 'other',   name: 'Other gymnasia',    sub: 'G8→9 varies' },
+    { id: 'pupp',    name: 'PUPP',              sub: 'G10 gate' },
+    // Grade 11-12
+    { id: 'vbe',     name: 'VBE / Brandos',     sub: 'G12 matura' },
+    { id: 'sat',     name: 'SAT',               sub: 'US apps' },
+    { id: 'ib',      name: 'IB Diploma',        sub: 'Vilnius Lyceum' },
+    { id: 'alevels', name: 'A-Levels',          sub: 'UK apps' }
   ],
 
+  // Coverage profiles per (subject, grade-level). A topic uses its own
+  // `defaultProfile` if set, otherwise the subject's.
   defaultCoverage: {
-    math:    { nmpp: '●', vl: '●', kj: '●', vj: '?', other: '●', pupp: '●' },
-    physics: { nmpp: '—', vl: '●', kj: '—', vj: '?', other: '○', pupp: '—' }
+    // ── Grade 8–9 syllabus topics ──
+    mathG8:    { nmpp: '●', vl: '●', kj: '●', vj: '?', other: '●', pupp: '●',
+                 vbe: '●', sat: '●', ib: '●', alevels: '●' },
+    physicsG8: { nmpp: '—', vl: '●', kj: '—', vj: '?', other: '○', pupp: '—',
+                 vbe: '○', sat: '—', ib: '○', alevels: '●' },
+    chemG8:    { nmpp: '—', vl: '—', kj: '—', vj: '?', other: '—', pupp: '—',
+                 vbe: '○', sat: '—', ib: '○', alevels: '○' },
+
+    // ── Grade 11–12 syllabus topics ──
+    mathG12:    { nmpp: '—', vl: '—', kj: '—', vj: '—', other: '—', pupp: '—',
+                  vbe: '●', sat: '○', ib: '●', alevels: '●' },
+    physicsG12: { nmpp: '—', vl: '—', kj: '—', vj: '—', other: '—', pupp: '—',
+                  vbe: '○', sat: '—', ib: '○', alevels: '●' },
+    chemG12:    { nmpp: '—', vl: '—', kj: '—', vj: '—', other: '—', pupp: '—',
+                  vbe: '○', sat: '—', ib: '○', alevels: '○' }
   },
 
   subjects: [
 
     {
       name: 'Mathematics',
-      shortName: 'Mathematics · Grade 8 → 9 exam',
-      defaultProfile: 'math',
+      shortName: 'Mathematics',
+      defaultProfile: 'mathG8',
       topics: [
         {
           name: 'Numbers',
+          gradeLevel: 'g8',
           points: [
             { id: 'm-num-integers',     text: 'Natural numbers and integers (including negative numbers)' },
             { id: 'm-num-divisibility', text: 'Divisibility rules for 2, 3, 4, 5, 6, 8, 9, 10' },
@@ -1552,6 +1391,7 @@ const examData8to10 = {
         },
         {
           name: 'Algebra',
+          gradeLevel: 'g8',
           points: [
             { id: 'm-alg-variables',        text: 'Variables, algebraic expressions, evaluation' },
             { id: 'm-alg-like-terms',       text: 'Like terms and simplification' },
@@ -1567,6 +1407,7 @@ const examData8to10 = {
         },
         {
           name: 'Geometry',
+          gradeLevel: 'g8',
           points: [
             { id: 'm-geo-angles',           text: 'Angle types: acute, right, obtuse, straight, reflex; complementary, supplementary, vertical' },
             { id: 'm-geo-parallels',        text: 'Parallel lines cut by a transversal: corresponding, alternate interior, alternate exterior, co-interior' },
@@ -1584,6 +1425,7 @@ const examData8to10 = {
         },
         {
           name: 'Combinatorics',
+          gradeLevel: 'g8',
           note: 'Limited to simple problems at this level.',
           topicCoverage: { pupp: '—' },
           points: [
@@ -1594,17 +1436,67 @@ const examData8to10 = {
             { id: 'm-cmb-combinations', text: 'Simple combinations' },
             { id: 'm-cmb-factorial',    text: 'Basic factorial notation' }
           ]
+        },
+
+        // ── Grade 11–12 syllabus topics ──
+        {
+          name: 'Calculus',
+          gradeLevel: 'g12',
+          defaultProfile: 'mathG12',
+          points: [
+            { id: 'm-calc-limits',       text: 'Limits and continuity' },
+            { id: 'm-calc-derivatives',  text: 'Derivatives: rules, chain rule, product rule' },
+            { id: 'm-calc-applications', text: 'Applications: optimisation, rates of change' },
+            { id: 'm-calc-integrals',    text: 'Integrals: antiderivatives, definite integrals' },
+            { id: 'm-calc-area',         text: 'Area under a curve, fundamental theorem of calculus' }
+          ]
+        },
+        {
+          name: 'Complex numbers',
+          gradeLevel: 'g12',
+          defaultProfile: 'mathG12',
+          topicCoverage: { sat: '—' },
+          points: [
+            { id: 'm-cpx-form',        text: 'Imaginary unit i and complex form a + bi' },
+            { id: 'm-cpx-operations',  text: 'Addition, multiplication, conjugate, modulus' },
+            { id: 'm-cpx-polar',       text: 'Polar form and Euler\'s formula e^(iθ)' },
+            { id: 'm-cpx-rotations',   text: 'Complex numbers as rotations in the plane' }
+          ]
+        },
+        {
+          name: 'Sequences and series',
+          gradeLevel: 'g12',
+          defaultProfile: 'mathG12',
+          topicCoverage: { sat: '—' },
+          points: [
+            { id: 'm-seq-arithmetic', text: 'Arithmetic sequences and series' },
+            { id: 'm-seq-geometric',  text: 'Geometric sequences and series' },
+            { id: 'm-seq-infinite',   text: 'Infinite series and convergence (intuition)' }
+          ]
+        },
+        {
+          name: 'Probability and statistics',
+          gradeLevel: 'g12',
+          defaultProfile: 'mathG12',
+          topicCoverage: { sat: '●' },
+          points: [
+            { id: 'm-stat-distributions', text: 'Distributions: normal, binomial' },
+            { id: 'm-stat-mean-sd',       text: 'Mean, median, mode, standard deviation' },
+            { id: 'm-stat-probability',   text: 'Probability: independent / conditional / Bayes' },
+            { id: 'm-stat-hypothesis',    text: 'Hypothesis testing (intro)' }
+          ]
         }
       ]
     },
 
     {
       name: 'Physics',
-      shortName: 'Physics · Grade 8 → 9 exam',
-      defaultProfile: 'physics',
+      shortName: 'Physics',
+      defaultProfile: 'physicsG8',
       topics: [
         {
           name: 'Structure of matter',
+          gradeLevel: 'g8',
           note: 'Basically: what atoms are made of and how they break apart.',
           points: [
             { id: 'p-sm-notation',     text: 'Atomic notation: chemical symbol with mass number A on top, atomic number Z on bottom' },
@@ -1624,6 +1516,7 @@ const examData8to10 = {
         },
         {
           name: 'The Universe',
+          gradeLevel: 'g8',
           note: 'Surprisingly deep for a Grade 8 exam — they need to know how stars live and die.',
           points: [
             { id: 'p-univ-hierarchy',    text: 'Hierarchy of cosmic objects: planet, moon, star, planetary system, star cluster, nebula, galaxy, galaxy cluster' },
@@ -1639,6 +1532,7 @@ const examData8to10 = {
         },
         {
           name: 'Electricity',
+          gradeLevel: 'g8',
           points: [
             { id: 'p-el-charge',     text: 'Electric charge: positive and negative, conservation, unit (coulomb, C)' },
             { id: 'p-el-current',    text: 'Electric current: rate of charge flow, I = Q/t, unit (ampere, A)' },
@@ -1650,6 +1544,109 @@ const examData8to10 = {
             { id: 'p-el-parallel',   text: '<strong>Parallel circuits:</strong> voltage same across branches; currents add; 1/R = 1/R₁ + 1/R₂' },
             { id: 'p-el-diagrams',   text: 'Reading circuit diagrams: symbols for battery, resistor, switch, bulb, ammeter, voltmeter' },
             { id: 'p-el-units',      text: 'Unit conversions: mA↔A, mV↔V, kΩ↔Ω, kWh↔J' }
+          ]
+        },
+
+        // ── Grade 11–12 syllabus topics ──
+        {
+          name: 'Mechanics + thermodynamics',
+          gradeLevel: 'g12',
+          defaultProfile: 'physicsG12',
+          points: [
+            { id: 'p-mech-kinematics',  text: 'Kinematics: position, velocity, acceleration' },
+            { id: 'p-mech-newton',      text: "Newton's laws applied with vectors and calculus" },
+            { id: 'p-mech-energy',      text: 'Work, kinetic and potential energy, conservation' },
+            { id: 'p-mech-momentum',    text: 'Momentum, impulse, collisions' },
+            { id: 'p-mech-rotation',    text: 'Rotational motion: torque, angular momentum' },
+            { id: 'p-thermo-laws',      text: 'Laws of thermodynamics; entropy (qualitative)' },
+            { id: 'p-thermo-gas',       text: 'Ideal gas law: PV = nRT' }
+          ]
+        },
+        {
+          name: 'Electromagnetism',
+          gradeLevel: 'g12',
+          defaultProfile: 'physicsG12',
+          points: [
+            { id: 'p-em-fields',      text: 'Electric and magnetic fields (vector form)' },
+            { id: 'p-em-maxwell',     text: "Maxwell's equations — qualitative" },
+            { id: 'p-em-induction',   text: 'Electromagnetic induction; Lenz\'s law' },
+            { id: 'p-em-waves',       text: 'EM waves: speed of light from Maxwell\'s equations' }
+          ]
+        },
+        {
+          name: 'Optics and waves',
+          gradeLevel: 'g12',
+          defaultProfile: 'physicsG12',
+          points: [
+            { id: 'p-opt-reflection',  text: 'Reflection, refraction, Snell\'s law' },
+            { id: 'p-opt-lenses',      text: 'Lenses and mirrors; image formation' },
+            { id: 'p-wave-properties', text: 'Wave properties: interference, diffraction, polarisation' },
+            { id: 'p-wave-doppler',    text: 'Doppler effect' }
+          ]
+        },
+        {
+          name: 'Modern physics (quantum + relativity intro)',
+          gradeLevel: 'g12',
+          defaultProfile: 'physicsG12',
+          points: [
+            { id: 'p-qm-photoelectric', text: 'Photoelectric effect: light as particles' },
+            { id: 'p-qm-de-broglie',    text: 'De Broglie wavelength: matter as waves' },
+            { id: 'p-qm-uncertainty',   text: 'Heisenberg uncertainty principle' },
+            { id: 'p-qm-schrodinger',   text: 'Schrödinger equation — qualitative' },
+            { id: 'p-rel-postulates',   text: 'Special relativity: speed of light invariant' },
+            { id: 'p-rel-dilation',     text: 'Time dilation and length contraction' },
+            { id: 'p-rel-mc2',          text: 'E = mc², mass-energy equivalence' }
+          ]
+        }
+      ]
+    },
+
+    {
+      name: 'Chemistry',
+      shortName: 'Chemistry',
+      defaultProfile: 'chemG8',
+      topics: [
+        // ── Grade 11–12 syllabus topics (no G8 chemistry on exams) ──
+        {
+          name: 'Organic chemistry',
+          gradeLevel: 'g12',
+          defaultProfile: 'chemG12',
+          points: [
+            { id: 'c-org-carbon',     text: "Carbon's versatility: bonding, chains, rings" },
+            { id: 'c-org-hydrocarbons', text: 'Hydrocarbons: alkanes, alkenes, alkynes' },
+            { id: 'c-org-functional', text: 'Functional groups: alcohols, acids, esters, amines' },
+            { id: 'c-org-mechanisms', text: 'Reaction mechanisms (intro): substitution, addition' },
+            { id: 'c-org-isomerism',  text: 'Isomerism: structural and stereo' }
+          ]
+        },
+        {
+          name: 'Reaction kinetics',
+          gradeLevel: 'g12',
+          defaultProfile: 'chemG12',
+          points: [
+            { id: 'c-kin-rate',         text: 'Rate of reaction; factors that change it' },
+            { id: 'c-kin-equilibrium',  text: "Equilibrium and Le Chatelier's principle" },
+            { id: 'c-kin-catalysts',    text: 'Catalysts and activation energy' }
+          ]
+        },
+        {
+          name: 'Electrochemistry',
+          gradeLevel: 'g12',
+          defaultProfile: 'chemG12',
+          points: [
+            { id: 'c-ec-redox',         text: 'Oxidation and reduction; redox half-equations' },
+            { id: 'c-ec-cells',         text: 'Galvanic / voltaic cells, electrode potentials' },
+            { id: 'c-ec-electrolysis',  text: 'Electrolysis and industrial applications' }
+          ]
+        },
+        {
+          name: 'Thermochemistry',
+          gradeLevel: 'g12',
+          defaultProfile: 'chemG12',
+          points: [
+            { id: 'c-thermo-enthalpy', text: 'Enthalpy changes: exo / endothermic reactions' },
+            { id: 'c-thermo-hess',     text: "Hess's law and energy diagrams" },
+            { id: 'c-thermo-bond',     text: 'Bond energies and reaction energy' }
           ]
         }
       ]
@@ -1694,22 +1691,63 @@ const lectureData8to10 = {
     {
       id: 'bu-02',
       n: 2,
-      title: 'Lavoisier puts a scale under the experiment',
-      summary: 'Mass conservation: the death of phlogiston, the birth of modern chemistry.',
+      title: 'Gases → mass conservation → atomic theory',
+      summary: 'Phlogiston dies when Lavoisier weighs the products. Dalton builds atomic chemistry on top.',
+      page: 'gases-to-atoms.html',
       covers: [
         { topicId: 'p-sm-conservation', degree: 'full' },
-        { topicId: 'p-sm-notation',     degree: 'partial' }
+        { topicId: 'p-sm-notation',     degree: 'full' },
+        { topicId: 'p-sm-atomic-num',   degree: 'partial' },
+        { topicId: 'p-sm-mass-num',     degree: 'partial' }
       ],
       sources: [
         { label: 'Wikipedia — Antoine Lavoisier', url: 'https://en.wikipedia.org/wiki/Antoine_Lavoisier' },
-        { label: 'YouTube — Lavoisier search', url: 'https://www.youtube.com/results?search_query=lavoisier+conservation+of+mass' }
+        { label: 'Wikipedia — Dalton atomic theory', url: 'https://en.wikipedia.org/wiki/John_Dalton#Atomic_theory' },
+        { label: 'Wikipedia — Phlogiston theory', url: 'https://en.wikipedia.org/wiki/Phlogiston_theory' }
       ]
     },
     {
       id: 'bu-03',
       n: 3,
-      title: 'Thomson, Rutherford, Bohr: the atom in 30 years',
-      summary: 'Three experiments, three models. From plum pudding to quantised orbits.',
+      title: 'Telescope + momentum → Newton\'s laws',
+      summary: 'Tycho\'s data, Kepler\'s geometry, Newton\'s calculus. Three separate planetary laws become one equation.',
+      page: 'newton-laws.html',
+      covers: [
+        { topicId: 'p-univ-solar', degree: 'mention' },
+        { topicId: 'm-num-ratios', degree: 'mention' }
+      ],
+      sources: [
+        { label: 'Wikipedia — Kepler\'s laws of planetary motion', url: 'https://en.wikipedia.org/wiki/Kepler%27s_laws_of_planetary_motion' },
+        { label: 'Wikipedia — Newton\'s laws of motion', url: 'https://en.wikipedia.org/wiki/Newton%27s_laws_of_motion' },
+        { label: 'Wikipedia — Galileo Galilei', url: 'https://en.wikipedia.org/wiki/Galileo_Galilei' }
+      ]
+    },
+    {
+      id: 'bu-04',
+      n: 4,
+      title: 'Light + electrical tools → EM unification',
+      summary: 'Faraday\'s experiments, Maxwell\'s equations. Electricity and magnetism turn out to be one thing — light falls out as a bonus.',
+      page: 'em-unification.html',
+      covers: [
+        { topicId: 'p-el-charge',     degree: 'full' },
+        { topicId: 'p-el-current',    degree: 'full' },
+        { topicId: 'p-el-voltage',    degree: 'full' },
+        { topicId: 'p-el-resistance', degree: 'partial' },
+        { topicId: 'p-el-series',     degree: 'mention' },
+        { topicId: 'p-el-parallel',   degree: 'mention' }
+      ],
+      sources: [
+        { label: 'Wikipedia — Maxwell\'s equations', url: 'https://en.wikipedia.org/wiki/Maxwell%27s_equations' },
+        { label: 'Wikipedia — Michael Faraday', url: 'https://en.wikipedia.org/wiki/Michael_Faraday' },
+        { label: 'Wikipedia — Electromagnetic spectrum', url: 'https://en.wikipedia.org/wiki/Electromagnetic_spectrum' }
+      ]
+    },
+    {
+      id: 'bu-05',
+      n: 5,
+      title: 'Tools + chemistry → particles, atom model',
+      summary: 'Cathode rays, Rutherford scattering, Bohr model. Three experiments in 30 years crack the atom open.',
+      page: 'atom-model.html',
       covers: [
         { topicId: 'p-sm-notation',   degree: 'full' },
         { topicId: 'p-sm-atomic-num', degree: 'full' },
@@ -1718,7 +1756,25 @@ const lectureData8to10 = {
       ],
       sources: [
         { label: 'Wikipedia — Rutherford scattering', url: 'https://en.wikipedia.org/wiki/Rutherford_scattering_experiments' },
-        { label: 'Wikipedia — Bohr model', url: 'https://en.wikipedia.org/wiki/Bohr_model' }
+        { label: 'Wikipedia — Bohr model', url: 'https://en.wikipedia.org/wiki/Bohr_model' },
+        { label: 'Wikipedia — Periodic table', url: 'https://en.wikipedia.org/wiki/Periodic_table' }
+      ]
+    },
+    {
+      id: 'bu-06',
+      n: 6,
+      title: 'Electron + light → relativity + quantum mechanics',
+      summary: 'Three sub-units: quantum mechanics replaces classical, Einstein breaks time and space, physics now predicts protein folding.',
+      page: 'modern-physics.html',
+      covers: [
+        { topicId: 'p-univ-fusion-stars', degree: 'partial' },
+        { topicId: 'p-sm-isotopes',       degree: 'partial' }
+      ],
+      sources: [
+        { label: 'Wikipedia — Photoelectric effect', url: 'https://en.wikipedia.org/wiki/Photoelectric_effect' },
+        { label: 'Wikipedia — Schrödinger equation', url: 'https://en.wikipedia.org/wiki/Schr%C3%B6dinger_equation' },
+        { label: 'Wikipedia — Special relativity', url: 'https://en.wikipedia.org/wiki/Special_relativity' },
+        { label: 'Wikipedia — Protein folding', url: 'https://en.wikipedia.org/wiki/Protein_folding' }
       ]
     }
   ],
@@ -1782,7 +1838,10 @@ function _symbolClass(s) {
 }
 
 function _resolveCoverage(data, subject, topic, point) {
-  const subjectDefault = data.defaultCoverage[subject.defaultProfile] || {};
+  // Topic may override the subject's default profile (e.g. G12 topic in
+  // a subject whose default profile is the G8 one).
+  const profileName = topic.defaultProfile || subject.defaultProfile;
+  const subjectDefault = data.defaultCoverage[profileName] || {};
   const topicCoverage  = Object.assign({}, subjectDefault, topic.topicCoverage || {});
   if (typeof point === 'object' && point.coverage) {
     return Object.assign({}, topicCoverage, point.coverage);
@@ -1800,6 +1859,12 @@ function _pointId(point) {
 
 function _degSymbol(d) {
   return d === 'full' ? '●' : d === 'partial' ? '◐' : '○';
+}
+
+function _degLabel(d) {
+  return d === 'full' ? 'fully covered'
+       : d === 'partial' ? 'partially covered'
+       : 'mentioned only';
 }
 
 function _escAttr(s) {
@@ -1834,7 +1899,8 @@ function _buildTopicLookup(examData) {
   return lookup;
 }
 
-// Lectures from `otherLectures` that share at least one topicId
+// Lectures from `otherLectures` that share at least one topicId.
+// Returns full lecture objects (so callers can read `page`, etc).
 function _findMirroredLectures(thisLec, otherLectures) {
   if (!thisLec.covers || !otherLectures) return [];
   const myTopicIds = new Set(thisLec.covers.map(c => c.topicId));
@@ -1844,7 +1910,8 @@ function _findMirroredLectures(thisLec, otherLectures) {
   });
 }
 
-// Lectures (from any pool) that cover a given topicId; returns { id, n, title, degree }
+// Lectures (from any pool) that cover a given topicId.
+// Returns { id, n, title, page, degree } so the caller can build links.
 function _findLecturesCoveringTopic(topicId, lecturePools) {
   const result = [];
   lecturePools.forEach(pool => {
@@ -1853,16 +1920,31 @@ function _findLecturesCoveringTopic(topicId, lecturePools) {
       if (!lec.covers) return;
       const cov = lec.covers.find(c => c.topicId === topicId);
       if (cov) {
-        result.push({ id: lec.id, n: lec.n, title: lec.title, degree: cov.degree });
+        result.push({ id: lec.id, n: lec.n, title: lec.title, page: lec.page, degree: cov.degree });
       }
     });
   });
   return result;
 }
 
+// True if any topic in this subject has at least one covering lecture.
+function _subjectHasAnyLectures(subject, lecturePools) {
+  if (!subject.topics || !lecturePools || !lecturePools.length) return false;
+  for (let i = 0; i < subject.topics.length; i++) {
+    const topic = subject.topics[i];
+    if (!topic.points) continue;
+    for (let j = 0; j < topic.points.length; j++) {
+      const pid = _pointId(topic.points[j]);
+      if (pid && _findLecturesCoveringTopic(pid, lecturePools).length > 0) return true;
+    }
+  }
+  return false;
+}
+
 
 // === EXAM CROSS-REFERENCE TABLE ===
-// Each point row is clickable. Clicking reveals which lectures cover it.
+// One tab per subject. Within each tab, point rows are clickable
+// to reveal which lectures cover them.
 
 function renderExamTable(mountId, data, lectureData) {
   const mount = document.getElementById(mountId);
@@ -1874,56 +1956,147 @@ function renderExamTable(mountId, data, lectureData) {
     ? [lectureData.bottomUp, lectureData.topDown]
     : [];
 
-  let html = '<table class="exam-table"><thead><tr><th>Topic</th>';
-  exams.forEach(e => {
-    html += '<th>' + e.name + '<span class="col-sub">' + e.sub + '</span></th>';
+  // Tab buttons (with a green dot if any topic in the subject has lectures).
+  // No tab is active on first load — the user picks one. This keeps the
+  // long Math table from dominating the page when it opens.
+  let html = '<div class="exam-tabs">';
+  data.subjects.forEach((subject, idx) => {
+    const hasLectures = _subjectHasAnyLectures(subject, lecturePools);
+    html += '<button class="exam-tab" data-subject-idx="' + idx + '" onclick="_switchExamTab(this)">';
+    html += subject.name;
+    if (hasLectures) {
+      html += '<span class="tab-lec-dot" title="At least one topic in this subject has linked lectures"></span>';
+    }
+    html += '</button>';
   });
-  html += '</tr></thead><tbody>';
+  html += '</div>';
 
-  data.subjects.forEach(subject => {
-    html += '<tr class="topic-section"><td colspan="' + totalCols + '">' + subject.name + '</td></tr>';
+  // Hint shown while no tab is selected
+  html += '<div class="exam-tabs-hint">Pick a subject above to view its exam-coverage table.</div>';
 
-    subject.topics.forEach(topic => {
-      html += '<tr class="topic-header"><td colspan="' + totalCols + '">' + topic.name + '</td></tr>';
+  // One panel per subject — all hidden until the user clicks a tab
+  data.subjects.forEach((subject, idx) => {
+    html += '<div class="exam-tab-panel" data-subject-idx="' + idx + '">';
 
-      topic.points.forEach(point => {
-        const coverage = _resolveCoverage(data, subject, topic, point);
-        const pid = _pointId(point);
-
-        html += '<tr class="point-row" onclick="_toggleDetailRow(this)">';
-        html += '<td class="point-text">' + _pointText(point) + '</td>';
-        exams.forEach(e => {
-          const sym = coverage[e.id] || '—';
-          html += '<td><span class="' + _symbolClass(sym) + '">' + sym + '</span></td>';
-        });
-        html += '</tr>';
-
-        // Hidden coverage-detail row (only if this point has an id and we have lectures)
-        if (pid && lecturePools.length) {
-          const covering = _findLecturesCoveringTopic(pid, lecturePools);
-          html += '<tr class="coverage-detail"><td colspan="' + totalCols + '">';
-          if (covering.length) {
-            html += '<div class="coverage-list">';
-            html += '<span class="coverage-list-label">Covered by:</span>';
-            covering.forEach(lec => {
-              const cls = _lecPillClass(lec.id);
-              html += '<span class="lec-pill ' + cls + '" title="' + _escAttr(lec.title) + '">';
-              html += '<span class="deg ' + lec.degree + '">' + _degSymbol(lec.degree) + '</span>';
-              html += lec.id + ' · ' + _truncate(lec.title, 50);
-              html += '</span>';
-            });
-            html += '</div>';
-          } else {
-            html += '<span class="coverage-list-empty">No lectures cover this topic yet.</span>';
-          }
-          html += '</td></tr>';
-        }
+    if (!subject.topics || subject.topics.length === 0) {
+      html += '<div class="exam-tab-empty">No ' + subject.name.toLowerCase() + ' topics tagged yet.</div>';
+    } else {
+      html += '<table class="exam-table"><thead><tr><th>Topic</th>';
+      exams.forEach(e => {
+        html += '<th>' + e.name + '<span class="col-sub">' + e.sub + '</span></th>';
       });
-    });
+      html += '</tr></thead><tbody>';
+
+      // Track when gradeLevel changes so we can insert a grade-level divider
+      let lastGradeLevel = null;
+
+      subject.topics.forEach(topic => {
+        if (topic.gradeLevel && topic.gradeLevel !== lastGradeLevel) {
+          const label = topic.gradeLevel === 'g8'
+            ? 'Grade 8–9 syllabus'
+            : topic.gradeLevel === 'g12'
+              ? 'Grade 11–12 syllabus'
+              : topic.gradeLevel;
+          html += '<tr class="topic-section"><td colspan="' + totalCols + '">' + label + '</td></tr>';
+          lastGradeLevel = topic.gradeLevel;
+        }
+
+        html += '<tr class="topic-header"><td colspan="' + totalCols + '">' + topic.name + '</td></tr>';
+
+        topic.points.forEach(point => {
+          const coverage = _resolveCoverage(data, subject, topic, point);
+          const pid = _pointId(point);
+          const covering = (pid && lecturePools.length)
+            ? _findLecturesCoveringTopic(pid, lecturePools)
+            : [];
+          const hasLec = covering.length > 0;
+
+          const rowAttrs = pid
+            ? ' id="topic-' + pid + '" data-topic-id="' + pid + '"'
+            : '';
+          html += '<tr class="point-row' + (hasLec ? ' has-lectures' : '') + '"' + rowAttrs + ' onclick="_toggleDetailRow(this)">';
+          html += '<td class="point-text">';
+          if (hasLec) html += '<span class="row-lec-dot" title="' + covering.length + ' lecture(s) cover this"></span>';
+          html += _pointText(point);
+          if (pid) html += ' <span class="topic-id-tag row-id-tag">' + pid + '</span>';
+          html += '</td>';
+          exams.forEach(e => {
+            const sym = coverage[e.id] || '—';
+            html += '<td><span class="' + _symbolClass(sym) + '">' + sym + '</span></td>';
+          });
+          html += '</tr>';
+
+          if (pid && lecturePools.length) {
+            html += '<tr class="coverage-detail"><td colspan="' + totalCols + '">';
+            if (hasLec) {
+              html += '<div class="coverage-list">';
+              html += '<span class="coverage-list-label">Covered by:</span>';
+              covering.forEach(lec => {
+                const cls = _lecPillClass(lec.id);
+                // Lectures with their own page → link there.
+                // Otherwise → anchor to the lecture's row in the curriculum table.
+                const href = lec.page ? lec.page : ('#lec-' + lec.id);
+                const target = lec.page ? '' : ''; // same-tab for both for now
+                html += '<a class="lec-pill ' + cls + '" href="' + _escAttr(href) + '" title="' + _escAttr(lec.title) + '">';
+                html += '<span class="deg ' + lec.degree + '">' + _degSymbol(lec.degree) + '</span>';
+                html += lec.id + ' · ' + _truncate(lec.title, 50);
+                html += '</a>';
+              });
+              html += '</div>';
+            } else {
+              html += '<span class="coverage-list-empty">No lectures cover this topic yet.</span>';
+            }
+            html += '</td></tr>';
+          }
+        });
+      });
+
+      html += '</tbody></table>';
+    }
+
+    html += '</div>';
   });
 
-  html += '</tbody></table>';
   mount.innerHTML = html;
+}
+
+function _switchExamTab(btn) {
+  const idx = btn.dataset.subjectIdx;
+  const container = btn.closest('.exam-table-wrap');
+  if (!container) return;
+  container.querySelectorAll('.exam-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  container.querySelectorAll('.exam-tab-panel').forEach(p => {
+    p.classList.toggle('active', p.dataset.subjectIdx === idx);
+  });
+}
+
+// Jump from a topic pill in the lecture detail panel to the topic's row
+// in the exam table. Activates the right subject tab if needed, scrolls
+// to the row, and briefly highlights it.
+function _jumpToTopic(ev, topicId) {
+  if (ev) ev.preventDefault();
+  const row = document.querySelector('[data-topic-id="' + topicId + '"]');
+  if (!row) return;
+  const panel = row.closest('.exam-tab-panel');
+  if (panel) {
+    const idx = panel.dataset.subjectIdx;
+    const container = panel.closest('.exam-table-wrap');
+    if (container) {
+      container.querySelectorAll('.exam-tab').forEach(t => t.classList.remove('active'));
+      const tab = container.querySelector('.exam-tab[data-subject-idx="' + idx + '"]');
+      if (tab) tab.classList.add('active');
+      container.querySelectorAll('.exam-tab-panel').forEach(p => {
+        p.classList.toggle('active', p.dataset.subjectIdx === idx);
+      });
+    }
+  }
+  // Defer scroll so the panel becomes visible before we measure its position
+  setTimeout(() => {
+    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    row.classList.add('topic-flash');
+    setTimeout(() => row.classList.remove('topic-flash'), 1800);
+  }, 30);
 }
 
 // Generic: toggle this row + the immediately-following detail row
@@ -1946,6 +2119,9 @@ function renderScopeView(mountId, data) {
   let html = '';
 
   data.subjects.forEach(subject => {
+    // Skip subjects with no topics — keeps the scope view tight.
+    if (!subject.topics || subject.topics.length === 0) return;
+
     html += '<div class="ms-col">';
     html += '<div class="ms-col-title">' + (subject.shortName || subject.name) + '</div>';
 
@@ -1996,21 +2172,20 @@ function renderCurriculumTable(mountId, lectures, otherLectures, otherLabel, exa
   }
 
   lectures.forEach(lec => {
-    // ── Compact lecture row ──
-    // If lecture has a dedicated page, the row navigates instead of expanding.
-    if (lec.page) {
-      html += '<tr class="lec-row has-page" onclick="window.location.href=\'' + _escAttr(lec.page) + '\'">';
-    } else {
-      html += '<tr class="lec-row" onclick="_toggleDetailRow(this)">';
-    }
+    // ── Compact lecture row ── always expands on click; the page (if any)
+    // is reached via the "Open lesson page →" link inside the expanded panel.
+    const rowId  = 'lec-' + lec.id;
+    const curCls = _lecPillClass(lec.id); // 'bu' or 'td' for accent border
+    const pageCls = lec.page ? ' has-page' : '';
+
+    html += '<tr class="lec-row ' + curCls + pageCls + '" id="' + rowId + '" onclick="_toggleDetailRow(this)">';
     html += '<td class="col-num">' + (lec.n != null ? lec.n : '') + '</td>';
     html += '<td class="col-lecture">';
     html += '<span class="lec-id">' + lec.id + '</span>';
     html += '<span class="lec-title">' + lec.title + '</span>';
     html += '</td></tr>';
 
-    // ── Expanded detail row (skipped for page-linked lectures) ──
-    if (lec.page) return;
+    // ── Expanded detail row ──
     html += '<tr class="lec-detail"><td colspan="2">';
     html += '<div class="lec-detail-inner">';
 
@@ -2019,55 +2194,42 @@ function renderCurriculumTable(mountId, lectures, otherLectures, otherLabel, exa
       html += '<p class="lec-summary">' + lec.summary + '</p>';
     }
 
-    // Exam topics covered
+    // "Open lesson page →" — primary action for page-linked lectures
+    if (lec.page) {
+      html += '<a class="open-page-link" href="' + _escAttr(lec.page) + '">';
+      html += 'Open lesson page <span class="open-page-arrow">→</span>';
+      html += '</a>';
+    }
+
+    // Exam topics covered (readable name + id; click jumps to the topic
+    // row in the exam table, switching tabs if needed)
     html += '<div class="lec-detail-section">';
     html += '<div class="lec-detail-label">Exam topics covered</div>';
     html += '<div class="topic-pill-list">';
     if (lec.covers && lec.covers.length) {
       lec.covers.forEach(c => {
         const topic = topicLookup[c.topicId];
-        const title = topic
-          ? (topic.path + ' — ' + topic.text.replace(/<[^>]+>/g, ''))
+        const readable = topic ? topic.text.replace(/<[^>]+>/g, '') : c.topicId;
+        const path     = topic ? topic.path : '';
+        const tooltip  = topic
+          ? (path + ' — ' + readable + ' · ' + _degLabel(c.degree))
           : ('Unknown topic: ' + c.topicId);
-        html += '<span class="topic-pill" title="' + _escAttr(title) + '">';
+        html += '<a class="topic-pill deg-' + c.degree + '"'
+              + ' href="#topic-' + c.topicId + '"'
+              + ' onclick="_jumpToTopic(event, \'' + c.topicId + '\')"'
+              + ' title="' + _escAttr(tooltip) + '">';
         html += '<span class="deg ' + c.degree + '">' + _degSymbol(c.degree) + '</span>';
-        html += c.topicId;
-        html += '</span>';
-      });
-    } else {
-      html += '<span class="coverage-list-empty">no topics tagged</span>';
-    }
-    html += '</div></div>';
-
-    // Mirrored by other curriculum
-    const mirrored = _findMirroredLectures(lec, otherLectures);
-    html += '<div class="lec-detail-section">';
-    html += '<div class="lec-detail-label">Mirrored by ' + otherLabel + '</div>';
-    html += '<div class="mirror-list">';
-    if (mirrored.length) {
-      mirrored.forEach(m => {
-        const cls = _lecPillClass(m.id);
-        html += '<span class="lec-pill ' + cls + '" title="' + _escAttr(m.title) + '">';
-        html += m.id + ' · ' + _truncate(m.title, 50);
-        html += '</span>';
-      });
-    } else {
-      html += '<span class="coverage-list-empty">no overlap yet</span>';
-    }
-    html += '</div></div>';
-
-    // External sources
-    html += '<div class="lec-detail-section">';
-    html += '<div class="lec-detail-label">Other sources</div>';
-    html += '<div class="source-list">';
-    if (lec.sources && lec.sources.length) {
-      lec.sources.forEach(s => {
-        html += '<a class="source-pill" href="' + _escAttr(s.url) + '" target="_blank" rel="noopener">';
-        html += s.label;
+        html += '<span class="topic-name">' + _truncate(readable, 70) + '</span>';
+        html += '<span class="topic-id-tag">' + c.topicId + '</span>';
         html += '</a>';
       });
+      html += '<div class="deg-legend">';
+      html += '<span><span class="deg full">●</span> full</span>';
+      html += '<span><span class="deg partial">◐</span> partial</span>';
+      html += '<span><span class="deg mention">○</span> mention</span>';
+      html += '</div>';
     } else {
-      html += '<span class="coverage-list-empty">no sources yet</span>';
+      html += '<span class="coverage-list-empty">no topics tagged</span>';
     }
     html += '</div></div>';
 
@@ -2082,7 +2244,6 @@ function renderCurriculumTable(mountId, lectures, otherLectures, otherLabel, exa
 // === MOUNT ===
 
 renderExamTable('exam-table-8-10-mount', examData8to10, lectureData8to10);
-renderScopeView('scope-view-8-10-mount', examData8to10);
 renderCurriculumTable('curriculum-bu-8-10-mount', lectureData8to10.bottomUp, lectureData8to10.topDown, 'top-down', examData8to10);
 renderCurriculumTable('curriculum-td-8-10-mount', lectureData8to10.topDown, lectureData8to10.bottomUp, 'bottom-up', examData8to10);
 

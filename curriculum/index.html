@@ -144,6 +144,56 @@
     transform: translateY(3px);
   }
 
+  /* ── SKELETON HEADING ROW (title + exam landscape CTA) ── */
+  .skeleton-heading-row {
+    display: flex;
+    align-items: stretch;
+    gap: 24px;
+    margin-bottom: 56px;
+  }
+  .skeleton-heading-row .section-title {
+    flex: 1;
+    margin-bottom: 0;
+  }
+  .exam-cta {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    padding: 18px 22px;
+    background: #111;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    min-width: 260px;
+    position: relative;
+    transition: background 0.18s, transform 0.18s;
+  }
+  .exam-cta:hover { background: #1f2937; }
+  .exam-cta-label {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #9ca3af;
+  }
+  .exam-cta-title {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  .exam-cta-arrow {
+    position: absolute;
+    top: 50%;
+    right: 22px;
+    transform: translateY(-50%);
+    font-size: 20px;
+    transition: transform 0.2s;
+  }
+  .exam-cta:hover .exam-cta-arrow {
+    transform: translateY(-50%) translateX(4px);
+  }
+
   /* ── SKELETON LIST (chains) ── */
   .skeleton-list {
     display: flex;
@@ -580,6 +630,8 @@
     .hero-title { font-size: 44px; }
     .section-title { font-size: 24px; }
     .hero-subtitle { font-size: 16px; }
+    .skeleton-heading-row { flex-direction: column; gap: 18px; }
+    .exam-cta { min-width: 0; }
     .skeleton-row { grid-template-columns: 40px 1fr; gap: 18px; }
     .skeleton-num { font-size: 28px; }
     .skeleton-milestone { padding-left: 58px; }
@@ -607,13 +659,19 @@
 <!-- ═══════════════════════════════════════════════ -->
 <section class="section" id="skeleton">
   <div class="section-tag">The skeleton</div>
-  <h2 class="section-title">Curriculum.<br>Designed to pass exams.</h2>
- 
+  <div class="skeleton-heading-row">
+    <h2 class="section-title">Curriculum.<br>Designed to pass exams.</h2>
+    <a class="exam-cta" href="map.html#milestone-grade-8">
+      <span class="exam-cta-label">All exams · Grades 8–12</span>
+      <span class="exam-cta-title">See the full cross-reference</span>
+      <span class="exam-cta-arrow">→</span>
+    </a>
+  </div>
 
   <div class="skeleton-list">
 
     <!-- ── PHASE 1 ── -->
-    <a class="phase-banner" href="map.html#chain-1">
+    <a class="phase-banner" href="before-science.html">
       <div class="phase-banner-num">1</div>
       <div>
         <div class="phase-banner-tag">Phase 1 · Grades 5–8 · any starting order</div>
@@ -629,29 +687,24 @@
       </div>
     </a>
 
-    <a class="skeleton-row" href="map.html#chain-1">
+    <a class="skeleton-row" href="gases-to-atoms.html">
       <div class="skeleton-num">1</div>
       <div>
-        <div class="skeleton-label">Chain · Grades 6–7</div>
+        <div class="skeleton-label">Lesson · Grades 6–7</div>
         <div class="skeleton-title">Gases <span class="skeleton-arrow">→</span> mass conservation <span class="skeleton-arrow">→</span> atomic theory</div>
       </div>
     </a>
 
-    <a class="skeleton-row" href="map.html#chain-2">
+    <a class="skeleton-row" href="newton-laws.html">
       <div class="skeleton-num">1</div>
       <div>
-        <div class="skeleton-label">Chain · Grades 7–8</div>
+        <div class="skeleton-label">Lesson · Grades 7–8</div>
         <div class="skeleton-title">Telescope + momentum <span class="skeleton-arrow">→</span> Newton's laws</div>
       </div>
     </a>
 
-    <a class="skeleton-milestone" href="map.html#milestone-grade-8">
-      <span class="milestone-pill">Milestone</span>
-      <span class="skeleton-milestone-text">End of Grade 8 — Vilnius Lyceum entry exam</span>
-    </a>
-
     <!-- ── PHASE 2 ── -->
-    <a class="phase-banner" href="map.html#chain-3">
+    <a class="phase-banner" href="em-unification.html">
       <div class="phase-banner-num">2</div>
       <div>
         <div class="phase-banner-tag">Phase 2 · Grades 8–12 · any starting order</div>
@@ -659,33 +712,33 @@
       </div>
     </a>
 
-    <a class="skeleton-row" href="map.html#chain-3">
+    <a class="skeleton-row" href="em-unification.html">
       <div class="skeleton-num">2</div>
       <div>
-        <div class="skeleton-label">Chain · Grades 8–9</div>
+        <div class="skeleton-label">Lesson · Grades 8–9</div>
         <div class="skeleton-title">Light + electrical tools <span class="skeleton-arrow">→</span> EM unification</div>
       </div>
     </a>
 
-    <a class="skeleton-row" href="map.html#chain-4">
+    <a class="skeleton-row" href="atom-model.html">
       <div class="skeleton-num">2</div>
       <div>
-        <div class="skeleton-label">Chain · Grades 9–10</div>
+        <div class="skeleton-label">Lesson · Grades 9–10</div>
         <div class="skeleton-title">Tools + chemistry <span class="skeleton-arrow">→</span> particles, atom model</div>
       </div>
     </a>
 
-    <a class="skeleton-row" href="map.html#chain-5">
+    <a class="skeleton-row" href="modern-physics.html">
       <div class="skeleton-num">2</div>
       <div>
-        <div class="skeleton-label">Chain · Grades 10–12</div>
+        <div class="skeleton-label">Lesson · Grades 10–12</div>
         <div class="skeleton-title">Electron + light <span class="skeleton-arrow">→</span> relativity + quantum mechanics</div>
       </div>
     </a>
 
-    <a class="skeleton-milestone" href="map.html#milestone-grade-12">
-      <span class="milestone-pill">Milestone</span>
-      <span class="skeleton-milestone-text">End of Grade 12 — Brandos egzaminai + SAT readiness</span>
+    <a class="skeleton-milestone" href="map.html#milestone-grade-8">
+      <span class="milestone-pill">Exam landscape</span>
+      <span class="skeleton-milestone-text">Grades 8–12 · NMPP · gymnasium entries · PUPP · Brandos · SAT · IB · A-Levels — all cross-referenced</span>
     </a>
 
   </div>

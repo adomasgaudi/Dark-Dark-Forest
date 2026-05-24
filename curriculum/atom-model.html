@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tools + chemistry → particles, atom model — bu-05 · First Principles</title>
+<meta name="description" content="Cathode rays, Rutherford scattering, Bohr model. How three experiments in 30 years cracked the atom open.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: #fff;
+    color: #111;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  body {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 80px 24px 120px;
+  }
+
+  a { color: inherit; }
+
+  /* ── TOP NAV ── */
+  .topnav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid #eee;
+    z-index: 100;
+    display: flex; align-items: center;
+  }
+  .topnav-inner {
+    max-width: 740px; margin: 0 auto;
+    padding: 0 24px; width: 100%;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .nav-back {
+    font-size: 12px; color: #555; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 10px; border-radius: 3px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .nav-back:hover { background: #f5f5f5; color: #111; }
+  .nav-back .nav-arrow { font-size: 13px; transition: transform 0.18s; display: inline-block; }
+  .nav-back:hover .nav-arrow { transform: translateX(-3px); }
+  .nav-brand {
+    flex: 1; text-align: center; font-size: 12px;
+    font-weight: 600; color: #777; letter-spacing: 0.04em;
+    font-family: 'SF Mono', Consolas, monospace;
+  }
+  .nav-items { display: flex; gap: 14px; min-width: 80px; justify-content: flex-end; }
+
+  /* ── HERO ── */
+  .lecture-tag {
+    font-size: 11px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: #aaa;
+    margin-bottom: 14px;
+  }
+  h1 {
+    font-size: 30px; font-weight: 600;
+    margin-bottom: 12px; letter-spacing: -0.015em;
+    line-height: 1.2;
+  }
+  .grades { font-size: 13px; color: #888; margin-bottom: 36px; }
+  blockquote.unit-question {
+    font-size: 17px; color: #333; line-height: 1.55; font-weight: 500;
+    border-left: 2px solid #ddd; padding-left: 18px;
+    margin: 0 0 48px; max-width: 620px;
+  }
+
+  /* ── SECTION HEADER ── */
+  h2.section-header {
+    font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: #999;
+    margin: 64px 0 18px; font-weight: 600;
+    padding-bottom: 10px; border-bottom: 1px solid #eee;
+  }
+
+  /* ── VIDEO LINK ── */
+  .video-link {
+    font-size: 14px; color: #2563eb;
+    text-decoration: none; border-bottom: 1px solid #bfdbfe;
+  }
+  .video-link:hover { color: #1d4ed8; border-bottom-color: #1d4ed8; }
+
+  /* ── SUBJECT CONTENT ── */
+  .subject-block { margin-bottom: 28px; }
+  .subject-tag {
+    font-size: 11px; padding: 2px 8px; border-radius: 3px;
+    border: 1px solid; font-weight: 500;
+    display: inline-block; margin-bottom: 10px;
+  }
+  .tag-phys { color: #2563eb; border-color: #bfdbfe; background: #eff6ff; }
+  .tag-chem { color: #d97706; border-color: #fde68a; background: #fffbeb; }
+  .tag-math { color: #16a34a; border-color: #bbf7d0; background: #f0fdf4; }
+  .tag-hist { color: #7c3aed; border-color: #ddd6fe; background: #f5f3ff; }
+  .tag-bio  { color: #db2777; border-color: #fbcfe8; background: #fdf2f8; }
+  ul.subject-points { list-style: none; padding: 0; }
+  ul.subject-points li {
+    font-size: 14px; color: #444; line-height: 1.6;
+    padding: 4px 0 4px 14px; position: relative;
+  }
+  ul.subject-points li::before {
+    content: '—'; position: absolute; left: 0; color: #ccc;
+  }
+  ul.subject-points li .opt { font-style: italic; color: #888; }
+
+  /* ── ARTIFACTS ── */
+  .artifacts { display: flex; flex-wrap: wrap; gap: 6px; }
+  .artifact {
+    font-size: 11px; padding: 2px 9px; border-radius: 3px;
+    border: 1px solid #e8e8e8; color: #999; background: #fafafa;
+  }
+  .artifact.exists {
+    color: #16a34a; border-color: #bbf7d0; background: #f0fdf4;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-top: 96px; padding-top: 24px;
+    border-top: 1px solid #eee;
+    font-size: 12px; color: #aaa; line-height: 1.7;
+  }
+
+  @media (max-width: 600px) {
+    h1 { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a class="nav-back" href="map.html"><span class="nav-arrow">←</span> Back to curriculum</a>
+    <div class="nav-brand">bu-05</div>
+    <div class="nav-items"><!-- placeholder for future nav links --></div>
+  </div>
+</nav>
+
+
+<!-- HERO -->
+<div class="lecture-tag">Bottom-up · Lecture 5 · Chain 4</div>
+<h1>Tools + chemistry → particles, atom model</h1>
+<div class="grades">Grades 9–10</div>
+
+<blockquote class="unit-question">
+  Thomson fires electrons through a vacuum tube and finds something smaller than an atom. Rutherford fires alpha particles at gold foil — most go straight through, a few bounce back. The atom is almost entirely empty space. What is inside?
+</blockquote>
+
+
+<!-- FEATURED VIDEO -->
+<h2 class="section-header">Featured clip</h2>
+
+<p style="margin-bottom: 6px;">
+  <a class="video-link" href="#" target="_blank" rel="noopener">
+    [Video title — add the real title here]
+  </a>
+</p>
+<p style="font-size: 13px; color: #777; margin-top: 0;">
+  Watch from <strong style="color: #111; font-weight: 600;">0:00</strong> to <strong style="color: #111; font-weight: 600;">0:00</strong>.
+</p>
+
+
+<!-- WHAT THIS COVERS -->
+<h2 class="section-header">What this lecture covers</h2>
+
+<div class="subject-block">
+  <span class="subject-tag tag-phys">Physics</span>
+  <ul class="subject-points">
+    <li>Cathode rays and the discovery of the electron</li>
+    <li>Rutherford scattering experiment</li>
+    <li>Bohr model: electrons in quantised orbits</li>
+    <li>Why atoms don't collapse — the stability problem</li>
+    <li><span class="opt">Spectral lines as a fingerprint of atoms (optional deep dive)</span></li>
+  </ul>
+</div>
+
+<div class="subject-block">
+  <span class="subject-tag tag-chem">Chemistry</span>
+  <ul class="subject-points">
+    <li>Periodic table derived from atomic structure</li>
+    <li>Electron shells and chemical bonding</li>
+    <li>MO theory: bonding vs antibonding orbitals</li>
+    <li>Why H₂ forms but He₂ doesn't</li>
+    <li><span class="opt">Why O₂ is paramagnetic (optional deep dive)</span></li>
+  </ul>
+</div>
+
+<div class="subject-block">
+  <span class="subject-tag tag-hist">History of Science</span>
+  <ul class="subject-points">
+    <li>Vacuum tubes and cathode rays as enabling tools</li>
+    <li>Thomson, Rutherford, Bohr — three models in 20 years</li>
+    <li>How chemistry and physics were forced into the same room</li>
+  </ul>
+</div>
+
+<div class="subject-block">
+  <span class="subject-tag tag-math">Math</span>
+  <ul class="subject-points">
+    <li>Matrices as operators</li>
+    <li>Eigenvectors — intuition first</li>
+    <li><span class="opt">Complex numbers: full treatment (optional deep dive)</span></li>
+  </ul>
+</div>
+
+
+<!-- ARTIFACTS -->
+<h2 class="section-header">Related artifacts</h2>
+
+<div class="artifacts">
+  <span class="artifact exists">● Antibonding → spinors path</span>
+  <span class="artifact exists">● Matrices workbook</span>
+  <span class="artifact">○ Rutherford scattering simulator</span>
+  <span class="artifact">○ Orbital shape visualizer</span>
+</div>
+
+
+<footer>
+  Lecture bu-05 · Bottom-up curriculum, Grades 9–10<br>
+  Part of the science curriculum for Grades 5 to University · Lithuania
+</footer>
+
+</body>
+</html>

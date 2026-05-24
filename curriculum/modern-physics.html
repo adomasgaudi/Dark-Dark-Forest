@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Electron + light → relativity + quantum + biochem — bu-06 · First Principles</title>
+<meta name="description" content="The 20th century in three sub-units: how quantum mechanics replaced classical, why Einstein broke time and space, and how physics now predicts protein folding.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: #fff;
+    color: #111;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  body {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 80px 24px 120px;
+  }
+
+  a { color: inherit; }
+
+  /* ── TOP NAV ── */
+  .topnav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid #eee;
+    z-index: 100;
+    display: flex; align-items: center;
+  }
+  .topnav-inner {
+    max-width: 740px; margin: 0 auto;
+    padding: 0 24px; width: 100%;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .nav-back {
+    font-size: 12px; color: #555; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 10px; border-radius: 3px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .nav-back:hover { background: #f5f5f5; color: #111; }
+  .nav-back .nav-arrow { font-size: 13px; transition: transform 0.18s; display: inline-block; }
+  .nav-back:hover .nav-arrow { transform: translateX(-3px); }
+  .nav-brand {
+    flex: 1; text-align: center; font-size: 12px;
+    font-weight: 600; color: #777; letter-spacing: 0.04em;
+    font-family: 'SF Mono', Consolas, monospace;
+  }
+  .nav-items { display: flex; gap: 14px; min-width: 80px; justify-content: flex-end; }
+
+  /* ── HERO ── */
+  .lecture-tag {
+    font-size: 11px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: #aaa;
+    margin-bottom: 14px;
+  }
+  h1 {
+    font-size: 30px; font-weight: 600;
+    margin-bottom: 12px; letter-spacing: -0.015em;
+    line-height: 1.2;
+  }
+  .grades { font-size: 13px; color: #888; margin-bottom: 36px; }
+  blockquote.unit-question {
+    font-size: 16px; color: #333; line-height: 1.55; font-weight: 500;
+    border-left: 2px solid #ddd; padding-left: 18px;
+    margin: 0 0 36px; max-width: 620px;
+  }
+
+  /* ── UNIT BLOCK (for multi-unit chains like this one) ── */
+  .unit-block {
+    margin-bottom: 80px;
+  }
+  .unit-label {
+    font-size: 10px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: #aaa;
+    margin-bottom: 8px; font-weight: 600;
+  }
+  .unit-title {
+    font-size: 22px; font-weight: 600;
+    margin-bottom: 18px; letter-spacing: -0.01em;
+    line-height: 1.25;
+  }
+
+  /* ── SECTION HEADER ── */
+  h2.section-header {
+    font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: #999;
+    margin: 64px 0 18px; font-weight: 600;
+    padding-bottom: 10px; border-bottom: 1px solid #eee;
+  }
+  .unit-block h3.unit-section-header {
+    font-size: 10px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: #aaa;
+    margin: 22px 0 12px; font-weight: 600;
+  }
+
+  /* ── VIDEO LINK ── */
+  .video-link {
+    font-size: 14px; color: #2563eb;
+    text-decoration: none; border-bottom: 1px solid #bfdbfe;
+  }
+  .video-link:hover { color: #1d4ed8; border-bottom-color: #1d4ed8; }
+
+  /* ── SUBJECT CONTENT ── */
+  .subject-block { margin-bottom: 22px; }
+  .subject-tag {
+    font-size: 11px; padding: 2px 8px; border-radius: 3px;
+    border: 1px solid; font-weight: 500;
+    display: inline-block; margin-bottom: 10px;
+  }
+  .tag-phys { color: #2563eb; border-color: #bfdbfe; background: #eff6ff; }
+  .tag-chem { color: #d97706; border-color: #fde68a; background: #fffbeb; }
+  .tag-math { color: #16a34a; border-color: #bbf7d0; background: #f0fdf4; }
+  .tag-hist { color: #7c3aed; border-color: #ddd6fe; background: #f5f3ff; }
+  .tag-bio  { color: #db2777; border-color: #fbcfe8; background: #fdf2f8; }
+  ul.subject-points { list-style: none; padding: 0; }
+  ul.subject-points li {
+    font-size: 14px; color: #444; line-height: 1.6;
+    padding: 4px 0 4px 14px; position: relative;
+  }
+  ul.subject-points li::before {
+    content: '—'; position: absolute; left: 0; color: #ccc;
+  }
+  ul.subject-points li .opt { font-style: italic; color: #888; }
+
+  /* ── ARTIFACTS ── */
+  .artifacts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .artifact {
+    font-size: 11px; padding: 2px 9px; border-radius: 3px;
+    border: 1px solid #e8e8e8; color: #999; background: #fafafa;
+  }
+  .artifact.exists {
+    color: #16a34a; border-color: #bbf7d0; background: #f0fdf4;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-top: 96px; padding-top: 24px;
+    border-top: 1px solid #eee;
+    font-size: 12px; color: #aaa; line-height: 1.7;
+  }
+
+  @media (max-width: 600px) {
+    h1 { font-size: 24px; }
+    .unit-title { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a class="nav-back" href="map.html"><span class="nav-arrow">←</span> Back to curriculum</a>
+    <div class="nav-brand">bu-06</div>
+    <div class="nav-items"><!-- placeholder for future nav links --></div>
+  </div>
+</nav>
+
+
+<!-- HERO -->
+<div class="lecture-tag">Bottom-up · Lecture 6 · Chain 5</div>
+<h1>Electron + light → relativity + quantum mechanics</h1>
+<div class="grades">Grades 10–12 · three sub-units (Quantum · Relativity · Human Biology)</div>
+
+
+<!-- FEATURED VIDEO -->
+<h2 class="section-header">Featured clip</h2>
+
+<p style="margin-bottom: 6px;">
+  <a class="video-link" href="#" target="_blank" rel="noopener">
+    [Video title — add the real title here]
+  </a>
+</p>
+<p style="font-size: 13px; color: #777; margin-top: 0;">
+  Watch from <strong style="color: #111; font-weight: 600;">0:00</strong> to <strong style="color: #111; font-weight: 600;">0:00</strong>.
+</p>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- UNIT 5a · QUANTUM -->
+<!-- ═══════════════════════════════════════════════ -->
+
+<h2 class="section-header">Unit 5a — Quantum mechanics</h2>
+
+<div class="unit-block">
+  <div class="unit-label">Grades 10–11 · Quantum</div>
+  <div class="unit-title">When classical physics breaks</div>
+
+  <blockquote class="unit-question">
+    Classical physics predicts that a hot object should radiate infinite energy. It doesn't. Planck's fix was desperate — he assumed energy comes in discrete chunks. Einstein confirmed it with the photoelectric effect. Classical physics is broken. What replaces it?
+  </blockquote>
+
+  <div class="subject-block">
+    <span class="subject-tag tag-phys">Physics</span>
+    <ul class="subject-points">
+      <li>Blackbody radiation: the ultraviolet catastrophe</li>
+      <li>Photoelectric effect: light as particles</li>
+      <li>De Broglie: matter as waves</li>
+      <li>Schrödinger equation — qualitative</li>
+      <li>Heisenberg uncertainty principle</li>
+      <li>Pauli exclusion from antisymmetry</li>
+      <li><span class="opt">Spinors: the electron needs 720° to return to its original state (optional deep dive)</span></li>
+      <li><span class="opt">Stern-Gerlach experiment (optional deep dive)</span></li>
+    </ul>
+  </div>
+
+  <div class="subject-block">
+    <span class="subject-tag tag-chem">Chemistry</span>
+    <ul class="subject-points">
+      <li>Electron orbitals: why those shapes</li>
+      <li>Periodic table as quantum consequence</li>
+      <li>Why noble gases don't bond</li>
+      <li>Nodes as rotations in the complex plane</li>
+    </ul>
+  </div>
+
+  <div class="subject-block">
+    <span class="subject-tag tag-math">Math</span>
+    <ul class="subject-points">
+      <li>Euler's formula e<sup>iθ</sup> = cos θ + i sin θ</li>
+      <li>Imaginary numbers as physically real rotations</li>
+      <li><span class="opt">Matrices as operators on state vectors (optional deep dive)</span></li>
+    </ul>
+  </div>
+
+  <div class="artifacts">
+    <span class="artifact exists">● Antibonding → spinors full path</span>
+    <span class="artifact">○ Blackbody curve visualizer</span>
+    <span class="artifact">○ Double-slit simulator</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- UNIT 5b · RELATIVITY -->
+<!-- ═══════════════════════════════════════════════ -->
+
+<h2 class="section-header">Unit 5b — Relativity</h2>
+
+<div class="unit-block">
+  <div class="unit-label">Grade 11 · Relativity</div>
+  <div class="unit-title">What "fixed relative to what?" did to physics</div>
+
+  <blockquote class="unit-question">
+    Maxwell's equations give a fixed speed for light. Fixed relative to what? Einstein took it seriously — the speed of light is the same for everyone, always. This breaks time, space, and mass as we understood them.
+  </blockquote>
+
+  <div class="subject-block">
+    <span class="subject-tag tag-phys">Physics</span>
+    <ul class="subject-points">
+      <li>The problem with Maxwell + Newtonian mechanics</li>
+      <li>Speed of light: invariant and why this matters</li>
+      <li>Time dilation</li>
+      <li>Length contraction</li>
+      <li>E = mc²: derivation sketch</li>
+      <li><span class="opt">General relativity: gravity as spacetime curvature (optional deep dive)</span></li>
+    </ul>
+  </div>
+
+  <div class="subject-block">
+    <span class="subject-tag tag-math">Math</span>
+    <ul class="subject-points">
+      <li>Spacetime interval: the invariant quantity</li>
+      <li>Lorentz transformation</li>
+      <li><span class="opt">4-vectors (optional deep dive)</span></li>
+    </ul>
+  </div>
+
+  <div class="artifacts">
+    <span class="artifact">○ Spacetime diagram</span>
+    <span class="artifact">○ Twin paradox visualizer</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- UNIT 5c · HUMAN BIOLOGY -->
+<!-- ═══════════════════════════════════════════════ -->
+
+<h2 class="section-header">Unit 5c — Human biology</h2>
+
+<div class="unit-block">
+  <div class="unit-label">Grades 11–12 · Human Biology</div>
+  <div class="unit-title">Physics builds the body</div>
+
+  <blockquote class="unit-question">
+    A protein is a chain of atoms. Its shape determines its function. For 50 years nobody could predict the shape from the sequence alone. AI just solved it — using physics.
+  </blockquote>
+
+  <div class="subject-block">
+    <span class="subject-tag tag-bio">Human Biology</span>
+    <ul class="subject-points">
+      <li>DNA: information stored in chemistry</li>
+      <li>Proteins: amino acids and folding</li>
+      <li>Enzymes as molecular machines</li>
+      <li>Cell membrane as selective barrier</li>
+      <li>ATP and the mitochondria</li>
+    </ul>
+  </div>
+
+  <div class="subject-block">
+    <span class="subject-tag tag-chem">Chemistry</span>
+    <ul class="subject-points">
+      <li>Organic chemistry: carbon's versatility</li>
+      <li>Hydrogen bonds in biological structures</li>
+      <li>Acids, bases and pH in the body</li>
+      <li><span class="opt">Drug-receptor binding as molecular geometry (optional deep dive)</span></li>
+    </ul>
+  </div>
+
+  <div class="artifacts">
+    <span class="artifact">○ Protein folding visualizer</span>
+  </div>
+</div>
+
+
+<footer>
+  Lecture bu-06 · Bottom-up curriculum, Grades 10–12<br>
+  Part of the science curriculum for Grades 5 to University · Lithuania
+</footer>
+
+</body>
+</html>
