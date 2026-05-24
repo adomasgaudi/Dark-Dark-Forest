@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brain Dump Log — Science Curriculum</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: #fff;
+    color: #111;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  body {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 80px 24px 120px;
+  }
+
+  .site-label {
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: #999;
+    text-transform: uppercase;
+    margin-bottom: 48px;
+  }
+
+  h1 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+
+  .intro {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.8;
+    margin-bottom: 56px;
+  }
+
+  /* ── STATUS LEGEND ── */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 48px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    color: #555;
+  }
+
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ── SECTION HEADER ── */
+  .section {
+    margin-top: 56px;
+    margin-bottom: 0;
+  }
+
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #bbb;
+    margin-bottom: 4px;
+  }
+
+  .section-title {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 0;
+  }
+
+  hr.section-rule {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 16px 0 0;
+  }
+
+  /* ── ENTRY ── */
+  .entry {
+    padding: 24px 0;
+    border-bottom: 1px solid #f0f0f0;
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 24px;
+  }
+
+  .entry-meta {
+    padding-top: 2px;
+  }
+
+  .entry-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #999;
+    margin-bottom: 4px;
+  }
+
+  .entry-tag {
+    font-size: 10px;
+    color: #bbb;
+    line-height: 1.6;
+  }
+
+  .entry-body {}
+
+  .entry-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .entry-title:hover { color: #444; }
+
+  .toggle-arrow {
+    font-size: 11px;
+    color: #ccc;
+    flex-shrink: 0;
+    transition: transform 0.2s;
+    user-select: none;
+  }
+
+  .entry.open .toggle-arrow { transform: rotate(90deg); }
+
+  .entry-content {
+    display: none;
+  }
+
+  .entry.open .entry-content {
+    display: block;
+  }
+
+  /* Content types */
+  blockquote {
+    border-left: 2px solid #ddd;
+    padding-left: 16px;
+    color: #555;
+    font-style: italic;
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 16px;
+  }
+
+  ul.points {
+    list-style: none;
+    margin-bottom: 16px;
+  }
+
+  ul.points li {
+    font-size: 13px;
+    color: #444;
+    padding: 4px 0 4px 16px;
+    position: relative;
+    border-bottom: 1px solid #f8f8f8;
+    line-height: 1.6;
+  }
+
+  ul.points li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: #ccc;
+  }
+
+  .distilled {
+    background: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 3px;
+    padding: 14px 16px;
+    margin-top: 14px;
+  }
+
+  .distilled-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #aaa;
+    margin-bottom: 6px;
+  }
+
+  .distilled p {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.7;
+  }
+
+  .warning {
+    font-size: 12px;
+    color: #d97706;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 3px;
+    padding: 6px 12px;
+    margin-bottom: 12px;
+  }
+
+  /* Chain entries */
+  .chain {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .chain-item {
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    gap: 12px;
+    align-items: baseline;
+    font-size: 13px;
+  }
+
+  .chain-num {
+    font-size: 11px;
+    color: #aaa;
+    font-weight: 600;
+    text-align: right;
+  }
+
+  .chain-text { color: #444; line-height: 1.6; }
+  .chain-text strong { color: #111; }
+
+  /* Artifacts */
+  .artifacts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+  }
+
+  .artifact {
+    font-size: 11px;
+    padding: 2px 9px;
+    border-radius: 3px;
+    border: 1px solid #e8e8e8;
+    color: #999;
+    background: #fafafa;
+  }
+
+  .artifact.exists {
+    color: #16a34a;
+    border-color: #bbf7d0;
+    background: #f0fdf4;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-top: 80px;
+    padding-top: 24px;
+    border-top: 1px solid #eee;
+    font-size: 12px;
+    color: #bbb;
+    line-height: 1.8;
+  }
+
+  @media (max-width: 600px) {
+    .entry { grid-template-columns: 1fr; gap: 4px; }
+    .entry-meta { display: flex; gap: 12px; align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="site-label">Brain Dump Log · Science Curriculum Project</div>
+
+<h1>Working Notes</h1>
+<p class="intro">Ideas captured from conversation, ordered by session. Solid = agreed and stable. Developing = good thread, not yet complete. Fragment = needs work.</p>
+
+<div class="legend">
+  <div class="legend-item"><div class="status-dot" style="background:#16a34a"></div> Solid / agreed</div>
+  <div class="legend-item"><div class="status-dot" style="background:#d97706"></div> Developing</div>
+  <div class="legend-item"><div class="status-dot" style="background:#dc2626"></div> Fragment</div>
+  <div class="legend-item"><div class="status-dot" style="background:#2563eb"></div> Decided / structural</div>
+</div>
+
+
+<!-- ═══════════════════ SECTION 01 ═══════════════════ -->
+<div class="section">
+  <div class="section-label">Session 1 · Project Vision</div>
+  <div class="section-title">What this project is</div>
+</div>
+<hr class="section-rule">
+
+<div class="entry open" id="e1">
+  <div class="entry-meta">
+    <div class="entry-status"><div class="status-dot" style="background:#2563eb"></div> Decided</div>
+    <div class="entry-tag">Vision</div>
+  </div>
+  <div class="entry-body">
+    <div class="entry-title" onclick="toggle('e1')">Project overview <span class="toggle-arrow">▶</span></div>
+    <div class="entry-content">
+      <ul class="points">
+        <li>Story-driven narrative science curriculum — Grade 5 to university</li>
+        <li>Gaudi writes the connective narrative — the "why this matters" between topics</li>
+        <li>Best YouTube educators curated and embedded (Welch Labs, 3Blue1Brown, Veritasium, Carroll, Behiel)</li>
+        <li>Harari-style opening: humanity's relationship with science as the big story</li>
+        <li>Sean Carroll's Biggest Ideas as the physics backbone</li>
+        <li>Dictionary / reference always available on the side — never the main voice</li>
+        <li>Three deliverables: brain dump log (this), curriculum map, student-facing website</li>
+        <li>Curriculum designed in English — best sources are in English, translation is a handicap</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="entry" id="e2">
+  <div class="entry-meta">
+    <div class="entry-status"><div class="status-dot" style="background:#2563eb"></div> Decided</div>
+    <div class="entry-tag">Scope</div>
+  </div>
+  <div class="entry-body">
+    <div class="entry-title" onclick="toggle('e2')">Curriculum scope and Lithuanian constraints <span class="toggle-arrow">▶</span></div>
+    <div class="entry-content">
+      <ul class="points">
+        <li><strong>Milestone 1 — Grade 8 exit:</strong> Vilnius Lyceum entry exam. Math 25pts, Lithuanian 25pts, History 15pts, Physics 15pts</li>
+        <li><strong>Milestone 2 — Grade 12 exit:</strong> Lithuanian brandos egzaminai + SAT / international readiness</li>
+        <li>Subjects in scope: Math, Physics, Chemistry, Human Biology / Biochemistry, History of Science, Philosophy of Science (light touch)</li>
+        <li>Biology scope: human biology and biochemistry only — no botany, zoology, ecology</li>
+        <li>Curriculum assumes English is allowed — Lithuanian frameworks may require adaptation</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════ SECTION 02 ═══════════════════ -->
+<div class="section">
+  <div class="section-label">Session 1 · Philosophical Framework</div>
+  <div class="section-title">Why science happens at all</div>
+</div>
+<hr class="section-rule">
+
+<div class="entry open" id="e3">
+  <div class="entry-meta">
+    <div class="entry-status"><div class="status-dot" style="background:#16a34a"></div> Solid</div>
+    <div class="entry-tag">Framework</div>
+  </div>
+  <div class="entry-body">
+    <div class="entry-title" onclick="toggle('e3')">Three Pillars of Science <span class="toggle-arrow">▶</span></div>
+    <div class="entry-content">
+      <ul class="points">
+        <li><strong>1 · Resources</strong> — wealth, time, sponsorship. Smart people exist everywhere. What's rare: smart people with leisure. Medici, Roman patronage, modern universities</li>
+        <li><strong>2 · Mental resources</strong> — curiosity, abstraction, ideology, discrete thinking, natural science boundary. Intelligence ≠ better problem solving. Curiosity does — it makes you investigate opposing ideas</li>
+        <li><strong>3 · Precision</strong> — math, tools, measurement. "Mathematics sharpens your imagination." — Behiel. Aristotle going to check beats Plato thinking alone</li>
+      </ul>
+      <div class="distilled">
+        <div class="distilled-label">Agreed in session</div>
+        <p>Discrete thinking and the natural science boundary both moved into Mental Resources. Three pillars, not five.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="entry" id="e4">
+  <div class="entry-meta">
+    <div class="entry-status"><div class="status-dot" style="background:#16a34a"></div> Solid</div>
+    <div class="entry-tag">Key idea</div>
+  </div>
+  <div class="entry-body">
+    <div class="entry-title" onclick="toggle('e4')">The Natural Science Boundary — verbatim <span class="toggle-arrow">▶</span></div>
+    <div class="entry-content">
+      <blockquote>
+        "The idea of natural science is specifically placed there to identify that we are discussing things that are not supernatural — which means that even if there are unexplainable things, higher powers, and things beyond our comprehension... there are things that are knowable and explainable. Which means that it's a good idea to only focus on the things that are explainable and knowable and just try to expand that field and leave all the unexplained and unknowable things in a different supernatural field."
+      </blockquote>
+      <div class="distilled">
+        <div class="distilled-label">Distilled</div>
+        <p><strong>"Natural science is the agreement to only play the game you can win."</strong> Not claiming the supernatural doesn't exist — bracketing it. Working only in the explainable zone. Then watch that zone expand for 2000 years.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="entry" id="e5">
+  <div class="entry-meta">
+    <div class="entry-status"><div class="status-dot" style="background:#16a34a"></div> Solid</div>
+    <div class="entry-tag">Mental Resources</div>
+  </div>
+  <div class="entry-body">
+    <div class="entry-title" onclick="toggle('e5')">Curiosity vs Intelligence <span class="toggle-arrow">▶</span></div>
+    <div class="entry-content">
+      <ul class="points">
+        <li>Intelligence does not correlate with better political / ideological problem solving</li>
+        <li>More intelligent + more politically inclined = more arguments for your existing position</li>
+        <li>Curiosity is the actual differentiator — makes you investigate opposing ideas regardless of intelligence</li>
+        <li>Abstraction requires curiosity: you cannot hypothesize about a position that is taboo to you</li>
+        <li>Liberty of thought requires absence of hard constraints — religion historically the hardest</li>
+      </ul>
+      <div class="warning">TED talk source to find — confirms intelligence / curiosity distinction</div>
+      <div class="warning">Approach to religion must be careful for Lithuanian education context</div>
+    </div>
+  </div>
+</div>
+
+<div class="entry" id="e6">
+  <div class="entry-meta">
+    <div class="entry-status"><div class="status-dot" style="background:#d97706"></div> Developing</div>
+    <div class="entry-tag">Mental Resources</div>
+  </div>
+  <div class="entry-body">
+    <div class="entry-title" onclick="toggle('e6')">Discrete vs Continuous thinking <span class="toggle-arrow">▶</span></div>
+    <div class="entry-content">
+      <ul class="points">
+        <li>Continuous thinking: infinite gradation, no smallest part</li>
+        <li>Discrete thinking: everything from smallest indivisible units — "atoms of ideas"</li>
+        <li>Find the atoms → build everything else up from them</li>
+        <li>Materials once thought continuous — until atomism. Fields still continuous (Rovelli)</li>
+        <li>Same shift applies to thinking itself: find atomic ideas, compose upward</li>
+        <li>Related: spherical cow approximation (Carroll) — idealizations, generalizations, approximations</li>
+        <li>Related: clockwork universe — state now predicts future. Was "describing → predicting" a real historical mental shift?</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="entry" id="e7">
+  <div class="entry-meta">
+    <div class="entry-status"><div class="status-dot" style="background:#d97706"></div> Developing</div>
+    <div class="entry-tag">Framework</div>
+  </div>
+  <div class="entry-body">
+    <div class="entry-title" onclick="toggle('e7')">Cross-field abstraction — why science needed critical mass <span class="toggle-arrow">▶</span></div>
+    <div class="entry-content">
+      <div class="warning">Hypothesis — not confirmed, marked as speculation in session</div>
+      <ul class="points">
+        <li>Math is the easiest cross-field connector — the same math is visible across domains</li>
+        <li>Laws of physics and chemistry are everywhere but much harder to notice across fields</li>
+        <li>Hypothesis: expert metalworkers had abstract rules of metalwork but didn't apply them to alchemy or woodworking</li>
+        <li>Generalized truths require comparing discoveries across fields simultaneously</li>
+        <li>Science needed a critical mass: enough people doing enough fields at once to see the connections</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════ SECTION 03 ═══════════════════ -->
+<div class="section">
+  <div class="section-label">Session 1 · Previous Chat Content</div>
+  <div class="section-title">Harari + Carroll synthesis and existing artifacts</div>
+</div>
+<hr class="section-rule">
+
+<div class="entry" id="e8">
+  <div class="entry-meta">
+    <div class="entry-status"><div class="status-dot" style="background:#2563eb"></div> Built</div>
+    <div class="entry-tag">Artifacts</div>
+  </div>
+  <div class="entry-body">
+    <div class="entry-title" onclick="toggle('e8')">HTML artifacts already created <span class="toggle-arrow">▶</span></div>
+    <div class="entry-content">
+      <div class="artifacts">
+        <span class="artifact exists">● Antibonding → Spinors (8-layer path)</span>
+        <span class="artifact exists">● Timeline: Antiquity → 1000 CE</span>
+        <span class="artifact exists">● Population + criticality chart</span>
+        <span class="artifact exists">● 3-pillar convergence chart</span>
+        <span class="artifact exists">● Matrices workbook</span>
+        <span class="artifact exists">● Elements treemap</span>
+        <span class="artifact exists">● Elements 3D cubes</span>
+        <span class="artifact exists">● Nested cube visualization</span>
+        <span class="artifact exists">● Pop III enrichment chart</span>
+        <span class="artifact exists">● Abundance ladder</span>
+        <span class="artifact exists">● Alchemy game</span>
+        <span class="artifact exists">● Curriculum map</span>
+        <span class="artifact exists">● Brain dump log (this)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="entry" id="e9">
+  <div class="entry-meta">
+    <div class="entry-status"><div class="status-dot" style="background:#16a34a"></div> Solid</div>
+    <div class="entry-tag">Framework</div>
+  </div>
+  <div class="entry-body">
+    <div class="entry-title" onclick="toggle('e9')">Why no earlier Scientific Revolution — Harari + Carroll <span class="toggle-arrow">▶</span></div>
+    <div class="entry-content">
+      <ul class="points">
+        <li><strong>Harari:</strong> No civilization before ~1500 admitted ignorance. Sacred texts claimed the important things were already known. Scientific Revolution = revolution of ignorance, not knowledge</li>
+        <li><strong>Carroll (math):</strong> You can't do modern physics without tools to write and measure it. Algebra (820 CE), calculus (1665), telescope (1608), pendulum clock (1657)</li>
+        <li><strong>Two phases:</strong> Descriptive (1500–1665) — find patterns without deriving them. Unifying (1665+) — Newton shows Kepler's 3 laws follow from one force equation</li>
+        <li><strong>Key insight:</strong> Math was sufficient by 1300. The bottleneck was cultural — printing press + Reformation + colonial funding converged 1450–1520</li>
+        <li><strong>Carroll (criticality):</strong> Sandpile model — pile self-organizes to critical slope. One grain can trigger nothing or a total avalanche. Science crossed into self-organized criticality ~1665</li>
+        <li><strong>Islamic Golden Age = most poignant near-miss.</strong> Had ~70% of ingredients. Mongol sack of Baghdad (1258) removed grains, pile relaxed back to subcritical</li>
+      </ul>
+      <div class="distilled">
+        <div class="distilled-label">Core thesis</div>
+        <p>The tipping point isn't a year — it's the first moment all ingredients are simultaneously strong. Harari explains what gets grains onto the pile. Carroll explains what happens once criticality is reached.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="entry" id="e10">
+  <div class="entry-meta">
+    <div class="entry-status"><div class="status-dot" style="background:#16a34a"></div> Solid</div>
+    <div class="entry-tag">Key example</div>
+  </div>
+  <div class="entry-body">
+    <div class="entry-title" onclick="toggle('e10')">Kerala school — the sharpest argument in the framework <span class="toggle-arrow">▶</span></div>
+    <div class="entry-content">
+      <blockquote>
+        Madhava of Sangamagrama developed infinite series for sin, cos, arctan — including what we now call the Taylor series — around 1400 CE, roughly 250 years before Newton and Leibniz.
+      </blockquote>
+      <ul class="points">
+        <li>It didn't cascade — no printing press, no empire-funding loop, no critical density of other ingredients</li>
+        <li>Work stayed regional, written in Sanskrit and Malayalam, nearly lost to history</li>
+        <li>Better question than "why did the revolution happen in Europe?" → "why did Kerala NOT trigger one in India?"</li>
+        <li>Proves: math is necessary but not sufficient. The social / criticality arguments do the real work</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="entry" id="e11">
+  <div class="entry-meta">
+    <div class="entry-status"><div class="status-dot" style="background:#16a34a"></div> Solid</div>
+    <div class="entry-tag">Math teaching</div>
+  </div>
+  <div class="entry-body">
+    <div class="entry-title" onclick="toggle('e11')">Matrix intuition — column view vs row view <span class="toggle-arrow">▶</span></div>
+    <div class="entry-content">
+      <ul class="points">
+        <li><strong>Row view (textbook):</strong> dot each row with the input vector. Came from solving equations — each row IS one equation. This is where the convention crystallized (Cayley, 1858)</li>
+        <li><strong>Column view (deeper):</strong> each column is a "food profile" or basis direction. Input vector = weights on those columns. Output = weighted sum of columns</li>
+        <li>Both give identical results. Column view is conceptually richer</li>
+        <li>3Blue1Brown: always think of M·x as linear combination of columns — HIGH RELIABILITY</li>
+        <li>The inverse nutrient problem (negative yogurt) shows matrices don't just compute — they reveal when your question is unsolvable in your current space. Same geometry as eigenvectors</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════ SECTION 04 ═══════════════════ -->
+<div class="section">
+  <div class="section-label">Session 2 · Pedagogy</div>
+  <div class="section-title">The Deep Forest approach</div>
+</div>
+<hr class="section-rule">
+
+<div class="entry open" id="e12">
+  <div class="entry-meta">
+    <div class="entry-status"><div class="status-dot" style="background:#16a34a"></div> Solid</div>
+    <div class="entry-tag">Core pedagogy · Verbatim</div>
+  </div>
+  <div class="entry-body">
+    <div class="entry-title" onclick="toggle('e12')">The Deep Forest — verbatim monologue <span class="toggle-arrow">▶</span></div>
+    <div class="entry-content">
+      <blockquote>
+        "You go into the deep forest, and you see amazing things, and you try to understand very complicated things. And you can get the idea. You don't need specifics. You can get the idea. You can answer some big questions, and you're trying to find kind of safe spots in the deep, dark forest. And with the deep forest, you don't have to dumb it down. You can show people that there's quantum mechanics and special relativity and that it changes things, but you don't have to explain it all — which is the problem with modern school curriculum is that they're so oriented towards exams that they're afraid to even talk about anything unless you can completely describe it and explain it. Which leaves the student with a lot of information that is not explained and contradictive. And so it leaves only one option, which is to memorize everything, which is not very interesting, which is why students don't want to learn."
+      </blockquote>
+      <ul class="points">
+        <li>Even Grade 5 students should encounter quark stars, Planck stars, wave-particle duality</li>
+        <li>The inspiring destination is the motivation to learn the prerequisites</li>
+        <li>Exams are fine — they test specific things, as they should. But they are the wrong starting point</li>
+        <li>Language analogy (Krashen): grammar rules are learned after thousands of hours of exposure, not before. Fluency is automatic and intuitive — not rule-retrieved</li>
+        <li>Physics analogy: learn what matter is and how forces work first. Then ask the specific mathematical question. Context makes the precision memorable</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="entry" id="e13">
+  <div class="entry-meta">
+    <div class="entry-status"><div class="status-dot" style="background:#16a34a"></div> Solid</div>
+    <div class="entry-tag">Math pedagogy · Verbatim</div>
+  </div>
+  <div class="entry-body">
+    <div class="entry-title" onclick="toggle('e13')">Math as intuition first — verbatim monologue <span class="toggle-arrow">▶</span></div>
+    <div class="entry-content">
+      <blockquote>
+        "Multiplication is not natural on a line. If you take two meters times two meters, you get four meters squared — that makes sense, you stretch it twice. But if you measure the same thing in millimeters: two thousand times two thousand gives four million. On a line that number becomes enormous. As a square it looks the same — a natural two-by-two. The smaller your units, the more infinitely long the number becomes on the line. So multiplication is only symmetrical in planes, not on lines."
+      </blockquote>
+      <blockquote>
+        "When you try to find the solutions to a quadratic equation, they give you the determinant. They don't explain where it comes from. So I've had a lot of fun trying to reinvent the determinant. What I discovered was completing the square — which connects Pascal's triangle, the two-added-constant-squared, and the derivative of the quadratic function. You connect all of those things and you see why they're useful to one another."
+      </blockquote>
+      <ul class="points">
+        <li>Multiplication is naturally 2D — forcing it onto a line breaks intuition and creates unit-dependent nonsense</li>
+        <li>Quadratic formula should be derived by completing the square, not memorized</li>
+        <li>Pascal's triangle appears in binomial expansion — never mentioned in school, but it unifies many things</li>
+        <li>Derivative of x² as area growing on two sides simultaneously — 2x falls out geometrically, no rule needed</li>
+        <li>What is raising to a power? Can be decomposed into rotations and stretching</li>
+        <li>Zero and infinity: circular vs linear geometry show their relationship differently</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="entry" id="e14">
+  <div class="entry-meta">
+    <div class="entry-status"><div class="status-dot" style="background:#16a34a"></div> Solid</div>
+    <div class="entry-tag">Pedagogy</div>
+  </div>
+  <div class="entry-body">
+    <div class="entry-title" onclick="toggle('e14')">Memorization — its role and its limits <span class="toggle-arrow">▶</span></div>
+    <div class="entry-content">
+      <ul class="points">
+        <li>Memorization works — Anki, spaced repetition, used heavily by doctors and Japanese learners</li>
+        <li>Long-term retention comes from natural re-exposure in the field, not artificial drilling</li>
+        <li>Memorization creates <strong>hooks</strong> — initial anchors that let you recognize things when you encounter them</li>
+        <li>Without context, rote memorization creates hooks that attach to nothing and decay fast</li>
+        <li>With context (the deep forest), the same hook attaches to a rich web — and becomes permanent</li>
+        <li>Krashen's "noticing": you can't hear Japanese pitch accent until you have a hook for it. Once you do, you notice it everywhere. If it has no use, it dies. If it has use, natural exposure sustains it</li>
+        <li>The long-term solution is richer contextual analysis — natural hooks — not better memorization tools</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="entry" id="e15">
+  <div class="entry-meta">
+    <div class="entry-status"><div class="status-dot" style="background:#2563eb"></div> Decided</div>
+    <div class="entry-tag">Curriculum decision</div>
+  </div>
+  <div class="entry-body">
+    <div class="entry-title" onclick="toggle('e15')">English as the language of science education <span class="toggle-arrow">▶</span></div>
+    <div class="entry-content">
+      <ul class="points">
+        <li>Curriculum designed in English — the best sources (Feynman, 3Blue1Brown, Veritasium, Carroll, Behiel) are in English</li>
+        <li>Lack of English deeply limits access to the best knowledge in the world</li>
+        <li>Until a more popular language emerges, English wins by default</li>
+        <li>Russian, Chinese, Spanish, French, German are alternatives — none match English coverage of science</li>
+        <li>Lithuanian frameworks won't accept this — curriculum is designed under the assumption it's allowed; Lithuanians can adapt</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════ SECTION 05 ═══════════════════ -->
+<div class="section">
+  <div class="section-label">Session 2 · Curriculum Structure</div>
+  <div class="section-title">Science history as a discovery chain</div>
+</div>
+<hr class="section-rule">
+
+<div class="entry open" id="e16">
+  <div class="entry-meta">
+    <div class="entry-status"><div class="status-dot" style="background:#16a34a"></div> Solid</div>
+    <div class="entry-tag">Curriculum spine</div>
+  </div>
+  <div class="entry-body">
+    <div class="entry-title" onclick="toggle('e16')">Five discovery chains — the historical spine <span class="toggle-arrow">▶</span></div>
+    <div class="entry-content">
+      <div class="warning">Belongs in the curriculum map — move when finalized. Math thread is not yet threaded through this chain.</div>
+      <div class="chain">
+        <div class="chain-item">
+          <div class="chain-num">1</div>
+          <div class="chain-text"><strong>Gases → mass conservation → atomic theory</strong> — Lavoisier, Dalton. Phlogiston collapses when you weigh the products. Matter doesn't appear or vanish.</div>
+        </div>
+        <div class="chain-item">
+          <div class="chain-num">2</div>
+          <div class="chain-text"><strong>Telescope + conservation of momentum → Newton's laws</strong> — Kepler's data + Galileo's experiments + Newton's calculus. Descriptive laws become derivable consequences.</div>
+        </div>
+        <div class="chain-item">
+          <div class="chain-num">3</div>
+          <div class="chain-text"><strong>Light + electrical tools → EM unification</strong> — Faraday, Maxwell. Four equations about electricity and magnetism. Out falls the speed of light. Light was not mentioned.</div>
+        </div>
+        <div class="chain-item">
+          <div class="chain-num">4</div>
+          <div class="chain-text"><strong>Tools + chemistry → particles, atom model</strong> — Cathode rays, Rutherford scattering, Bohr model. The atom has internal structure.</div>
+        </div>
+        <div class="chain-item">
+          <div class="chain-num">5</div>
+          <div class="chain-text"><strong>Electron + light → relativity + quantum mechanics</strong> — Photoelectric effect, blackbody crisis, de Broglie, Schrödinger. Classical physics breaks completely.</div>
+        </div>
+      </div>
+      <div class="distilled">
+        <div class="distilled-label">Missing thread</div>
+        <p>Math is not yet mapped onto this chain. Each step required new math to be invented or adopted. That dependency needs to be made explicit — algebra, logarithms, calculus, complex numbers, linear algebra each appear at specific points.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="entry" id="e17">
+  <div class="entry-meta">
+    <div class="entry-status"><div class="status-dot" style="background:#dc2626"></div> Fragment</div>
+    <div class="entry-tag">Open questions</div>
+  </div>
+  <div class="entry-body">
+    <div class="entry-title" onclick="toggle('e17')">Open threads to resolve <span class="toggle-arrow">▶</span></div>
+    <div class="entry-content">
+      <ul class="points">
+        <li>Find the TED talk on curiosity vs intelligence</li>
+        <li>Thread math through the 5-chain historical spine</li>
+        <li>Is "describing vs predicting" a real historical mental shift? Needs research</li>
+        <li>How does empiricism fit into the three-pillar structure?</li>
+        <li>Map dependency chain: which philosophical ideas had to come before others?</li>
+        <li>Lithuanian national curriculum standards — actual topic lists for Grade 8 and Grade 12</li>
+        <li>Timeline Part II: 1000 → 1600 (Ibn al-Haytham → Copernicus → Galileo)</li>
+        <li>Build student-facing website (document #3)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<footer>
+  Brain Dump Log · Science Curriculum Project<br>
+  Sessions 1–2 · May 2026 · Living document
+</footer>
+
+<script>
+function toggle(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+</script>
+
+</body>
+</html>

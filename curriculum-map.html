@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Science Curriculum — Grades 5–12</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: #fff;
+    color: #111;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  body {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 80px 24px 120px;
+  }
+
+  .site-label {
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: #999;
+    text-transform: uppercase;
+    margin-bottom: 48px;
+  }
+
+  h1 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+
+  .intro {
+    font-size: 14px;
+    color: #555;
+    max-width: 580px;
+    line-height: 1.8;
+    margin-bottom: 8px;
+  }
+
+  .philosophy {
+    font-size: 13px;
+    color: #888;
+    border-left: 2px solid #eee;
+    padding-left: 14px;
+    margin: 24px 0 48px;
+    line-height: 1.7;
+  }
+
+  /* ── LEGEND ── */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 56px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .legend-item {
+    font-size: 12px;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .legend-tag {
+    font-size: 11px;
+    padding: 1px 7px;
+    border-radius: 3px;
+    border: 1px solid;
+    font-weight: 500;
+  }
+
+  .tag-phys  { color: #2563eb; border-color: #bfdbfe; background: #eff6ff; }
+  .tag-chem  { color: #d97706; border-color: #fde68a; background: #fffbeb; }
+  .tag-math  { color: #16a34a; border-color: #bbf7d0; background: #f0fdf4; }
+  .tag-hist  { color: #7c3aed; border-color: #ddd6fe; background: #f5f3ff; }
+  .tag-bio   { color: #db2777; border-color: #fbcfe8; background: #fdf2f8; }
+
+  /* ── CHAIN BLOCK ── */
+  .chain {
+    margin-top: 56px;
+  }
+
+  .chain-header {
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    gap: 20px;
+    align-items: baseline;
+    margin-bottom: 6px;
+  }
+
+  .chain-num {
+    font-size: 28px;
+    font-weight: 600;
+    color: #e8e8e8;
+    line-height: 1;
+    text-align: right;
+    letter-spacing: -0.02em;
+    padding-top: 4px;
+  }
+
+  .chain-meta {}
+
+  .chain-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #bbb;
+    margin-bottom: 2px;
+  }
+
+  .chain-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #111;
+    line-height: 1.3;
+  }
+
+  .chain-arrow {
+    font-size: 13px;
+    color: #bbb;
+    margin: 0 4px;
+    font-weight: 400;
+  }
+
+  .chain-result {
+    color: #111;
+  }
+
+  hr.chain-rule {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 16px 0 0;
+  }
+
+  /* ── UNIT ── */
+  .unit {
+    padding: 24px 0 24px 52px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .unit-question {
+    font-size: 14px;
+    color: #555;
+    font-style: italic;
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+
+  .subjects {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-bottom: 14px;
+  }
+
+  .subject-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 13px;
+  }
+
+  .subject-tag {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    border: 1px solid;
+    font-weight: 500;
+    white-space: nowrap;
+    flex-shrink: 0;
+    letter-spacing: 0.03em;
+  }
+
+  .subject-content {
+    color: #444;
+    line-height: 1.5;
+  }
+
+  .opt { color: #bbb; font-style: italic; }
+
+  .grade-note {
+    font-size: 11px;
+    color: #bbb;
+    margin-bottom: 10px;
+    letter-spacing: 0.03em;
+  }
+
+  /* ── ARTIFACTS ── */
+  .artifacts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .artifact {
+    font-size: 11px;
+    color: #999;
+    border: 1px solid #e8e8e8;
+    border-radius: 3px;
+    padding: 2px 9px;
+    background: #fafafa;
+  }
+
+  .artifact.exists {
+    color: #16a34a;
+    border-color: #bbf7d0;
+    background: #f0fdf4;
+  }
+
+  /* ── MILESTONE ── */
+  .milestone {
+    margin: 56px 0;
+    padding: 28px 32px;
+    border: 1px solid #111;
+    border-radius: 4px;
+  }
+
+  .milestone-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #999;
+    margin-bottom: 6px;
+  }
+
+  .milestone-title {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  .milestone-exams {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+
+  .exam-pill {
+    font-size: 12px;
+    padding: 3px 12px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    color: #444;
+  }
+
+  .milestone-desc {
+    font-size: 13px;
+    color: #777;
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+
+  .milestone-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+    font-size: 13px;
+  }
+
+  .ms-col-title {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #aaa;
+    margin-bottom: 6px;
+  }
+
+  .ms-col ul {
+    list-style: none;
+    color: #555;
+    line-height: 1.9;
+  }
+
+  .ms-col ul li::before { content: '— '; color: #ccc; }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-top: 80px;
+    padding-top: 24px;
+    border-top: 1px solid #eee;
+    font-size: 12px;
+    color: #bbb;
+    line-height: 1.8;
+  }
+
+  @media (max-width: 600px) {
+    .unit { padding-left: 0; }
+    .chain-header { grid-template-columns: 24px 1fr; gap: 12px; }
+    .milestone-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="site-label">Science Curriculum · Grades 5–12 · Lithuania</div>
+
+<h1>Deep Forest Science Curriculum</h1>
+
+<p class="intro">The spine of this curriculum follows science history as a chain of discoveries — each unlocked by a new tool or observation. Students encounter the inspiring questions first and work backwards to the precision those questions demand.</p>
+
+<blockquote class="philosophy">
+  "You go into the deep forest and see amazing things. You don't need to understand everything to keep going. Only after you have intuition do you ask the specific questions exams demand — and then memorization has context."
+</blockquote>
+
+<div class="legend">
+  <div class="legend-item"><span class="legend-tag tag-phys">Physics</span></div>
+  <div class="legend-item"><span class="legend-tag tag-chem">Chemistry</span></div>
+  <div class="legend-item"><span class="legend-tag tag-math">Math</span></div>
+  <div class="legend-item"><span class="legend-tag tag-hist">History of Science</span></div>
+  <div class="legend-item"><span class="legend-tag tag-bio">Human Biology</span></div>
+  <div class="legend-item" style="font-size:12px;color:#aaa;font-style:italic">italic = optional deep dive</div>
+  <div class="legend-item"><span class="artifact exists">● built</span>&nbsp;<span class="artifact">○ planned</span></div>
+</div>
+
+
+<!-- ══════════════════════════════════════════ -->
+<!-- PRE-CHAIN: BEFORE SCIENCE -->
+<!-- ══════════════════════════════════════════ -->
+
+<div class="chain">
+  <div class="chain-header">
+    <div class="chain-num">0</div>
+    <div class="chain-meta">
+      <div class="chain-label">Prologue · Grades 5–6</div>
+      <div class="chain-title">Before science — why it didn't happen sooner</div>
+    </div>
+  </div>
+  <hr class="chain-rule">
+
+  <div class="unit">
+    <div class="grade-note">Grades 5–6</div>
+    <div class="unit-question">The iron in your blood was forged in a dying star. Humans have known this for 60 years. Why did it take until the 1600s for science to even begin?</div>
+    <div class="subjects">
+      <div class="subject-row">
+        <span class="subject-tag tag-hist">History of Science</span>
+        <span class="subject-content">Harari: the revolution of ignorance, not knowledge · The 3 pillars: resources, curiosity, precision · Why the Islamic Golden Age nearly succeeded · Kerala school: Madhava had calculus in 1400 CE — it didn't cascade · Carroll's criticality: the sandpile model of scientific revolutions</span>
+      </div>
+      <div class="subject-row">
+        <span class="subject-tag tag-phys">Physics</span>
+        <span class="subject-content">What is matter · Stars as nuclear furnaces · Elements forged in stars · <span class="opt">Neutron stars and quark stars</span></span>
+      </div>
+      <div class="subject-row">
+        <span class="subject-tag tag-chem">Chemistry</span>
+        <span class="subject-content">Elements: symbols, names, cosmic abundance · Why gold is rare, oxygen is everywhere · Earth's crust, ocean and atmosphere composition</span>
+      </div>
+    </div>
+    <div class="artifacts">
+      <span class="artifact exists">● Timeline: Antiquity → 1000 CE</span>
+      <span class="artifact exists">● Population + criticality chart</span>
+      <span class="artifact exists">● 3-pillar convergence chart</span>
+      <span class="artifact exists">● Elements treemap</span>
+      <span class="artifact exists">● Elements 3D cubes</span>
+      <span class="artifact exists">● Nested cube visualization</span>
+      <span class="artifact exists">● Pop III enrichment chart</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════ -->
+<!-- CHAIN 1 -->
+<!-- ══════════════════════════════════════════ -->
+
+<div class="chain">
+  <div class="chain-header">
+    <div class="chain-num">1</div>
+    <div class="chain-meta">
+      <div class="chain-label">Chain 1 · Grades 6–7</div>
+      <div class="chain-title">
+        Gases <span class="chain-arrow">→</span> mass conservation <span class="chain-arrow">→</span> atomic theory
+      </div>
+    </div>
+  </div>
+  <hr class="chain-rule">
+
+  <div class="unit">
+    <div class="grade-note">Grades 6–7</div>
+    <div class="unit-question">When wood burns, most of its mass vanishes into air. Phlogiston theory said it was releasing "fire essence." Lavoisier weighed the products — and phlogiston collapsed. Where did the mass actually go?</div>
+    <div class="subjects">
+      <div class="subject-row">
+        <span class="subject-tag tag-chem">Chemistry</span>
+        <span class="subject-content">What gases are and how they were discovered · Combustion: what is actually happening · Mass conservation: Lavoisier's experiment · From conservation to atomic theory: Dalton · Atoms as the smallest unit — the periodic table as a consequence</span>
+      </div>
+      <div class="subject-row">
+        <span class="subject-tag tag-hist">History of Science</span>
+        <span class="subject-content">Phlogiston theory: wrong but internally logical · Why it took so long to weigh gases · Lavoisier and precision measurement · Dalton's atomic theory as the first modern chemistry</span>
+      </div>
+      <div class="subject-row">
+        <span class="subject-tag tag-phys">Physics</span>
+        <span class="subject-content">States of matter: solid, liquid, gas · Pressure and temperature · <span class="opt">Ideal gas law — qualitative</span></span>
+      </div>
+    </div>
+    <div class="artifacts">
+      <span class="artifact exists">● Alchemy game</span>
+      <span class="artifact">○ Combustion mass visualizer</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════ -->
+<!-- CHAIN 2 -->
+<!-- ══════════════════════════════════════════ -->
+
+<div class="chain">
+  <div class="chain-header">
+    <div class="chain-num">2</div>
+    <div class="chain-meta">
+      <div class="chain-label">Chain 2 · Grades 7–8</div>
+      <div class="chain-title">
+        Telescope + momentum <span class="chain-arrow">→</span> Newton's laws
+      </div>
+    </div>
+  </div>
+  <hr class="chain-rule">
+
+  <div class="unit">
+    <div class="grade-note">Grades 7–8</div>
+    <div class="unit-question">Kepler had 20 years of raw data on Mars and no calculus. He found the shape of its orbit by brute-force geometry. Then Newton showed all three of Kepler's separate laws are consequences of a single equation. How?</div>
+    <div class="subjects">
+      <div class="subject-row">
+        <span class="subject-tag tag-phys">Physics</span>
+        <span class="subject-content">Force, mass, acceleration — Newton's three laws · Conservation of momentum · Gravity as universal and inverse-square · Orbits as falling in a curve · <span class="opt">Galileo's inclined plane — experimental method</span></span>
+      </div>
+      <div class="subject-row">
+        <span class="subject-tag tag-hist">History of Science</span>
+        <span class="subject-content">Telescope as the enabling tool · Tycho Brahe's data, Kepler's geometry · Galileo vs Aristotle: going to check beats thinking alone · Why logarithms mattered to Kepler · Newton unifies terrestrial and celestial mechanics</span>
+      </div>
+      <div class="subject-row">
+        <span class="subject-tag tag-math">Math</span>
+        <span class="subject-content">Multiplication as area, not a line · Ratios and proportionality · What is a function · <span class="opt">Calculus preview: rate of change as geometry</span></span>
+      </div>
+    </div>
+    <div class="artifacts">
+      <span class="artifact">○ Kepler orbit simulator</span>
+      <span class="artifact">○ Galileo inclined plane</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- MILESTONE 1 -->
+<div class="milestone">
+  <div class="milestone-label">Milestone · End of Grade 8</div>
+  <div class="milestone-title">Top Gymnasium Entry</div>
+  <div class="milestone-exams">
+    <span class="exam-pill">Lithuanian Language · 25 pts</span>
+    <span class="exam-pill">Mathematics · 25 pts</span>
+    <span class="exam-pill">History · 15 pts</span>
+    <span class="exam-pill">Physics · 15 pts</span>
+  </div>
+  <p class="milestone-desc">Benchmark: Vilnius Lyceum entrance exam. Chains 0–2 cover the conceptual ground. Exam-specific precision is drilled on top of intuition already built.</p>
+  <div class="milestone-grid">
+    <div class="ms-col">
+      <div class="ms-col-title">Math by Grade 8</div>
+      <ul>
+        <li>Algebra, equations, inequalities</li>
+        <li>Geometry: area, volume, angles</li>
+        <li>Functions and graphs</li>
+        <li>Basic statistics and probability</li>
+      </ul>
+    </div>
+    <div class="ms-col">
+      <div class="ms-col-title">Physics by Grade 8</div>
+      <ul>
+        <li>Mechanics: force, motion, energy</li>
+        <li>Waves and sound</li>
+        <li>Basic electromagnetism</li>
+        <li>Heat and thermodynamics</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════ -->
+<!-- CHAIN 3 -->
+<!-- ══════════════════════════════════════════ -->
+
+<div class="chain">
+  <div class="chain-header">
+    <div class="chain-num">3</div>
+    <div class="chain-meta">
+      <div class="chain-label">Chain 3 · Grades 8–9</div>
+      <div class="chain-title">
+        Light + electrical tools <span class="chain-arrow">→</span> EM unification
+      </div>
+    </div>
+  </div>
+  <hr class="chain-rule">
+
+  <div class="unit">
+    <div class="grade-note">Grades 8–9</div>
+    <div class="unit-question">Maxwell wrote four equations about electricity and magnetism. Out fell the speed of light. He had not mentioned light at all. How do two separate phenomena turn out to be one thing?</div>
+    <div class="subjects">
+      <div class="subject-row">
+        <span class="subject-tag tag-phys">Physics</span>
+        <span class="subject-content">What is a wave: amplitude, frequency, phase · Electric charge and Coulomb's law · Magnetic fields from moving charges · Faraday's induction · The electromagnetic spectrum · Maxwell's unification — qualitative · <span class="opt">Maxwell's equations written out</span></span>
+      </div>
+      <div class="subject-row">
+        <span class="subject-tag tag-hist">History of Science</span>
+        <span class="subject-content">Faraday: experiment over mathematics · Maxwell: mathematics over experiment · How new instruments (galvanometer, capacitor, coil) made electricity visible and measurable</span>
+      </div>
+      <div class="subject-row">
+        <span class="subject-tag tag-math">Math</span>
+        <span class="subject-content">Vectors: direction matters · Sine waves and the unit circle · Complex numbers as rotations · <span class="opt">Calculus: derivatives and integrals</span></span>
+      </div>
+      <div class="subject-row">
+        <span class="subject-tag tag-chem">Chemistry</span>
+        <span class="subject-content">Electrochemistry and batteries · Electron flow as current</span>
+      </div>
+    </div>
+    <div class="artifacts">
+      <span class="artifact">○ Wave interference visualizer</span>
+      <span class="artifact">○ Field visualizer</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════ -->
+<!-- CHAIN 4 -->
+<!-- ══════════════════════════════════════════ -->
+
+<div class="chain">
+  <div class="chain-header">
+    <div class="chain-num">4</div>
+    <div class="chain-meta">
+      <div class="chain-label">Chain 4 · Grades 9–10</div>
+      <div class="chain-title">
+        Tools + chemistry <span class="chain-arrow">→</span> particles, atom model
+      </div>
+    </div>
+  </div>
+  <hr class="chain-rule">
+
+  <div class="unit">
+    <div class="grade-note">Grades 9–10</div>
+    <div class="unit-question">Thomson fires electrons through a vacuum tube and finds something smaller than an atom. Rutherford fires alpha particles at gold foil — most go straight through, a few bounce back. The atom is almost entirely empty space. What is inside?</div>
+    <div class="subjects">
+      <div class="subject-row">
+        <span class="subject-tag tag-phys">Physics</span>
+        <span class="subject-content">Cathode rays and the discovery of the electron · Rutherford scattering experiment · Bohr model: electrons in quantized orbits · Why atoms don't collapse — the stability problem · <span class="opt">Spectral lines as a fingerprint of atoms</span></span>
+      </div>
+      <div class="subject-row">
+        <span class="subject-tag tag-chem">Chemistry</span>
+        <span class="subject-content">Periodic table derived from atomic structure · Electron shells and chemical bonding · MO theory: bonding vs antibonding orbitals · Why H₂ forms but He₂ doesn't · <span class="opt">Why O₂ is paramagnetic</span></span>
+      </div>
+      <div class="subject-row">
+        <span class="subject-tag tag-hist">History of Science</span>
+        <span class="subject-content">Vacuum tubes and cathode rays as enabling tools · Thomson, Rutherford, Bohr — three models in 20 years · How chemistry and physics were forced into the same room</span>
+      </div>
+      <div class="subject-row">
+        <span class="subject-tag tag-math">Math</span>
+        <span class="subject-content">Matrices as operators · Eigenvectors — intuition first · <span class="opt">Complex numbers: full treatment</span></span>
+      </div>
+    </div>
+    <div class="artifacts">
+      <span class="artifact exists">● Antibonding → spinors path</span>
+      <span class="artifact exists">● Matrices workbook</span>
+      <span class="artifact">○ Rutherford scattering simulator</span>
+      <span class="artifact">○ Orbital shape visualizer</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════ -->
+<!-- CHAIN 5 -->
+<!-- ══════════════════════════════════════════ -->
+
+<div class="chain">
+  <div class="chain-header">
+    <div class="chain-num">5</div>
+    <div class="chain-meta">
+      <div class="chain-label">Chain 5 · Grades 10–12</div>
+      <div class="chain-title">
+        Electron + light <span class="chain-arrow">→</span> relativity + quantum mechanics
+      </div>
+    </div>
+  </div>
+  <hr class="chain-rule">
+
+  <div class="unit">
+    <div class="grade-note">Grades 10–11 · Quantum</div>
+    <div class="unit-question">Classical physics predicts that a hot object should radiate infinite energy. It doesn't. Planck's fix was desperate — he assumed energy comes in discrete chunks. Einstein confirmed it with the photoelectric effect. Classical physics is broken. What replaces it?</div>
+    <div class="subjects">
+      <div class="subject-row">
+        <span class="subject-tag tag-phys">Physics</span>
+        <span class="subject-content">Blackbody radiation: the ultraviolet catastrophe · Photoelectric effect: light as particles · De Broglie: matter as waves · Schrödinger equation — qualitative · Heisenberg uncertainty principle · Pauli exclusion from antisymmetry · <span class="opt">Spinors: the electron needs 720° to return to its original state</span> · <span class="opt">Stern-Gerlach experiment</span></span>
+      </div>
+      <div class="subject-row">
+        <span class="subject-tag tag-chem">Chemistry</span>
+        <span class="subject-content">Electron orbitals: why those shapes · Periodic table as quantum consequence · Why noble gases don't bond · Nodes as rotations in the complex plane</span>
+      </div>
+      <div class="subject-row">
+        <span class="subject-tag tag-math">Math</span>
+        <span class="subject-content">Euler's formula e^iθ = cosθ + i sinθ · Imaginary numbers as physically real rotations · <span class="opt">Matrices as operators on state vectors</span></span>
+      </div>
+    </div>
+    <div class="artifacts">
+      <span class="artifact exists">● Antibonding → spinors full path</span>
+      <span class="artifact">○ Blackbody curve visualizer</span>
+      <span class="artifact">○ Double-slit simulator</span>
+    </div>
+  </div>
+
+  <div class="unit">
+    <div class="grade-note">Grade 11 · Relativity</div>
+    <div class="unit-question">Maxwell's equations give a fixed speed for light. Fixed relative to what? Einstein took it seriously — the speed of light is the same for everyone, always. This breaks time, space, and mass as we understood them.</div>
+    <div class="subjects">
+      <div class="subject-row">
+        <span class="subject-tag tag-phys">Physics</span>
+        <span class="subject-content">The problem with Maxwell + Newtonian mechanics · Speed of light: invariant and why this matters · Time dilation · Length contraction · E = mc²: derivation sketch · <span class="opt">General relativity: gravity as spacetime curvature</span></span>
+      </div>
+      <div class="subject-row">
+        <span class="subject-tag tag-math">Math</span>
+        <span class="subject-content">Spacetime interval: the invariant quantity · Lorentz transformation · <span class="opt">4-vectors</span></span>
+      </div>
+    </div>
+    <div class="artifacts">
+      <span class="artifact">○ Spacetime diagram</span>
+      <span class="artifact">○ Twin paradox visualizer</span>
+    </div>
+  </div>
+
+  <div class="unit">
+    <div class="grade-note">Grades 11–12 · Human Biology</div>
+    <div class="unit-question">A protein is a chain of atoms. Its shape determines its function. For 50 years nobody could predict the shape from the sequence alone. AI just solved it — using physics.</div>
+    <div class="subjects">
+      <div class="subject-row">
+        <span class="subject-tag tag-bio">Human Biology</span>
+        <span class="subject-content">DNA: information stored in chemistry · Proteins: amino acids and folding · Enzymes as molecular machines · Cell membrane as selective barrier · ATP and the mitochondria</span>
+      </div>
+      <div class="subject-row">
+        <span class="subject-tag tag-chem">Chemistry</span>
+        <span class="subject-content">Organic chemistry: carbon's versatility · Hydrogen bonds in biological structures · Acids, bases and pH in the body · <span class="opt">Drug-receptor binding as molecular geometry</span></span>
+      </div>
+    </div>
+    <div class="artifacts">
+      <span class="artifact">○ Protein folding visualizer</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- MILESTONE 2 -->
+<div class="milestone">
+  <div class="milestone-label">Milestone · End of Grade 12</div>
+  <div class="milestone-title">Brandos Egzaminai + International Readiness</div>
+  <div class="milestone-exams">
+    <span class="exam-pill">Lithuanian Language · mandatory</span>
+    <span class="exam-pill">Mathematics · mandatory, extended track</span>
+    <span class="exam-pill">Physics · elective</span>
+    <span class="exam-pill">Chemistry · elective</span>
+    <span class="exam-pill">Biology · elective</span>
+  </div>
+  <p class="milestone-desc">Students completing this curriculum meet Lithuanian matura requirements and have the conceptual foundation to pass SAT subject tests and apply to international universities. The exam specifics are the final layer, not the foundation.</p>
+  <div class="milestone-grid">
+    <div class="ms-col">
+      <div class="ms-col-title">Math Grade 12</div>
+      <ul>
+        <li>Calculus: derivatives, integrals</li>
+        <li>Complex numbers</li>
+        <li>Sequences and series</li>
+        <li>Probability and statistics</li>
+      </ul>
+    </div>
+    <div class="ms-col">
+      <div class="ms-col-title">Physics Grade 12</div>
+      <ul>
+        <li>Mechanics and thermodynamics</li>
+        <li>Electromagnetism</li>
+        <li>Optics and waves</li>
+        <li>Modern physics: quantum intro</li>
+      </ul>
+    </div>
+    <div class="ms-col">
+      <div class="ms-col-title">Chemistry Grade 12</div>
+      <ul>
+        <li>Organic chemistry</li>
+        <li>Reaction kinetics</li>
+        <li>Electrochemistry</li>
+        <li>Thermochemistry</li>
+      </ul>
+    </div>
+    <div class="ms-col">
+      <div class="ms-col-title">Biology Grade 12</div>
+      <ul>
+        <li>Cell biology and genetics</li>
+        <li>Human physiology</li>
+        <li>Biochemistry foundations</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<footer>
+  Science Curriculum · Grades 5–12 · Lithuania<br>
+  Working document — artifacts marked ● are complete, ○ are planned.<br>
+  Curriculum spine: 5 discovery chains following the history of science.<br>
+  Math thread to be added. Chain 6 to be defined.
+</footer>
+
+</body>
+</html>
