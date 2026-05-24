@@ -601,6 +601,225 @@
     color: #ccc;
   }
 
+  /* Point row is clickable to reveal "covered by:" panel */
+  .exam-table tr.point-row { cursor: pointer; transition: background 0.12s; }
+  .exam-table tr.point-row:hover { background: #fafafa; }
+  .exam-table tr.point-row td.point-text::after {
+    content: ' +';
+    color: #ccc;
+    font-size: 10px;
+    margin-left: 4px;
+  }
+  .exam-table tr.point-row.open td.point-text::after { content: ' −'; color: #555; }
+
+  .exam-table tr.coverage-detail { display: none; }
+  .exam-table tr.coverage-detail.open { display: table-row; }
+  .exam-table tr.coverage-detail td {
+    background: #fafafa;
+    padding: 10px 14px 14px 14px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+    font-size: 12px;
+  }
+  .coverage-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+  .coverage-list-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #aaa;
+    margin-right: 8px;
+  }
+  .coverage-list-empty {
+    font-size: 12px;
+    color: #bbb;
+    font-style: italic;
+  }
+  .lec-pill {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 3px;
+    border: 1px solid #e4e4e4;
+    color: #444;
+    background: #fff;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .lec-pill:hover { border-color: #111; color: #111; }
+  .lec-pill .deg { font-size: 13px; line-height: 1; }
+  .lec-pill .deg.full     { color: #16a34a; }
+  .lec-pill .deg.partial  { color: #d97706; }
+  .lec-pill .deg.mention  { color: #999; }
+  .lec-pill.bu { border-left: 3px solid #2563eb; }
+  .lec-pill.td { border-left: 3px solid #7c3aed; }
+
+  /* ── CURRICULUM TABLE (bottom-up / top-down lecture sequences) ── */
+  .curriculum-table-wrap {
+    margin: 16px 0 24px;
+  }
+  .curriculum-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .curriculum-table th {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #aaa;
+    font-weight: 600;
+    text-align: left;
+    padding: 8px 10px 10px;
+    border-bottom: 1px solid #ddd;
+    vertical-align: bottom;
+  }
+  .curriculum-table th.col-num { width: 38px; text-align: right; padding-right: 14px; }
+  .curriculum-table th.col-lecture { width: auto; }
+
+  .curriculum-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #f3f3f3;
+    vertical-align: top;
+  }
+  .curriculum-table td.col-num {
+    text-align: right;
+    padding-right: 14px;
+    color: #ccc;
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
+
+  /* Compact lecture row — clickable */
+  .curriculum-table tr.lec-row { cursor: pointer; transition: background 0.12s; }
+  .curriculum-table tr.lec-row:hover { background: #fafafa; }
+  .curriculum-table tr.lec-row td.col-lecture::after {
+    content: ' +';
+    color: #ccc;
+    font-size: 11px;
+    margin-left: 6px;
+  }
+  .curriculum-table tr.lec-row.open td.col-lecture::after { content: ' −'; color: #555; }
+
+  /* Page-linked lectures: arrow indicator instead of plus */
+  .curriculum-table tr.lec-row.has-page td.col-lecture::after {
+    content: ' ↗';
+    color: #2563eb;
+    font-size: 12px;
+  }
+  .curriculum-table tr.lec-row.has-page:hover td.col-lecture::after { color: #1d4ed8; }
+
+  /* Expanded detail row */
+  .curriculum-table tr.lec-detail { display: none; }
+  .curriculum-table tr.lec-detail.open { display: table-row; }
+  .curriculum-table tr.lec-detail > td {
+    background: #fafafa;
+    padding: 16px 14px 20px 52px;
+    border-bottom: 1px solid #eee;
+  }
+  .lec-detail-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .lec-detail-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .lec-detail-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #aaa;
+    font-weight: 600;
+  }
+
+  .lec-id {
+    font-size: 10px;
+    color: #bbb;
+    font-family: 'SF Mono', Consolas, monospace;
+    letter-spacing: 0.04em;
+    margin-right: 8px;
+  }
+  .lec-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111;
+    line-height: 1.35;
+    display: inline;
+  }
+  .lec-summary {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .topic-pill-list,
+  .mirror-list,
+  .source-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .topic-pill {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    background: #fff;
+    color: #555;
+    border: 1px solid #ececec;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    line-height: 1.4;
+    font-family: 'SF Mono', Consolas, monospace;
+  }
+  .topic-pill .deg { font-size: 11px; line-height: 1; }
+  .topic-pill .deg.full     { color: #16a34a; }
+  .topic-pill .deg.partial  { color: #d97706; }
+  .topic-pill .deg.mention  { color: #999; }
+
+  .source-pill {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 3px;
+    border: 1px solid #e4e4e4;
+    color: #2563eb;
+    background: #fff;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .source-pill:hover { border-color: #2563eb; color: #1d4ed8; }
+  .source-pill::before {
+    content: '↗';
+    color: #999;
+    font-size: 10px;
+  }
+
+  .curriculum-legend {
+    font-size: 11px;
+    color: #888;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 4px;
+    padding-top: 10px;
+    border-top: 1px solid #f0f0f0;
+  }
+
   .exam-legend {
     font-size: 11px;
     color: #888;
@@ -766,94 +985,11 @@
 
 <div class="site-label">Grades 5 to University · Lithuania</div>
 
-<h1>First Principles</h1>
-
-<p class="intro">The spine of this curriculum follows science history as a chain of discoveries — each unlocked by a new tool or observation. Students encounter the inspiring questions first and work backwards to the precision those questions demand.</p>
-
-<blockquote class="philosophy">
-  "You go into the deep forest and see amazing things. You don't need to understand everything to keep going. Only after you have intuition do you ask the specific questions exams demand — and then memorization has context."
-</blockquote>
-
-<div class="legend">
-  <div class="legend-item"><span class="legend-tag tag-phys">Physics</span></div>
-  <div class="legend-item"><span class="legend-tag tag-chem">Chemistry</span></div>
-  <div class="legend-item"><span class="legend-tag tag-math">Math</span></div>
-  <div class="legend-item"><span class="legend-tag tag-hist">History of Science</span></div>
-  <div class="legend-item"><span class="legend-tag tag-bio">Human Biology</span></div>
-  <div class="legend-item" style="font-size:12px;color:#aaa;font-style:italic">italic = optional deep dive</div>
-  <div class="legend-item"><span class="artifact exists">● built</span>&nbsp;<span class="artifact">○ planned</span></div>
-</div>
 
 
-<!-- ══════════════════════════════════════════ -->
-<!-- FEATURED VIDEO (test embed) -->
-<!-- ══════════════════════════════════════════ -->
-
-<section class="video-section">
-  <div class="video-meta">Featured clip · 0:00–0:36</div>
-  <h2 class="video-title">Featured video</h2>
-
-  <a class="video-link-card" href="https://www.youtube.com/watch?v=EYPapE-3FRw&t=0s" target="_blank" rel="noopener">
-    <img src="https://img.youtube.com/vi/EYPapE-3FRw/maxresdefault.jpg"
-         alt="Featured video thumbnail"
-         onerror="this.src='https://img.youtube.com/vi/EYPapE-3FRw/hqdefault.jpg'">
-    <div class="play-overlay">
-      <div class="play-button">
-        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-      </div>
-    </div>
-  </a>
-
-  <div class="video-main-point">
-    <strong>Main point.</strong> [Replace this with the takeaway from the 0:00–0:36 clip — one or two sentences on what the viewer should walk away with.]
-  </div>
-
-  <a class="video-link" href="https://www.youtube.com/watch?v=EYPapE-3FRw&list=PLyQSN7X0ro23NUN9RYBP5xdBYoiv2_5y2&index=1" target="_blank" rel="noopener">Watch full video on YouTube →</a>
-</section>
-
-
-<!-- ══════════════════════════════════════════ -->
-<!-- PRE-CHAIN: BEFORE SCIENCE -->
-<!-- ══════════════════════════════════════════ -->
-
-<div class="chain" id="chain-0">
-  <div class="chain-header">
-    <div class="chain-num">0</div>
-    <div class="chain-meta">
-      <div class="chain-label">Prologue · Grades 5–6</div>
-      <div class="chain-title">Before science — why it didn't happen sooner</div>
-    </div>
-  </div>
-  <hr class="chain-rule">
-
-  <div class="unit">
-    <div class="grade-note">Grades 5–6</div>
-    <div class="unit-question">The iron in your blood was forged in a dying star. Humans have known this for 60 years. Why did it take until the 1600s for science to even begin?</div>
-    <div class="subjects">
-      <div class="subject-row">
-        <span class="subject-tag tag-hist">History of Science</span>
-        <span class="subject-content">Harari: the revolution of ignorance, not knowledge · The 3 pillars: resources, curiosity, precision · Why the Islamic Golden Age nearly succeeded · Kerala school: Madhava had calculus in 1400 CE — it didn't cascade · Carroll's criticality: the sandpile model of scientific revolutions</span>
-      </div>
-      <div class="subject-row">
-        <span class="subject-tag tag-phys">Physics</span>
-        <span class="subject-content">What is matter · Stars as nuclear furnaces · Elements forged in stars · <span class="opt">Neutron stars and quark stars</span></span>
-      </div>
-      <div class="subject-row">
-        <span class="subject-tag tag-chem">Chemistry</span>
-        <span class="subject-content">Elements: symbols, names, cosmic abundance · Why gold is rare, oxygen is everywhere · Earth's crust, ocean and atmosphere composition</span>
-      </div>
-    </div>
-    <div class="artifacts">
-      <span class="artifact exists">● Timeline: Antiquity → 1000 CE</span>
-      <span class="artifact exists">● Population + criticality chart</span>
-      <span class="artifact exists">● 3-pillar convergence chart</span>
-      <span class="artifact exists">● Elements treemap</span>
-      <span class="artifact exists">● Elements 3D cubes</span>
-      <span class="artifact exists">● Nested cube visualization</span>
-      <span class="artifact exists">● Pop III enrichment chart</span>
-    </div>
-  </div>
-</div>
+<!-- Prologue (chain 0) moved to before-science.html.            -->
+<!-- The featured video moved with it.                            -->
+<!-- Link is reached via lectureData8to10.bottomUp[0].page.        -->
 
 
 <!-- ══════════════════════════════════════════ -->
@@ -969,6 +1105,58 @@
 
   </div><!-- /.milestone-body -->
 </div>
+
+
+<!-- ══════════════════════════════════════════ -->
+<!-- BOTTOM-UP CURRICULUM (Grades 8–10)         -->
+<!-- ══════════════════════════════════════════ -->
+
+<section class="milestone" id="curriculum-bottom-up-8-10">
+  <div class="milestone-header" onclick="this.parentElement.classList.toggle('open')">
+    <div>
+      <div class="milestone-label">Bottom-up curriculum · Grades 8–10</div>
+      <div class="milestone-title">Walk the history. Each idea cracks open the next.</div>
+    </div>
+    <span class="milestone-arrow">▶</span>
+  </div>
+  <div class="milestone-body">
+    <p class="milestone-desc">Lectures in the order humans actually figured things out. Each row shows which exam topics it covers and which top-down lectures cover the same material.</p>
+    <div class="curriculum-table-wrap" id="curriculum-bu-8-10-mount">
+      <!-- Rendered from lectureData8to10.bottomUp -->
+    </div>
+    <div class="curriculum-legend">
+      <span><span class="deg full">●</span> full coverage</span>
+      <span><span class="deg partial">◐</span> partial</span>
+      <span><span class="deg mention">○</span> mention only</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════ -->
+<!-- TOP-DOWN CURRICULUM (Grades 8–10)          -->
+<!-- ══════════════════════════════════════════ -->
+
+<section class="milestone" id="curriculum-top-down-8-10">
+  <div class="milestone-header" onclick="this.parentElement.classList.toggle('open')">
+    <div>
+      <div class="milestone-label">Top-down curriculum · Grades 8–10</div>
+      <div class="milestone-title">Start from modern laws. Watch the world fall into place.</div>
+    </div>
+    <span class="milestone-arrow">▶</span>
+  </div>
+  <div class="milestone-body">
+    <p class="milestone-desc">Lectures starting from the strongest known abstraction and deriving downward. Each row shows which exam topics it covers and which bottom-up lectures cover the same material.</p>
+    <div class="curriculum-table-wrap" id="curriculum-td-8-10-mount">
+      <!-- Rendered from lectureData8to10.topDown -->
+    </div>
+    <div class="curriculum-legend">
+      <span><span class="deg full">●</span> full coverage</span>
+      <span><span class="deg partial">◐</span> partial</span>
+      <span><span class="deg mention">○</span> mention only</span>
+    </div>
+  </div>
+</section>
 
 
 <!-- ══════════════════════════════════════════ -->
@@ -1334,8 +1522,6 @@ const examData8to10 = {
     { id: 'pupp',  name: 'PUPP',              sub: 'Grade 10 gate' }
   ],
 
-  // Re-usable coverage profiles. Per-subject default; topics or
-  // individual points can override.
   defaultCoverage: {
     math:    { nmpp: '●', vl: '●', kj: '●', vj: '?', other: '●', pupp: '●' },
     physics: { nmpp: '—', vl: '●', kj: '—', vj: '?', other: '○', pupp: '—' }
@@ -1351,62 +1537,62 @@ const examData8to10 = {
         {
           name: 'Numbers',
           points: [
-            'Natural numbers and integers (including negative numbers)',
-            'Divisibility rules for 2, 3, 4, 5, 6, 8, 9, 10',
-            'Prime and composite numbers; prime factorisation',
-            'Greatest common divisor (GCD) and least common multiple (LCM)',
-            'Fractions: proper, improper, mixed; add, subtract, multiply, divide',
-            'Decimals: place value, conversion to and from fractions',
-            'Ratios and proportions; direct and inverse proportionality',
-            'Percentages: of a number, increase and decrease, simple interest',
-            'Powers with positive integer exponents and laws of exponents',
-            'Square roots and cube roots; perfect squares',
-            'Scientific notation for very large or very small numbers'
+            { id: 'm-num-integers',     text: 'Natural numbers and integers (including negative numbers)' },
+            { id: 'm-num-divisibility', text: 'Divisibility rules for 2, 3, 4, 5, 6, 8, 9, 10' },
+            { id: 'm-num-primes',       text: 'Prime and composite numbers; prime factorisation' },
+            { id: 'm-num-gcd-lcm',      text: 'Greatest common divisor (GCD) and least common multiple (LCM)' },
+            { id: 'm-num-fractions',    text: 'Fractions: proper, improper, mixed; add, subtract, multiply, divide' },
+            { id: 'm-num-decimals',     text: 'Decimals: place value, conversion to and from fractions' },
+            { id: 'm-num-ratios',       text: 'Ratios and proportions; direct and inverse proportionality' },
+            { id: 'm-num-percentages',  text: 'Percentages: of a number, increase and decrease, simple interest' },
+            { id: 'm-num-exponents',    text: 'Powers with positive integer exponents and laws of exponents' },
+            { id: 'm-num-roots',        text: 'Square roots and cube roots; perfect squares' },
+            { id: 'm-num-sci-notation', text: 'Scientific notation for very large or very small numbers' }
           ]
         },
         {
           name: 'Algebra',
           points: [
-            'Variables, algebraic expressions, evaluation',
-            'Like terms and simplification',
-            'Polynomials: terms, degree, classification (monomial, binomial, trinomial)',
-            'Polynomial operations: addition, subtraction, multiplication',
-            'Special products: (a+b)², (a−b)², (a+b)(a−b)',
-            'Factoring: common factor, grouping, special patterns (difference of squares, perfect square trinomial)',
-            'Linear equations in one variable: solving and checking',
-            'Linear inequalities: solving and graphing on a number line',
-            'Systems of two linear equations: substitution and elimination',
-            'Word problems: motion (d = v·t), mixture, age, money'
+            { id: 'm-alg-variables',        text: 'Variables, algebraic expressions, evaluation' },
+            { id: 'm-alg-like-terms',       text: 'Like terms and simplification' },
+            { id: 'm-alg-polynomials',      text: 'Polynomials: terms, degree, classification (monomial, binomial, trinomial)' },
+            { id: 'm-alg-poly-ops',         text: 'Polynomial operations: addition, subtraction, multiplication' },
+            { id: 'm-alg-special-products', text: 'Special products: (a+b)², (a−b)², (a+b)(a−b)' },
+            { id: 'm-alg-factoring',        text: 'Factoring: common factor, grouping, special patterns (difference of squares, perfect square trinomial)' },
+            { id: 'm-alg-linear-eq',        text: 'Linear equations in one variable: solving and checking' },
+            { id: 'm-alg-linear-ineq',      text: 'Linear inequalities: solving and graphing on a number line' },
+            { id: 'm-alg-systems',          text: 'Systems of two linear equations: substitution and elimination' },
+            { id: 'm-alg-word',             text: 'Word problems: motion (d = v·t), mixture, age, money' }
           ]
         },
         {
           name: 'Geometry',
           points: [
-            'Angle types: acute, right, obtuse, straight, reflex; complementary, supplementary, vertical',
-            'Parallel lines cut by a transversal: corresponding, alternate interior, alternate exterior, co-interior',
-            'Triangles by sides: scalene, isosceles, equilateral',
-            'Triangles by angles: acute, right, obtuse',
-            'Triangle angle sum = 180°; exterior angle theorem',
-            'Congruence criteria: SSS, SAS, ASA, AAS, RHS',
-            'Pythagorean theorem and its converse',
-            'Perimeter and area: rectangle, square, parallelogram, triangle, trapezoid, rhombus',
-            'Quadrilateral properties and classification',
-            'Circle: radius, diameter, chord, circumference, area',
-            '3D solids: cube, cuboid, prism, pyramid, cylinder, cone, sphere',
-            'Surface area and volume of the above solids'
+            { id: 'm-geo-angles',           text: 'Angle types: acute, right, obtuse, straight, reflex; complementary, supplementary, vertical' },
+            { id: 'm-geo-parallels',        text: 'Parallel lines cut by a transversal: corresponding, alternate interior, alternate exterior, co-interior' },
+            { id: 'm-geo-triangles-sides',  text: 'Triangles by sides: scalene, isosceles, equilateral' },
+            { id: 'm-geo-triangles-angles', text: 'Triangles by angles: acute, right, obtuse' },
+            { id: 'm-geo-triangle-sum',     text: 'Triangle angle sum = 180°; exterior angle theorem' },
+            { id: 'm-geo-congruence',       text: 'Congruence criteria: SSS, SAS, ASA, AAS, RHS' },
+            { id: 'm-geo-pythagoras',       text: 'Pythagorean theorem and its converse' },
+            { id: 'm-geo-area-2d',          text: 'Perimeter and area: rectangle, square, parallelogram, triangle, trapezoid, rhombus' },
+            { id: 'm-geo-quadrilaterals',   text: 'Quadrilateral properties and classification' },
+            { id: 'm-geo-circle',           text: 'Circle: radius, diameter, chord, circumference, area' },
+            { id: 'm-geo-solids-3d',        text: '3D solids: cube, cuboid, prism, pyramid, cylinder, cone, sphere' },
+            { id: 'm-geo-area-volume-3d',   text: 'Surface area and volume of the above solids' }
           ]
         },
         {
           name: 'Combinatorics',
           note: 'Limited to simple problems at this level.',
-          topicCoverage: { pupp: '—' },  // PUPP syllabus does not include combinatorics
+          topicCoverage: { pupp: '—' },
           points: [
-            'Fundamental counting principle (multiplication rule)',
-            'Addition rule for mutually exclusive cases',
-            'Tree diagrams for systematic counting',
-            'Simple permutations and arrangements',
-            'Simple combinations',
-            'Basic factorial notation'
+            { id: 'm-cmb-counting',     text: 'Fundamental counting principle (multiplication rule)' },
+            { id: 'm-cmb-addition',     text: 'Addition rule for mutually exclusive cases' },
+            { id: 'm-cmb-tree',         text: 'Tree diagrams for systematic counting' },
+            { id: 'm-cmb-permutations', text: 'Simple permutations and arrangements' },
+            { id: 'm-cmb-combinations', text: 'Simple combinations' },
+            { id: 'm-cmb-factorial',    text: 'Basic factorial notation' }
           ]
         }
       ]
@@ -1421,54 +1607,167 @@ const examData8to10 = {
           name: 'Structure of matter',
           note: 'Basically: what atoms are made of and how they break apart.',
           points: [
-            'Atomic notation: chemical symbol with mass number A on top, atomic number Z on bottom',
-            'Atomic number Z = number of protons (defines the element)',
-            'Mass number A = protons + neutrons',
-            'Isotopes: same Z, different A (e.g. ¹²C, ¹³C, ¹⁴C)',
-            '<strong>Alpha decay (α):</strong> emits a helium nucleus; A −4, Z −2',
-            '<strong>Beta-minus decay (β⁻):</strong> neutron → proton + electron; A unchanged, Z +1',
-            '<strong>Beta-plus decay (β⁺):</strong> proton → neutron + positron; A unchanged, Z −1',
-            '<strong>Gamma emission (γ):</strong> high-energy photon; A and Z unchanged',
-            'Half-life: time for half a radioactive sample to decay',
-            'Nuclear fission: heavy nucleus splits (uranium-235, chain reaction)',
-            'Nuclear fusion: light nuclei combine into heavier ones (hydrogen → helium in stars)',
-            'Conservation of atomic and mass numbers in nuclear equations',
-            'Radiation protection: distance, time, shielding (paper for α, aluminium for β, lead for γ)'
+            { id: 'p-sm-notation',     text: 'Atomic notation: chemical symbol with mass number A on top, atomic number Z on bottom' },
+            { id: 'p-sm-atomic-num',   text: 'Atomic number Z = number of protons (defines the element)' },
+            { id: 'p-sm-mass-num',     text: 'Mass number A = protons + neutrons' },
+            { id: 'p-sm-isotopes',     text: 'Isotopes: same Z, different A (e.g. ¹²C, ¹³C, ¹⁴C)' },
+            { id: 'p-sm-alpha',        text: '<strong>Alpha decay (α):</strong> emits a helium nucleus; A −4, Z −2' },
+            { id: 'p-sm-beta-minus',   text: '<strong>Beta-minus decay (β⁻):</strong> neutron → proton + electron; A unchanged, Z +1' },
+            { id: 'p-sm-beta-plus',    text: '<strong>Beta-plus decay (β⁺):</strong> proton → neutron + positron; A unchanged, Z −1' },
+            { id: 'p-sm-gamma',        text: '<strong>Gamma emission (γ):</strong> high-energy photon; A and Z unchanged' },
+            { id: 'p-sm-half-life',    text: 'Half-life: time for half a radioactive sample to decay' },
+            { id: 'p-sm-fission',      text: 'Nuclear fission: heavy nucleus splits (uranium-235, chain reaction)' },
+            { id: 'p-sm-fusion',       text: 'Nuclear fusion: light nuclei combine into heavier ones (hydrogen → helium in stars)' },
+            { id: 'p-sm-conservation', text: 'Conservation of atomic and mass numbers in nuclear equations' },
+            { id: 'p-sm-protection',   text: 'Radiation protection: distance, time, shielding (paper for α, aluminium for β, lead for γ)' }
           ]
         },
         {
           name: 'The Universe',
           note: 'Surprisingly deep for a Grade 8 exam — they need to know how stars live and die.',
           points: [
-            'Hierarchy of cosmic objects: planet, moon, star, planetary system, star cluster, nebula, galaxy, galaxy cluster',
-            'The Solar System: Sun + 8 planets, moons, asteroid belt',
-            'Nebulae as stellar nurseries: emission, dark, planetary, supernova remnants',
-            'Stellar energy source: nuclear fusion of hydrogen into helium (proton-proton chain)',
-            '<strong>Low-mass stars (~Sun):</strong> main sequence → red giant → planetary nebula → white dwarf',
-            '<strong>High-mass stars (≥8 solar masses):</strong> main sequence → red supergiant → supernova → neutron star or black hole',
-            'Galaxy types: spiral (Milky Way), elliptical, irregular',
-            'Light-year as a unit of distance',
-            'The Big Bang and the expanding universe (brief introduction)'
+            { id: 'p-univ-hierarchy',    text: 'Hierarchy of cosmic objects: planet, moon, star, planetary system, star cluster, nebula, galaxy, galaxy cluster' },
+            { id: 'p-univ-solar',        text: 'The Solar System: Sun + 8 planets, moons, asteroid belt' },
+            { id: 'p-univ-nebulae',      text: 'Nebulae as stellar nurseries: emission, dark, planetary, supernova remnants' },
+            { id: 'p-univ-fusion-stars', text: 'Stellar energy source: nuclear fusion of hydrogen into helium (proton-proton chain)' },
+            { id: 'p-univ-low-mass',     text: '<strong>Low-mass stars (~Sun):</strong> main sequence → red giant → planetary nebula → white dwarf' },
+            { id: 'p-univ-high-mass',    text: '<strong>High-mass stars (≥8 solar masses):</strong> main sequence → red supergiant → supernova → neutron star or black hole' },
+            { id: 'p-univ-galaxies',     text: 'Galaxy types: spiral (Milky Way), elliptical, irregular' },
+            { id: 'p-univ-light-year',   text: 'Light-year as a unit of distance' },
+            { id: 'p-univ-big-bang',     text: 'The Big Bang and the expanding universe (brief introduction)' }
           ]
         },
         {
           name: 'Electricity',
           points: [
-            'Electric charge: positive and negative, conservation, unit (coulomb, C)',
-            'Electric current: rate of charge flow, I = Q/t, unit (ampere, A)',
-            'Voltage / potential difference: energy per charge, V = W/Q, unit (volt, V)',
-            "Resistance: opposition to current, R = V/I, unit (ohm, Ω) — Ohm's law",
-            'Electrical work: W = V·I·t, unit (joule, J)',
-            'Electrical power: P = V·I, unit (watt, W); kilowatt-hour (kWh) for energy bills',
-            '<strong>Series circuits:</strong> current same throughout; voltages add; resistances add',
-            '<strong>Parallel circuits:</strong> voltage same across branches; currents add; 1/R = 1/R₁ + 1/R₂',
-            'Reading circuit diagrams: symbols for battery, resistor, switch, bulb, ammeter, voltmeter',
-            'Unit conversions: mA↔A, mV↔V, kΩ↔Ω, kWh↔J'
+            { id: 'p-el-charge',     text: 'Electric charge: positive and negative, conservation, unit (coulomb, C)' },
+            { id: 'p-el-current',    text: 'Electric current: rate of charge flow, I = Q/t, unit (ampere, A)' },
+            { id: 'p-el-voltage',    text: 'Voltage / potential difference: energy per charge, V = W/Q, unit (volt, V)' },
+            { id: 'p-el-resistance', text: "Resistance: opposition to current, R = V/I, unit (ohm, Ω) — Ohm's law" },
+            { id: 'p-el-work',       text: 'Electrical work: W = V·I·t, unit (joule, J)' },
+            { id: 'p-el-power',      text: 'Electrical power: P = V·I, unit (watt, W); kilowatt-hour (kWh) for energy bills' },
+            { id: 'p-el-series',     text: '<strong>Series circuits:</strong> current same throughout; voltages add; resistances add' },
+            { id: 'p-el-parallel',   text: '<strong>Parallel circuits:</strong> voltage same across branches; currents add; 1/R = 1/R₁ + 1/R₂' },
+            { id: 'p-el-diagrams',   text: 'Reading circuit diagrams: symbols for battery, resistor, switch, bulb, ammeter, voltmeter' },
+            { id: 'p-el-units',      text: 'Unit conversions: mA↔A, mV↔V, kΩ↔Ω, kWh↔J' }
           ]
         }
       ]
     }
 
+  ]
+};
+
+
+// ═════════════════════════════════════════════════════════
+// LECTURE DATA · Grades 8–10
+// Two parallel curricula. Each lecture is tagged with the
+// exam topic IDs it covers and the degree of coverage.
+//
+// `degree` values: 'full' (●), 'partial' (◐), 'mention' (○)
+//
+// Cross-references between bottomUp and topDown are derived
+// from shared topicIds — you only tag once.
+//
+// Sample lectures are placeholders. Edit / add / remove freely.
+// ═════════════════════════════════════════════════════════
+
+const lectureData8to10 = {
+
+  bottomUp: [
+    {
+      id: 'bu-01',
+      n: 1,
+      title: 'Before science — why it didn\'t happen sooner',
+      summary: 'The cultural and material preconditions for science. Iron-from-stars as the hook; Harari + Carroll as the framework.',
+      page: 'before-science.html',
+      covers: [
+        { topicId: 'p-univ-fusion-stars', degree: 'partial' },
+        { topicId: 'p-univ-low-mass',     degree: 'mention' },
+        { topicId: 'p-univ-high-mass',    degree: 'mention' }
+      ],
+      sources: [
+        { label: 'Harari — Sapiens (ch. The Discovery of Ignorance)', url: 'https://en.wikipedia.org/wiki/Sapiens:_A_Brief_History_of_Humankind' },
+        { label: 'Carroll — sandpile / self-organised criticality', url: 'https://en.wikipedia.org/wiki/Self-organized_criticality' }
+      ]
+    },
+    {
+      id: 'bu-02',
+      n: 2,
+      title: 'Lavoisier puts a scale under the experiment',
+      summary: 'Mass conservation: the death of phlogiston, the birth of modern chemistry.',
+      covers: [
+        { topicId: 'p-sm-conservation', degree: 'full' },
+        { topicId: 'p-sm-notation',     degree: 'partial' }
+      ],
+      sources: [
+        { label: 'Wikipedia — Antoine Lavoisier', url: 'https://en.wikipedia.org/wiki/Antoine_Lavoisier' },
+        { label: 'YouTube — Lavoisier search', url: 'https://www.youtube.com/results?search_query=lavoisier+conservation+of+mass' }
+      ]
+    },
+    {
+      id: 'bu-03',
+      n: 3,
+      title: 'Thomson, Rutherford, Bohr: the atom in 30 years',
+      summary: 'Three experiments, three models. From plum pudding to quantised orbits.',
+      covers: [
+        { topicId: 'p-sm-notation',   degree: 'full' },
+        { topicId: 'p-sm-atomic-num', degree: 'full' },
+        { topicId: 'p-sm-mass-num',   degree: 'full' },
+        { topicId: 'p-sm-isotopes',   degree: 'partial' }
+      ],
+      sources: [
+        { label: 'Wikipedia — Rutherford scattering', url: 'https://en.wikipedia.org/wiki/Rutherford_scattering_experiments' },
+        { label: 'Wikipedia — Bohr model', url: 'https://en.wikipedia.org/wiki/Bohr_model' }
+      ]
+    }
+  ],
+
+  topDown: [
+    {
+      id: 'td-01',
+      n: 1,
+      title: 'An atom in one diagram',
+      summary: 'The modern atom: nucleus + electron cloud. Why Z and A matter. Isotopes as a footnote.',
+      covers: [
+        { topicId: 'p-sm-notation',   degree: 'full' },
+        { topicId: 'p-sm-atomic-num', degree: 'full' },
+        { topicId: 'p-sm-mass-num',   degree: 'full' },
+        { topicId: 'p-sm-isotopes',   degree: 'full' }
+      ],
+      sources: [
+        { label: 'Sean Carroll — Atoms (Biggest Ideas)', url: 'https://www.youtube.com/results?search_query=sean+carroll+biggest+ideas+atoms' }
+      ]
+    },
+    {
+      id: 'td-02',
+      n: 2,
+      title: 'Stable vs unstable nuclei: where decay comes from',
+      summary: 'The neutron-to-proton ratio. Alpha, beta, gamma derived from energy considerations. Half-life as a probabilistic constant.',
+      covers: [
+        { topicId: 'p-sm-isotopes',     degree: 'full' },
+        { topicId: 'p-sm-alpha',        degree: 'full' },
+        { topicId: 'p-sm-beta-minus',   degree: 'full' },
+        { topicId: 'p-sm-beta-plus',    degree: 'full' },
+        { topicId: 'p-sm-gamma',        degree: 'full' },
+        { topicId: 'p-sm-half-life',    degree: 'full' },
+        { topicId: 'p-sm-conservation', degree: 'full' }
+      ],
+      sources: [
+        { label: 'Wikipedia — Radioactive decay', url: 'https://en.wikipedia.org/wiki/Radioactive_decay' },
+        { label: 'Wikipedia — Half-life', url: 'https://en.wikipedia.org/wiki/Half-life' }
+      ]
+    },
+    {
+      id: 'td-03',
+      n: 3,
+      title: 'Why electrons live in shells',
+      summary: 'A hint of quantum mechanics from the top. Why the periodic table looks how it looks.',
+      covers: [
+        { topicId: 'p-sm-atomic-num', degree: 'partial' }
+      ],
+      sources: []
+    }
   ]
 };
 
@@ -1495,17 +1794,87 @@ function _pointText(point) {
   return typeof point === 'string' ? point : point.text;
 }
 
+function _pointId(point) {
+  return (typeof point === 'object' && point.id) ? point.id : null;
+}
+
+function _degSymbol(d) {
+  return d === 'full' ? '●' : d === 'partial' ? '◐' : '○';
+}
+
+function _escAttr(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function _truncate(s, n) {
+  return s && s.length > n ? s.substring(0, n - 1) + '…' : s;
+}
+
+function _lecPillClass(id) {
+  return id.startsWith('bu') ? 'bu' : (id.startsWith('td') ? 'td' : '');
+}
+
+// Build { topicId → { id, text, path } } lookup from examData
+function _buildTopicLookup(examData) {
+  const lookup = {};
+  examData.subjects.forEach(subj => {
+    subj.topics.forEach(topic => {
+      topic.points.forEach(point => {
+        const pid = _pointId(point);
+        if (pid) {
+          lookup[pid] = {
+            id: pid,
+            text: _pointText(point),
+            path: subj.name + ' · ' + topic.name
+          };
+        }
+      });
+    });
+  });
+  return lookup;
+}
+
+// Lectures from `otherLectures` that share at least one topicId
+function _findMirroredLectures(thisLec, otherLectures) {
+  if (!thisLec.covers || !otherLectures) return [];
+  const myTopicIds = new Set(thisLec.covers.map(c => c.topicId));
+  return otherLectures.filter(other => {
+    if (!other.covers) return false;
+    return other.covers.some(c => myTopicIds.has(c.topicId));
+  });
+}
+
+// Lectures (from any pool) that cover a given topicId; returns { id, n, title, degree }
+function _findLecturesCoveringTopic(topicId, lecturePools) {
+  const result = [];
+  lecturePools.forEach(pool => {
+    if (!pool) return;
+    pool.forEach(lec => {
+      if (!lec.covers) return;
+      const cov = lec.covers.find(c => c.topicId === topicId);
+      if (cov) {
+        result.push({ id: lec.id, n: lec.n, title: lec.title, degree: cov.degree });
+      }
+    });
+  });
+  return result;
+}
+
 
 // === EXAM CROSS-REFERENCE TABLE ===
+// Each point row is clickable. Clicking reveals which lectures cover it.
 
-function renderExamTable(mountId, data) {
+function renderExamTable(mountId, data, lectureData) {
   const mount = document.getElementById(mountId);
   if (!mount) return;
 
   const exams = data.exams;
   const totalCols = exams.length + 1;
-  let html = '<table class="exam-table"><thead><tr><th>Topic</th>';
+  const lecturePools = lectureData
+    ? [lectureData.bottomUp, lectureData.topDown]
+    : [];
 
+  let html = '<table class="exam-table"><thead><tr><th>Topic</th>';
   exams.forEach(e => {
     html += '<th>' + e.name + '<span class="col-sub">' + e.sub + '</span></th>';
   });
@@ -1519,18 +1888,51 @@ function renderExamTable(mountId, data) {
 
       topic.points.forEach(point => {
         const coverage = _resolveCoverage(data, subject, topic, point);
-        html += '<tr><td class="point-text">' + _pointText(point) + '</td>';
+        const pid = _pointId(point);
+
+        html += '<tr class="point-row" onclick="_toggleDetailRow(this)">';
+        html += '<td class="point-text">' + _pointText(point) + '</td>';
         exams.forEach(e => {
           const sym = coverage[e.id] || '—';
           html += '<td><span class="' + _symbolClass(sym) + '">' + sym + '</span></td>';
         });
         html += '</tr>';
+
+        // Hidden coverage-detail row (only if this point has an id and we have lectures)
+        if (pid && lecturePools.length) {
+          const covering = _findLecturesCoveringTopic(pid, lecturePools);
+          html += '<tr class="coverage-detail"><td colspan="' + totalCols + '">';
+          if (covering.length) {
+            html += '<div class="coverage-list">';
+            html += '<span class="coverage-list-label">Covered by:</span>';
+            covering.forEach(lec => {
+              const cls = _lecPillClass(lec.id);
+              html += '<span class="lec-pill ' + cls + '" title="' + _escAttr(lec.title) + '">';
+              html += '<span class="deg ' + lec.degree + '">' + _degSymbol(lec.degree) + '</span>';
+              html += lec.id + ' · ' + _truncate(lec.title, 50);
+              html += '</span>';
+            });
+            html += '</div>';
+          } else {
+            html += '<span class="coverage-list-empty">No lectures cover this topic yet.</span>';
+          }
+          html += '</td></tr>';
+        }
       });
     });
   });
 
   html += '</tbody></table>';
   mount.innerHTML = html;
+}
+
+// Generic: toggle this row + the immediately-following detail row
+function _toggleDetailRow(rowEl) {
+  rowEl.classList.toggle('open');
+  const next = rowEl.nextElementSibling;
+  if (next && (next.classList.contains('coverage-detail') || next.classList.contains('lec-detail'))) {
+    next.classList.toggle('open');
+  }
 }
 
 
@@ -1571,10 +1973,118 @@ function renderScopeView(mountId, data) {
 }
 
 
+// === CURRICULUM TABLE (bottom-up or top-down) ===
+// Compact row per lecture: # + title. Click to expand a detail panel
+// with summary, exam topics covered, mirrored lectures, and external sources.
+
+function renderCurriculumTable(mountId, lectures, otherLectures, otherLabel, examData) {
+  const mount = document.getElementById(mountId);
+  if (!mount) return;
+
+  const topicLookup = _buildTopicLookup(examData);
+
+  let html = '<table class="curriculum-table"><thead><tr>';
+  html += '<th class="col-num">#</th>';
+  html += '<th class="col-lecture">Lecture</th>';
+  html += '</tr></thead><tbody>';
+
+  if (!lectures || !lectures.length) {
+    html += '<tr><td colspan="2" style="padding:24px 0;color:#bbb;font-style:italic;">No lectures yet — add them to lectureData8to10.</td></tr>';
+    html += '</tbody></table>';
+    mount.innerHTML = html;
+    return;
+  }
+
+  lectures.forEach(lec => {
+    // ── Compact lecture row ──
+    // If lecture has a dedicated page, the row navigates instead of expanding.
+    if (lec.page) {
+      html += '<tr class="lec-row has-page" onclick="window.location.href=\'' + _escAttr(lec.page) + '\'">';
+    } else {
+      html += '<tr class="lec-row" onclick="_toggleDetailRow(this)">';
+    }
+    html += '<td class="col-num">' + (lec.n != null ? lec.n : '') + '</td>';
+    html += '<td class="col-lecture">';
+    html += '<span class="lec-id">' + lec.id + '</span>';
+    html += '<span class="lec-title">' + lec.title + '</span>';
+    html += '</td></tr>';
+
+    // ── Expanded detail row (skipped for page-linked lectures) ──
+    if (lec.page) return;
+    html += '<tr class="lec-detail"><td colspan="2">';
+    html += '<div class="lec-detail-inner">';
+
+    // Summary
+    if (lec.summary) {
+      html += '<p class="lec-summary">' + lec.summary + '</p>';
+    }
+
+    // Exam topics covered
+    html += '<div class="lec-detail-section">';
+    html += '<div class="lec-detail-label">Exam topics covered</div>';
+    html += '<div class="topic-pill-list">';
+    if (lec.covers && lec.covers.length) {
+      lec.covers.forEach(c => {
+        const topic = topicLookup[c.topicId];
+        const title = topic
+          ? (topic.path + ' — ' + topic.text.replace(/<[^>]+>/g, ''))
+          : ('Unknown topic: ' + c.topicId);
+        html += '<span class="topic-pill" title="' + _escAttr(title) + '">';
+        html += '<span class="deg ' + c.degree + '">' + _degSymbol(c.degree) + '</span>';
+        html += c.topicId;
+        html += '</span>';
+      });
+    } else {
+      html += '<span class="coverage-list-empty">no topics tagged</span>';
+    }
+    html += '</div></div>';
+
+    // Mirrored by other curriculum
+    const mirrored = _findMirroredLectures(lec, otherLectures);
+    html += '<div class="lec-detail-section">';
+    html += '<div class="lec-detail-label">Mirrored by ' + otherLabel + '</div>';
+    html += '<div class="mirror-list">';
+    if (mirrored.length) {
+      mirrored.forEach(m => {
+        const cls = _lecPillClass(m.id);
+        html += '<span class="lec-pill ' + cls + '" title="' + _escAttr(m.title) + '">';
+        html += m.id + ' · ' + _truncate(m.title, 50);
+        html += '</span>';
+      });
+    } else {
+      html += '<span class="coverage-list-empty">no overlap yet</span>';
+    }
+    html += '</div></div>';
+
+    // External sources
+    html += '<div class="lec-detail-section">';
+    html += '<div class="lec-detail-label">Other sources</div>';
+    html += '<div class="source-list">';
+    if (lec.sources && lec.sources.length) {
+      lec.sources.forEach(s => {
+        html += '<a class="source-pill" href="' + _escAttr(s.url) + '" target="_blank" rel="noopener">';
+        html += s.label;
+        html += '</a>';
+      });
+    } else {
+      html += '<span class="coverage-list-empty">no sources yet</span>';
+    }
+    html += '</div></div>';
+
+    html += '</div></td></tr>';
+  });
+
+  html += '</tbody></table>';
+  mount.innerHTML = html;
+}
+
+
 // === MOUNT ===
 
-renderExamTable('exam-table-8-10-mount', examData8to10);
+renderExamTable('exam-table-8-10-mount', examData8to10, lectureData8to10);
 renderScopeView('scope-view-8-10-mount', examData8to10);
+renderCurriculumTable('curriculum-bu-8-10-mount', lectureData8to10.bottomUp, lectureData8to10.topDown, 'top-down', examData8to10);
+renderCurriculumTable('curriculum-td-8-10-mount', lectureData8to10.topDown, lectureData8to10.bottomUp, 'bottom-up', examData8to10);
 
 </script>
 

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Before Science — bu-01 · First Principles</title>
+<meta name="description" content="Why it took until the 1600s for science to begin. The cultural, mathematical and material preconditions that had to converge.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: #fff;
+    color: #111;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  body {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 80px 24px 120px;
+  }
+
+  a { color: inherit; }
+
+  /* ── TOP NAV ── */
+  .topnav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid #eee;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+  }
+  .topnav-inner {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 0 24px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .nav-back {
+    font-size: 12px;
+    color: #555;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 3px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .nav-back:hover { background: #f5f5f5; color: #111; }
+  .nav-back .nav-arrow {
+    font-size: 13px;
+    transition: transform 0.18s;
+    display: inline-block;
+  }
+  .nav-back:hover .nav-arrow { transform: translateX(-3px); }
+  .nav-brand {
+    flex: 1;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #777;
+    letter-spacing: 0.04em;
+    font-family: 'SF Mono', Consolas, monospace;
+  }
+  .nav-items {
+    display: flex;
+    gap: 14px;
+    min-width: 80px;
+    justify-content: flex-end;
+  }
+
+  /* ── HERO ── */
+  .lecture-tag {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #aaa;
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-size: 30px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+  }
+
+  .grades {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 36px;
+  }
+
+  /* ── UNIT QUESTION (verbatim quote-style) ── */
+  blockquote.unit-question {
+    font-size: 17px;
+    color: #333;
+    line-height: 1.55;
+    font-weight: 500;
+    border-left: 2px solid #ddd;
+    padding-left: 18px;
+    margin: 0 0 48px;
+    max-width: 620px;
+  }
+
+  /* ── SECTION HEADER ── */
+  h2.section-header {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #999;
+    margin: 64px 0 18px;
+    font-weight: 600;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+  }
+
+  /* ── VIDEO ── */
+  .video-section {
+    margin-bottom: 24px;
+  }
+
+  .video-meta {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #aaa;
+    margin-bottom: 6px;
+  }
+
+  .video-link-card {
+    display: block;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    text-decoration: none;
+  }
+  .video-link-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: opacity 0.18s;
+  }
+  .video-link-card:hover img { opacity: 0.85; }
+  .play-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  .play-button {
+    width: 74px;
+    height: 52px;
+    background: rgba(255, 0, 51, 0.92);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, background 0.2s;
+  }
+  .video-link-card:hover .play-button {
+    background: #ff0033;
+    transform: scale(1.06);
+  }
+  .play-button svg {
+    width: 26px;
+    height: 26px;
+    fill: #fff;
+    margin-left: 3px;
+  }
+  .video-main-point {
+    font-size: 14px;
+    color: #444;
+    line-height: 1.7;
+    padding-left: 14px;
+    border-left: 2px solid #eee;
+    margin-bottom: 14px;
+  }
+  .video-main-point strong { color: #111; }
+  .video-link {
+    font-size: 12px;
+    color: #777;
+    text-decoration: none;
+    border-bottom: 1px solid #ddd;
+  }
+  .video-link:hover { color: #111; border-bottom-color: #111; }
+
+  /* ── SUBJECT CONTENT ── */
+  .subject-block {
+    margin-bottom: 28px;
+  }
+
+  .subject-tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    border: 1px solid;
+    font-weight: 500;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+
+  .tag-phys { color: #2563eb; border-color: #bfdbfe; background: #eff6ff; }
+  .tag-chem { color: #d97706; border-color: #fde68a; background: #fffbeb; }
+  .tag-math { color: #16a34a; border-color: #bbf7d0; background: #f0fdf4; }
+  .tag-hist { color: #7c3aed; border-color: #ddd6fe; background: #f5f3ff; }
+  .tag-bio  { color: #db2777; border-color: #fbcfe8; background: #fdf2f8; }
+
+  ul.subject-points {
+    list-style: none;
+    padding: 0;
+  }
+  ul.subject-points li {
+    font-size: 14px;
+    color: #444;
+    line-height: 1.6;
+    padding: 4px 0 4px 14px;
+    position: relative;
+  }
+  ul.subject-points li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: #ccc;
+  }
+  ul.subject-points li .opt {
+    font-style: italic;
+    color: #888;
+  }
+
+  /* ── ARTIFACTS ── */
+  .artifacts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .artifact {
+    font-size: 11px;
+    padding: 2px 9px;
+    border-radius: 3px;
+    border: 1px solid #e8e8e8;
+    color: #999;
+    background: #fafafa;
+  }
+  .artifact.exists {
+    color: #16a34a;
+    border-color: #bbf7d0;
+    background: #f0fdf4;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-top: 96px;
+    padding-top: 24px;
+    border-top: 1px solid #eee;
+    font-size: 12px;
+    color: #aaa;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 600px) {
+    h1 { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a class="nav-back" href="map.html"><span class="nav-arrow">←</span> Back to curriculum</a>
+    <div class="nav-brand">bu-01</div>
+    <div class="nav-items"><!-- placeholder for future nav links --></div>
+  </div>
+</nav>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- HERO -->
+<!-- ═══════════════════════════════════════════════ -->
+
+<div class="lecture-tag">Bottom-up · Lecture 1 · Prologue</div>
+<h1>Before science — why it didn't happen sooner</h1>
+<div class="grades">Grades 5–6</div>
+
+<blockquote class="unit-question">
+  The iron in your blood was forged in a dying star. Humans have known this for 60 years. Why did it take until the 1600s for science to even begin?
+</blockquote>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- FEATURED VIDEO -->
+<!-- ═══════════════════════════════════════════════ -->
+
+<h2 class="section-header">Featured clip</h2>
+
+<section class="video-section">
+  <div class="video-meta">0:00–0:36</div>
+
+  <a class="video-link-card" href="https://www.youtube.com/watch?v=EYPapE-3FRw&t=0s" target="_blank" rel="noopener">
+    <img src="https://img.youtube.com/vi/EYPapE-3FRw/maxresdefault.jpg"
+         alt="Featured video thumbnail"
+         onerror="this.src='https://img.youtube.com/vi/EYPapE-3FRw/hqdefault.jpg'">
+    <div class="play-overlay">
+      <div class="play-button">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      </div>
+    </div>
+  </a>
+
+  <div class="video-main-point">
+    <strong>Main point.</strong> [Replace this with the takeaway from the 0:00–0:36 clip — one or two sentences on what the viewer should walk away with.]
+  </div>
+
+  <a class="video-link" href="https://www.youtube.com/watch?v=EYPapE-3FRw&list=PLyQSN7X0ro23NUN9RYBP5xdBYoiv2_5y2&index=1" target="_blank" rel="noopener">Watch full video on YouTube →</a>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- WHAT THIS COVERS -->
+<!-- ═══════════════════════════════════════════════ -->
+
+<h2 class="section-header">What this lecture covers</h2>
+
+<div class="subject-block">
+  <span class="subject-tag tag-hist">History of Science</span>
+  <ul class="subject-points">
+    <li>Harari: the Scientific Revolution as a revolution of ignorance, not of knowledge</li>
+    <li>The 3 pillars — resources, curiosity, precision</li>
+    <li>Why the Islamic Golden Age nearly succeeded</li>
+    <li>Kerala school: Madhava had Taylor-series-equivalent calculus in 1400 CE — it didn't cascade</li>
+    <li>Carroll's criticality: the sandpile model of scientific revolutions</li>
+  </ul>
+</div>
+
+<div class="subject-block">
+  <span class="subject-tag tag-phys">Physics</span>
+  <ul class="subject-points">
+    <li>What is matter</li>
+    <li>Stars as nuclear furnaces</li>
+    <li>Elements forged in stars</li>
+    <li><span class="opt">Neutron stars and quark stars (optional deep dive)</span></li>
+  </ul>
+</div>
+
+<div class="subject-block">
+  <span class="subject-tag tag-chem">Chemistry</span>
+  <ul class="subject-points">
+    <li>Elements: symbols, names, cosmic abundance</li>
+    <li>Why gold is rare and oxygen is everywhere</li>
+    <li>Earth's crust, ocean, and atmosphere composition</li>
+  </ul>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ARTIFACTS -->
+<!-- ═══════════════════════════════════════════════ -->
+
+<h2 class="section-header">Related artifacts</h2>
+
+<div class="artifacts">
+  <span class="artifact exists">● Timeline: Antiquity → 1000 CE</span>
+  <span class="artifact exists">● Population + criticality chart</span>
+  <span class="artifact exists">● 3-pillar convergence chart</span>
+  <span class="artifact exists">● Elements treemap</span>
+  <span class="artifact exists">● Elements 3D cubes</span>
+  <span class="artifact exists">● Nested cube visualization</span>
+  <span class="artifact exists">● Pop III enrichment chart</span>
+</div>
+
+
+<footer>
+  Lecture bu-01 · Bottom-up curriculum, Grades 5–6<br>
+  Part of the science curriculum for Grades 5 to University · Lithuania
+</footer>
+
+</body>
+</html>
