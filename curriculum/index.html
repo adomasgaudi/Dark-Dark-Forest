@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Science Curriculum — Grades 5–12</title>
+<meta name="description" content="A story-driven science curriculum for grades 5 through 12. From gases to quantum mechanics, threaded through 500 years of discovery.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  html, body {
+    background: #fff;
+    color: #111;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  a { color: inherit; }
+
+  /* ── SECTION FRAME ── */
+  .section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 24px;
+    max-width: 820px;
+    margin: 0 auto;
+  }
+
+  .section-tag {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #bbb;
+    margin-bottom: 18px;
+  }
+
+  .section-title {
+    font-size: 34px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.22;
+    margin-bottom: 24px;
+  }
+
+  .section-lead {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.7;
+    max-width: 600px;
+    margin-bottom: 56px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    align-items: flex-start;
+  }
+
+  .hero-label {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #999;
+    margin-bottom: 28px;
+  }
+
+  .hero-title {
+    font-size: 72px;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.02;
+    margin-bottom: 32px;
+  }
+
+  .hero-subtitle {
+    font-size: 18px;
+    color: #555;
+    max-width: 540px;
+    line-height: 1.55;
+    margin-bottom: 88px;
+  }
+
+  .scroll-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    color: #111;
+    text-decoration: none;
+    padding: 14px 26px;
+    border: 1px solid #111;
+    border-radius: 3px;
+    transition: background 0.18s, color 0.18s, transform 0.18s;
+    cursor: pointer;
+    background: none;
+    font-family: inherit;
+    letter-spacing: 0.02em;
+  }
+
+  .scroll-btn:hover {
+    background: #111;
+    color: #fff;
+  }
+
+  .scroll-btn .arrow {
+    font-size: 14px;
+    transition: transform 0.3s;
+  }
+
+  .scroll-btn:hover .arrow {
+    transform: translateY(3px);
+  }
+
+  /* ── SKELETON LIST (chains) ── */
+  .skeleton-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .skeleton-row {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 28px;
+    align-items: baseline;
+    padding: 28px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .skeleton-row:first-child { padding-top: 0; }
+  .skeleton-row:last-child { border-bottom: none; }
+
+  .skeleton-num {
+    font-size: 38px;
+    font-weight: 600;
+    color: #e8e8e8;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    text-align: right;
+  }
+
+  .skeleton-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #bbb;
+    margin-bottom: 4px;
+  }
+
+  .skeleton-title {
+    font-size: 18px;
+    font-weight: 500;
+    color: #222;
+    line-height: 1.4;
+  }
+
+  .skeleton-arrow {
+    color: #ccc;
+    margin: 0 4px;
+  }
+
+  .skeleton-milestone {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 20px 0 20px 84px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .milestone-pill {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #16a34a;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    padding: 3px 9px;
+    border-radius: 3px;
+  }
+
+  .skeleton-milestone-text {
+    font-size: 13px;
+    color: #777;
+  }
+
+  /* ── EDUCATORS ── */
+  .educators-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px 40px;
+  }
+
+  .educator {
+    padding: 18px 0;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .educator-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 4px;
+  }
+
+  .educator-role {
+    font-size: 13px;
+    color: #777;
+    line-height: 1.5;
+  }
+
+  /* ── PHILOSOPHY ── */
+  .principles-list {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+  }
+
+  .principle {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 28px;
+    align-items: baseline;
+  }
+
+  .principle-num {
+    font-size: 13px;
+    font-weight: 600;
+    color: #ccc;
+    letter-spacing: 0.04em;
+    text-align: right;
+  }
+
+  .principle-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 8px;
+  }
+
+  .principle-body {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.7;
+    max-width: 580px;
+  }
+
+  /* ── CTA ── */
+  .cta-section {
+    align-items: flex-start;
+  }
+
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 34px;
+    background: #111;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 3px;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    transition: background 0.18s, transform 0.18s;
+  }
+
+  .cta-btn:hover {
+    background: #333;
+  }
+
+  .cta-btn .arrow { transition: transform 0.3s; }
+  .cta-btn:hover .arrow { transform: translateX(4px); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #fafafa;
+    border-top: 1px solid #eee;
+    padding: 80px 24px 56px;
+  }
+
+  .footer-inner {
+    max-width: 820px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+  }
+
+  .footer-label {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #aaa;
+    margin-bottom: 18px;
+  }
+
+  .footer-block { margin-bottom: 40px; }
+
+  .contact-email {
+    font-size: 17px;
+    color: #111;
+    text-decoration: none;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 1px;
+  }
+
+  .contact-email:hover { border-bottom-color: #111; }
+
+  .contact-author {
+    font-size: 13px;
+    color: #777;
+    margin-top: 10px;
+  }
+
+  .share-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .share-btn {
+    font-size: 12px;
+    padding: 8px 14px;
+    border: 1px solid #ddd;
+    background: #fff;
+    color: #555;
+    text-decoration: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color 0.18s, color 0.18s;
+  }
+
+  .share-btn:hover {
+    border-color: #111;
+    color: #111;
+  }
+
+  /* Form */
+  .inquiry-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .form-input,
+  .form-textarea {
+    font-family: inherit;
+    font-size: 14px;
+    padding: 11px 14px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    background: #fff;
+    color: #111;
+    line-height: 1.5;
+    transition: border-color 0.18s;
+  }
+
+  .form-textarea {
+    min-height: 110px;
+    resize: vertical;
+  }
+
+  .form-input:focus,
+  .form-textarea:focus {
+    outline: none;
+    border-color: #111;
+  }
+
+  .form-submit {
+    align-self: flex-start;
+    margin-top: 6px;
+    padding: 11px 22px;
+    background: #111;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: background 0.18s;
+  }
+
+  .form-submit:hover { background: #333; }
+
+  .form-success {
+    display: none;
+    font-size: 13px;
+    color: #16a34a;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    padding: 10px 14px;
+    border-radius: 3px;
+    margin-top: 10px;
+  }
+
+  .footer-bottom {
+    max-width: 820px;
+    margin: 56px auto 0;
+    padding-top: 24px;
+    border-top: 1px solid #eee;
+    font-size: 11px;
+    color: #aaa;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .hero-title { font-size: 44px; }
+    .section-title { font-size: 24px; }
+    .hero-subtitle { font-size: 16px; }
+    .skeleton-row { grid-template-columns: 40px 1fr; gap: 18px; }
+    .skeleton-num { font-size: 28px; }
+    .skeleton-milestone { padding-left: 58px; }
+    .educators-list { grid-template-columns: 1fr; }
+    .principle { grid-template-columns: 40px 1fr; gap: 18px; }
+    .footer-inner { grid-template-columns: 1fr; gap: 40px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- HERO -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="section hero" id="hero">
+  <div class="hero-label">A curriculum for Grades 5–12</div>
+  <h1 class="hero-title">Science<br>Curriculum.</h1>
+  <p class="hero-subtitle">From Aristotle to Einstein ...</p>
+  <a href="#skeleton" class="scroll-btn">Begin <span class="arrow">↓</span></a>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SKELETON · The bone structure -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="section" id="skeleton">
+  <div class="section-tag">The skeleton</div>
+  <h2 class="section-title">Six discovery chains.<br>Eight years of school.</h2>
+  <p class="section-lead">Each chain is a single historical move — a new tool or observation that unlocked the next era of science. The skeleton is short on purpose.</p>
+
+  <div class="skeleton-list">
+
+    <div class="skeleton-row">
+      <div class="skeleton-num">0</div>
+      <div>
+        <div class="skeleton-label">Prologue · Grades 5–6</div>
+        <div class="skeleton-title">Before science — why it didn't happen sooner</div>
+      </div>
+    </div>
+
+    <div class="skeleton-row">
+      <div class="skeleton-num">1</div>
+      <div>
+        <div class="skeleton-label">Chain 1 · Grades 6–7</div>
+        <div class="skeleton-title">Gases <span class="skeleton-arrow">→</span> mass conservation <span class="skeleton-arrow">→</span> atomic theory</div>
+      </div>
+    </div>
+
+    <div class="skeleton-row">
+      <div class="skeleton-num">2</div>
+      <div>
+        <div class="skeleton-label">Chain 2 · Grades 7–8</div>
+        <div class="skeleton-title">Telescope + momentum <span class="skeleton-arrow">→</span> Newton's laws</div>
+      </div>
+    </div>
+
+    <div class="skeleton-milestone">
+      <span class="milestone-pill">Milestone</span>
+      <span class="skeleton-milestone-text">End of Grade 8 — Vilnius Lyceum entry exam</span>
+    </div>
+
+    <div class="skeleton-row">
+      <div class="skeleton-num">3</div>
+      <div>
+        <div class="skeleton-label">Chain 3 · Grades 8–9</div>
+        <div class="skeleton-title">Light + electrical tools <span class="skeleton-arrow">→</span> EM unification</div>
+      </div>
+    </div>
+
+    <div class="skeleton-row">
+      <div class="skeleton-num">4</div>
+      <div>
+        <div class="skeleton-label">Chain 4 · Grades 9–10</div>
+        <div class="skeleton-title">Tools + chemistry <span class="skeleton-arrow">→</span> particles, atom model</div>
+      </div>
+    </div>
+
+    <div class="skeleton-row">
+      <div class="skeleton-num">5</div>
+      <div>
+        <div class="skeleton-label">Chain 5 · Grades 10–12</div>
+        <div class="skeleton-title">Electron + light <span class="skeleton-arrow">→</span> relativity + quantum mechanics</div>
+      </div>
+    </div>
+
+    <div class="skeleton-milestone">
+      <span class="milestone-pill">Milestone</span>
+      <span class="skeleton-milestone-text">End of Grade 12 — Brandos egzaminai + SAT readiness</span>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- RESOURCES · Best educators in the world -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="section" id="resources">
+  <div class="section-tag">The voices</div>
+  <h2 class="section-title">The best science educators alive — woven into a single coherent story.</h2>
+  <p class="section-lead">Most curricula reference a textbook. This one references the people actually pushing science explanation forward. Every chain pulls from the explainer who teaches it best.</p>
+
+  <div class="educators-list">
+
+    <div class="educator">
+      <div class="educator-name">Sean Carroll</div>
+      <div class="educator-role">Theoretical physicist · The Biggest Ideas in the Universe · physics backbone</div>
+    </div>
+
+    <div class="educator">
+      <div class="educator-name">Grant Sanderson</div>
+      <div class="educator-role">3Blue1Brown · visual mathematics from arithmetic to linear algebra</div>
+    </div>
+
+    <div class="educator">
+      <div class="educator-name">Stephen Welch</div>
+      <div class="educator-role">Welch Labs · imaginary numbers, neural networks, deep visual math</div>
+    </div>
+
+    <div class="educator">
+      <div class="educator-name">Derek Muller</div>
+      <div class="educator-role">Veritasium · physics and counterintuitive ideas, calibrated for intuition</div>
+    </div>
+
+    <div class="educator">
+      <div class="educator-name">Yuval Noah Harari</div>
+      <div class="educator-role">Sapiens · the cultural conditions that made science possible at all</div>
+    </div>
+
+    <div class="educator">
+      <div class="educator-name">Richard Feynman</div>
+      <div class="educator-role">Lectures on Physics · the standing reference for how to explain a hard idea</div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PHILOSOPHY · Evidence-based learning -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="section" id="philosophy">
+  <div class="section-tag">The method</div>
+  <h2 class="section-title">Intuition first.<br>Precision second.<br>Evidence-based throughout.</h2>
+  <p class="section-lead">The curriculum is built on what learning research actually says — and on Krashen's insight that fluency precedes rules, applied to physics instead of language.</p>
+
+  <div class="principles-list">
+
+    <div class="principle">
+      <div class="principle-num">01</div>
+      <div>
+        <div class="principle-title">Deep forest first</div>
+        <div class="principle-body">Students encounter the inspiring question — quark stars, EM unification, quantum weirdness — before the precision is demanded. The deep destination is the motivation to learn the prerequisites. Krashen's Input Hypothesis applied to science.</div>
+      </div>
+    </div>
+
+    <div class="principle">
+      <div class="principle-num">02</div>
+      <div>
+        <div class="principle-title">Derive, don't memorize</div>
+        <div class="principle-body">Every "magic formula" has a picture underneath. The quadratic formula falls out of completing the square. The derivative of x² falls out of area growing on two sides. The picture is the curriculum; the formula is the souvenir.</div>
+      </div>
+    </div>
+
+    <div class="principle">
+      <div class="principle-num">03</div>
+      <div>
+        <div class="principle-title">One coherent story</div>
+        <div class="principle-body">Science as a chain of discoveries, each unlocked by a new tool or observation. Topics aren't a checklist — they're causally linked. The student always knows why this comes after that.</div>
+      </div>
+    </div>
+
+    <div class="principle">
+      <div class="principle-num">04</div>
+      <div>
+        <div class="principle-title">Context creates retention</div>
+        <div class="principle-body">Memorization without context decays. With deep-forest context, the same hook attaches to a rich web and persists. The fix for poor retention is richer context, not better flashcards.</div>
+      </div>
+    </div>
+
+    <div class="principle">
+      <div class="principle-num">05</div>
+      <div>
+        <div class="principle-title">English-language sources</div>
+        <div class="principle-body">The best science explainers — Feynman, Carroll, 3Blue1Brown, Welch Labs, Veritasium — are in English. Designing in translation handicaps the curriculum before it starts.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- CTA · Enter curriculum -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="section cta-section" id="enter">
+  <div class="section-tag">Open the map</div>
+  <h2 class="section-title">See the full curriculum.</h2>
+  <p class="section-lead">Every chain. Every unit. Every subject thread, mapped to the discovery that unlocked it. Built artifacts marked. Planned artifacts visible.</p>
+  <a href="map.html" class="cta-btn">Enter curriculum <span class="arrow">→</span></a>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- FOOTER -->
+<!-- ═══════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+
+    <div>
+      <div class="footer-block">
+        <div class="footer-label">Contact</div>
+        <a href="mailto:adomas.gaudi.23@gmail.com" class="contact-email">adomas.gaudi.23@gmail.com</a>
+        <div class="contact-author">Author · Gaudi (Adomas)</div>
+      </div>
+
+      <div class="footer-block">
+        <div class="footer-label">Share</div>
+        <div class="share-bar">
+          <a href="#" class="share-btn" id="share-x" target="_blank" rel="noopener">X / Twitter</a>
+          <a href="#" class="share-btn" id="share-linkedin" target="_blank" rel="noopener">LinkedIn</a>
+          <button class="share-btn" id="share-copy">Copy link</button>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="footer-label">Inquiries</div>
+      <form class="inquiry-form" name="inquiry" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+        <input type="hidden" name="form-name" value="inquiry">
+        <p style="display:none;"><label>Don't fill this out: <input name="bot-field"></label></p>
+
+        <div class="form-row">
+          <input class="form-input" type="text" name="name" placeholder="Your name" required>
+        </div>
+        <div class="form-row">
+          <input class="form-input" type="email" name="email" placeholder="Your email" required>
+        </div>
+        <div class="form-row">
+          <textarea class="form-textarea" name="message" placeholder="Your inquiry — what are you trying to do?" required></textarea>
+        </div>
+        <button type="submit" class="form-submit">Send →</button>
+        <div class="form-success" id="form-success">Thanks — message received. I'll reply from adomas.gaudi.23@gmail.com.</div>
+      </form>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <span>Science Curriculum · Grades 5–12</span>
+    <span>2026 · Living document</span>
+  </div>
+</footer>
+
+
+<script>
+  // Share buttons
+  (function() {
+    var url = encodeURIComponent(window.location.href);
+    var title = encodeURIComponent(document.title);
+
+    var xBtn = document.getElementById('share-x');
+    if (xBtn) xBtn.href = 'https://twitter.com/intent/tweet?text=' + title + '&url=' + url;
+
+    var liBtn = document.getElementById('share-linkedin');
+    if (liBtn) liBtn.href = 'https://www.linkedin.com/sharing/share-offsite/?url=' + url;
+
+    var copyBtn = document.getElementById('share-copy');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', function() {
+        navigator.clipboard.writeText(window.location.href).then(function() {
+          var original = copyBtn.textContent;
+          copyBtn.textContent = 'Copied ✓';
+          setTimeout(function() { copyBtn.textContent = original; }, 1800);
+        });
+      });
+    }
+  })();
+
+  // Form success feedback (Netlify will handle the actual POST)
+  var form = document.querySelector('.inquiry-form');
+  if (form) {
+    form.addEventListener('submit', function() {
+      var success = document.getElementById('form-success');
+      if (success) success.style.display = 'block';
+    });
+  }
+</script>
+
+</body>
+</html>
