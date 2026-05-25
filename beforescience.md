@@ -4,7 +4,7 @@ Hello, dear children. In this video series, I'll discuss the first-principles, b
 
 ## History is a story
 
-The reason I want to take this more historical approach is, first of all, because history is a story. It's a little more engaging than plain facts. And secondly, there are so many interesting stories and events which you don't necessarily need to know for physics or chemistry, but they're interesting on their own. All of that gives you additional context in which to remember things.
+The reason I want to take this more historical approach is, first of all, because history is a story. It's a little more engaging than plain facts. And secondly, there are so many interesting stories and events which you don't necessarily need to know for physics or chemistry, but they're great stories on their own. All of that gives you additional context in which to remember things.
 
 ## Deriving everything from scratch
 
@@ -13,6 +13,8 @@ But most importantly: if you want to understand the subjects the way we're tryin
 ## The Big Bang as an example
 
 An example of this would be the expanding universe and the Big Bang. A lot of explanations for why things happen aren't sufficient. With the Big Bang, you could say the universe started from something very small and then exploded, and that's why we see the expansion of space. But that leaves other questions unanswered — why did the universe explode? What was it before the explosion? What kind of force expanded it? It seems to have been very different in the beginning to behave in such a strange way. We don't see that kind of behavior around us.
+
+You could explain the Big Bang and say that, based on the theory, the universe began from a singularity, which is an indescribably small point. And then, after only one quadrillion-quadrillionth of a second, it expanded to the size of the known universe and then continued to expand. At first, atoms were created, and then later, that was created, and that was created. And that's all good — but the theory is so hard to understand. First of all, it's hard to believe. Let's begin with that. But even if you do believe it, you're forced to take everything as a fact. So it doesn't really give you a sense of how credible the information is, or where it's coming from.
 
 ## "Why" and "how" imply you know the answer
 
