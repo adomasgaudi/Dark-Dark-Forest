@@ -133,7 +133,9 @@ The level (2/3/4) tells you what *kind of edit* is being suggested. The `.<id>` 
 
 ## v2 rewrites format
 
-When the writer asks for proposed rewrites, append a block below the affected paragraph:
+**Always include v2 candidates by default whenever you add L2 (or higher) comments to a paragraph.** Don't wait to be asked. The writer can ignore the v2s if they're not useful, but having them adjacent saves a round-trip.
+
+Append a block below the affected paragraph:
 
 ```
 **v2 rewrites:**
@@ -266,6 +268,7 @@ When cleaning a transcript: also section it (add `##` headings), but preserve th
 - Work one level at a time. Defer cross-level observations until that pass.
 - Small iterative changes; pause for reaction.
 - When proposing rewrites, place `v2` candidates below the paragraph. Don't delete originals.
+- **No semicolons** in the writer's prose or in v2 candidates — the writer considers semicolons an AI tell. Use commas, periods, or em-dashes.
 
 ---
 
