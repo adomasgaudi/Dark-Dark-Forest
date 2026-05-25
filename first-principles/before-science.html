@@ -280,8 +280,165 @@
     line-height: 1.7;
   }
 
+  /* ── EXAM TOPICS COVERED (top of page) ── */
+  .topics-covered {
+    margin: 0 0 56px;
+    padding: 18px 20px;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    background: #fafafa;
+  }
+  .topics-covered-label {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #999;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .topic-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.12s;
+  }
+  .topic-item:last-child { border-bottom: none; }
+  .topic-item:hover { background: #f0f0f0; }
+  .topic-deg {
+    flex-shrink: 0;
+    width: 18px;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.4;
+    margin-top: 1px;
+  }
+  .topic-deg.full    { color: #16a34a; }
+  .topic-deg.partial { color: #d97706; }
+  .topic-deg.mention { color: #999; }
+  .topic-body { flex: 1; min-width: 0; }
+  .topic-name {
+    font-size: 13.5px;
+    color: #222;
+    line-height: 1.45;
+  }
+  .topic-meta {
+    font-size: 11px;
+    color: #999;
+    margin-top: 2px;
+    font-family: 'SF Mono', Consolas, monospace;
+  }
+  .topic-arrow {
+    flex-shrink: 0;
+    color: #ccc;
+    font-size: 13px;
+    margin-top: 2px;
+  }
+  .topics-empty {
+    font-size: 13px;
+    color: #aaa;
+    font-style: italic;
+  }
+  .topics-legend {
+    display: flex;
+    gap: 14px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #eee;
+    font-size: 11px;
+    color: #888;
+  }
+  .topics-legend span { display: inline-flex; align-items: center; gap: 4px; }
+
+  /* ── VIDEO SUMMARY BULLETS (under video card) ── */
+  .video-summary {
+    margin-top: 28px;
+    padding-left: 14px;
+    border-left: 2px solid #eee;
+  }
+  .video-summary-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #aaa;
+    margin-bottom: 8px;
+  }
+  .video-summary ul {
+    list-style: none;
+    padding: 0;
+  }
+  .video-summary li {
+    font-size: 14px;
+    color: #444;
+    line-height: 1.6;
+    padding: 3px 0 3px 14px;
+    position: relative;
+  }
+  .video-summary li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: #ccc;
+  }
+
+  /* ── EXPANDABLE WRITTEN VERSION ── */
+  details.written-version {
+    margin-top: 32px;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    background: #fff;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  details.written-version[open] {
+    border-color: #ddd;
+    background: #fcfcfc;
+  }
+  details.written-version > summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 14px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    user-select: none;
+  }
+  details.written-version > summary::-webkit-details-marker { display: none; }
+  details.written-version > summary::before {
+    content: '▸';
+    color: #999;
+    transition: transform 0.18s;
+    display: inline-block;
+    font-size: 11px;
+  }
+  details.written-version[open] > summary::before { transform: rotate(90deg); }
+  details.written-version > summary .wv-tag {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #aaa;
+    margin-left: auto;
+  }
+  details.written-version .wv-body {
+    padding: 0 20px 20px 36px;
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: #333;
+  }
+  details.written-version .wv-body p {
+    margin-bottom: 16px;
+  }
+  details.written-version .wv-body p:last-child { margin-bottom: 0; }
+  details.written-version .wv-body em { color: #555; }
+
   @media (max-width: 600px) {
     h1 { font-size: 24px; }
+    details.written-version .wv-body { padding-left: 20px; }
   }
 </style>
 </head>
@@ -304,9 +461,15 @@
 <h1>Before science — why it didn't happen sooner</h1>
 <div class="grades">Grades 5–6</div>
 
-<blockquote class="unit-question">
-  The iron in your blood was forged in a dying star. Humans have known this for 60 years. Why did it take until the 1600s for science to even begin?
-</blockquote>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- EXAM TOPICS COVERED (rendered from data.js) -->
+<!-- ═══════════════════════════════════════════════ -->
+
+<div class="topics-covered" id="topics-covered-mount" data-lecture-id="bu-01">
+  <div class="topics-covered-label">Exam topics covered by this lecture</div>
+  <div class="topics-empty">Loading…</div>
+</div>
 
 
 <!-- ═══════════════════════════════════════════════ -->
@@ -315,14 +478,85 @@
 
 <h2 class="section-header">Featured clip</h2>
 
-<p style="margin-bottom: 6px;">
-  <a class="video-link" href="https://www.youtube.com/watch?v=EYPapE-3FRw&t=0s" target="_blank" rel="noopener">
-    [Video title — add the real title here]
-  </a>
-</p>
-<p style="font-size: 13px; color: #777; margin-top: 0;">
-  Watch from <strong style="color: #111; font-weight: 600;">0:00</strong> to <strong style="color: #111; font-weight: 600;">0:36</strong>.
-</p>
+
+
+<a href="https://youtu.be/zpq0BnUS-cI?si=Evgjw7-Nq5Kds1LM&t=5" target="_blank" rel="noopener" style="
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  margin-top: 20px;
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #111;
+  font-family: Inter, sans-serif;
+  max-width: 560px;
+  transition: border-color 0.15s, background 0.15s;
+" onmouseover="this.style.borderColor='#111';this.style.background='#fafafa'"
+   onmouseout="this.style.borderColor='#e8e8e8';this.style.background='#fff'">
+
+  <!-- YouTube play icon -->
+  <svg width="40" height="28" viewBox="0 0 40 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
+    <rect width="40" height="28" rx="6" fill="#FF0000"/>
+    <path d="M16 8.5L27 14L16 19.5V8.5Z" fill="white"/>
+  </svg>
+
+  <div>
+    <div style="font-size:12px;font-weight:500;color:#777;margin-bottom:4px;line-height:1.3">
+      Why you're confused about relativity — Part 2
+    </div>
+    <div style="font-size:17px;font-weight:600;color:#111;line-height:1.3">
+      0:05 → 1:35
+    </div>
+  </div>
+
+  <!-- arrow -->
+  <svg style="margin-left:auto;flex-shrink:0" width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <path d="M3 8h10M9 4l4 4-4 4" stroke="#ccc" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+
+</a>
+
+<!-- Mock bullets — what the video covers. Placeholders until the real clip is wired. -->
+<div class="video-summary">
+  <div class="video-summary-label">In this clip</div>
+  <ul>
+    <li>The iron in your blood was forged inside a dying star — and humans have known this for sixty years.</li>
+    <li>So why didn't science begin until the 1600s? Not because the questions were missing — they weren't.</li>
+    <li>Aristarchus had heliocentrism in ancient Greece. Madhava had Taylor-series-equivalent calculus in 1400 CE Kerala.</li>
+    <li>Discoveries existed; the cascade didn't. The pile wasn't critical yet.</li>
+  </ul>
+</div>
+
+<!-- ─── Expandable written version (cleaned from monologue.md · §1) ─── -->
+<details class="written-version">
+  <summary>
+    Read the written version
+    <span class="wv-tag">~4 min read</span>
+  </summary>
+  <div class="wv-body">
+
+    <p>The history of science is littered with incredible people discovering ideas and technologies millennia ahead of their time — and yet, for some reason, never causing the cascade of revolutions we saw starting in the 16th century. Why? Maybe it didn't reach a critical point of contradictory observation up to that point. But simply looking at science itself, without considering human nature, is probably unwise.</p>
+
+    <p>A scientist in ancient Rome might have had the perfect scientific mindset, like Aristotle. He might even have made realisations about the cosmos millennia ahead, like Aristarchus. It is meaningless without the precision of mathematical models and optical tools to measure those stars. Imagination without mathematics is blurry like a dream — hard to convince anyone it's true.</p>
+
+    <p>A scientist in ancient times might have discovered quantum mechanics and complex numbers all by himself, but he would still at some point die. Without a legacy that can be written, copied, remembered, understood — ideas die along with the people who invented them. It's hard to remember something that is beyond your understanding, or believe something that is beyond your time. Discoveries have to come at the right time, and they have to be protected and spread.</p>
+
+    <p><strong>Science needs three pillars.</strong> The first is people and physical resources. The second is mental resources — curiosity, abstraction, and ideology. The third is precision — mathematics and tools.</p>
+
+    <p>The mental pillar starts with abstraction. You need the ability to abstract — to consider ideas in a more general way — because that lets you use those ideas across different fields. You cannot find generalised truths without combining ideas from different frameworks. In the past, many disciplines had good scientific thinking — rules, analytical explanations — but those discoveries stayed inside their fields. If you're an expert metalworker who builds good abstract rules about metals, you won't automatically apply them to woodworking or alchemy. You need a critical mass of science being done across multiple fields at once before you can compare the discoveries. Either not enough were made to reveal the connections, or there weren't enough people working across fields.</p>
+
+    <p>Math was the exception. Math is the easiest connector to spot — which is why people say it reflects the beauty of nature, because it's everywhere. You can instantly recognise that the math is the same. The laws of physics and chemistry are everywhere too, but they're much harder to notice.</p>
+
+    <p>Abstract thinking also needs liberty of thought, which is hard when you have hard constraints. Religion is the hardest mental constraint there is. Whenever science threatened to progress, some aspect of religion pushed it back. This isn't a moral judgement — religion served the important purpose of unifying values. But the breakthroughs came from thinkers brave enough to consider ideas that were not accepted: uncommon, sometimes taboo. People who allowed themselves to analyse despite the social pressure of divine authority, witchcraft accusations, or taboo subjects. If you believe a higher power created everything and nothing remains to be discovered, you'll be discouraged from trying.</p>
+
+    <p>The third pillar is precision. The difference between Plato and Aristotle is that Plato thought everything could be worked out in the mind; Aristotle went to check. That's more precise. Saying <em>all animals have wings</em> is less precise than checking and saying <em>the twenty birds I saw do indeed have wings</em>. Saying <em>if you push a rock, it moves</em> is less precise than <em>if you push a rock with the force of two horses, it will move twenty metres in twenty seconds</em>. Saying <em>sulfuric acid dissolves metal</em> is less precise than <em>a solution of twenty percent water and eighty percent sulfuric acid dissolves this metal</em>. Any tools, any measurements, any math is precision.</p>
+
+    <p>Without it — as Richard Behiel put it — mathematics cannot sharpen your imagination to the next level.</p>
+
+  </div>
+</details>
 
 
 <!-- ═══════════════════════════════════════════════ -->
@@ -383,6 +617,64 @@
   Lecture bu-01 · Bottom-up curriculum, Grades 5–6<br>
   Part of the science curriculum for Grades 5 to University · Lithuania
 </footer>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- DATA · shared with map.html (single source).   -->
+<!-- ═══════════════════════════════════════════════ -->
+
+<script src="data.js"></script>
+
+<script>
+// Render the "Exam topics covered" panel for whichever lecture ID is
+// declared on the mount (data-lecture-id="bu-01"). Walks lectureData8to10
+// for the lecture, then uses _buildTopicLookup to resolve each topicId
+// back to its full name + subject path.
+
+(function () {
+  const mount = document.getElementById('topics-covered-mount');
+  if (!mount || typeof lectureData8to10 === 'undefined') return;
+
+  const lectureId = mount.dataset.lectureId;
+  const allLectures = (lectureData8to10.bottomUp || []).concat(lectureData8to10.topDown || []);
+  const lec = allLectures.find(l => l.id === lectureId);
+
+  const labelHtml = '<div class="topics-covered-label">Exam topics covered by this lecture</div>';
+
+  if (!lec || !lec.covers || !lec.covers.length) {
+    mount.innerHTML = labelHtml + '<div class="topics-empty">No exam topics tagged for this lecture yet.</div>';
+    return;
+  }
+
+  const lookup = _buildTopicLookup(examData8to10);
+  const stripHtml = s => String(s).replace(/<[^>]+>/g, '');
+
+  let html = labelHtml;
+  lec.covers.forEach(c => {
+    const topic = lookup[c.topicId];
+    const name = topic ? stripHtml(topic.text) : c.topicId;
+    const meta = topic ? (topic.path + ' · ' + c.topicId) : c.topicId;
+    const href = 'map.html#topic-' + c.topicId;
+
+    html += '<a class="topic-item" href="' + href + '">';
+    html += '<span class="topic-deg ' + c.degree + '" title="' + _degLabel(c.degree) + '">' + _degSymbol(c.degree) + '</span>';
+    html += '<div class="topic-body">';
+    html += '<div class="topic-name">' + name + '</div>';
+    html += '<div class="topic-meta">' + meta + '</div>';
+    html += '</div>';
+    html += '<span class="topic-arrow">→</span>';
+    html += '</a>';
+  });
+
+  html += '<div class="topics-legend">';
+  html += '<span><span class="topic-deg full">●</span> fully covered</span>';
+  html += '<span><span class="topic-deg partial">◐</span> partially</span>';
+  html += '<span><span class="topic-deg mention">○</span> mentioned</span>';
+  html += '</div>';
+
+  mount.innerHTML = html;
+})();
+</script>
 
 </body>
 </html>
