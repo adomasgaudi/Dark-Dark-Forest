@@ -1,10 +1,18 @@
-# Why a historical, bottom-up approach
+# A Method to learn science
 
-Hello, dear children. In this video series, I'll discuss the first-principles, bottom-up curriculum, which analyzes the history of science.
+- [S1] History is engaging
+- [S2] Deriving everything from scratch
+- [S3] The Big Bang as an example
+- [S4] The historical approach has honesty
 
-## [S1] History is a story
+As Feynman said, this course in physics is presented from the point of view that you, the reader, are going to become a physicist. This is not necessarily the case, of course, but that is what every professor in every subject assumes. 
 
-The reason I want to take this more historical approach is, first of all, because history is a story. It's a little more engaging than plain facts. And secondly, there are so many interesting stories and historical episodes which you don't necessarily need to know for physics or chemistry, but they're great just wonderful stories on their own. All of that gives you the context to anchor what you learn.
+If you are going to be a physicist, you will have to study a lot. Five hundred years of the most rapidly developing field of knowledge that there is, so much knowledge in fact, that you might think you cannot learn it all in a few years, and truly you cannot. You will have to go to university too. Surprisingly enough, in spite of the tremendous amount of work that has been done for all this time, it is possible to condense the enormous mass of results to a large extent, to find laws which summarize all of our knowledge. Even so, the laws are so hard to grasp that it is unfair to you to start exploring this tremendous subject without some kind of a map. 
+
+
+## [S1] History is engaging
+
+I think it's fair to say that stories are a little bit more interesting than facts, even if you have no desire to understand the laws of nature. Listening to a bunch of random stories doesn't sound as bad as memorizing a bunch of incomprehensible facts. The story of how Heisenberg went to a secluded island to discover a new type of math that he thought was needed to understand quantum mechanics, only to find out that the branch of mathematics was called linear algebra and had been invented thousands of years before, is quite a funny story even if you don't really care about the uncertainty principle for quantum mechanics. There's also the story of Hennig Brand, the alchemist, who burned giant pools of urine, which he had hoped would dry up to reveal the vital essence that allows life to exist and perhaps even generate the Philosopher's Stone, which could of course convert regular metals to gold on top of a myriad of other magical properties. Besides being just entertaining for their own sake, a lot of these stories reveal exactly the kind of gaps in intelligence that a person trying to learn a subject will undoubtedly have as well. Something like the phlogiston theory, which assumed that there is a substance repelled by the Earth instead of attracted by it, which is why mixing it with certain elements makes those elements lighter, and releasing it makes those elements heavier. These kinds of historically incorrect theories signify exactly what is missing from modern explanations of already-known facts.
 
 ## [S2] Deriving everything from scratch
 
