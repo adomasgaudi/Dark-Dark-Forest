@@ -32,16 +32,102 @@ Edit at **one level at a time.** Defer any observation that belongs to a higher 
 - One line, max.
 - Never propose a full replacement sentence inside the comment. Replacements go in `v2 rewrites` blocks below the paragraph.
 
+### Highlighting specific problem words
+
+When the comment identifies a clear problem word (e.g. a repeated word, a weak ending, a soft word choice), wrap that word in the writer's original text with single asterisks (`*word*`) so it stands out at a glance — both in source view and rendered as italics.
+
+Example:
+```
+All of that gives you additional context in which to remember *things*. <!-- [2.2 - weak ending]: "things" -->
+```
+
+Only mark when there's a specific word problem. Skip for structural issues (e.g. "buried subject", "long sentence") where no single word is at fault.
+
+---
+
+## Writer signals (acceptance & requests)
+
+The writer signals decisions inline. When you see one of these, act on it as described and then sweep all traces (asterisks, comments, v2 block entry) for that edit ID.
+
+### `D` suffix → "done, keep my text"
+
+The writer appends ` D` inside the comment tag to say "I've made my own edit and I'm satisfied — accept the current state."
+
+```
+<!-- [2.1 - repetition D]: "stories" inside the same sentence -->
+```
+
+When you see ` D` in a tag:
+1. Strip the `*...*` asterisks around the flagged word(s).
+2. Delete the comment.
+3. Delete the matching `[2.1]` bullet from the `**v2 rewrites:**` block.
+4. Leave the writer's current prose untouched (even if it doesn't fully resolve the original issue — they've decided it's good enough).
+
+### `X.Y vN` or `X.Y vN (approved)` → "use version N"
+
+The writer says (in chat, not in the file) something like `2.2 v2`, `2.3 v1`, or `2.2 v2 (approved)`. Apply that version as the prose:
+
+1. Replace the original sentence in the prose with the text of the named version from the `**v2 rewrites:**` block.
+2. Strip any related asterisks.
+3. Delete the comment.
+4. Delete the matching `[X.Y]` bullet from `**v2 rewrites:**`.
+5. If the v2 rewrites block now has zero entries, delete the block (including its header) entirely.
+
+Notes:
+- `v1` refers to the original (or what the writer has edited the v1 line to say — they sometimes iterate on v1 directly).
+- Apply L1 grammar fixes silently when copying the version into prose (typos, agreement, missing punctuation).
+
+### `...finish` inline → "complete this partial sentence"
+
+The writer sometimes writes a sentence partway and leaves a trailing fragment like `to see just what kind... finish *points*.` This means: complete the unfinished thought. The flagged word (`*points*` here) is a hint about what the original sentence was about; resolve it as part of finishing.
+
+When you see `... finish`:
+1. Write a completion that fits the paragraph's tone and resolves the original L2 issue if any.
+2. Replace the `... finish` placeholder and surrounding asterisks with the finished clause.
+
+### `SYN>>word` → "give me synonyms here"
+
+The writer prefixes a word with `SYN>>` inline to request synonym options. Respond by:
+
+1. Removing the `SYN>>` marker.
+2. Wrapping the word in `*...*`.
+3. Adding a comment beside it with up to 5 candidate synonyms separated by ` / `.
+
+Example — writer writes:
+```
+historical SYN>>events which you don't
+```
+You change to:
+```
+historical *events* <!-- [syn for "events"]: moments / episodes / anecdotes / chapters / milestones --> which you don't
+```
+
+The writer then either edits the word directly or uses the `D` signal once satisfied.
+
+---
+
+## Section IDs
+
+Every `## ` heading carries an ID in square brackets at the front so the writer can reference sections by code instead of typing the title:
+
+```
+## [S1] History is a story
+## [S2] Deriving everything from scratch
+## [S3] The Big Bang as an example
+```
+
+When sections are restructured (merged, split, removed), renumber the IDs so they stay sequential. The document-level `# Title` doesn't get an ID; the intro paragraph between the title and the first `##` is unmarked.
+
 ---
 
 ## Tag taxonomy
 
 | Pattern | Example |
 |---|---|
-| `[<level> - <subtype>]` | `[2 - weak ending]: "things"` |
-| `[<level>-feynman-<pattern>]` | `[3-feynman-concrete]: open with a story, don't argue stories engage` |
+| `[<level>.<id> - <subtype>]` | `[2.1 - weak ending]: "things"` |
+| `[<level>.<id>-feynman-<pattern>]` | `[3.5-feynman-concrete]: open with a story, don't argue stories engage` |
 
-The level (2/3/4) tells you what *kind of edit* is being suggested. Pure Feynman-lens notes are tagged by level + pattern so they can be addressed in the right pass.
+The level (2/3/4) tells you what *kind of edit* is being suggested. The `.<id>` is a sequential per-level counter so the writer can reference each edit quickly ("keep 2.1, drop 2.3"). Pure Feynman-lens notes are tagged by level + pattern so they can be addressed in the right pass.
 
 ---
 
@@ -52,14 +138,14 @@ When the writer asks for proposed rewrites, append a block below the affected pa
 ```
 **v2 rewrites:**
 
-1. *v1:* "[original excerpt]"
-   *v2:* "[proposed rewrite]"
+- **[<id>]** *v1:* "[original excerpt]"
+  *v2:* "[proposed rewrite]"
 
-2. *v1:* "[original excerpt]"
-   *v2:* "[proposed rewrite]"
+- **[<id>]** *v1:* "[original excerpt]"
+  *v2:* "[proposed rewrite]"
 ```
 
-Keep originals; the writer chooses what to keep.
+The `<id>` matches the comment ID (e.g. `[2.1]` corresponds to the comment tagged `[2.1 - ...]`). Keep originals; the writer chooses what to keep.
 
 ---
 
