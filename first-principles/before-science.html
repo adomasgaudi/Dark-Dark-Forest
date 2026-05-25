@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Before Science — bu-01 · First Principles</title>
-<meta name="description" content="Why it took until the 1600s for science to begin. The cultural, mathematical and material preconditions that had to converge.">
+<title>The Cheat Sheet — bu-01 · First Principles</title>
+<meta name="description" content="Every formula and definition needed to pass the Vilnius Licėjus 2025 G8 fizikos stojamasis. Memorize these and you will not fail.">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -91,184 +91,179 @@
     color: #aaa;
     margin-bottom: 14px;
   }
-
   h1 {
-    font-size: 30px;
+    font-size: 32px;
     font-weight: 600;
-    margin-bottom: 12px;
-    letter-spacing: -0.015em;
-    line-height: 1.2;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
   }
-
-  .grades {
-    font-size: 13px;
+  .hero-sub {
+    font-size: 14px;
     color: #888;
-    margin-bottom: 36px;
+    margin-bottom: 32px;
   }
 
-  /* ── UNIT QUESTION (verbatim quote-style) ── */
-  blockquote.unit-question {
-    font-size: 17px;
-    color: #333;
+  /* ── EXAM REFERENCE LINK ── */
+  .exam-reference {
+    margin-bottom: 48px;
+    font-size: 12.5px;
+    color: #555;
+    padding: 12px 16px;
+    background: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 4px;
     line-height: 1.55;
-    font-weight: 500;
-    border-left: 2px solid #ddd;
-    padding-left: 18px;
-    margin: 0 0 48px;
-    max-width: 620px;
+  }
+  .exam-reference a {
+    color: #2563eb;
+    text-decoration: none;
+    border-bottom: 1px solid #bfdbfe;
+  }
+  .exam-reference a:hover { border-bottom-color: #2563eb; }
+
+  /* ── IRONIC INTRO FRAME ── */
+  .intro-frame {
+    margin-bottom: 80px;
+    padding: 36px 0 36px;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+  }
+  .intro-frame p {
+    margin-bottom: 20px;
+    color: #333;
+    line-height: 1.72;
+  }
+  .intro-frame p:last-child { margin-bottom: 0; }
+  .intro-frame strong { color: #111; }
+  .intro-frame .frame-dash {
+    margin-top: 30px;
+    padding-top: 22px;
+    border-top: 1px solid #eee;
+    color: #666;
+    font-style: italic;
   }
 
-  /* ── SECTION HEADER ── */
-  h2.section-header {
+  /* ── TOPIC BLOCK ── */
+  .topic-block {
+    margin-bottom: 80px;
+  }
+  .topic-num {
     font-size: 11px;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: #999;
-    margin: 64px 0 18px;
+    color: #aaa;
+    margin-bottom: 10px;
     font-weight: 600;
-    padding-bottom: 10px;
+  }
+  .topic-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 36px;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    padding-bottom: 14px;
     border-bottom: 1px solid #eee;
   }
 
-  /* ── VIDEO ── */
-  .video-section {
-    margin-bottom: 24px;
+  /* ── SUBTOPIC ── */
+  .sub {
+    margin-bottom: 32px;
   }
-
-  .video-meta {
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #aaa;
-    margin-bottom: 6px;
-  }
-
-  .video-link-card {
-    display: block;
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    background: #000;
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 16px;
-    text-decoration: none;
-  }
-  .video-link-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: opacity 0.18s;
-  }
-  .video-link-card:hover img { opacity: 0.85; }
-  .play-overlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-  }
-  .play-button {
-    width: 74px;
-    height: 52px;
-    background: rgba(255, 0, 51, 0.92);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.2s, background 0.2s;
-  }
-  .video-link-card:hover .play-button {
-    background: #ff0033;
-    transform: scale(1.06);
-  }
-  .play-button svg {
-    width: 26px;
-    height: 26px;
-    fill: #fff;
-    margin-left: 3px;
-  }
-  .video-main-point {
-    font-size: 14px;
-    color: #444;
-    line-height: 1.7;
-    padding-left: 14px;
-    border-left: 2px solid #eee;
-    margin-bottom: 14px;
-  }
-  .video-main-point strong { color: #111; }
-  .video-link {
-    font-size: 12px;
-    color: #777;
-    text-decoration: none;
-    border-bottom: 1px solid #ddd;
-  }
-  .video-link:hover { color: #111; border-bottom-color: #111; }
-
-  /* ── SUBJECT CONTENT ── */
-  .subject-block {
-    margin-bottom: 28px;
-  }
-
-  .subject-tag {
-    font-size: 11px;
-    padding: 2px 8px;
-    border-radius: 3px;
-    border: 1px solid;
-    font-weight: 500;
-    display: inline-block;
+  .sub:last-child { margin-bottom: 0; }
+  .sub h3 {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #111;
     margin-bottom: 10px;
+    letter-spacing: -0.005em;
   }
+  .sub p {
+    color: #333;
+    line-height: 1.72;
+    margin-bottom: 12px;
+  }
+  .sub p:last-child { margin-bottom: 0; }
 
-  .tag-phys { color: #2563eb; border-color: #bfdbfe; background: #eff6ff; }
-  .tag-chem { color: #d97706; border-color: #fde68a; background: #fffbeb; }
-  .tag-math { color: #16a34a; border-color: #bbf7d0; background: #f0fdf4; }
-  .tag-hist { color: #7c3aed; border-color: #ddd6fe; background: #f5f3ff; }
-  .tag-bio  { color: #db2777; border-color: #fbcfe8; background: #fdf2f8; }
-
-  ul.subject-points {
-    list-style: none;
-    padding: 0;
-  }
-  ul.subject-points li {
-    font-size: 14px;
-    color: #444;
-    line-height: 1.6;
-    padding: 4px 0 4px 14px;
-    position: relative;
-  }
-  ul.subject-points li::before {
-    content: '—';
-    position: absolute;
-    left: 0;
-    color: #ccc;
-  }
-  ul.subject-points li .opt {
-    font-style: italic;
-    color: #888;
-  }
-
-  /* ── ARTIFACTS ── */
-  .artifacts {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-  .artifact {
-    font-size: 11px;
-    padding: 2px 9px;
-    border-radius: 3px;
-    border: 1px solid #e8e8e8;
-    color: #999;
+  /* ── FORMULA BLOCK ── */
+  .formula {
+    margin: 18px 0;
+    padding: 16px 22px;
     background: #fafafa;
+    border-left: 3px solid #2563eb;
+    border-radius: 0 4px 4px 0;
   }
-  .artifact.exists {
-    color: #16a34a;
-    border-color: #bbf7d0;
-    background: #f0fdf4;
+  .formula + .formula { margin-top: 10px; }
+  .formula-eq {
+    font-family: 'SF Mono', 'Menlo', Consolas, monospace;
+    font-size: 18px;
+    font-weight: 500;
+    color: #111;
+    margin-bottom: 8px;
+    letter-spacing: 0.005em;
   }
+  .formula-vars {
+    font-size: 12.5px;
+    color: #555;
+    line-height: 1.65;
+  }
+  .formula-vars code,
+  .formula-vars .v {
+    font-family: 'SF Mono', 'Menlo', Consolas, monospace;
+    color: #111;
+    font-weight: 500;
+  }
+  .formula-vars .sep { color: #bbb; padding: 0 6px; }
+
+  /* ── ATOM NOTATION (A on top, Z on bottom, X to the right) ── */
+  .atom-notation {
+    display: inline-flex;
+    align-items: center;
+    font-family: 'SF Mono', 'Menlo', Consolas, monospace;
+    font-weight: 500;
+  }
+  .atom-notation .atom-prefix {
+    display: inline-flex;
+    flex-direction: column;
+    font-size: 0.62em;
+    line-height: 1.05;
+    text-align: right;
+    margin-right: 0.18em;
+    font-weight: 500;
+  }
+  .atom-notation .atom-symbol { font-size: 1em; }
+
+  /* ── CLOSING CTA ── */
+  .closing-cta {
+    margin-top: 64px;
+    padding: 36px 32px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fcfcfc;
+  }
+  .closing-cta p {
+    color: #222;
+    margin-bottom: 24px;
+    line-height: 1.7;
+    font-size: 15.5px;
+  }
+  .closing-cta .next-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: #111;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: background 0.15s, transform 0.15s;
+  }
+  .closing-cta .next-link:hover { background: #000; }
+  .closing-cta .next-link .arrow { transition: transform 0.15s; }
+  .closing-cta .next-link:hover .arrow { transform: translateX(3px); }
 
   /* ── FOOTER ── */
   footer {
@@ -280,165 +275,11 @@
     line-height: 1.7;
   }
 
-  /* ── EXAM TOPICS COVERED (top of page) ── */
-  .topics-covered {
-    margin: 0 0 56px;
-    padding: 18px 20px;
-    border: 1px solid #eee;
-    border-radius: 6px;
-    background: #fafafa;
-  }
-  .topics-covered-label {
-    font-size: 11px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: #999;
-    font-weight: 600;
-    margin-bottom: 12px;
-  }
-  .topic-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 8px 0;
-    border-bottom: 1px solid #eee;
-    text-decoration: none;
-    color: inherit;
-    transition: background 0.12s;
-  }
-  .topic-item:last-child { border-bottom: none; }
-  .topic-item:hover { background: #f0f0f0; }
-  .topic-deg {
-    flex-shrink: 0;
-    width: 18px;
-    text-align: center;
-    font-size: 14px;
-    line-height: 1.4;
-    margin-top: 1px;
-  }
-  .topic-deg.full    { color: #16a34a; }
-  .topic-deg.partial { color: #d97706; }
-  .topic-deg.mention { color: #999; }
-  .topic-body { flex: 1; min-width: 0; }
-  .topic-name {
-    font-size: 13.5px;
-    color: #222;
-    line-height: 1.45;
-  }
-  .topic-meta {
-    font-size: 11px;
-    color: #999;
-    margin-top: 2px;
-    font-family: 'SF Mono', Consolas, monospace;
-  }
-  .topic-arrow {
-    flex-shrink: 0;
-    color: #ccc;
-    font-size: 13px;
-    margin-top: 2px;
-  }
-  .topics-empty {
-    font-size: 13px;
-    color: #aaa;
-    font-style: italic;
-  }
-  .topics-legend {
-    display: flex;
-    gap: 14px;
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px solid #eee;
-    font-size: 11px;
-    color: #888;
-  }
-  .topics-legend span { display: inline-flex; align-items: center; gap: 4px; }
-
-  /* ── VIDEO SUMMARY BULLETS (under video card) ── */
-  .video-summary {
-    margin-top: 28px;
-    padding-left: 14px;
-    border-left: 2px solid #eee;
-  }
-  .video-summary-label {
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #aaa;
-    margin-bottom: 8px;
-  }
-  .video-summary ul {
-    list-style: none;
-    padding: 0;
-  }
-  .video-summary li {
-    font-size: 14px;
-    color: #444;
-    line-height: 1.6;
-    padding: 3px 0 3px 14px;
-    position: relative;
-  }
-  .video-summary li::before {
-    content: '—';
-    position: absolute;
-    left: 0;
-    color: #ccc;
-  }
-
-  /* ── EXPANDABLE WRITTEN VERSION ── */
-  details.written-version {
-    margin-top: 32px;
-    border: 1px solid #eee;
-    border-radius: 6px;
-    background: #fff;
-    transition: border-color 0.15s, background 0.15s;
-  }
-  details.written-version[open] {
-    border-color: #ddd;
-    background: #fcfcfc;
-  }
-  details.written-version > summary {
-    cursor: pointer;
-    list-style: none;
-    padding: 14px 20px;
-    font-size: 13px;
-    font-weight: 500;
-    color: #333;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    user-select: none;
-  }
-  details.written-version > summary::-webkit-details-marker { display: none; }
-  details.written-version > summary::before {
-    content: '▸';
-    color: #999;
-    transition: transform 0.18s;
-    display: inline-block;
-    font-size: 11px;
-  }
-  details.written-version[open] > summary::before { transform: rotate(90deg); }
-  details.written-version > summary .wv-tag {
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #aaa;
-    margin-left: auto;
-  }
-  details.written-version .wv-body {
-    padding: 0 20px 20px 36px;
-    font-size: 14.5px;
-    line-height: 1.75;
-    color: #333;
-  }
-  details.written-version .wv-body p {
-    margin-bottom: 16px;
-  }
-  details.written-version .wv-body p:last-child { margin-bottom: 0; }
-  details.written-version .wv-body em { color: #555; }
-
   @media (max-width: 600px) {
-    h1 { font-size: 24px; }
-    details.written-version .wv-body { padding-left: 20px; }
+    h1 { font-size: 26px; }
+    .topic-title { font-size: 19px; }
+    .formula-eq { font-size: 16px; }
+    .closing-cta { padding: 28px 22px; }
   }
 </style>
 </head>
@@ -448,7 +289,7 @@
   <div class="topnav-inner">
     <a class="nav-back" href="map.html"><span class="nav-arrow">←</span> Back to curriculum</a>
     <div class="nav-brand">bu-01</div>
-    <div class="nav-items"><!-- placeholder for future nav links --></div>
+    <div class="nav-items"></div>
   </div>
 </nav>
 
@@ -457,224 +298,280 @@
 <!-- HERO -->
 <!-- ═══════════════════════════════════════════════ -->
 
-<div class="lecture-tag">Bottom-up · Lecture 1 · Prologue</div>
-<h1>Before science — why it didn't happen sooner</h1>
-<div class="grades">Grades 5–6</div>
+<div class="lecture-tag">Bottom-up · Entry point</div>
+<h1>The Cheat Sheet</h1>
+<div class="hero-sub">Vilnius Licėjus · 2025 entrance exam program · all five topics</div>
 
-
-<!-- ═══════════════════════════════════════════════ -->
-<!-- EXAM TOPICS COVERED (rendered from data.js) -->
-<!-- ═══════════════════════════════════════════════ -->
-
-<div class="topics-covered" id="topics-covered-mount" data-lecture-id="bu-01">
-  <div class="topics-covered-label">Exam topics covered by this lecture</div>
-  <div class="topics-empty">Loading…</div>
+<div class="exam-reference">
+  Every topic on the 2025 G8 fizikos stojamasis program is here. For cross-references against other exams (PUPP, VBE, IB, SAT, A-Levels), see the <a href="map.html#milestone-grade-8">exam-landscape table</a>.
 </div>
 
 
 <!-- ═══════════════════════════════════════════════ -->
-<!-- FEATURED VIDEO -->
+<!-- IRONIC INTRO -->
 <!-- ═══════════════════════════════════════════════ -->
 
-<h2 class="section-header">Featured clip</h2>
+<div class="intro-frame">
+  <p><strong>Dear student.</strong> I know that you are very busy. So here, without a moment's delay, I will explain exactly what you need to pass your examination.</p>
+
+  <p>They will ask you to explain the moon phases and solar eclipse. How light reflects from objects and mirrors. How light travels through different mediums. How the lenses in your glasses work — and in cameras, and in telescopes. You need to know what sound is: amplitude, frequency, the units that describe them, and how sound moves through space.</p>
+
+  <p>I understand how incredibly busy you are, so here are all the formulas and all the definitions. All you have to do is memorize them by heart, and hope that when you read the question you recognize immediately how to apply them — and you will succeed, without fail, in getting the correct answer.</p>
+
+  <p>And if you happen to get a question from a different topic, you will also need to know what an atom is, what radioactive radiation is, how stars live out their lives and where they get their energy, and how to calculate current, voltage and resistance. So let me hand you those formulas as well.</p>
+
+  <p class="frame-dash">— Everything below is genuinely correct and genuinely sufficient to pass. Whether it is sufficient to understand anything is a different question, and the rest of this curriculum is the answer to it.</p>
+</div>
 
 
+<!-- ═══════════════════════════════════════════════ -->
+<!-- TOPIC I · Mechanical oscillations and waves -->
+<!-- ═══════════════════════════════════════════════ -->
 
-<a href="https://youtu.be/zpq0BnUS-cI?si=Evgjw7-Nq5Kds1LM&t=5" target="_blank" rel="noopener" style="
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 16px 20px;
-  margin-top: 20px;
-  border: 1px solid #e8e8e8;
-  border-radius: 6px;
-  text-decoration: none;
-  color: #111;
-  font-family: Inter, sans-serif;
-  max-width: 560px;
-  transition: border-color 0.15s, background 0.15s;
-" onmouseover="this.style.borderColor='#111';this.style.background='#fafafa'"
-   onmouseout="this.style.borderColor='#e8e8e8';this.style.background='#fff'">
+<section class="topic-block">
+  <div class="topic-num">Topic I</div>
+  <h2 class="topic-title">Mechanical oscillations and waves — Sound</h2>
 
-  <!-- YouTube play icon -->
-  <svg width="40" height="28" viewBox="0 0 40 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
-    <rect width="40" height="28" rx="6" fill="#FF0000"/>
-    <path d="M16 8.5L27 14L16 19.5V8.5Z" fill="white"/>
-  </svg>
+  <div class="sub">
+    <h3>What sound is</h3>
+    <p>Sound is a mechanical wave — a travelling pattern of compression and rarefaction in a material. The particles of the medium vibrate back and forth in the same direction the wave moves (this makes it a <em>longitudinal</em> wave). Sound cannot travel through a vacuum, because there are no particles to compress.</p>
+  </div>
 
-  <div>
-    <div style="font-size:12px;font-weight:500;color:#777;margin-bottom:4px;line-height:1.3">
-      Why you're confused about relativity — Part 2
-    </div>
-    <div style="font-size:17px;font-weight:600;color:#111;line-height:1.3">
-      0:05 → 1:35
+  <div class="sub">
+    <h3>Frequency and pitch</h3>
+    <p>Frequency is how many full vibrations pass per second. Higher frequency is heard as higher pitch. A whistle is high-frequency; a bass drum is low-frequency.</p>
+    <div class="formula">
+      <div class="formula-eq">f = 1 / T</div>
+      <div class="formula-vars"><span class="v">f</span> = frequency in hertz (Hz)<span class="sep">·</span><span class="v">T</span> = period, the time for one full vibration, in seconds</div>
     </div>
   </div>
 
-  <!-- arrow -->
-  <svg style="margin-left:auto;flex-shrink:0" width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <path d="M3 8h10M9 4l4 4-4 4" stroke="#ccc" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>
-
-</a>
-
-<!-- Mock bullets — what the video covers. Placeholders until the real clip is wired. -->
-<div class="video-summary">
-  <div class="video-summary-label">In this clip</div>
-  <ul>
-    <li>The iron in your blood was forged inside a dying star — and humans have known this for sixty years.</li>
-    <li>So why didn't science begin until the 1600s? Not because the questions were missing — they weren't.</li>
-    <li>Aristarchus had heliocentrism in ancient Greece. Madhava had Taylor-series-equivalent calculus in 1400 CE Kerala.</li>
-    <li>Discoveries existed; the cascade didn't. The pile wasn't critical yet.</li>
-  </ul>
-</div>
-
-<!-- ─── Expandable written version (cleaned from monologue.md · §1) ─── -->
-<details class="written-version">
-  <summary>
-    Read the written version
-    <span class="wv-tag">~4 min read</span>
-  </summary>
-  <div class="wv-body">
-
-    <p>The history of science is littered with incredible people discovering ideas and technologies millennia ahead of their time — and yet, for some reason, never causing the cascade of revolutions we saw starting in the 16th century. Why? Maybe it didn't reach a critical point of contradictory observation up to that point. But simply looking at science itself, without considering human nature, is probably unwise.</p>
-
-    <p>A scientist in ancient Rome might have had the perfect scientific mindset, like Aristotle. He might even have made realisations about the cosmos millennia ahead, like Aristarchus. It is meaningless without the precision of mathematical models and optical tools to measure those stars. Imagination without mathematics is blurry like a dream — hard to convince anyone it's true.</p>
-
-    <p>A scientist in ancient times might have discovered quantum mechanics and complex numbers all by himself, but he would still at some point die. Without a legacy that can be written, copied, remembered, understood — ideas die along with the people who invented them. It's hard to remember something that is beyond your understanding, or believe something that is beyond your time. Discoveries have to come at the right time, and they have to be protected and spread.</p>
-
-    <p><strong>Science needs three pillars.</strong> The first is people and physical resources. The second is mental resources — curiosity, abstraction, and ideology. The third is precision — mathematics and tools.</p>
-
-    <p>The mental pillar starts with abstraction. You need the ability to abstract — to consider ideas in a more general way — because that lets you use those ideas across different fields. You cannot find generalised truths without combining ideas from different frameworks. In the past, many disciplines had good scientific thinking — rules, analytical explanations — but those discoveries stayed inside their fields. If you're an expert metalworker who builds good abstract rules about metals, you won't automatically apply them to woodworking or alchemy. You need a critical mass of science being done across multiple fields at once before you can compare the discoveries. Either not enough were made to reveal the connections, or there weren't enough people working across fields.</p>
-
-    <p>Math was the exception. Math is the easiest connector to spot — which is why people say it reflects the beauty of nature, because it's everywhere. You can instantly recognise that the math is the same. The laws of physics and chemistry are everywhere too, but they're much harder to notice.</p>
-
-    <p>Abstract thinking also needs liberty of thought, which is hard when you have hard constraints. Religion is the hardest mental constraint there is. Whenever science threatened to progress, some aspect of religion pushed it back. This isn't a moral judgement — religion served the important purpose of unifying values. But the breakthroughs came from thinkers brave enough to consider ideas that were not accepted: uncommon, sometimes taboo. People who allowed themselves to analyse despite the social pressure of divine authority, witchcraft accusations, or taboo subjects. If you believe a higher power created everything and nothing remains to be discovered, you'll be discouraged from trying.</p>
-
-    <p>The third pillar is precision. The difference between Plato and Aristotle is that Plato thought everything could be worked out in the mind; Aristotle went to check. That's more precise. Saying <em>all animals have wings</em> is less precise than checking and saying <em>the twenty birds I saw do indeed have wings</em>. Saying <em>if you push a rock, it moves</em> is less precise than <em>if you push a rock with the force of two horses, it will move twenty metres in twenty seconds</em>. Saying <em>sulfuric acid dissolves metal</em> is less precise than <em>a solution of twenty percent water and eighty percent sulfuric acid dissolves this metal</em>. Any tools, any measurements, any math is precision.</p>
-
-    <p>Without it — as Richard Behiel put it — mathematics cannot sharpen your imagination to the next level.</p>
-
+  <div class="sub">
+    <h3>Amplitude and loudness</h3>
+    <p>Amplitude is the size of each vibration — how far the particles swing from their resting position. Larger amplitude is heard as louder sound. Loudness is measured in decibels (dB).</p>
   </div>
-</details>
+
+  <div class="sub">
+    <h3>Wave speed</h3>
+    <p>The speed of a wave links its frequency and wavelength. Sound travels faster in denser, stiffer media — fastest in solids, slower in liquids, slowest in gases. In air at room temperature it is about 343 m/s.</p>
+    <div class="formula">
+      <div class="formula-eq">v = f · λ</div>
+      <div class="formula-vars"><span class="v">v</span> = wave speed (m/s)<span class="sep">·</span><span class="v">f</span> = frequency (Hz)<span class="sep">·</span><span class="v">λ</span> = wavelength (m)</div>
+    </div>
+  </div>
+
+  <div class="sub">
+    <h3>Echo</h3>
+    <p>An echo is sound reflected off a surface and returning to you. Because you hear it after a delay, you can find the distance to the surface if you know the speed of sound and the time for the round trip. The sound travels to the wall and back, so the distance is half the total path.</p>
+    <div class="formula">
+      <div class="formula-eq">d = v · t / 2</div>
+      <div class="formula-vars"><span class="v">d</span> = distance to the surface (m)<span class="sep">·</span><span class="v">v</span> = speed of sound (m/s)<span class="sep">·</span><span class="v">t</span> = total time for the echo to return (s)</div>
+    </div>
+  </div>
+
+  <div class="sub">
+    <h3>Types of sound by frequency</h3>
+    <p>Humans hear roughly 20 Hz to 20,000 Hz. Below 20 Hz is infrasound (felt more than heard — earthquakes, large machinery). Above 20,000 Hz is ultrasound (used in medical imaging and by bats and dolphins).</p>
+  </div>
+</section>
 
 
 <!-- ═══════════════════════════════════════════════ -->
-<!-- WHAT THIS COVERS -->
+<!-- TOPIC II · Light -->
 <!-- ═══════════════════════════════════════════════ -->
 
-<h2 class="section-header">What this lecture covers</h2>
+<section class="topic-block">
+  <div class="topic-num">Topic II</div>
+  <h2 class="topic-title">Light — Optics</h2>
 
-<div class="subject-block">
-  <span class="subject-tag tag-hist">History of Science</span>
-  <ul class="subject-points">
-    <li>Harari: the Scientific Revolution as a revolution of ignorance, not of knowledge</li>
-    <li>The 3 pillars — resources, curiosity, precision</li>
-    <li>Why the Islamic Golden Age nearly succeeded</li>
-    <li>Kerala school: Madhava had Taylor-series-equivalent calculus in 1400 CE — it didn't cascade</li>
-    <li>Carroll's criticality: the sandpile model of scientific revolutions</li>
-  </ul>
-</div>
+  <div class="sub">
+    <h3>Eclipses and shadows</h3>
+    <p>Light travels in straight lines, so opaque objects cast shadows. A solar eclipse happens when the Moon passes between the Sun and Earth, casting its shadow on us — the Moon blocks the Sun. A lunar eclipse happens when Earth passes between the Sun and Moon, and Earth's shadow falls on the Moon. The Moon's phases are a separate effect: we see different fractions of its sunlit half depending on where it is in its orbit around us.</p>
+  </div>
 
-<div class="subject-block">
-  <span class="subject-tag tag-phys">Physics</span>
-  <ul class="subject-points">
-    <li>What is matter</li>
-    <li>Stars as nuclear furnaces</li>
-    <li>Elements forged in stars</li>
-    <li><span class="opt">Neutron stars and quark stars (optional deep dive)</span></li>
-  </ul>
-</div>
+  <div class="sub">
+    <h3>Law of reflection</h3>
+    <p>When light hits a smooth surface, it bounces off at the same angle it arrived. Both angles are measured from the normal — an imaginary line perpendicular to the surface.</p>
+    <div class="formula">
+      <div class="formula-eq">θ<sub>incidence</sub> = θ<sub>reflection</sub></div>
+      <div class="formula-vars">The angle coming in equals the angle going out, both measured from the normal.</div>
+    </div>
+  </div>
 
-<div class="subject-block">
-  <span class="subject-tag tag-chem">Chemistry</span>
-  <ul class="subject-points">
-    <li>Elements: symbols, names, cosmic abundance</li>
-    <li>Why gold is rare and oxygen is everywhere</li>
-    <li>Earth's crust, ocean, and atmosphere composition</li>
-  </ul>
-</div>
+  <div class="sub">
+    <h3>Refraction and refractive index</h3>
+    <p>When light passes from one medium into another (air into glass, say), it changes speed and bends. The refractive index measures how much a material slows light down. A higher index bends light more. This bending is why a straw looks broken in a glass of water.</p>
+    <div class="formula">
+      <div class="formula-eq">n = c / v</div>
+      <div class="formula-vars"><span class="v">n</span> = absolute refractive index (no units)<span class="sep">·</span><span class="v">c</span> = speed of light in vacuum (3 × 10⁸ m/s)<span class="sep">·</span><span class="v">v</span> = speed of light in the material (m/s)</div>
+    </div>
+  </div>
+
+  <div class="sub">
+    <h3>Lenses and image formation</h3>
+    <p>A convex (converging) lens bends parallel light rays inward to a single focal point — used in magnifying glasses, cameras and telescopes. A concave (diverging) lens spreads rays outward. To draw the image, trace two rays from the top of the object: one parallel to the axis (which then passes through the focal point) and one straight through the centre of the lens (which is undeflected). Where they meet is where the image forms.</p>
+    <div class="formula">
+      <div class="formula-eq">P = 1 / f</div>
+      <div class="formula-vars"><span class="v">P</span> = optical power of the lens in dioptres (D)<span class="sep">·</span><span class="v">f</span> = focal length in metres (m). A more powerful lens has a shorter focal length.</div>
+    </div>
+    <div class="formula">
+      <div class="formula-eq">M = h<sub>image</sub> / h<sub>object</sub></div>
+      <div class="formula-vars"><span class="v">M</span> = magnification (how many times larger the image is)<span class="sep">·</span><span class="v">h</span> = height of image and object</div>
+    </div>
+  </div>
+
+  <div class="sub">
+    <h3>Glasses for short and long sight</h3>
+    <p>In short-sightedness (myopia), the eye focuses images in front of the retina; a concave lens spreads the light slightly so it focuses further back, onto the retina. In long-sightedness (hyperopia), the eye focuses behind the retina; a convex lens converges the light sooner, pulling the focus forward onto the retina.</p>
+  </div>
+</section>
 
 
 <!-- ═══════════════════════════════════════════════ -->
-<!-- ARTIFACTS -->
+<!-- TOPIC III · Structure of matter -->
 <!-- ═══════════════════════════════════════════════ -->
 
-<h2 class="section-header">Related artifacts</h2>
+<section class="topic-block">
+  <div class="topic-num">Topic III</div>
+  <h2 class="topic-title">Structure of matter — Atoms and nuclei</h2>
 
-<div class="artifacts">
-  <span class="artifact exists">● Timeline: Antiquity → 1000 CE</span>
-  <span class="artifact exists">● Population + criticality chart</span>
-  <span class="artifact exists">● 3-pillar convergence chart</span>
-  <span class="artifact exists">● Elements treemap</span>
-  <span class="artifact exists">● Elements 3D cubes</span>
-  <span class="artifact exists">● Nested cube visualization</span>
-  <span class="artifact exists">● Pop III enrichment chart</span>
+  <div class="sub">
+    <h3>The atom and its notation</h3>
+    <p>An atom has a tiny dense nucleus of protons and neutrons, surrounded by electrons. The number of protons (the atomic number, Z) defines which element it is. The total number of protons plus neutrons is the mass number, A.</p>
+    <div class="formula">
+      <div class="formula-eq"><span class="atom-notation"><span class="atom-prefix"><span>A</span><span>Z</span></span><span class="atom-symbol">X</span></span></div>
+      <div class="formula-vars"><span class="v">X</span> = element symbol<span class="sep">·</span><span class="v">Z</span> = atomic number (protons)<span class="sep">·</span><span class="v">A</span> = mass number (protons + neutrons). Neutrons = A − Z.</div>
+    </div>
+  </div>
+
+  <div class="sub">
+    <h3>Isotopes</h3>
+    <p>Isotopes are atoms of the same element (same number of protons) with different numbers of neutrons. They behave identically in chemistry but differ in mass and nuclear stability. Carbon-12 and carbon-14 are isotopes — both have 6 protons, but 6 and 8 neutrons respectively.</p>
+  </div>
+
+  <div class="sub">
+    <h3>Radioactive radiation</h3>
+    <p>Unstable nuclei shed energy and particles as radiation. There are three kinds: alpha (α) — a helium nucleus, heavy and easily stopped by paper; beta (β) — a fast electron, stopped by aluminium; gamma (γ) — high-energy light, needing thick lead or concrete. Penetrating power increases from alpha to gamma; ionising damage decreases.</p>
+  </div>
+
+  <div class="sub">
+    <h3>Nuclear reactions and conservation laws</h3>
+    <p>In any nuclear reaction, the total atomic number and the total mass number are conserved — they must balance on both sides of the equation. Fission splits a heavy nucleus into lighter ones (nuclear power, atomic bombs). Fusion merges light nuclei into a heavier one (the Sun, hydrogen bombs). Decay is a nucleus spontaneously emitting radiation to become more stable.</p>
+  </div>
+
+  <div class="sub">
+    <h3>Radiation protection</h3>
+    <p>Three ways to reduce exposure: increase distance from the source, reduce time near it, and add shielding (lead, concrete, water) between you and it.</p>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- TOPIC IV · The Universe -->
+<!-- ═══════════════════════════════════════════════ -->
+
+<section class="topic-block">
+  <div class="topic-num">Topic IV</div>
+  <h2 class="topic-title">The Universe and its evolution</h2>
+
+  <div class="sub">
+    <h3>What the universe is made of</h3>
+    <p>On the largest scales, matter is organised into structures: galaxy clusters contain galaxies, which contain nebulae (clouds of gas and dust where stars are born) and stars. Our Sun is one star among hundreds of billions in the Milky Way galaxy.</p>
+  </div>
+
+  <div class="sub">
+    <h3>Where stars get their energy</h3>
+    <p>Stars shine by nuclear fusion — in the core, hydrogen nuclei fuse into helium, releasing enormous energy. A small amount of mass is converted into energy in the process, following <em>E = mc²</em>. This is the same reaction as a hydrogen bomb, held stable by the star's own gravity.</p>
+  </div>
+
+  <div class="sub">
+    <h3>Stellar evolution by mass</h3>
+    <p>A star's fate depends on its mass. Low-mass stars (like the Sun) swell into red giants, then gently shed their outer layers and leave behind a white dwarf. High-mass stars burn through their fuel quickly, explode as a supernova, and leave behind a neutron star or — if massive enough — a black hole. The heavy elements made in these explosions are scattered into space and become the raw material for new stars and planets.</p>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- TOPIC V · Electricity -->
+<!-- ═══════════════════════════════════════════════ -->
+
+<section class="topic-block">
+  <div class="topic-num">Topic V</div>
+  <h2 class="topic-title">Electricity</h2>
+
+  <div class="sub">
+    <h3>Static electricity and charge</h3>
+    <p>All matter contains positive protons and negative electrons. Objects become charged when electrons move between them — rub a balloon on hair and electrons transfer, leaving one object negative and the other positive. Like charges repel; opposite charges attract.</p>
+  </div>
+
+  <div class="sub">
+    <h3>Current, charge and the quantities of a circuit</h3>
+    <p>Current is the rate of flow of charge through a conductor. Voltage is the energy pushing that charge around the circuit. Resistance is how much the conductor opposes the flow.</p>
+    <div class="formula">
+      <div class="formula-eq">I = Q / t</div>
+      <div class="formula-vars"><span class="v">I</span> = current (amperes, A)<span class="sep">·</span><span class="v">Q</span> = charge that flowed (coulombs, C)<span class="sep">·</span><span class="v">t</span> = time (s)</div>
+    </div>
+  </div>
+
+  <div class="sub">
+    <h3>Ohm's law</h3>
+    <p>The current through a conductor is proportional to the voltage across it and inversely proportional to its resistance. This is the single most-used equation in the whole topic.</p>
+    <div class="formula">
+      <div class="formula-eq">U = I · R</div>
+      <div class="formula-vars"><span class="v">U</span> = voltage (volts, V)<span class="sep">·</span><span class="v">I</span> = current (A)<span class="sep">·</span><span class="v">R</span> = resistance (ohms, Ω)</div>
+    </div>
+  </div>
+
+  <div class="sub">
+    <h3>Electrical power and energy</h3>
+    <p>Power is how fast electrical energy is used. Energy is power multiplied by time — and the kilowatt-hour (kWh) on your electricity bill is exactly this: a unit of energy, not power.</p>
+    <div class="formula">
+      <div class="formula-eq">P = U · I</div>
+      <div class="formula-vars"><span class="v">P</span> = power (watts, W)<span class="sep">·</span><span class="v">U</span> = voltage (V)<span class="sep">·</span><span class="v">I</span> = current (A)</div>
+    </div>
+    <div class="formula">
+      <div class="formula-eq">W = P · t</div>
+      <div class="formula-vars"><span class="v">W</span> = energy (joules, J — or kWh)<span class="sep">·</span><span class="v">P</span> = power (W or kW)<span class="sep">·</span><span class="v">t</span> = time (s or h)</div>
+    </div>
+  </div>
+
+  <div class="sub">
+    <h3>Series and parallel resistance</h3>
+    <p>In series (components in a single line), resistances add up directly. In parallel (components on separate branches), the combined resistance is smaller than any single branch, because charge has more paths to flow through.</p>
+    <div class="formula">
+      <div class="formula-eq">Series: R = R₁ + R₂ + …</div>
+      <div class="formula-vars">Total resistance is the sum.</div>
+    </div>
+    <div class="formula">
+      <div class="formula-eq">Parallel: 1/R = 1/R₁ + 1/R₂ + …</div>
+      <div class="formula-vars">Add the reciprocals, then invert to get the total.</div>
+    </div>
+  </div>
+
+  <div class="sub">
+    <h3>Current direction and circuit symbols</h3>
+    <p>Conventional current flows from + to − around the circuit; electrons actually flow the opposite way, − to +. An ammeter measures current and is connected in series; a voltmeter measures voltage and is connected in parallel across a component. A fuse is a deliberate weak point that melts and breaks the circuit if the current grows dangerously high, protecting everything else.</p>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- CLOSING -->
+<!-- ═══════════════════════════════════════════════ -->
+
+<div class="closing-cta">
+  <p>If memorizing forty formulas you don't understand felt unsatisfying — that was the point. The rest of this curriculum builds every one of them from scratch, so you never have to memorize blindly again.</p>
+  <a class="next-link" href="gases-to-atoms.html">
+    Start from the beginning
+    <span class="arrow">→</span>
+  </a>
 </div>
 
 
 <footer>
-  Lecture bu-01 · Bottom-up curriculum, Grades 5–6<br>
-  Part of the science curriculum for Grades 5 to University · Lithuania
+  Lecture bu-01 · Bottom-up curriculum · Entry point<br>
+  Vilnius Licėjus · 2025 fizikos stojamasis program · all five topics
 </footer>
-
-
-<!-- ═══════════════════════════════════════════════ -->
-<!-- DATA · shared with map.html (single source).   -->
-<!-- ═══════════════════════════════════════════════ -->
-
-<script src="data.js"></script>
-
-<script>
-// Render the "Exam topics covered" panel for whichever lecture ID is
-// declared on the mount (data-lecture-id="bu-01"). Walks lectureData8to10
-// for the lecture, then uses _buildTopicLookup to resolve each topicId
-// back to its full name + subject path.
-
-(function () {
-  const mount = document.getElementById('topics-covered-mount');
-  if (!mount || typeof lectureData8to10 === 'undefined') return;
-
-  const lectureId = mount.dataset.lectureId;
-  const allLectures = (lectureData8to10.bottomUp || []).concat(lectureData8to10.topDown || []);
-  const lec = allLectures.find(l => l.id === lectureId);
-
-  const labelHtml = '<div class="topics-covered-label">Exam topics covered by this lecture</div>';
-
-  if (!lec || !lec.covers || !lec.covers.length) {
-    mount.innerHTML = labelHtml + '<div class="topics-empty">No exam topics tagged for this lecture yet.</div>';
-    return;
-  }
-
-  const lookup = _buildTopicLookup(examData8to10);
-  const stripHtml = s => String(s).replace(/<[^>]+>/g, '');
-
-  let html = labelHtml;
-  lec.covers.forEach(c => {
-    const topic = lookup[c.topicId];
-    const name = topic ? stripHtml(topic.text) : c.topicId;
-    const meta = topic ? (topic.path + ' · ' + c.topicId) : c.topicId;
-    const href = 'map.html#topic-' + c.topicId;
-
-    html += '<a class="topic-item" href="' + href + '">';
-    html += '<span class="topic-deg ' + c.degree + '" title="' + _degLabel(c.degree) + '">' + _degSymbol(c.degree) + '</span>';
-    html += '<div class="topic-body">';
-    html += '<div class="topic-name">' + name + '</div>';
-    html += '<div class="topic-meta">' + meta + '</div>';
-    html += '</div>';
-    html += '<span class="topic-arrow">→</span>';
-    html += '</a>';
-  });
-
-  html += '<div class="topics-legend">';
-  html += '<span><span class="topic-deg full">●</span> fully covered</span>';
-  html += '<span><span class="topic-deg partial">◐</span> partially</span>';
-  html += '<span><span class="topic-deg mention">○</span> mentioned</span>';
-  html += '</div>';
-
-  mount.innerHTML = html;
-})();
-</script>
 
 </body>
 </html>

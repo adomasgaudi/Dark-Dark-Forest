@@ -15,6 +15,18 @@
 //                              or use { text, coverage } object form per point.
 // To wire a new lecture:      add an entry to lectureData8to10.bottomUp / topDown
 //                              with a `covers: [{ topicId, degree }]` array.
+//
+// ── Syllabus drift ──
+// Lithuanian exam syllabi change from year to year. The Physics G8
+// section reflects the **2025 fizikos stojamasis program** (Vilniaus
+// Licėjus and similar gymnasia), which added:
+//   I.  Mechanical oscillations and waves  →  p-osc-*    (new in 2025)
+//   II. Light                                →  p-light-*  (new in 2025)
+//   V.  Electricity                          →  +p-el-electrification,
+//                                                +p-el-direction,
+//                                                +p-el-fuse  (new in 2025)
+// Older topics (Structure of matter, Universe, the rest of Electricity)
+// are kept — students preparing from older mock papers still need them.
 // ═════════════════════════════════════════════════════════
 
 const examData8to10 = {
@@ -184,6 +196,31 @@ const examData8to10 = {
       defaultProfile: 'physicsG8',
       topics: [
         {
+          name: 'Mechanical oscillations and waves',
+          gradeLevel: 'g8',
+          note: 'Sound as a mechanical wave. Added by the 2025 Lithuanian fizikos stojamasis program (Topic I).',
+          points: [
+            { id: 'p-osc-pitch-loudness', text: 'Sound: pitch ↔ frequency; loudness ↔ amplitude of the mechanical wave' },
+            { id: 'p-osc-units',          text: 'Units: frequency (Hz), loudness (dB)' },
+            { id: 'p-osc-media',          text: 'Sound propagation in solids, liquids, and gases (faster in denser media; cannot travel through vacuum)' },
+            { id: 'p-osc-echo',           text: 'Echo as reflection of sound; solving distance problems with t = 2d/v' },
+            { id: 'p-osc-types',          text: 'Sound types: infrasound (&lt;20 Hz), audible (20 Hz – 20 kHz), ultrasound (&gt;20 kHz)' }
+          ]
+        },
+        {
+          name: 'Light',
+          gradeLevel: 'g8',
+          note: 'Geometric optics, lenses, vision correction. Added by the 2025 Lithuanian fizikos stojamasis program (Topic II).',
+          points: [
+            { id: 'p-light-eclipses',          text: 'Solar and lunar eclipses: Sun–Earth–Moon geometry (umbra and penumbra)' },
+            { id: 'p-light-reflection',        text: 'Law of reflection: angle of incidence = angle of reflection' },
+            { id: 'p-light-refraction',        text: 'Refraction across media; absolute refractive index n = c/v' },
+            { id: 'p-light-lens-images',       text: 'Lenses (convex and concave): ray diagrams and image construction' },
+            { id: 'p-light-lens-power',        text: 'Lens refractive power D = 1/f (diopters); linear magnification' },
+            { id: 'p-light-vision-correction', text: 'Glasses: concave lens for myopia (nearsightedness), convex lens for hyperopia (farsightedness)' }
+          ]
+        },
+        {
           name: 'Structure of matter',
           gradeLevel: 'g8',
           note: 'Basically: what atoms are made of and how they break apart.',
@@ -223,16 +260,19 @@ const examData8to10 = {
           name: 'Electricity',
           gradeLevel: 'g8',
           points: [
-            { id: 'p-el-charge',     text: 'Electric charge: positive and negative, conservation, unit (coulomb, C)' },
-            { id: 'p-el-current',    text: 'Electric current: rate of charge flow, I = Q/t, unit (ampere, A)' },
-            { id: 'p-el-voltage',    text: 'Voltage / potential difference: energy per charge, V = W/Q, unit (volt, V)' },
-            { id: 'p-el-resistance', text: "Resistance: opposition to current, R = V/I, unit (ohm, Ω) — Ohm's law" },
-            { id: 'p-el-work',       text: 'Electrical work: W = V·I·t, unit (joule, J)' },
-            { id: 'p-el-power',      text: 'Electrical power: P = V·I, unit (watt, W); kilowatt-hour (kWh) for energy bills' },
-            { id: 'p-el-series',     text: '<strong>Series circuits:</strong> current same throughout; voltages add; resistances add' },
-            { id: 'p-el-parallel',   text: '<strong>Parallel circuits:</strong> voltage same across branches; currents add; 1/R = 1/R₁ + 1/R₂' },
-            { id: 'p-el-diagrams',   text: 'Reading circuit diagrams: symbols for battery, resistor, switch, bulb, ammeter, voltmeter' },
-            { id: 'p-el-units',      text: 'Unit conversions: mA↔A, mV↔V, kΩ↔Ω, kWh↔J' }
+            { id: 'p-el-charge',          text: 'Electric charge: positive and negative, conservation, unit (coulomb, C)' },
+            { id: 'p-el-electrification', text: 'Electrification of bodies (friction, contact, induction) explained by transfer of electrons — atomic-structure view' },
+            { id: 'p-el-current',         text: 'Electric current: rate of charge flow, I = Q/t, unit (ampere, A)' },
+            { id: 'p-el-direction',       text: 'Conventional current direction (+ → −) vs actual electron flow (− → +)' },
+            { id: 'p-el-voltage',         text: 'Voltage / potential difference: energy per charge, V = W/Q, unit (volt, V)' },
+            { id: 'p-el-resistance',      text: "Resistance: opposition to current, R = V/I, unit (ohm, Ω) — Ohm's law" },
+            { id: 'p-el-work',            text: 'Electrical work: W = V·I·t, unit (joule, J)' },
+            { id: 'p-el-power',           text: 'Electrical power: P = V·I, unit (watt, W); kilowatt-hour (kWh) for energy bills' },
+            { id: 'p-el-series',          text: '<strong>Series circuits:</strong> current same throughout; voltages add; resistances add' },
+            { id: 'p-el-parallel',        text: '<strong>Parallel circuits:</strong> voltage same across branches; currents add; 1/R = 1/R₁ + 1/R₂' },
+            { id: 'p-el-diagrams',        text: 'Reading circuit diagrams: symbols for battery, resistor, switch, bulb, ammeter, voltmeter, fuse' },
+            { id: 'p-el-fuse',            text: 'Fuses: circuit symbol and purpose — protect against overcurrent by melting the wire' },
+            { id: 'p-el-units',           text: 'Unit conversions: mA↔A, mV↔V, kΩ↔Ω, kWh↔J' }
           ]
         },
 
@@ -364,17 +404,57 @@ const lectureData8to10 = {
     {
       id: 'bu-01',
       n: 1,
-      title: 'Before science — why it didn\'t happen sooner',
-      summary: 'The cultural and material preconditions for science. Iron-from-stars as the hook; Harari + Carroll as the framework.',
+      title: 'The Cheat Sheet — 2025 entrance exam, all five topics',
+      summary: 'Every formula and definition needed to pass the Vilnius Licėjus G8 fizikos stojamasis. Memorize these and you will not fail. Understand them and you will not need to memorize.',
       page: 'before-science.html',
       covers: [
-        { topicId: 'p-univ-fusion-stars', degree: 'partial' },
-        { topicId: 'p-univ-low-mass',     degree: 'mention' },
-        { topicId: 'p-univ-high-mass',    degree: 'mention' }
+        // Topic I · Mechanical oscillations and waves
+        { topicId: 'p-osc-pitch-loudness',     degree: 'full' },
+        { topicId: 'p-osc-units',              degree: 'full' },
+        { topicId: 'p-osc-media',              degree: 'full' },
+        { topicId: 'p-osc-echo',               degree: 'full' },
+        { topicId: 'p-osc-types',              degree: 'full' },
+        // Topic II · Light
+        { topicId: 'p-light-eclipses',          degree: 'full' },
+        { topicId: 'p-light-reflection',        degree: 'full' },
+        { topicId: 'p-light-refraction',        degree: 'full' },
+        { topicId: 'p-light-lens-images',       degree: 'full' },
+        { topicId: 'p-light-lens-power',        degree: 'full' },
+        { topicId: 'p-light-vision-correction', degree: 'full' },
+        // Topic III · Structure of matter
+        { topicId: 'p-sm-notation',     degree: 'full' },
+        { topicId: 'p-sm-atomic-num',   degree: 'full' },
+        { topicId: 'p-sm-mass-num',     degree: 'full' },
+        { topicId: 'p-sm-isotopes',     degree: 'full' },
+        { topicId: 'p-sm-alpha',        degree: 'full' },
+        { topicId: 'p-sm-beta-minus',   degree: 'full' },
+        { topicId: 'p-sm-beta-plus',    degree: 'full' },
+        { topicId: 'p-sm-gamma',        degree: 'full' },
+        { topicId: 'p-sm-fission',      degree: 'full' },
+        { topicId: 'p-sm-fusion',       degree: 'full' },
+        { topicId: 'p-sm-conservation', degree: 'full' },
+        { topicId: 'p-sm-protection',   degree: 'full' },
+        // Topic IV · The Universe
+        { topicId: 'p-univ-hierarchy',    degree: 'full' },
+        { topicId: 'p-univ-fusion-stars', degree: 'full' },
+        { topicId: 'p-univ-low-mass',     degree: 'full' },
+        { topicId: 'p-univ-high-mass',    degree: 'full' },
+        // Topic V · Electricity
+        { topicId: 'p-el-charge',          degree: 'full' },
+        { topicId: 'p-el-electrification', degree: 'full' },
+        { topicId: 'p-el-current',         degree: 'full' },
+        { topicId: 'p-el-direction',       degree: 'full' },
+        { topicId: 'p-el-voltage',         degree: 'full' },
+        { topicId: 'p-el-resistance',      degree: 'full' },
+        { topicId: 'p-el-work',            degree: 'full' },
+        { topicId: 'p-el-power',           degree: 'full' },
+        { topicId: 'p-el-series',          degree: 'full' },
+        { topicId: 'p-el-parallel',        degree: 'full' },
+        { topicId: 'p-el-diagrams',        degree: 'full' },
+        { topicId: 'p-el-fuse',            degree: 'full' }
       ],
       sources: [
-        { label: 'Harari — Sapiens (ch. The Discovery of Ignorance)', url: 'https://en.wikipedia.org/wiki/Sapiens:_A_Brief_History_of_Humankind' },
-        { label: 'Carroll — sandpile / self-organised criticality', url: 'https://en.wikipedia.org/wiki/Self-organized_criticality' }
+        { label: '2025 Lithuanian fizikos stojamasis program (Vilniaus Licėjus)', url: 'https://www.licejus.lt' }
       ]
     },
     {
