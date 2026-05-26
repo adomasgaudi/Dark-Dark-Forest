@@ -265,6 +265,63 @@
   .closing-cta .next-link .arrow { transition: transform 0.15s; }
   .closing-cta .next-link:hover .arrow { transform: translateX(3px); }
 
+  /* ── CHEAT SHEET DROPDOWN ── */
+  /* Container has its own background + border so when expanded
+     it is visually distinct from the surrounding page even when
+     the user has scrolled into the middle of the topic blocks. */
+  .cheat-dropdown {
+    margin-bottom: 64px;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    background: #fafafa;
+  }
+  /* Sticky summary: stays pinned just below the fixed topnav
+     while the user scrolls through the expanded body, so the
+     dropdown is collapsible from any scroll position with one
+     click. No JS, no fixed-position math. */
+  .cheat-dropdown summary {
+    cursor: pointer;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #333;
+    padding: 18px 22px;
+    background: #fafafa;
+    border-radius: 8px;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    user-select: none;
+    letter-spacing: 0.01em;
+    transition: background 0.15s;
+    position: sticky;
+    top: 48px;
+    z-index: 50;
+  }
+  .cheat-dropdown[open] summary {
+    border-radius: 8px 8px 0 0;
+    border-bottom: 1px solid #eaeaea;
+  }
+  .cheat-dropdown summary::-webkit-details-marker { display: none; }
+  .cheat-dropdown summary::before {
+    content: "▶";
+    font-size: 9px;
+    color: #888;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .cheat-dropdown[open] summary::before { transform: rotate(90deg); }
+  .cheat-dropdown summary:hover { background: #f4f4f4; }
+  .cheat-dropdown summary .label-open { display: none; }
+  .cheat-dropdown[open] summary .label-open { display: inline; }
+  .cheat-dropdown[open] summary .label-closed { display: none; }
+  .cheat-dropdown-body {
+    padding: 40px 28px 28px;
+  }
+  .cheat-dropdown-body .topic-block:last-of-type {
+    margin-bottom: 0;
+  }
+
   /* ── FOOTER ── */
   footer {
     margin-top: 96px;
@@ -300,11 +357,6 @@
 
 <div class="lecture-tag">Bottom-up · Entry point</div>
 <h1>The Cheat Sheet</h1>
-<div class="hero-sub">Vilnius Licėjus · 2025 entrance exam program · all five topics</div>
-
-<div class="exam-reference">
-  Every topic on the 2025 G8 fizikos stojamasis program is here. For cross-references against other exams (PUPP, VBE, IB, SAT, A-Levels), see the <a href="map.html#milestone-grade-8">exam-landscape table</a>.
-</div>
 
 
 <!-- ═══════════════════════════════════════════════ -->
@@ -312,17 +364,28 @@
 <!-- ═══════════════════════════════════════════════ -->
 
 <div class="intro-frame">
-  <p><strong>Dear student.</strong> I know that you are very busy. So here, without a moment's delay, I will explain exactly what you need to pass your examination.</p>
+  <p><strong>Dear student.</strong> I know that you are very busy. So here, without a moment's delay, I will explain exactly what you need to pass your examination. In that examination, they will ask you:</p>
 
-  <p>They will ask you to explain the moon phases and solar eclipse. How light reflects from objects and mirrors. How light travels through different mediums. How the lenses in your glasses work — and in cameras, and in telescopes. You need to know what sound is: amplitude, frequency, the units that describe them, and how sound moves through space.</p>
+  <p><strong>Light and lenses.</strong> Explain the moon phases and solar eclipse. Explain how light reflects from objects and mirrors, and explain how light travels through different mediums. How do lenses in your glasses work? And the lenses in photography? And the lenses in telescopes? How do they work?</p>
 
-  <p>I understand how incredibly busy you are, so here are all the formulas and all the definitions. All you have to do is memorize them by heart, and hope that when you read the question you recognize immediately how to apply them — and you will succeed, without fail, in getting the correct answer.</p>
+  <p><strong>Sound and waves.</strong> Waves — you need to know what sound is and how to define it, what's an amplitude, what's a frequency. What are the units that describe these features? How do they move in space?</p>
 
-  <p>And if you happen to get a question from a different topic, you will also need to know what an atom is, what radioactive radiation is, how stars live out their lives and where they get their energy, and how to calculate current, voltage and resistance. So let me hand you those formulas as well.</p>
+  <p><strong>The shortcut.</strong> Of course I understand how incredibly busy you are, so here are all the formulas and all of the definitions. All you have to do is memorize them by heart, and hope that when you read the question, you will recognize immediately how to apply these formulas and definitions, and you will succeed, without fail, in getting the correct answer. But before I give you the formulas, I forgot one thing.</p>
 
-  <p class="frame-dash">— Everything below is genuinely correct and genuinely sufficient to pass. Whether it is sufficient to understand anything is a different question, and the rest of this curriculum is the answer to it.</p>
+  <p><strong>Atoms and radioactivity.</strong> If, unfortunately, you happen to get questions from a different topic, then you will also need to know what an atom is and what its composition is. How does it change? What properties does it have? What is the atomic number? And what is radioactive radiation?</p>
+
+  <p><strong>Galaxies and stars.</strong> You might also get questions about the universe. What are galaxies and stars? How do stars live out their lives, and where do they get their energy?</p>
+
+  <p><strong>Electricity.</strong> And of course you might get questions about electricity. How do objects obtain static electricity? What is the internal composition that leads to this? Calculate the current and the voltage and the resistance, and how those influence one another. You might also need to correctly identify the direction of the flow, as well as understand common electrical safety symbols. Draw your own schemes and apply Ohm's law when calculating combined resistances. So let me, of course, hand you the formulas and definitions for these questions as well.</p>
+
+  <p class="frame-dash">— Everything below is genuinely correct and possibly even sufficient to pass. Whether it is sufficient to understand anything is a different question.</p>
 </div>
 
+
+<details class="cheat-dropdown">
+<summary><span class="label-closed">Show the cheat sheet</span><span class="label-open">Hide the cheat sheet</span></summary>
+
+<div class="cheat-dropdown-body">
 
 <!-- ═══════════════════════════════════════════════ -->
 <!-- TOPIC I · Mechanical oscillations and waves -->
@@ -334,12 +397,12 @@
 
   <div class="sub">
     <h3>What sound is</h3>
-    <p>Sound is a mechanical wave — a travelling pattern of compression and rarefaction in a material. The particles of the medium vibrate back and forth in the same direction the wave moves (this makes it a <em>longitudinal</em> wave). Sound cannot travel through a vacuum, because there are no particles to compress.</p>
+    <p>Sound is a pressure wave. Waves we imagine as water waves, but in physics a wave is something that has a "wavy" property. Sound cannot travel through a vacuum, because there are no particles so nothing can do the waving.</p>
   </div>
 
   <div class="sub">
     <h3>Frequency and pitch</h3>
-    <p>Frequency is how many full vibrations pass per second. Higher frequency is heard as higher pitch. A whistle is high-frequency; a bass drum is low-frequency.</p>
+    <p>Frequency is how many waves pass per second. Higher frequency - more waves, we hear this as a higher pitch. Picture a plane propeler its starts of slow with low frequency and accelerates to high frequency. Its wing is producing the same waves but more times per second.</p>
     <div class="formula">
       <div class="formula-eq">f = 1 / T</div>
       <div class="formula-vars"><span class="v">f</span> = frequency in hertz (Hz)<span class="sep">·</span><span class="v">T</span> = period, the time for one full vibration, in seconds</div>
@@ -348,7 +411,7 @@
 
   <div class="sub">
     <h3>Amplitude and loudness</h3>
-    <p>Amplitude is the size of each vibration — how far the particles swing from their resting position. Larger amplitude is heard as louder sound. Loudness is measured in decibels (dB).</p>
+    <p>Amplitude (amplus + tudo = large + state) is the size of each wave or in the case of of air - how strong the pressure wave is. Larger amplitude is heard as louder sound. We could measure that pressure by saying how much that sound wave increases normal air pressure, but then the unit would vary in daily life anywhere from 0.001 to 1000 and so a logorithmic measurement unit is used instead which varies usually only from 0 to 100. That unit is is decibels (dB). However because it is logorithmic, we have to understand the math to predict how it will change. A car might make a 70dB sound, while 10 cars would only make a 80dB sound. A 10x increase in sound intensity corresponds to a +10 dB increase.</p>
   </div>
 
   <div class="sub">
@@ -551,6 +614,30 @@
   <div class="sub">
     <h3>Current direction and circuit symbols</h3>
     <p>Conventional current flows from + to − around the circuit; electrons actually flow the opposite way, − to +. An ammeter measures current and is connected in series; a voltmeter measures voltage and is connected in parallel across a component. A fuse is a deliberate weak point that melts and breaks the circuit if the current grows dangerously high, protecting everything else.</p>
+  </div>
+</section>
+
+</div>
+</details>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- METHOD · How to learn this -->
+<!-- ═══════════════════════════════════════════════ -->
+
+<section class="topic-block">
+  <div class="topic-num">Method</div>
+  <h2 class="topic-title">Why I wouldn't just memorise blindly</h2>
+
+  <div class="sub">
+    <p>There are subjects in school exist for for a few different reasons, and you should know which is which.</p>
+    <p>The first is best one, its general education. Its understanding and comprehension of the world. This is the part that is the most interesting and the most useful and the longest lasting. 
+    </p>
+    <p>The second is that some of what you learn is the foundation for everything else. Learning how to measure sound waves is not really all that important to your understanding of nature — they are about waves. Once you understand a wave with percision, you have something that you can re-use in optics, in electromagnetism, in quantum mechanics. You learn the formula for one wave and you have learned a piece of the language nature uses everywhere.</p>
+    <p>The second is that some of what you learn is the working knowledge of a profession. Trigonometry, resistance in circuits, counting reactants and products in chemistry — these are drilled to precision because precision is exactly what an engineer or a chemist needs on a Tuesday morning.</p>
+    <p>So far so good. I am not arguing against learning these things, nor against drilling them, nor against being tested on them. I am arguing for something narrower. You should know why you're learning it.</p>
+    <p>The problem is that the drill was once a tool, sharpening something useful for a larger purpose. Over time standardzation of curicula and test and the tool quietly became the goal. Students now memorize formulas to pass the test that exists to verify they memorized the formulas. Why anyone started doing this in the first place — that part got lost.</p>
+    <p>What I want to do is put the tool back where it belongs. The drilling exercises and the uninteresting topics are a tool to understand and use everything else, so let's try and use it that way.</p>
   </div>
 </section>
 

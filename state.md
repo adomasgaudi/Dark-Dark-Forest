@@ -18,6 +18,7 @@ Root-level `.md` files are working documents for prose and methodology:
 - [context.md](context.md) — project rules (font, colors, layout, structure)
 - [voice.md](voice.md) — literary inspirations (Borges, Feynman, Levi, Sagan, Nabokov, …) and 8 concrete writing moves
 - [editing-guide.md](editing-guide.md) — prose-editing methodology (4 levels, tag taxonomy, v2 rewrites)
+- [pedagogy.md](pedagogy.md) — teaching method (sprinkle, don't lecture; history as tool; math-in-physics; cross-connect formulas; don't trust your knowledge). Living doc, not student-facing.
 - [monologue.md](monologue.md) — Gaudi's spoken drafts → polished prose (10 topics)
 - [beforescience.md](beforescience.md) — current prose draft (became `first-principles/before-science.html`)
 - [state.md](state.md) — this file
@@ -122,6 +123,7 @@ context.md                project rules
 voice.md                  literary inspirations + 8 writing moves
 monologue.md              Gaudi's drafts (10 topics; topic 1 done at Pass 2, others at Pass 1)
 editing-guide.md          editing methodology
+pedagogy.md               teaching method (sprinkle ideas, not lecture); living doc
 beforescience.md          draft prose preceding the cheat-sheet HTML
 beforescience2.md         empty scratch file
 state.md                  this file
