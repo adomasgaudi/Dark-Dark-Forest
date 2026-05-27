@@ -111,6 +111,57 @@
   }
   .video-link:hover { color: #1d4ed8; border-bottom-color: #1d4ed8; }
 
+  /* ── CONCEPT BOX (inline prose explanation) ── */
+  .concept-box {
+    margin: 0 0 32px;
+    padding: 18px 22px;
+    background: #f8fafc;
+    border-left: 3px solid #2563eb;
+    border-radius: 0 6px 6px 0;
+  }
+  .concept-box .concept-label {
+    font-size: 10px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: #2563eb;
+    font-weight: 600; margin-bottom: 12px;
+  }
+  .concept-box p {
+    font-size: 14.5px; line-height: 1.65;
+    color: #333; margin-bottom: 12px;
+  }
+  .concept-box p:last-child { margin-bottom: 0; }
+  .concept-box strong { color: #111; }
+  .concept-box em { color: #2563eb; font-style: normal; font-weight: 600; }
+
+  /* ── EXERCISE BOX (try-this prompts) ── */
+  .exercise-box {
+    margin: 24px 0 32px;
+    padding: 18px 22px;
+    background: #f0fdf4;
+    border-left: 3px solid #16a34a;
+    border-radius: 0 6px 6px 0;
+  }
+  .exercise-box .exercise-label {
+    font-size: 10px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: #16a34a;
+    font-weight: 600; margin-bottom: 12px;
+  }
+  .exercise-box h4 {
+    font-size: 15px; font-weight: 600;
+    margin-bottom: 10px; color: #111;
+  }
+  .exercise-box p {
+    font-size: 14px; line-height: 1.65;
+    color: #333; margin-bottom: 12px;
+  }
+  .exercise-box p:last-child { margin-bottom: 0; }
+  .exercise-box ul {
+    margin: 10px 0 12px 22px;
+    font-size: 14px; color: #333; line-height: 1.65;
+  }
+  .exercise-box li { margin-bottom: 5px; }
+  .exercise-box strong { color: #111; }
+  .exercise-box em { color: #16a34a; font-style: normal; font-weight: 600; }
+
   /* ── SUBJECT CONTENT ── */
   .subject-block { margin-bottom: 22px; }
   .subject-tag {
@@ -177,12 +228,21 @@
 <h2 class="section-header">Featured clip</h2>
 
 <p style="margin-bottom: 6px;">
-  <a class="video-link" href="#" target="_blank" rel="noopener">
-    [Video title — add the real title here]
+  <a class="video-link" href="https://www.youtube.com/watch?v=SDtAh9IwG-I" target="_blank" rel="noopener">
+    The photon as an interaction of the electromagnetic field with matter
   </a>
 </p>
 <p style="font-size: 13px; color: #777; margin-top: 0;">
-  Watch from <strong style="color: #111; font-weight: 600;">0:00</strong> to <strong style="color: #111; font-weight: 600;">0:00</strong>.
+  Watch the full clip. <em style="color: #aaa;">(TODO: confirm exact title and add precise timecode.)</em>
+</p>
+
+<p style="margin: 24px 0 6px;">
+  <a class="video-link" href="https://www.youtube.com/watch?v=wiBsfvW5AWY" target="_blank" rel="noopener">
+    Companion clip — units, scale, and the particles you are made of
+  </a>
+</p>
+<p style="font-size: 13px; color: #777; margin-top: 0;">
+  A clean introduction to units, powers of ten, and what photons, mass, and waves actually are. Sets up the exercise in Unit 5a below. <em style="color: #aaa;">(TODO: confirm exact title and timecode.)</em>
 </p>
 
 
@@ -199,6 +259,13 @@
   <blockquote class="unit-question">
     Classical physics predicts that a hot object should radiate infinite energy. It doesn't. Planck's fix was desperate — he assumed energy comes in discrete chunks. Einstein confirmed it with the photoelectric effect. Classical physics is broken. What replaces it?
   </blockquote>
+
+  <div class="concept-box">
+    <div class="concept-label">Concept — the photon as an interaction</div>
+    <p>If you think of a photon as the same thing as an electromagnetic wave, you have to imagine each photon as an <em>ever-expanding bubble</em> of field, spreading outward from its source. The intensity at any single point on that bubble can be much, much lower than the energy of a single photon.</p>
+    <p>The field intensity at a given point does not give you the photon's energy directly. It gives you the <strong>probability</strong> that matter at that point will interact with the field. When the interaction happens, the electron receives a <strong>definite quantum</strong> of energy — the whole photon's worth, delivered at once. And the entire surrounding field collapses instantaneously. All of the energy that was spread across the bubble vanishes everywhere except at the point of interaction.</p>
+    <p>This is why "wave or particle?" is the wrong question. The wave is real and spread out — it tells you the <em>probability landscape</em>. The particle is the <em>interaction event</em> — that is where the energy is actually delivered.</p>
+  </div>
 
   <div class="subject-block">
     <span class="subject-tag tag-phys">Physics</span>
@@ -230,6 +297,25 @@
       <li>Euler's formula e<sup>iθ</sup> = cos θ + i sin θ</li>
       <li>Imaginary numbers as physically real rotations</li>
       <li><span class="opt">Matrices as operators on state vectors (optional deep dive)</span></li>
+    </ul>
+  </div>
+
+  <div class="exercise-box">
+    <div class="exercise-label">Try this — make the abstract concrete</div>
+    <h4>Calculate your own mass from quarks</h4>
+    <p>Take your own body weight. Estimate how many atoms are in it. Count the quarks and electrons inside those atoms. Multiply by the known masses of up quarks, down quarks, and electrons. Check whether the total adds up.</p>
+    <p><strong>It will not.</strong> Most of your mass comes <em>not</em> from the quarks themselves but from the binding energy of the strong force holding them together — <em>E = mc²</em> in action. The exercise teaches three things at once:</p>
+    <ul>
+      <li><strong>Powers of ten</strong> — Avogadro's number, atom counts, the scale jumps between an atom and a body.</li>
+      <li><strong>Unit conversion</strong> — eV/c², kg, grams, moles.</li>
+      <li><strong>The deep result</strong> — about 99% of your mass is binding energy, not particles.</li>
+    </ul>
+    <p>A starter outline:</p>
+    <ul>
+      <li>A 70 kg body is roughly how many moles of atoms? How many atoms total?</li>
+      <li>Each atom has Z protons, N neutrons, Z electrons. Mostly hydrogen, carbon, oxygen.</li>
+      <li>Each proton and neutron is three quarks. Up quark ≈ 2.2 MeV/c². Down quark ≈ 4.7 MeV/c².</li>
+      <li>Add it up. Compare to 70 kg. The gap is where the binding energy lives.</li>
     </ul>
   </div>
 

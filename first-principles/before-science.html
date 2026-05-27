@@ -265,6 +265,58 @@
   .closing-cta .next-link .arrow { transition: transform 0.15s; }
   .closing-cta .next-link:hover .arrow { transform: translateX(3px); }
 
+  /* ── MORE-ON LINKS ── */
+  /* Per-topic secondary CTA at the end of each topic block,
+     pointing to the future deep-dive page for that subject.
+     Placeholder href="#" for now. */
+  .more-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 28px;
+    padding: 10px 16px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: #2563eb;
+    text-decoration: none;
+    border: 1px solid #bfdbfe;
+    border-radius: 4px;
+    background: #fff;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .more-link:hover {
+    background: #eff6ff;
+    border-color: #2563eb;
+  }
+  .more-link .arrow {
+    font-size: 11px;
+    transition: transform 0.15s;
+  }
+  .more-link:hover .arrow { transform: translateX(3px); }
+
+  /* Cluster of all five "more on" links shown below the cheat
+     sheet dropdown, so the reader still has the deep-dive links
+     visible once the cheat sheet is collapsed or scrolled past. */
+  .more-on-grid {
+    margin-top: 56px;
+    margin-bottom: 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .more-on-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #aaa;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .more-on-grid .more-link {
+    margin-top: 0;
+    align-self: flex-start;
+  }
+
   /* ── CHEAT SHEET DROPDOWN ── */
   /* Container has its own background + border so when expanded
      it is visually distinct from the surrounding page even when
@@ -370,7 +422,7 @@
 
   <p><strong>Sound and waves.</strong> Waves — you need to know what sound is and how to define it, what's an amplitude, what's a frequency. What are the units that describe these features? How do they move in space?</p>
 
-  <p><strong>The shortcut.</strong> Of course I understand how incredibly busy you are, so here are all the formulas and all of the definitions. All you have to do is memorize them by heart, and hope that when you read the question, you will recognize immediately how to apply these formulas and definitions, and you will succeed, without fail, in getting the correct answer. But before I give you the formulas, I forgot one thing.</p>
+  <p>Of course I understand how incredibly busy you are, so here are all the formulas and all of the definitions. All you have to do is memorize them by heart, and hope that when you read the question, you will recognize immediately how to apply these formulas and definitions, and you will succeed, without fail, in getting the correct answer. But before I give you the formulas, I forgot one thing.</p>
 
   <p><strong>Atoms and radioactivity.</strong> If, unfortunately, you happen to get questions from a different topic, then you will also need to know what an atom is and what its composition is. How does it change? What properties does it have? What is the atomic number? And what is radioactive radiation?</p>
 
@@ -436,6 +488,8 @@
     <h3>Types of sound by frequency</h3>
     <p>Humans hear roughly 20 Hz to 20,000 Hz. Below 20 Hz is infrasound (felt more than heard — earthquakes, large machinery). Above 20,000 Hz is ultrasound (used in medical imaging and by bats and dolphins).</p>
   </div>
+
+  <a class="more-link" href="#">More on sound and waves <span class="arrow">→</span></a>
 </section>
 
 
@@ -487,6 +541,8 @@
     <h3>Glasses for short and long sight</h3>
     <p>In short-sightedness (myopia), the eye focuses images in front of the retina; a concave lens spreads the light slightly so it focuses further back, onto the retina. In long-sightedness (hyperopia), the eye focuses behind the retina; a convex lens converges the light sooner, pulling the focus forward onto the retina.</p>
   </div>
+
+  <a class="more-link" href="#">More on light and optics <span class="arrow">→</span></a>
 </section>
 
 
@@ -526,6 +582,8 @@
     <h3>Radiation protection</h3>
     <p>Three ways to reduce exposure: increase distance from the source, reduce time near it, and add shielding (lead, concrete, water) between you and it.</p>
   </div>
+
+  <a class="more-link" href="#">More on atoms and matter <span class="arrow">→</span></a>
 </section>
 
 
@@ -551,6 +609,8 @@
     <h3>Stellar evolution by mass</h3>
     <p>A star's fate depends on its mass. Low-mass stars (like the Sun) swell into red giants, then gently shed their outer layers and leave behind a white dwarf. High-mass stars burn through their fuel quickly, explode as a supernova, and leave behind a neutron star or — if massive enough — a black hole. The heavy elements made in these explosions are scattered into space and become the raw material for new stars and planets.</p>
   </div>
+
+  <a class="more-link" href="#">More on the universe <span class="arrow">→</span></a>
 </section>
 
 
@@ -615,6 +675,8 @@
     <h3>Current direction and circuit symbols</h3>
     <p>Conventional current flows from + to − around the circuit; electrons actually flow the opposite way, − to +. An ammeter measures current and is connected in series; a voltmeter measures voltage and is connected in parallel across a component. A fuse is a deliberate weak point that melts and breaks the circuit if the current grows dangerously high, protecting everything else.</p>
   </div>
+
+  <a class="more-link" href="#">More on electricity <span class="arrow">→</span></a>
 </section>
 
 </div>
@@ -622,24 +684,17 @@
 
 
 <!-- ═══════════════════════════════════════════════ -->
-<!-- METHOD · How to learn this -->
+<!-- MORE ON EACH SUBJECT (cluster below the cheat sheet) -->
 <!-- ═══════════════════════════════════════════════ -->
 
-<section class="topic-block">
-  <div class="topic-num">Method</div>
-  <h2 class="topic-title">Why I wouldn't just memorise blindly</h2>
-
-  <div class="sub">
-    <p>There are subjects in school exist for for a few different reasons, and you should know which is which.</p>
-    <p>The first is best one, its general education. Its understanding and comprehension of the world. This is the part that is the most interesting and the most useful and the longest lasting. 
-    </p>
-    <p>The second is that some of what you learn is the foundation for everything else. Learning how to measure sound waves is not really all that important to your understanding of nature — they are about waves. Once you understand a wave with percision, you have something that you can re-use in optics, in electromagnetism, in quantum mechanics. You learn the formula for one wave and you have learned a piece of the language nature uses everywhere.</p>
-    <p>The second is that some of what you learn is the working knowledge of a profession. Trigonometry, resistance in circuits, counting reactants and products in chemistry — these are drilled to precision because precision is exactly what an engineer or a chemist needs on a Tuesday morning.</p>
-    <p>So far so good. I am not arguing against learning these things, nor against drilling them, nor against being tested on them. I am arguing for something narrower. You should know why you're learning it.</p>
-    <p>The problem is that the drill was once a tool, sharpening something useful for a larger purpose. Over time standardzation of curicula and test and the tool quietly became the goal. Students now memorize formulas to pass the test that exists to verify they memorized the formulas. Why anyone started doing this in the first place — that part got lost.</p>
-    <p>What I want to do is put the tool back where it belongs. The drilling exercises and the uninteresting topics are a tool to understand and use everything else, so let's try and use it that way.</p>
-  </div>
-</section>
+<div class="more-on-grid">
+  <p class="more-on-label">More on each subject</p>
+  <a class="more-link" href="#">More on sound and waves <span class="arrow">→</span></a>
+  <a class="more-link" href="#">More on light and optics <span class="arrow">→</span></a>
+  <a class="more-link" href="#">More on atoms and matter <span class="arrow">→</span></a>
+  <a class="more-link" href="#">More on the universe <span class="arrow">→</span></a>
+  <a class="more-link" href="#">More on electricity <span class="arrow">→</span></a>
+</div>
 
 
 <!-- ═══════════════════════════════════════════════ -->
@@ -647,7 +702,6 @@
 <!-- ═══════════════════════════════════════════════ -->
 
 <div class="closing-cta">
-  <p>If memorizing forty formulas you don't understand felt unsatisfying — that was the point. The rest of this curriculum builds every one of them from scratch, so you never have to memorize blindly again.</p>
   <a class="next-link" href="gases-to-atoms.html">
     Start from the beginning
     <span class="arrow">→</span>
