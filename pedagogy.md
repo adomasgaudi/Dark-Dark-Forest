@@ -167,6 +167,44 @@ This idea threads through several of the others:
 - **With Idea #5 (cross-connect formulas)** — the inverse-square law becomes vivid when you compute it: a light source 1 m away delivers exactly 4× the intensity of one 2 m away.
 - **With Idea #7 (iceberg learning)** — deeper tiers usually demand more numerical precision. A folk-tier explanation can hand-wave at "very far away". A graduate-tier explanation cannot.
 
+### 10. Memory techniques — natural first, unnatural when needed
+
+Use **memory techniques everywhere it helps**, both natural and unnatural.
+
+**Natural memory techniques** — the kind that fall out of *understanding the thing*. Physics is full of these:
+
+- Cross-linking between disciplines. The same formula recurring in optics, sound, and electricity is a natural memory hook — you do not have to memorise the formula three times.
+- Historical narrative. A formula remembered as "the thing Cavendish actually measured with two lead balls" sticks differently from a formula remembered as a symbol.
+- Causal structure. F = ma is hard to forget once you have watched a cart accelerate under varying force, because the *story* is the equation.
+
+When the natural hook is present, use it. The curriculum's whole bottom-up arc is one large natural memory technique.
+
+**Unnatural memory techniques** — the classical mnemonic toolkit, used as targeted tools, not as a course.
+
+- Memory palaces (loci) — for ordered lists (planet order, periodic-table blocks, the four Maxwell equations).
+- The Dominic system / PAO — for digits (Avogadro's number, π, the speed of light).
+- Major system — same purpose, different mapping.
+- Vivid imagery and exaggeration — for individual stubborn facts (the name of the scientist who discovered the neutron, the difference between *isotope* and *isobar*).
+
+Style: **incremental and inline.** Whenever a lecture hits a name or a number that the student will have to memorise, *suggest* a memory technique on the spot — a tiny mnemonic, or a one-line "try this palace move". The curriculum does not stop to teach a memory course. It teaches a memory technique the moment one would help, and moves on.
+
+Reference: the *Moonwalking with Einstein* toolkit covers everything we need. Use it as a quiet undercurrent, never as a separate module.
+
+### 11. Spaced repetition + input-vs-output, passive-vs-active
+
+The two ideas from language-learning pedagogy that transfer cleanly:
+
+- **Spaced repetition.** Once a fact is learned, schedule it for re-encounter at increasing intervals (Anki, SuperMemo, Leitner boxes — the family of systems built on Ebbinghaus's curve). Re-encountering a fact just as you are about to forget it consolidates it more cheaply than re-reading.
+- **Input vs. output, passive vs. active.** Reading a derivation (passive input) is not the same as deriving it yourself with the page closed (active output). The curriculum should explicitly mark which mode each exercise demands. Default to active output whenever the student is consolidating, default to passive input whenever they are encountering something new.
+
+**Implementation:** building a real spaced-repetition engine inside the curriculum is hard — it needs deck management, scheduling, interval tuning, the works. So for now we **set the hooks** and leave the engine for a later phase:
+
+- Each lecture page can carry a list of *flashcardable facts* in a stable JSON structure (fact, prompt, expected answer, tags). When the SR engine arrives, it scrapes these.
+- Each exercise carries a *mode* tag (`mode:input` / `mode:output`) so a future review tool can distinguish them.
+- The student-facing prose stays unchanged. The metadata accumulates underneath.
+
+This way, when the SR engine ships, the content is already structured for it. No retroactive scrape needed.
+
 ---
 
 ## TODO

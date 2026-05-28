@@ -12,7 +12,7 @@ Dense reference. One line per rule, category, or anti-pattern. No prose. Expande
 
 ---
 
-## Nine teaching moves
+## Eleven teaching moves
 
 1. **Practical question first** — open with what the student needs to answer, not history or philosophy.
 2. **Philosophy of science, sprinkled** — embed at the moment a derivation makes a leap.
@@ -23,6 +23,8 @@ Dense reference. One line per rule, category, or anti-pattern. No prose. Expande
 7. **Iceberg learning** — tag every explanation by tier.
 8. **Evidence + consensus markers** — tag every claim by what supports it and by how many scientists accept it.
 9. **Sharpen imagination with exact numbers** — every hypothetical or experiment ships with concrete parameters. "Imagine an electron at 0.99 c", not "a fast electron". Math is what lets imagination move to the next level.
+10. **Memory techniques** — sprinkle inline. Natural first (cross-links, history, causal structure); unnatural when needed (palaces, Dominic system, vivid imagery). Never a separate course — always tied to the specific fact in front of the student.
+11. **Spaced repetition + input/output, passive/active** — re-encounter at growing intervals (Anki-family). Distinguish *passive input* (reading a derivation) from *active output* (deriving it with the page closed). For now: structure facts and exercises with hooks so a future SR engine can scrape them; engine itself is deferred.
 
 ---
 
@@ -32,9 +34,9 @@ Every explanation carries a tier marker. Shallow = common + less accurate. Deep 
 
 | Tier | Label | Audience profile |
 |------|-------|------------------|
-| 1 | **Folk** | Default-wrong intuitions everyone has. Not insulting — brains build these unaided. |
-| 2 | **Popular** | Pop-science reader. Correct vocabulary, shallow grasp. |
-| 3 | **School** | Typical high schooler with slightly above-average grades. Textbook-correct, no machinery. |
+| 1 | **Layman** | Default-wrong intuitions everyone has. 
+| 2 | **Beginner** | Pop-science reader. Correct vocabulary, shallow grasp. |
+| 3 | **Highschool** | Typical high schooler with slightly above-average grades. Textbook-correct, no machinery. |
 | 4 | **Undergraduate** | First-year university. Methods + simple derivations. |
 | 5 | **Graduate** | Advanced specialised study. Full mathematical machinery for one branch. |
 | 6 | **PhD** | Research depth in a sub-field. |

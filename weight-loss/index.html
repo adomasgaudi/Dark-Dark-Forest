@@ -114,7 +114,7 @@
     position: fixed; bottom: 0; left: 0; right: 0;
     max-width: 480px; margin: 0 auto; background: #fff;
     border-top: 1px solid #eee; padding: 6px 14px 10px;
-    display: grid; grid-template-columns: 1fr 1fr 84px 1fr;
+    display: grid; grid-template-columns: 1fr 1fr 84px 1fr 1fr;
     gap: 4px; align-items: center; z-index: 100;
   }
   .nav-btn {
@@ -213,6 +213,168 @@
   }
   .btn-secondary:hover { background: #ebebeb; }
 
+  /* ADMIN: topbar icon shown only when signed in as admin */
+  .admin-only { display: none !important; }
+  body.is-admin .admin-only { display: inline-flex !important; }
+  .icon-btn.admin-only { color: #059669; }
+
+  /* ADMIN: users view */
+  .admin-toolbar {
+    display: flex; gap: 8px; margin-bottom: 18px;
+  }
+  .admin-toolbar .btn-tool {
+    flex: 1; background: #059669; color: #fff; border: none;
+    padding: 11px; border-radius: 8px;
+    font-size: 13.5px; font-weight: 600; cursor: pointer;
+    transition: background 0.15s;
+  }
+  .admin-toolbar .btn-tool.ghost {
+    background: #f4f4f4; color: #555;
+  }
+  .admin-toolbar .btn-tool:hover { background: #047857; }
+  .admin-toolbar .btn-tool.ghost:hover { background: #ebebeb; }
+
+  .user-card {
+    display: grid; grid-template-columns: 1fr auto auto;
+    align-items: center; gap: 12px;
+    padding: 14px 16px; border: 1px solid #eee;
+    border-radius: 10px; margin-bottom: 10px;
+    background: #fff; cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .user-card:hover { border-color: #059669; background: #f0fdf4; }
+  .user-card .uc-email {
+    font-size: 14px; font-weight: 600; color: #111;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .user-card .uc-meta {
+    font-size: 11.5px; color: #888; margin-top: 2px;
+  }
+  .user-card .uc-count {
+    font-size: 13px; font-weight: 600; color: #059669;
+    background: #d1fae5; padding: 4px 9px; border-radius: 999px;
+  }
+  .user-card .uc-delete {
+    background: none; border: none; cursor: pointer;
+    color: #bbb; font-size: 18px; padding: 4px 8px; border-radius: 4px;
+    transition: color 0.15s, background 0.15s;
+  }
+  .user-card .uc-delete:hover { color: #dc2626; background: #fef2f2; }
+
+  /* ADMIN: viewer modal (chart + log inside the modal) */
+  .modal-content.wide { max-height: 92vh; }
+  .viewer-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 8px; margin-bottom: 14px;
+  }
+  .viewer-stats .stat-card { padding: 10px 6px; }
+  .viewer-stats .stat-card .value { font-size: 17px; }
+  .viewer-chart { position: relative; height: 220px; margin-bottom: 14px; }
+  .viewer-log {
+    list-style: none; border: 1px solid #eee; border-radius: 10px;
+    overflow: hidden; max-height: 240px; overflow-y: auto;
+  }
+  .viewer-log .log-entry { padding: 11px 14px; }
+  .viewer-log .log-entry .delete { display: none; }
+
+  .file-input { display: none; }
+
+  .section-divider {
+    border: none; border-top: 1px solid #eee;
+    margin: 22px 0 14px;
+  }
+  .section-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: #888; margin-bottom: 10px;
+  }
+
+  /* DIET LOG */
+  .meal-card {
+    border: 1px solid #eee; border-radius: 12px;
+    padding: 14px 16px; margin-bottom: 12px; background: #fff;
+  }
+  .meal-card .meal-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .meal-card .meal-date { font-size: 12.5px; color: #888; font-weight: 500; }
+  .meal-card .meal-delete {
+    background: none; border: none; cursor: pointer;
+    color: #bbb; font-size: 18px; padding: 0 4px; border-radius: 4px;
+  }
+  .meal-card .meal-delete:hover { color: #dc2626; }
+  .meal-card .meal-desc {
+    font-size: 14px; color: #222; line-height: 1.5;
+    white-space: pre-wrap; word-break: break-word;
+  }
+  .meal-card .meal-photos {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 6px; margin-top: 10px;
+  }
+  .meal-card .meal-photos img {
+    width: 100%; aspect-ratio: 1; object-fit: cover;
+    border-radius: 8px; cursor: pointer; background: #f0f0f0;
+  }
+  .photo-thumbs {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 6px; margin-top: 8px;
+  }
+  .photo-thumbs .thumb {
+    position: relative; aspect-ratio: 1; border-radius: 8px;
+    background: #f0f0f0; overflow: hidden;
+  }
+  .photo-thumbs .thumb img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+  .photo-thumbs .thumb .remove {
+    position: absolute; top: 4px; right: 4px;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: rgba(0,0,0,0.6); color: #fff; border: none;
+    font-size: 14px; line-height: 1; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .photo-thumbs .thumb .remove:hover { background: rgba(220, 38, 38, 0.9); }
+  .add-photo-btn {
+    background: #f4f4f4; color: #555; border: 1px dashed #bbb;
+    padding: 10px; border-radius: 7px; cursor: pointer;
+    width: 100%; font-size: 13px; font-weight: 500; margin-top: 8px;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .add-photo-btn:hover { background: #ebebeb; border-color: #888; }
+
+  /* Lightbox for full-size photo */
+  .lightbox {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.92);
+    display: none; align-items: center; justify-content: center;
+    z-index: 500; cursor: zoom-out; padding: 20px;
+  }
+  .lightbox.active { display: flex; }
+  .lightbox img {
+    max-width: 100%; max-height: 100%; object-fit: contain;
+    border-radius: 6px;
+  }
+
+  /* Admin paste-data textarea */
+  .paste-area {
+    width: 100%; min-height: 160px; padding: 10px 12px;
+    border: 1px solid #ddd; border-radius: 7px;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 11.5px; line-height: 1.4; resize: vertical;
+  }
+
+  /* Checklist progress display in viewer */
+  .checklist-progress {
+    background: #f9fafb; border: 1px solid #eee; border-radius: 10px;
+    padding: 12px 14px; margin-bottom: 14px;
+  }
+  .checklist-progress .cp-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase; color: #888; margin-bottom: 4px;
+  }
+  .checklist-progress .cp-value {
+    font-size: 16px; font-weight: 700; color: #111;
+  }
+
   /* FACTS PANEL */
   .facts {
     margin-top: 22px; padding: 18px;
@@ -249,6 +411,9 @@
   <div class="brand"><span class="accent">●</span> Trim</div>
   <div class="topbar-right">
     <span id="auth-state" class="auth-state">Sign in</span>
+    <button id="admin-btn" class="icon-btn admin-only" aria-label="Admin — manage users">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    </button>
     <button id="profile-btn" class="icon-btn" aria-label="Profile">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     </button>
@@ -298,6 +463,32 @@
     </div>
   </section>
 
+  <section id="view-diet" class="view">
+    <h2>Diet log</h2>
+    <button id="meal-add-btn" class="btn-primary" style="margin-bottom: 16px;">+ Log a meal</button>
+    <div id="meal-list"></div>
+    <div class="empty" id="meal-empty">
+      <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+      <p>No meals logged yet.</p>
+      <p class="empty-hint">Tap "Log a meal" to add a description and photos.</p>
+    </div>
+  </section>
+
+  <section id="view-users" class="view">
+    <h2>Users — admin</h2>
+    <div class="admin-toolbar">
+      <button class="btn-tool" id="admin-import-btn">Import .json</button>
+      <button class="btn-tool ghost" id="admin-paste-btn">Paste data</button>
+    </div>
+    <input type="file" id="admin-file-input" class="file-input" accept=".json,application/json" multiple>
+    <div id="user-list"></div>
+    <div class="empty" id="users-empty">
+      <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <p>No users imported yet.</p>
+      <p class="empty-hint">Tap Import to load a user's exported .json file.</p>
+    </div>
+  </section>
+
 </main>
 
 
@@ -319,6 +510,10 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
     </button>
   </div>
+  <button class="nav-btn" data-view="diet">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+    <span>Diet</span>
+  </button>
   <a class="nav-btn" href="guide.html">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4v15a2 2 0 0 0 2 2h13"/><path d="M4 4h13a2 2 0 0 1 2 2v13H6a2 2 0 0 0-2 2"/></svg>
     <span>Guide</span>
@@ -409,6 +604,13 @@
       <button type="submit" class="btn-primary">Save & calculate</button>
     </form>
 
+    <hr class="section-divider">
+    <div class="section-label">Export your data</div>
+    <p style="font-size: 12.5px; color: #666; margin-bottom: 10px; line-height: 1.5;">
+      Download your profile and weight log as a single <code>.json</code> file. Send it to your admin and they can view your graph.
+    </p>
+    <button id="export-btn" type="button" class="btn-secondary">Download my data (.json)</button>
+
     <div class="facts" id="facts-panel">
       <h3>Your numbers</h3>
       <div class="fact"><span class="fact-label">BMR (resting burn)</span><span><span id="fact-bmr" class="fact-value">—</span><span class="fact-unit">kcal/day</span></span></div>
@@ -462,6 +664,95 @@
 
 
 <!-- ═══════════════════════════════════════════════ -->
+<!-- MODAL: ADD MEAL -->
+<!-- ═══════════════════════════════════════════════ -->
+
+<div class="modal" id="modal-meal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Log a meal</h2>
+      <button class="modal-close">×</button>
+    </div>
+    <form id="form-meal">
+      <div class="form-row">
+        <label for="meal-date">Date & time</label>
+        <input type="datetime-local" id="meal-date" required>
+      </div>
+      <div class="form-row">
+        <label for="meal-desc">What did you eat?</label>
+        <textarea id="meal-desc" rows="3" placeholder="e.g. 200g grilled chicken, salad, black coffee" required></textarea>
+      </div>
+      <div class="form-row">
+        <label>Photos (optional)</label>
+        <input type="file" id="meal-photos" class="file-input" accept="image/*" multiple>
+        <button type="button" class="add-photo-btn" id="meal-photo-pick">+ Add photo</button>
+        <div class="photo-thumbs" id="meal-thumbs"></div>
+        <div class="form-help" id="meal-photo-help">Photos are shrunk to ~800px and JPEG-compressed before saving. Hold to delete a thumb.</div>
+      </div>
+      <button type="submit" class="btn-primary">Save meal</button>
+    </form>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- MODAL: ADMIN — VIEW A USER -->
+<!-- ═══════════════════════════════════════════════ -->
+
+<div class="modal" id="modal-viewer">
+  <div class="modal-content wide">
+    <div class="modal-header">
+      <h2 id="viewer-title">User</h2>
+      <button class="modal-close">×</button>
+    </div>
+    <div id="viewer-meta" style="font-size: 12px; color: #888; margin-bottom: 14px;"></div>
+
+    <div class="viewer-stats stat-cards">
+      <div class="stat-card"><div class="label">Current</div><div><span id="v-current" class="value">—</span><span class="unit">kg</span></div></div>
+      <div class="stat-card"><div class="label">Change</div><div><span id="v-change" class="value">—</span><span class="unit">kg</span></div></div>
+      <div class="stat-card"><div class="label">Entries</div><div><span id="v-days" class="value">—</span></div></div>
+    </div>
+
+    <div class="checklist-progress" id="v-checklist" style="display: none;">
+      <div class="cp-label">Checklist progress</div>
+      <div class="cp-value"><span id="v-checklist-val">—</span> items ticked</div>
+    </div>
+
+    <div class="viewer-chart"><canvas id="v-chart"></canvas></div>
+
+    <div class="section-label">Weight log</div>
+    <ul class="log-list viewer-log" id="v-loglist"></ul>
+
+    <div class="section-label" id="v-diet-label" style="margin-top: 18px;">Diet log</div>
+    <div id="v-meals"></div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- MODAL: ADMIN — PASTE DATA -->
+<!-- ═══════════════════════════════════════════════ -->
+
+<div class="modal" id="modal-paste">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Paste user data</h2>
+      <button class="modal-close">×</button>
+    </div>
+    <p style="font-size: 12.5px; color: #666; margin-bottom: 10px; line-height: 1.5;">
+      Paste the contents of a Trim export <code>.json</code> file. For huge files (lots of photos) use the Import button instead.
+    </p>
+    <textarea id="paste-textarea" class="paste-area" placeholder='{ "trim_export": 2, ... }'></textarea>
+    <button id="paste-confirm" class="btn-primary" type="button">Import</button>
+  </div>
+</div>
+
+
+<!-- Lightbox for full-size photo -->
+<div class="lightbox" id="lightbox"><img id="lightbox-img" alt=""></div>
+
+
+<!-- ═══════════════════════════════════════════════ -->
 <!-- SCRIPT -->
 <!-- ═══════════════════════════════════════════════ -->
 
@@ -471,17 +762,29 @@
    ============================================================
 
    Modules (in order):
-   - Store : data persistence. localStorage now, swap to fetch() later.
-   - Calc  : pure calculations (BMR, TDEE, PSMF targets). No I/O.
-   - Auth  : sign-in / sign-out stub. Replace with real API calls.
-   - UI    : view rendering and event wiring. Reads from Store/Calc/Auth.
+   - Store     : localStorage (small data: log, profile, auth, checklist)
+   - IDB       : IndexedDB wrapper (large data: meals with photos, admin imports)
+   - ImageUtil : downsize + JPEG-compress photos before saving
+   - Meals     : user's own diet log (uses IDB)
+   - Imports   : admin's collected user payloads (uses IDB)
+   - Calc      : pure calculations (BMR, TDEE, PSMF targets)
+   - Auth      : sign-in stub + isAdmin gate
+   - Exporter  : assembles one JSON payload (all user data) + downloads as .json
+   - Importer  : validates an inbound JSON payload
+   - UI        : views, modals, event wiring
 
-   To plug in a real backend, only Store and Auth need to change.
-   UI talks to Store and Auth through a stable interface.
+   Entry shape (weight): { id, weight, date, notes, clothesWeight }
+   Meal shape:           { id, date, description, photos: [dataURL...] }
+   Profile shape:        { sex, height, age, weight, activity }
 
-   Entry shape: { id, weight, date, notes, clothesWeight }
-   Profile shape: { sex, height, age, weight, activity }
+   Export payload v2:
+     { trim_export: 2, exported_at, user: { email }, profile,
+       log: [...], checklist: {key: bool}, meals: [...] }
    ============================================================ */
+
+const ADMIN_EMAIL = 'adomas.gaudi@gmail.com';
+const EXPORT_VERSION = 2;
+const DB_NAME = 'trim_db_v1';
 
 const Store = (() => {
   const K = {
@@ -514,8 +817,112 @@ const Store = (() => {
     getAuth() { return read(K.AUTH, null); },
     saveAuth(a) { write(K.AUTH, a); },
     clearAuth() { localStorage.removeItem(K.AUTH); },
+    getChecklist() { return read(K.CHECKLIST, {}); },
   };
 })();
+
+/* ============================================================
+   IndexedDB wrapper — async key-value-ish access for large data
+   ============================================================ */
+const IDB = (() => {
+  let dbPromise = null;
+  function open() {
+    if (dbPromise) return dbPromise;
+    dbPromise = new Promise((resolve, reject) => {
+      const req = indexedDB.open(DB_NAME, 1);
+      req.onupgradeneeded = e => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains('meals')) db.createObjectStore('meals', { keyPath: 'id' });
+        if (!db.objectStoreNames.contains('imports')) db.createObjectStore('imports', { keyPath: 'id' });
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+    return dbPromise;
+  }
+  const p = req => new Promise((ok, no) => { req.onsuccess = () => ok(req.result); req.onerror = () => no(req.error); });
+  async function store(name, mode = 'readonly') {
+    const db = await open();
+    return db.transaction(name, mode).objectStore(name);
+  }
+  return {
+    async all(name)         { return p((await store(name)).getAll()); },
+    async get(name, k)      { return p((await store(name)).get(k)); },
+    async put(name, v)      { return p((await store(name, 'readwrite')).put(v)); },
+    async del(name, k)      { return p((await store(name, 'readwrite')).delete(k)); },
+  };
+})();
+
+/* ============================================================
+   ImageUtil — downscale + JPEG-compress so 30 days of photos fit
+   ============================================================ */
+const ImageUtil = (() => {
+  const MAX_DIM = 1024;
+  const QUALITY = 0.72;
+  return {
+    async compress(file) {
+      const dataUrl = await new Promise((res, rej) => {
+        const r = new FileReader();
+        r.onload = () => res(r.result);
+        r.onerror = () => rej(r.error);
+        r.readAsDataURL(file);
+      });
+      const img = await new Promise((res, rej) => {
+        const i = new Image();
+        i.onload = () => res(i);
+        i.onerror = () => rej(new Error('image load failed'));
+        i.src = dataUrl;
+      });
+      const scale = Math.min(1, MAX_DIM / Math.max(img.width, img.height));
+      const w = Math.max(1, Math.round(img.width * scale));
+      const h = Math.max(1, Math.round(img.height * scale));
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      return canvas.toDataURL('image/jpeg', QUALITY);
+    },
+  };
+})();
+
+/* ============================================================
+   Meals — user's own diet log (IndexedDB)
+   ============================================================ */
+const Meals = {
+  async list() {
+    const all = await IDB.all('meals');
+    return all.sort((a, b) => new Date(b.date) - new Date(a.date));
+  },
+  async add(meal) { return IDB.put('meals', { id: Date.now().toString(), ...meal }); },
+  async remove(id) { return IDB.del('meals', id); },
+};
+
+/* ============================================================
+   Imports — admin's collected user payloads (IndexedDB)
+   Keyed by lowercased email so latest snapshot overwrites old.
+   ============================================================ */
+const Imports = {
+  async list() {
+    const all = await IDB.all('imports');
+    return all.sort((a, b) => new Date(b.importedAt) - new Date(a.importedAt));
+  },
+  async get(id) { return IDB.get('imports', id); },
+  async save(payload) {
+    const email = (payload.user && payload.user.email) || 'unknown';
+    const record = {
+      id: email.toLowerCase(),
+      email,
+      exportedAt: payload.exported_at || null,
+      importedAt: new Date().toISOString(),
+      profile: payload.profile || null,
+      log: Array.isArray(payload.log) ? payload.log : [],
+      checklist: payload.checklist || {},
+      meals: Array.isArray(payload.meals) ? payload.meals : [],
+    };
+    await IDB.put('imports', record);
+    return record;
+  },
+  async remove(id) { return IDB.del('imports', id); },
+};
 
 const Calc = (() => {
   const ACTIVITY = {
@@ -537,6 +944,10 @@ const Calc = (() => {
 const Auth = (() => {
   return {
     isLoggedIn() { return Store.getAuth() !== null; },
+    isAdmin() {
+      const u = Store.getAuth();
+      return !!(u && u.email && u.email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
+    },
     user() { return Store.getAuth(); },
     // STUB — replace with: await fetch('/api/login', { method: 'POST', ... })
     async login(email, password) {
@@ -547,6 +958,64 @@ const Auth = (() => {
     logout() { Store.clearAuth(); },
   };
 })();
+
+/* ============================================================
+   Exporter — bundle everything into one downloadable .json
+   ============================================================ */
+const Exporter = {
+  async buildPayload() {
+    const auth = Store.getAuth();
+    const email = (auth && auth.email) || 'anonymous';
+    return {
+      trim_export: EXPORT_VERSION,
+      exported_at: new Date().toISOString(),
+      user: { email },
+      profile: Store.getProfile(),
+      log: Store.getLog(),
+      checklist: Store.getChecklist(),
+      meals: await Meals.list(),
+    };
+  },
+  async downloadFile() {
+    const payload = await this.buildPayload();
+    const json = JSON.stringify(payload);
+    const safeEmail = payload.user.email.replace(/[^a-z0-9._-]+/gi, '_');
+    const stamp = new Date().toISOString().slice(0, 10);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `trim-${safeEmail}-${stamp}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    return { fileName: a.download, bytes: blob.size };
+  },
+};
+
+/* ============================================================
+   Importer — validate a payload before storing
+   ============================================================ */
+const Importer = {
+  parse(text) {
+    let obj;
+    try { obj = JSON.parse(text); }
+    catch { return { ok: false, error: 'Not valid JSON.' }; }
+    if (!obj || typeof obj !== 'object') return { ok: false, error: 'Payload is not an object.' };
+    if (!obj.trim_export) return { ok: false, error: 'Missing trim_export marker — wrong file?' };
+    if (!obj.user || !obj.user.email) return { ok: false, error: 'Missing user.email.' };
+    return { ok: true, payload: obj };
+  },
+  async readFile(file) {
+    return new Promise((res, rej) => {
+      const r = new FileReader();
+      r.onload = () => res(r.result);
+      r.onerror = () => rej(r.error);
+      r.readAsText(file);
+    });
+  },
+};
 
 const Fmt = {
   date(d) {
@@ -569,6 +1038,8 @@ const UI = (() => {
   const $ = sel => document.querySelector(sel);
   const $$ = sel => document.querySelectorAll(sel);
   let chart = null;
+  let viewerChart = null;
+  let pendingMealPhotos = [];  // dataURLs queued in the add-meal modal
 
   function setView(name) {
     $$('.view').forEach(v => v.classList.remove('active'));
@@ -577,6 +1048,8 @@ const UI = (() => {
     document.querySelector(`.nav-btn[data-view="${name}"]`)?.classList.add('active');
     if (name === 'chart') renderChart();
     if (name === 'logs') renderLogs();
+    if (name === 'diet') renderMeals();
+    if (name === 'users') renderUsers();
   }
 
   function renderChart() {
@@ -678,6 +1151,225 @@ const UI = (() => {
     });
   }
 
+  /* ---- Diet log (user's own) ---- */
+  async function renderMeals() {
+    const meals = await Meals.list();
+    const list = $('#meal-list');
+    const empty = $('#meal-empty');
+    list.innerHTML = '';
+    if (meals.length === 0) {
+      list.style.display = 'none';
+      empty.style.display = 'block';
+      return;
+    }
+    list.style.display = 'block';
+    empty.style.display = 'none';
+    meals.forEach(m => list.appendChild(buildMealCard(m, true)));
+    list.querySelectorAll('.meal-delete').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('Delete this meal?')) return;
+        await Meals.remove(btn.dataset.id);
+        renderMeals();
+      });
+    });
+    wireLightboxThumbs(list);
+  }
+
+  function buildMealCard(m, withDelete) {
+    const li = document.createElement('div');
+    li.className = 'meal-card';
+    const photosHtml = (m.photos && m.photos.length)
+      ? `<div class="meal-photos">${m.photos.map((p, i) =>
+          `<img src="${p}" alt="meal photo ${i+1}" class="lb-thumb">`).join('')}</div>`
+      : '';
+    li.innerHTML = `
+      <div class="meal-head">
+        <span class="meal-date">${Fmt.dateTime(m.date)}</span>
+        ${withDelete ? `<button class="meal-delete" data-id="${m.id}" aria-label="Delete">×</button>` : ''}
+      </div>
+      <div class="meal-desc">${escapeHTML(m.description || '')}</div>
+      ${photosHtml}
+    `;
+    return li;
+  }
+
+  function wireLightboxThumbs(scope) {
+    scope.querySelectorAll('.lb-thumb').forEach(img => {
+      img.addEventListener('click', () => {
+        $('#lightbox-img').src = img.src;
+        $('#lightbox').classList.add('active');
+      });
+    });
+  }
+
+  function renderPendingPhotos() {
+    const wrap = $('#meal-thumbs');
+    wrap.innerHTML = pendingMealPhotos.map((dataUrl, i) => `
+      <div class="thumb">
+        <img src="${dataUrl}">
+        <button type="button" class="remove" data-i="${i}" aria-label="Remove">×</button>
+      </div>
+    `).join('');
+    wrap.querySelectorAll('.remove').forEach(btn => {
+      btn.addEventListener('click', () => {
+        pendingMealPhotos.splice(parseInt(btn.dataset.i, 10), 1);
+        renderPendingPhotos();
+      });
+    });
+  }
+
+  /* ---- Admin: users list + viewer ---- */
+  async function renderUsers() {
+    const users = await Imports.list();
+    const list = $('#user-list');
+    const empty = $('#users-empty');
+    list.innerHTML = '';
+    if (users.length === 0) {
+      list.style.display = 'none';
+      empty.style.display = 'block';
+      return;
+    }
+    list.style.display = 'block';
+    empty.style.display = 'none';
+    users.forEach(u => {
+      const card = document.createElement('div');
+      card.className = 'user-card';
+      card.dataset.id = u.id;
+      const last = u.log.length
+        ? `${u.log[u.log.length - 1].weight.toFixed(1)} kg latest`
+        : 'no weights';
+      card.innerHTML = `
+        <div>
+          <div class="uc-email">${escapeHTML(u.email)}</div>
+          <div class="uc-meta">${last} · ${u.meals.length} meals · imported ${Fmt.date(u.importedAt)}</div>
+        </div>
+        <span class="uc-count">${u.log.length}</span>
+        <button class="uc-delete" data-id="${u.id}" aria-label="Delete">×</button>
+      `;
+      list.appendChild(card);
+    });
+    list.querySelectorAll('.user-card').forEach(card => {
+      card.addEventListener('click', e => {
+        if (e.target.closest('.uc-delete')) return;
+        openViewer(card.dataset.id);
+      });
+    });
+    list.querySelectorAll('.uc-delete').forEach(btn => {
+      btn.addEventListener('click', async e => {
+        e.stopPropagation();
+        if (!confirm('Remove this user from your library?')) return;
+        await Imports.remove(btn.dataset.id);
+        renderUsers();
+      });
+    });
+  }
+
+  async function openViewer(id) {
+    const u = await Imports.get(id);
+    if (!u) return;
+    $('#viewer-title').textContent = u.email;
+    const expStamp = u.exportedAt ? `exported ${Fmt.dateTime(u.exportedAt)}` : 'no export date';
+    $('#viewer-meta').textContent = `${expStamp} · imported ${Fmt.dateTime(u.importedAt)}`;
+
+    // Stats + chart
+    const sorted = [...u.log].sort((a, b) => new Date(a.date) - new Date(b.date));
+    if (sorted.length > 0) {
+      const current = sorted[sorted.length - 1].weight;
+      const first = sorted[0].weight;
+      const change = current - first;
+      $('#v-current').textContent = current.toFixed(1);
+      const changeEl = $('#v-change');
+      changeEl.textContent = (change >= 0 ? '+' : '') + change.toFixed(1);
+      changeEl.classList.remove('up', 'down');
+      if (change > 0) changeEl.classList.add('up');
+      if (change < 0) changeEl.classList.add('down');
+      $('#v-days').textContent = sorted.length;
+    } else {
+      $('#v-current').textContent = '—';
+      $('#v-change').textContent = '—';
+      $('#v-days').textContent = '0';
+    }
+
+    if (viewerChart) { viewerChart.destroy(); viewerChart = null; }
+    // Chart needs to render after the canvas is laid out — defer until modal is open.
+    const renderViewerChart = () => {
+      if (sorted.length === 0) return;
+      viewerChart = new Chart($('#v-chart'), {
+        type: 'line',
+        data: {
+          labels: sorted.map(e => Fmt.shortDate(e.date)),
+          datasets: [{
+            data: sorted.map(e => e.weight),
+            borderColor: '#059669',
+            backgroundColor: 'rgba(5, 150, 105, 0.08)',
+            borderWidth: 2.5, tension: 0.32, fill: true,
+            pointRadius: 3, pointBackgroundColor: '#059669',
+            pointBorderColor: '#fff', pointBorderWidth: 2,
+          }],
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { backgroundColor: '#111', padding: 10, displayColors: false,
+              callbacks: { label: c => c.parsed.y.toFixed(1) + ' kg' } },
+          },
+          scales: {
+            y: { beginAtZero: false, grid: { color: '#f0f0f0' }, ticks: { color: '#888', font: { size: 10 } } },
+            x: { grid: { display: false }, ticks: { color: '#888', font: { size: 10 } } },
+          },
+        },
+      });
+    };
+
+    // Checklist progress
+    const checked = Object.values(u.checklist || {}).filter(v => v).length;
+    const checklistEl = $('#v-checklist');
+    if (checked > 0 || Object.keys(u.checklist || {}).length > 0) {
+      checklistEl.style.display = 'block';
+      $('#v-checklist-val').textContent = checked;
+    } else {
+      checklistEl.style.display = 'none';
+    }
+
+    // Weight log
+    const ul = $('#v-loglist');
+    ul.innerHTML = '';
+    const logSorted = [...u.log].sort((a, b) => new Date(b.date) - new Date(a.date));
+    logSorted.forEach(entry => {
+      const li = document.createElement('li');
+      li.className = 'log-entry';
+      const clothesPart = entry.clothesWeight ? ` · clothes ${entry.clothesWeight}kg` : '';
+      const notesText = (entry.notes || '') + clothesPart;
+      li.innerHTML = `
+        <div class="date-block">
+          <div class="date">${Fmt.dateTime(entry.date)}</div>
+          ${notesText ? `<div class="notes">${escapeHTML(notesText)}</div>` : ''}
+        </div>
+        <span class="weight">${entry.weight.toFixed(1)} kg</span>
+        <button class="delete" aria-label="hidden">×</button>
+      `;
+      ul.appendChild(li);
+    });
+
+    // Diet log
+    const mealsWrap = $('#v-meals');
+    mealsWrap.innerHTML = '';
+    const dietLabel = $('#v-diet-label');
+    if (u.meals && u.meals.length > 0) {
+      dietLabel.textContent = `Diet log (${u.meals.length})`;
+      const sortedMeals = [...u.meals].sort((a, b) => new Date(b.date) - new Date(a.date));
+      sortedMeals.forEach(m => mealsWrap.appendChild(buildMealCard(m, false)));
+      wireLightboxThumbs(mealsWrap);
+    } else {
+      dietLabel.textContent = 'Diet log';
+      mealsWrap.innerHTML = '<p style="font-size: 12.5px; color: #999;">No meals logged.</p>';
+    }
+
+    openModal('modal-viewer');
+    requestAnimationFrame(renderViewerChart);
+  }
+
   function renderFacts() {
     const profile = Store.getProfile();
     if (!profile) {
@@ -701,6 +1393,7 @@ const UI = (() => {
       el.textContent = 'Sign in';
       el.classList.remove('signed-in');
     }
+    document.body.classList.toggle('is-admin', Auth.isAdmin());
   }
 
   function openModal(id) {
@@ -814,6 +1507,135 @@ const UI = (() => {
       refreshAuthModal();
     });
 
+    // ---- Export button (in profile modal) ----
+    $('#export-btn').addEventListener('click', async () => {
+      try {
+        const { fileName, bytes } = await Exporter.downloadFile();
+        const kb = (bytes / 1024).toFixed(0);
+        alert(`Saved ${fileName} (${kb} KB). Send the file to your admin.`);
+      } catch (err) {
+        console.error(err);
+        alert('Export failed: ' + err.message);
+      }
+    });
+
+    // ---- Diet log: add-meal modal ----
+    $('#meal-add-btn').addEventListener('click', () => {
+      const now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+      $('#meal-date').value = now.toISOString().slice(0, 16);
+      $('#meal-desc').value = '';
+      pendingMealPhotos = [];
+      renderPendingPhotos();
+      openModal('modal-meal');
+      setTimeout(() => $('#meal-desc').focus(), 50);
+    });
+
+    $('#meal-photo-pick').addEventListener('click', () => {
+      $('#meal-photos').click();
+    });
+
+    $('#meal-photos').addEventListener('change', async e => {
+      const files = Array.from(e.target.files || []);
+      if (!files.length) return;
+      const help = $('#meal-photo-help');
+      help.textContent = 'Compressing photos…';
+      try {
+        for (const f of files) {
+          if (!f.type.startsWith('image/')) continue;
+          const dataUrl = await ImageUtil.compress(f);
+          pendingMealPhotos.push(dataUrl);
+        }
+        renderPendingPhotos();
+        help.textContent = `${pendingMealPhotos.length} photo(s) ready. Photos are downscaled to ~1024px JPEG.`;
+      } catch (err) {
+        help.textContent = 'Photo failed: ' + err.message;
+      }
+      e.target.value = '';
+    });
+
+    $('#form-meal').addEventListener('submit', async e => {
+      e.preventDefault();
+      const date = new Date($('#meal-date').value).toISOString();
+      const description = $('#meal-desc').value.trim();
+      if (!date || !description) return;
+      try {
+        await Meals.add({ date, description, photos: pendingMealPhotos.slice() });
+        pendingMealPhotos = [];
+        closeModal('modal-meal');
+        renderMeals();
+      } catch (err) {
+        alert('Save failed (storage may be full): ' + err.message);
+      }
+    });
+
+    // ---- Lightbox ----
+    $('#lightbox').addEventListener('click', () => {
+      $('#lightbox').classList.remove('active');
+      $('#lightbox-img').src = '';
+    });
+
+    // Global ESC: close lightbox first, else top-most open modal
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Escape') return;
+      const lb = $('#lightbox');
+      if (lb.classList.contains('active')) {
+        lb.classList.remove('active');
+        $('#lightbox-img').src = '';
+        return;
+      }
+      const openModals = document.querySelectorAll('.modal.active');
+      if (openModals.length) closeModal(openModals[openModals.length - 1].id);
+    });
+
+    // ---- Admin: open Users view ----
+    $('#admin-btn').addEventListener('click', () => setView('users'));
+
+    // ---- Admin: import file(s) ----
+    $('#admin-import-btn').addEventListener('click', () => {
+      $('#admin-file-input').click();
+    });
+
+    $('#admin-file-input').addEventListener('change', async e => {
+      const files = Array.from(e.target.files || []);
+      if (!files.length) return;
+      let ok = 0, fail = 0;
+      const errors = [];
+      for (const file of files) {
+        try {
+          const text = await Importer.readFile(file);
+          const result = Importer.parse(text);
+          if (!result.ok) { fail++; errors.push(`${file.name}: ${result.error}`); continue; }
+          await Imports.save(result.payload);
+          ok++;
+        } catch (err) {
+          fail++;
+          errors.push(`${file.name}: ${err.message}`);
+        }
+      }
+      e.target.value = '';
+      renderUsers();
+      let msg = `Imported ${ok} file${ok === 1 ? '' : 's'}.`;
+      if (fail) msg += `\n${fail} failed:\n` + errors.join('\n');
+      alert(msg);
+    });
+
+    // ---- Admin: paste JSON ----
+    $('#admin-paste-btn').addEventListener('click', () => {
+      $('#paste-textarea').value = '';
+      openModal('modal-paste');
+    });
+
+    $('#paste-confirm').addEventListener('click', async () => {
+      const text = $('#paste-textarea').value.trim();
+      if (!text) return;
+      const result = Importer.parse(text);
+      if (!result.ok) { alert(result.error); return; }
+      await Imports.save(result.payload);
+      closeModal('modal-paste');
+      renderUsers();
+    });
+
     function refreshAuthModal() {
       if (Auth.isLoggedIn()) {
         $('#auth-title').textContent = 'Account';
@@ -832,7 +1654,7 @@ const UI = (() => {
     // Initial render
     renderAuthState();
 
-    // Deep link handling — guide page links back with #add / #logs / #chart
+    // Deep link handling
     const hash = window.location.hash;
     if (hash === '#add') {
       setView('chart');
@@ -840,6 +1662,12 @@ const UI = (() => {
       history.replaceState(null, '', window.location.pathname);
     } else if (hash === '#logs') {
       setView('logs');
+      history.replaceState(null, '', window.location.pathname);
+    } else if (hash === '#diet') {
+      setView('diet');
+      history.replaceState(null, '', window.location.pathname);
+    } else if (hash === '#users' && Auth.isAdmin()) {
+      setView('users');
       history.replaceState(null, '', window.location.pathname);
     } else {
       setView('chart');
