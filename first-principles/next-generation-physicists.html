@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Next generation physicists — First Principles</title>
+<meta name="description" content="Modern physics in six chapters — Einstein-Hilbert, Yang-Mills, Higgs-Yukawa, the Standard Model symmetries, the three families, and the mixing matrices — plus the geometric turn in quantum field theory.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: #fff;
+    color: #111;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  body {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 80px 24px 120px;
+  }
+
+  a { color: inherit; }
+
+  /* ── TOP NAV ── */
+  .topnav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid #eee;
+    z-index: 100;
+    display: flex; align-items: center;
+  }
+  .topnav-inner {
+    max-width: 740px; margin: 0 auto;
+    padding: 0 24px; width: 100%;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .nav-back {
+    font-size: 12px; color: #555; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 10px; border-radius: 3px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .nav-back:hover { background: #f5f5f5; color: #111; }
+  .nav-back .nav-arrow { font-size: 13px; transition: transform 0.18s; display: inline-block; }
+  .nav-back:hover .nav-arrow { transform: translateX(-3px); }
+  .nav-brand {
+    flex: 1; text-align: center; font-size: 12px;
+    font-weight: 600; color: #777; letter-spacing: 0.04em;
+    font-family: 'SF Mono', Consolas, monospace;
+  }
+  .nav-items { display: flex; gap: 14px; min-width: 80px; justify-content: flex-end; }
+
+  /* ── HERO ── */
+  .lecture-tag {
+    font-size: 11px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: #aaa;
+    margin-bottom: 14px;
+    margin-top: 24px;
+  }
+  h1 {
+    font-size: 30px; font-weight: 600;
+    margin-bottom: 12px; letter-spacing: -0.015em;
+    line-height: 1.2;
+  }
+  .grades { font-size: 13px; color: #888; margin-bottom: 36px; }
+
+  .lede {
+    font-size: 16px; color: #333; line-height: 1.65;
+    margin-bottom: 48px; max-width: 640px;
+  }
+
+  /* ── DIVIDER ── */
+  hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 56px 0;
+  }
+
+  /* ── SECTION ── */
+  h2 {
+    font-size: 22px; font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    margin-bottom: 18px;
+    margin-top: 8px;
+  }
+
+  .section-num {
+    font-size: 10px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: #aaa;
+    font-weight: 600; margin-bottom: 8px;
+  }
+
+  p {
+    font-size: 15px; color: #222; line-height: 1.7;
+    margin-bottom: 18px;
+  }
+
+  /* ── APPENDIX (geometric turn) ── */
+  .appendix h2 {
+    font-size: 24px;
+    letter-spacing: -0.015em;
+  }
+
+  ul.names-list {
+    list-style: none;
+    margin: 24px 0 28px;
+    padding: 0;
+  }
+  ul.names-list li {
+    font-size: 14.5px;
+    color: #333;
+    line-height: 1.65;
+    padding: 10px 0 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  ul.names-list li:last-child { border-bottom: none; }
+  ul.names-list strong {
+    color: #111;
+    font-weight: 600;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-top: 96px; padding-top: 24px;
+    border-top: 1px solid #eee;
+    font-size: 12px; color: #aaa; line-height: 1.7;
+  }
+
+  @media (max-width: 600px) {
+    h1 { font-size: 24px; }
+    h2 { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a class="nav-back" href="index.html"><span class="nav-arrow">←</span> Back to First Principles</a>
+    <div class="nav-brand">next-gen</div>
+    <div class="nav-items"></div>
+  </div>
+</nav>
+
+
+<!-- HERO -->
+<div class="lecture-tag">Frontier · For the next generation</div>
+<h1>Next generation physicists</h1>
+<div class="grades">University and beyond · the modern physics curriculum, simplified</div>
+
+<p class="lede">This is what the next generation of physicists needs to learn. Modern physics in a simplified way — six chapters covering the structure of reality as we now understand it, and then a glimpse of the shift happening at the frontier, from analytical thinking to geometric and topological thinking.</p>
+
+<hr>
+
+
+<!-- 1 -->
+<div class="section-num">Chapter 1</div>
+<h2>Einstein-Hilbert action — curved-space gravity</h2>
+<p>Gravity is not a force. It is the curvature of spacetime, and matter tells space how to curve. The Einstein-Hilbert action is the single line that contains all of general relativity. From it fall Einstein's field equations, black holes, gravitational waves, the expansion of the universe. One scalar integrated over spacetime, and the geometry of the cosmos is decided.</p>
+
+<hr>
+
+
+<!-- 2 -->
+<div class="section-num">Chapter 2</div>
+<h2>Yang-Mills, Maxwell, Dirac — actions of the gauge field and the fermion field</h2>
+<p>The actions of the gauge field and the fermion field. Maxwell wrote electromagnetism as a field. Yang and Mills generalised it — fields that carry not one kind of charge but a whole symmetry group's worth. Dirac wrote the action for the matter side, the fermions, the spin-½ particles that obey exclusion and make up everything we touch. Two actions, one for the carriers, one for the matter. Together with Einstein-Hilbert, this is most of the universe written in three lines.</p>
+
+<hr>
+
+
+<!-- 3 -->
+<div class="section-num">Chapter 3</div>
+<h2>Higgs and Yukawa — a vacuum that gives mass</h2>
+<p>The vacuum is not empty. The Higgs field is a non-zero condensate filling all of space, and what we call mass is the resistance certain particles feel when moving through it. The W and Z bosons get their mass this way. The fermions get theirs through Yukawa couplings — direct interactions between the fermion fields and the Higgs. Without the Higgs, every particle would be massless and travel at the speed of light. There would be no atoms, no chemistry, no us.</p>
+
+<hr>
+
+
+<!-- 4 -->
+<div class="section-num">Chapter 4</div>
+<h2>Lorentz, SU(3), SU(2), U(1) — the symmetries</h2>
+<p>The whole Standard Model is encoded in its symmetries. Lorentz symmetry — the symmetry of spacetime itself, Einstein's unification of space and time. Then the internal symmetries. SU(3) for the strong force, the colour charge that binds quarks into protons. SU(2) for the weak force, responsible for radioactive decay. U(1) for hypercharge, which mixes with SU(2) after the Higgs breaks the symmetry to give electromagnetism. Three groups, one menu of forces.</p>
+
+<hr>
+
+
+<!-- 5 -->
+<div class="section-num">Chapter 5</div>
+<h2>The three families of fermions</h2>
+<p>For reasons no one fully understands, the matter particles come in three copies. The electron has heavier cousins, the muon and the tau. The up and down quarks have heavier cousins too — charm and strange, top and bottom. Each neutrino comes in three flavours as well. Three identical structures with wildly different masses. Nobody knows why three. Nobody knows why these masses.</p>
+
+<hr>
+
+
+<!-- 6 -->
+<div class="section-num">Chapter 6</div>
+<h2>CKM and PMNS matrices — quark decay and neutrino mixing</h2>
+<p>The families mix. The CKM matrix, named after Cabibbo, Kobayashi, and Maskawa, tells you how quarks of one family transition into quarks of another. It is the source of most of the variety in particle decay, and of CP violation, which is a piece of why the universe has more matter than antimatter. The PMNS matrix does the same job for neutrinos, and it is what makes neutrino oscillations possible — a neutrino born as one flavour can be detected as another. Two mixing matrices, two patterns still unexplained.</p>
+
+<hr>
+
+
+<!-- APPENDIX -->
+<div class="appendix">
+
+<div class="section-num">Appendix</div>
+<h2>The geometric turn — from analysis to topology</h2>
+
+<p>There is a quieter revolution happening in how quantum field theory is approached. The old way is analytical. Write down a Lagrangian, expand in a perturbation series, regulate the divergences, integrate. The new way is geometric and topological. Ask which structures of the underlying space are preserved, which are invariants, which classes of solution exist before any coordinates are chosen.</p>
+
+<p>The mathematicians and physicists pulling this thread:</p>
+
+<ul class="names-list">
+  <li><strong>Atiyah and Singer</strong> — the index theorem, which links analytic data (zero modes of differential operators) to topological data (characteristic classes). The bridge between calculation and geometry.</li>
+  <li><strong>Witten</strong> — topological quantum field theory, Chern-Simons theory, mirror symmetry. The physicist who taught mathematicians how to use physics to prove geometric theorems.</li>
+  <li><strong>Segal</strong> — an axiomatic picture of conformal and topological field theory in which a QFT is a functor from a category of cobordisms to vector spaces. Geometry first, formulas second.</li>
+  <li><strong>Donaldson</strong> — invariants of four-manifolds built from solutions of the Yang-Mills equations. Gauge theory used as a tool to study smooth structures.</li>
+  <li><strong>Hitchin</strong> — Higgs bundles, integrable systems, the geometry that connects gauge theory to algebraic geometry.</li>
+  <li><strong>Quillen</strong> — superconnections, determinant line bundles, a way of seeing anomalies as obstructions to trivialising a geometric object.</li>
+  <li><strong>Jim Simons</strong> — Chern-Simons forms, the geometric secondary invariants that bear his name, before he went on to build Renaissance Technologies.</li>
+  <li><strong>Alvarez-Gaumé</strong> — anomalies understood through index theory, a supersymmetric proof of the index theorem, the merging of QFT calculation with topological intuition.</li>
+</ul>
+
+<p>What they share is the conviction that the analytical machinery — perturbation theory, Feynman diagrams, renormalisation — is bookkeeping on top of a more fundamental geometric truth. The action functional is not just a formula to extremise. It is a section of a line bundle, a class in a cohomology group, a number invariant under deformations. If you can see the geometry, you can see why the answer is what it is, instead of merely computing it.</p>
+
+<p>This is the direction the next generation will take.</p>
+
+</div>
+
+
+<footer>
+  First Principles · Next generation physicists · draft
+</footer>
+
+</body>
+</html>
