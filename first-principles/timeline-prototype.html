@@ -32,7 +32,35 @@
   .tb-info { font-family:'SF Mono',Consolas,monospace; font-size:12px; color:#666; margin-left:8px; }
   .tb-hint { font-size:12px; color:#888; margin-left:auto; }
 
-  :root { --ax-h: 40px; }
+  :root {
+    --ax-h: 40px;
+
+    /* ─── BATLOW COLOR RAMP — "working theory, improving" ───
+       Perceptually uniform (Crameri batlow). Used once an idea is actually working.
+       bt0 = just-working, bt5 = most-advanced. Adjacent steps = magnitude of advancement.
+       Aliased to tier0–tier5 so tool entries share the ramp. */
+    --bt0: #011959;
+    --bt1: #1f4665;
+    --bt2: #266964;
+    --bt3: #6a8845;
+    --bt4: #d2a754;
+    --bt5: #faccc6;
+
+    /* ─── IN-PROGRESS RAMP — "speculative idea, maturing but not yet working" ───
+       Grayscale, dashed — visually distinct from the colorful "working" ramp.
+       ip0 = first wild guess, ip3 = mature speculation on the verge of testing. */
+    --ip0: #c8c8c8;
+    --ip1: #909090;
+    --ip2: #565656;
+    --ip3: #1a1a1a;
+
+    /* ─── Other tunable accents ─── */
+    --col-speculative: #94a3b8;   /* dashed pre-working line (legacy 'speculative' alias of ip0) */
+    --col-dormant:     #cbd5e1;   /* dashed settled-no-change line */
+    --col-problem:     #ef4444;   /* unresolved-problem dot + red overlay if used */
+    --col-fix:         #10b981;   /* fix-marker dot */
+    --col-firsttest:   #dc2626;   /* ✕ first-test marker */
+  }
 
   /* Two panes stacked vertically */
   .tl-pair { display:flex; flex-direction:column; gap:0; }
@@ -116,12 +144,25 @@
   .tl-section-header.cat-falsified   { color:#52525b; }
   .tl-section-header.cat-people      { color:#4338ca; }
   .tl-section-header.cat-tools       { color:#0f766e; }
+  .tl-section-header.cat-detectors   { color:#a21caf; }
+  .tl-section-header.cat-paradigms   { color:#a16207; }
 
   .tl-row { position:relative; border-bottom:1px solid #f5f5f5; }
-  /* TOP-only mode: hide every row that isn't tier-top, plus any section header
-     whose section has no tier-top rows (marked via .empty-in-top in JS) */
-  body.top-only .tl-row:not(.tier-top) { display:none; }
-  body.top-only .tl-section-header.empty-in-top { display:none; }
+  /* TOP/OTHER split — buildRows renders all TOP rows from every category first, then all OTHER rows */
+  .tl-tier-marker {
+    position:sticky; left:0; z-index:7;
+    background:#fff;
+    font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+    color:#444;
+    padding:14px 8px 6px 8px;
+    margin-top:10px;
+    border-top:2px solid #d4d4d4;
+    width:max-content;
+  }
+  .tl-tier-block.tl-tier-top .tl-tier-marker { color:#92400e; border-top-color:#fbbf24; }
+  .tl-tier-block.tl-tier-other .tl-tier-marker { color:#666; }
+  /* TOP-only mode: hide the entire OTHER block. Nested children of TOP rows still show. */
+  body.top-only .tl-tier-other { display:none; }
   /* Tint the people lineage layer — selectors match any cat starting with "people" (topic sub-cats inherit) */
   .tl-row[class*="cat-people"] { background:rgba(67,56,202,0.04); }
   .tl-row[class*="cat-people"]:hover { background:rgba(67,56,202,0.07); }
@@ -180,33 +221,49 @@
     opacity:0.85;
   }
 
-  /* Stage colors — override cat color when a bar belongs to a staged event */
-  .tl-bar.stage-speculative { background:#94a3b8; }
-  .tl-bar.stage-progress    { background:#eab308; }
-  .tl-bar.stage-testable    { background:#16a34a; }
-  .tl-bar.stage-figured     { background:#2563eb; }
-  /* Capability tiers — sequential ramp signifying ~10× jumps for tool entries */
-  .tl-bar.stage-tier0 { background:#cbd5e1; }
-  .tl-bar.stage-tier1 { background:#7dd3fc; }
-  .tl-bar.stage-tier2 { background:#34d399; }
-  .tl-bar.stage-tier3 { background:#fbbf24; }
-  .tl-bar.stage-tier4 { background:#fb923c; }
-  .tl-bar.stage-tier5 { background:#ef4444; }
+  /* Legacy stage names → mapped onto batlow positions for a consistent colour story.
+     speculative stays gray-dashed (means "not yet working"). */
+  .tl-bar.stage-speculative {
+    background:repeating-linear-gradient(to right, var(--col-speculative) 0 4px, transparent 4px 8px);
+    opacity:0.75;
+  }
+  .tl-bar.stage-progress    { background:var(--bt1); }
+  .tl-bar.stage-testable    { background:var(--bt2); }
+  .tl-bar.stage-figured     { background:var(--bt3); }
+  /* Batlow ramp (Crameri, perceptually uniform). One ramp for everything that's "working" —
+     distance between adjacent stages encodes magnitude of advancement.
+     Small step (bt0→bt1) = minor refinement. Big step (bt0→bt4) = paradigm shift.
+     Tier aliases let tool entries inherit the same ramp without data changes. */
+  /* In-progress dashed grayscale — for ideas that haven't reached working status yet. */
+  .tl-bar.stage-ip0 { background:repeating-linear-gradient(to right, var(--ip0) 0 4px, transparent 4px 8px); opacity:0.75; }
+  .tl-bar.stage-ip1 { background:repeating-linear-gradient(to right, var(--ip1) 0 4px, transparent 4px 8px); opacity:0.8;  }
+  .tl-bar.stage-ip2 { background:repeating-linear-gradient(to right, var(--ip2) 0 4px, transparent 4px 8px); opacity:0.85; }
+  .tl-bar.stage-ip3 { background:repeating-linear-gradient(to right, var(--ip3) 0 4px, transparent 4px 8px); opacity:0.9;  }
+  .tl-stage-dot.stage-ip0 { background:var(--ip0); }
+  .tl-stage-dot.stage-ip1 { background:var(--ip1); }
+  .tl-stage-dot.stage-ip2 { background:var(--ip2); }
+  .tl-stage-dot.stage-ip3 { background:var(--ip3); }
+  .tl-bar.stage-bt0, .tl-bar.stage-tier0 { background:var(--bt0); }
+  .tl-bar.stage-bt1, .tl-bar.stage-tier1 { background:var(--bt1); }
+  .tl-bar.stage-bt2, .tl-bar.stage-tier2 { background:var(--bt2); }
+  .tl-bar.stage-bt3, .tl-bar.stage-tier3 { background:var(--bt3); }
+  .tl-bar.stage-bt4, .tl-bar.stage-tier4 { background:var(--bt4); }
+  .tl-bar.stage-bt5, .tl-bar.stage-tier5 { background:var(--bt5); }
   /* Settled period — light grey dashed signals "no change, no new tension" */
   .tl-bar.stage-dormant {
-    background:repeating-linear-gradient(to right, #cbd5e1 0 4px, transparent 4px 8px);
+    background:repeating-linear-gradient(to right, var(--col-dormant) 0 4px, transparent 4px 8px);
     opacity:0.85;
   }
   /* Active unresolved problem — solid red segment leading to a resolution (often by a successor theory) */
-  .tl-bar.stage-problem-active { background:#ef4444; }
-  .tl-stage-dot.stage-dormant { background:#cbd5e1; }
-  .tl-stage-dot.stage-problem-active { background:#ef4444; }
-  .tl-stage-dot.stage-tier0 { background:#cbd5e1; }
-  .tl-stage-dot.stage-tier1 { background:#7dd3fc; }
-  .tl-stage-dot.stage-tier2 { background:#34d399; }
-  .tl-stage-dot.stage-tier3 { background:#fbbf24; }
-  .tl-stage-dot.stage-tier4 { background:#fb923c; }
-  .tl-stage-dot.stage-tier5 { background:#ef4444; }
+  .tl-bar.stage-problem-active { background:var(--col-problem); }
+  .tl-stage-dot.stage-dormant { background:var(--col-dormant); }
+  .tl-stage-dot.stage-problem-active { background:var(--col-problem); }
+  .tl-stage-dot.stage-bt0, .tl-stage-dot.stage-tier0 { background:var(--bt0); }
+  .tl-stage-dot.stage-bt1, .tl-stage-dot.stage-tier1 { background:var(--bt1); }
+  .tl-stage-dot.stage-bt2, .tl-stage-dot.stage-tier2 { background:var(--bt2); }
+  .tl-stage-dot.stage-bt3, .tl-stage-dot.stage-tier3 { background:var(--bt3); }
+  .tl-stage-dot.stage-bt4, .tl-stage-dot.stage-tier4 { background:var(--bt4); }
+  .tl-stage-dot.stage-bt5, .tl-stage-dot.stage-tier5 { background:var(--bt5); }
   /* Staged segments match regular bars in height */
   .tl-bar[class*="stage-"] { cursor:help; }
   .tl-bar[class*="stage-"]:hover { filter:brightness(1.15); }
@@ -249,7 +306,7 @@
     content:''; position:absolute;
     top:50%; left:50%;
     width:9px; height:1.5px;
-    background:#dc2626;
+    background:var(--col-firsttest);
     transform-origin:center;
   }
   .tl-firsttest::before { transform:translate(-50%,-50%) rotate(45deg); }
@@ -259,7 +316,7 @@
   .tl-problem-dot {
     position:absolute; top:50%;
     width:8px; height:8px; border-radius:50%;
-    background:#ef4444; border:1.5px solid #fff;
+    background:var(--col-problem); border:1.5px solid #fff;
     transform:translate(-50%,-50%);
     z-index:5; cursor:help;
     box-shadow:0 0 0 0.5px rgba(220,38,38,0.6);
@@ -267,7 +324,7 @@
   .tl-fix-dot {
     position:absolute; top:50%;
     width:7px; height:7px; border-radius:50%;
-    background:#10b981; border:1.5px solid #fff;
+    background:var(--col-fix); border:1.5px solid #fff;
     transform:translate(-50%,-50%);
     z-index:5; cursor:help;
     box-shadow:0 0 0 0.5px rgba(16,185,129,0.5);
@@ -436,6 +493,11 @@
   .tl-row-name.cat-falsified   { color:#52525b; }
   .tl-row-name.cat-people      { color:#4338ca; }
   .tl-row-name.cat-tools       { color:#0f766e; }
+  .tl-row-name.cat-detectors   { color:#a21caf; }
+  .tl-row-name.cat-paradigms   { color:#a16207; }
+  .tl-bar.cat-paradigms        { background:#fcd34d; }
+  .tl-marker-start.cat-paradigms { border:2px solid #d97706; }
+  .tl-marker-end.cat-paradigms   { background:#a16207; border:2px solid #a16207; }
   .tl-row-main:hover .tl-row-name { filter:brightness(0.7); }
 
   /* Year label — hidden by default, shows on row hover */
@@ -467,6 +529,11 @@
     background:#fafafa; border-top:1px solid #eee; border-bottom:1px solid #eee;
     font-size:13px; line-height:1.6; color:#444;
     width:880px; max-width:100%;
+    /* Re-enable text selection inside detail panels — the parent .tl-scroll
+       sets user-select:none so drag-to-pan doesn't highlight text. */
+    user-select:text;
+    -webkit-user-select:text;
+    cursor:text;
   }
   .tl-row-detail .tl-detail-meta {
     font-family:'SF Mono',Consolas,monospace;
@@ -491,10 +558,10 @@
   .tl-stage-dot {
     display:inline-block; width:12px; height:4px; border-radius:1px;
   }
-  .tl-stage-dot.stage-speculative { background:#94a3b8; }
-  .tl-stage-dot.stage-progress    { background:#eab308; }
-  .tl-stage-dot.stage-testable    { background:#16a34a; }
-  .tl-stage-dot.stage-figured     { background:#2563eb; }
+  .tl-stage-dot.stage-speculative { background:var(--col-speculative); }
+  .tl-stage-dot.stage-progress    { background:var(--bt1); }
+  .tl-stage-dot.stage-testable    { background:var(--bt2); }
+  .tl-stage-dot.stage-figured     { background:var(--bt3); }
   .tl-stage-name { color:#666; font-size:11px; }
   .tl-stage-who  { color:#222; }
   .tl-row.expanded { background:rgba(0,0,0,.012); }
@@ -522,6 +589,9 @@
     color:#bbb;
     font-weight:700;
   }
+  /* Doubly-nested (grandchildren) get more indent so the depth reads */
+  .tl-row.nested .tl-row.nested .tl-row-track { padding-left:36px; }
+  .tl-row.nested .tl-row.nested .tl-row-name { font-size:10px; color:#666; }
 
   footer { display:none; }
   @media (max-width:640px){
@@ -535,7 +605,7 @@
 <nav class="topnav">
   <div class="topnav-inner">
     <a class="nav-back" href="index.html">← Back to First Principles</a>
-    <div class="nav-brand">timeline-prototype · v.8</div>
+    <div class="nav-brand">timeline-prototype · v.25</div>
     <div style="min-width:80px;"></div>
   </div>
 </nav>
@@ -601,7 +671,7 @@
   // ─── data ───
   const EVENTS = [
     // ============ MATHEMATICS ============
-    { cat:'math', year:1872, title:"The real number line (zero, negatives, irrationals, reals)", who:"Hippasus → Brahmagupta → Stevin → Dedekind",
+    { cat:'math', tier:'top', year:1872, title:"Real number line", who:"Hippasus → Brahmagupta → Stevin → Dedekind",
       stages:[
         { from:-550, to:628,  stage:'speculative', who:"Hippasus — √2 incommensurable; zero + negatives scattered, uncomfortable" },
         { from:628,  to:1585, stage:'progress',    who:"Brahmagupta formalises zero &amp; negative arithmetic; al-Khwarizmi extends" },
@@ -610,62 +680,197 @@
       ],
       firstTest:1872,
       detail:"The continuum was built in pieces over 2400 years. Irrationals (Hippasus, ~−550) — legend says the Pythagoreans drowned him for revealing √2 is no ratio. Zero + negatives as legitimate numbers (Brahmagupta, 628) — Europe rejected negatives as 'absurd' for another thousand years. Decimal fractions (Stevin, 1585). Calculus uses reals informally. Finally Dedekind (1872) defines a real number as a partition of the rationals, and Cantor constructs the continuum — rigorous reals at last." },
-    { cat:'math', tier:'top', year:-500, title:"Pythagorean theorem (formal)", who:"Pythagoras (attributed)",
-      detail:"a² + b² = c² for a right triangle. Known empirically in Babylon a millennium earlier, formally proved in the Greek tradition." },
-    { cat:'math', year:-300, title:"Euclidean geometry", who:"Euclid",
-      detail:"The Elements: 23 definitions, 5 postulates, 5 common notions, then everything else as theorems. The model of axiomatic mathematics for 2300 years." },
-    { cat:'math', tier:'top', year:500, title:"Decimal positional notation", who:"Aryabhata, Brahmagupta",
-      detail:"Place-value decimal notation — the foundational representational shift that made arithmetic mechanical. Spread via al-Khwarizmi to Europe by the 12th century. (The zero-as-number aspect is part of the real-line entry.)" },
-    { cat:'math', tier:'top', year:820, title:"Algebra (al-Khwarizmi)", who:"al-Khwarizmi",
-      detail:"Symbolic manipulation of unknowns. The foundational move from arithmetic-on-numbers to arithmetic-on-symbols. Geometry and algebra become separable and recombinable." },
-    { cat:'math', year:1843, title:"Imaginary → Complex → Quaternions", who:"Bombelli → Euler → Gauss → Hamilton",
+    { cat:'math', tier:'top', start:1572, end:2025, year:2025, status:'ongoing', title:"Beyond real numbers", who:"Bombelli → Hamilton → Cayley → Gibbs → Ricci → modern abstract algebra",
       stages:[
-        { from:1572, to:1748, stage:'speculative', who:"Bombelli, Cardano (a useful but suspect trick; Descartes coins 'imaginary' as a slur 1637)" },
-        { from:1748, to:1831, stage:'progress',    who:"Euler (e^(iπ) + 1 = 0), Wessel, Argand (geometric picture)" },
-        { from:1831, to:1843, stage:'testable',    who:"Gauss legitimises 'complex numbers' in print" },
-        { from:1843, to:1872, stage:'figured',     who:"Hamilton (quaternions, non-commutative), Cayley (octonions), modern algebra" },
+        { from:1572, to:1748, stage:'speculative', who:"Bombelli (1572) uses √−1 as calculational trick; Descartes coins 'imaginary' as a slur (1637)" },
+        { from:1748, to:1843, stage:'progress',    who:"Euler's identity (1748); Wessel + Argand give geometric plane (~1800); Gauss legitimises 'complex numbers' (1831)" },
+        { from:1843, to:1900, stage:'testable',    who:"Hamilton quaternions (1843); Grassmann exterior algebra (1844); Cayley matrices (1858); Gibbs + Heaviside modern vector calculus (1880s)" },
+        { from:1900, to:2025, stage:'figured',     who:"Tensor calculus (Ricci, Levi-Civita 1900); Hilbert-space operators in QM; modern abstract algebra (Noether → Bourbaki); category theory (1945)" },
       ],
-      firstTest:1748,
-      detail:"Bombelli (1572) treated √−1 as a calculational object to solve cubics; Cardano had glimpsed it earlier. Suspect for almost two centuries — Descartes labelled them 'imaginary' as a put-down. Euler's identity (1748) showed they were indispensable. Wessel and Argand gave them a geometric plane around 1800. Gauss formally accepted them and coined 'complex numbers' (1831). Hamilton extended to non-commutative quaternions (1843), opening modern algebra." },
-    { cat:'math', tier:'top', start:1637, end:1637, year:1637, title:"Analytic geometry", who:"René Descartes",
-      detail:"Coordinates. Lines, curves, and shapes as equations. The bridge that lets algebra and geometry talk to each other." },
-    { cat:'math', tier:'top', start:1666, end:1684, year:1684, title:"Calculus", who:"Newton & Leibniz",
-      detail:"Newton's fluxions (1666, unpublished for two decades) and Leibniz's differentials (published 1684). The mathematics of change, used for everything from planetary motion to compound interest." },
+      contributions:[
+        { year:1572, label:"Bombelli — √−1 as calculational object (solves cubics)" },
+        { year:1637, label:"Descartes coins 'imaginary' as a put-down" },
+        { year:1748, label:"Euler — e^(iπ) + 1 = 0 (imaginary numbers are indispensable)" },
+        { year:1799, label:"Wessel + Argand — geometric plane for complex numbers" },
+        { year:1831, label:"Gauss legitimises 'complex numbers' in print" },
+        { year:1843, label:"Hamilton — quaternions (4D, non-commutative)" },
+        { year:1844, label:"Grassmann — exterior algebra (Ausdehnungslehre), foundation of linear algebra" },
+        { year:1845, label:"Cayley — octonions (8D, non-associative)" },
+        { year:1858, label:"Cayley — matrix algebra (operations on rectangular arrays)" },
+        { year:1881, label:"Gibbs, Heaviside — modern vector calculus (·, ×, ∇)" },
+        { year:1900, label:"Ricci-Curbastro, Levi-Civita — tensor calculus" },
+        { year:1915, label:"Einstein uses tensors for GR — physics needs them" },
+        { year:1925, label:"QM uses Hilbert-space operators (∞-dim matrices)" },
+        { year:1928, label:"Dirac matrices for relativistic spin-½" },
+        { year:1945, label:"Eilenberg-Mac Lane — category theory" },
+      ],
+      detail:"What counts as a 'number' kept widening. Imaginary numbers (Bombelli 1572) were initially a suspect trick — Descartes coined 'imaginary' as a slur. Euler's identity (1748) made them indispensable; Gauss made them respectable (1831). Then the floodgates: Hamilton's quaternions (1843), Cayley's matrices (1858), Grassmann's exterior algebra (1844), Gibbs/Heaviside vectors (1880s), tensors (1900), Hilbert-space operators for QM (1925), Dirac matrices, modern abstract algebra. Each generalisation looked weird at first and is now everywhere — complex numbers in signal processing, vectors in physics, matrices in computer graphics, tensors in GR and machine learning." },
+    { cat:'math', tier:'top', start:-600, end:2025, year:2025, status:'ongoing', title:"Geometry", who:"Thales → Euclid → Descartes → Lobachevsky → Riemann → modern differential geometry",
+      contributions:[
+        { year:-600, label:"Thales — first deductive theorems (vertical angles, isoceles triangles)" },
+        { year:-500, label:"Pythagorean theorem (a² + b² = c²) — proved in the Pythagorean school (known empirically in Babylon a millennium earlier)" },
+        { year:-360, label:"Eudoxus — theory of proportions, handles incommensurable ratios" },
+        { year:-300, label:"Euclid — Elements: axiomatic systematisation, 13 books" },
+        { year:1637, label:"Descartes &amp; Fermat — analytic geometry: shapes as algebraic equations (geometry + coordinates)" },
+        { year:1830, label:"Lobachevsky, Bolyai — non-Euclidean geometry (drop the parallel postulate, get hyperbolic geometry)" },
+        { year:1854, label:"Riemann — intrinsic geometry on curved manifolds of any dimension" },
+        { year:1872, label:"Klein Erlangen programme — geometries classified by their symmetry groups" },
+        { year:1899, label:"Hilbert — Foundations of Geometry: modern axiomatic rigour" },
+        { year:1915, label:"GR uses Riemannian geometry — physical spacetime is curved" },
+      ],
+      detail:"From flat triangles in school to the curved spacetime of GR — all geometry. Three big shifts: (1) Greek axiomatics (Euclid, ~−300) — shapes via proofs from postulates. (2) Coordinates (Descartes, 1637) — shapes as algebraic equations, geometry and algebra fuse. (3) Curvature (Lobachevsky 1830 + Riemann 1854) — Euclid's flat plane is just one option; consistent geometries exist with positive curvature (sphere), negative curvature (hyperbolic), and any dimension. Einstein needed exactly this for GR. Modern differential and algebraic geometry continue today." },
+    { cat:'math', start:1736, end:2025, year:2025, status:'ongoing', title:"Topology", who:"Euler → Poincaré → Perelman",
+      stages:[
+        { from:1736, to:1872, stage:'speculative', who:"Euler's Königsberg bridges (1736); Listing coins 'topology' (1847)" },
+        { from:1872, to:1895, stage:'progress',    who:"Klein Erlangen programme — geometries classified by symmetry groups" },
+        { from:1895, to:1980, stage:'testable',    who:"Poincaré — Analysis Situs founds algebraic topology (1895); Hausdorff general topology; homology + cohomology" },
+        { from:1980, to:2025, stage:'figured',     who:"Major conjectures resolved (Poincaré proved by Perelman 2003); applied topology / persistent homology" },
+      ],
+      contributions:[
+        { year:1736, label:"Euler — Königsberg bridges (start of topology + graph theory)" },
+        { year:1847, label:"Listing coins 'topology'" },
+        { year:1872, label:"Klein Erlangen — geometries via symmetry groups" },
+        { year:1895, label:"Poincaré — Analysis Situs (founding paper of algebraic topology)" },
+        { year:1904, label:"Poincaré conjecture posed" },
+        { year:1963, label:"Atiyah-Singer index theorem (topology ↔ analysis)" },
+        { year:2003, label:"Perelman proves Poincaré conjecture (declines Fields Medal + $1M Clay Prize)" },
+        { year:2010, label:"Applied topology / persistent homology — topological data analysis" },
+      ],
+      detail:"Topology studies what's invariant under continuous deformation — a coffee cup and a donut are 'the same' (one hole). Born from Euler's Königsberg bridges (1736), formalised by Poincaré (1895). The Poincaré conjecture stood from 1904 until Perelman proved it 2003 — he declined the Fields Medal and the $1M Clay Prize. Underpins gauge theory, string theory, and is now used in data analysis." },
+    { cat:'math', start:1832, end:2025, year:2025, status:'ongoing', title:"Group theory & abstract algebra", who:"Galois → Cayley → Noether → Bourbaki",
+      stages:[
+        { from:1832, to:1872, stage:'speculative', who:"Galois (1832) — groups define when polynomials are solvable; killed in a duel at 20" },
+        { from:1872, to:1921, stage:'progress',    who:"Cayley's abstract definition; Sylow theorems; Lie groups (continuous symmetries)" },
+        { from:1921, to:1981, stage:'testable',    who:"Noether — ring theory + abstract algebra (1921); Bourbaki structural foundations; Lie groups in physics" },
+        { from:1981, to:2025, stage:'figured',     who:"Classification of finite simple groups completed (~10,000-page proof); representation theory; algebraic geometry" },
+      ],
+      contributions:[
+        { year:1832, label:"Galois — groups define solvability of polynomials (killed in a duel at 20, manuscripts saved overnight)" },
+        { year:1854, label:"Cayley — abstract definition of a group" },
+        { year:1872, label:"Klein Erlangen — geometries via group actions" },
+        { year:1921, label:"Noether — ring theory + Idealtheorie (modern abstract algebra)" },
+        { year:1939, label:"Bourbaki begins — structural foundations of mathematics" },
+        { year:1981, label:"Classification of finite simple groups completed (largest collaborative proof in history)" },
+      ],
+      detail:"Galois invented group theory at 19 to settle why quintic polynomials can't be solved by radicals — then was killed in a duel a year later. Took decades for mathematicians to catch up. Now group theory underlies physics symmetries (Standard Model = SU(3)×SU(2)×U(1)), crystallography, chemistry, cryptography, and every part of modern math." },
+    { cat:'math', tier:'top', start:1654, end:2025, year:2025, status:'ongoing', title:"Probability & statistics", who:"Pascal, Fermat → Bayes → Laplace → Gauss → Fisher → Kolmogorov",
+      stages:[
+        { from:1654, to:1763, stage:'progress',    who:"Pascal &amp; Fermat correspondence on gambling (1654); Jacob Bernoulli — law of large numbers (1713)" },
+        { from:1763, to:1812, stage:'testable',    who:"Bayes' theorem (posthumous 1763); Laplace systematises probability (1812)" },
+        { from:1812, to:1933, stage:'progress',    who:"Gauss — normal distribution + least squares (1809); Galton, Pearson, Fisher — modern statistics" },
+        { from:1933, to:2025, stage:'figured',     who:"Kolmogorov axioms (1933); Bayesian inference; machine learning; modern data science" },
+      ],
+      contributions:[
+        { year:1654, label:"Pascal-Fermat correspondence — foundations of probability (started over a gambling problem)" },
+        { year:1713, label:"Jacob Bernoulli — law of large numbers (Ars Conjectandi)" },
+        { year:1763, label:"Bayes' theorem — how to update beliefs with evidence (posthumous)" },
+        { year:1809, label:"Gauss — normal distribution + least squares" },
+        { year:1812, label:"Laplace — Théorie analytique des probabilités" },
+        { year:1925, label:"R.A. Fisher — Statistical Methods for Research Workers (modern stats)" },
+        { year:1933, label:"Kolmogorov — measure-theoretic axioms of probability" },
+        { year:1948, label:"Shannon — information theory (math of communication)" },
+        { year:2010, label:"Deep learning takes off — statistics powers modern AI" },
+      ],
+      detail:"Started as a gambling question (Pascal/Fermat 1654) and grew into THE math of uncertainty. Bayes' theorem (1763) lets you update beliefs with evidence. Laplace systematised it. Gauss gave us the bell curve. Fisher and Pearson invented modern statistics (~1925). Kolmogorov axiomatised it (1933). Now powers clinical trials, insurance, finance, all of modern data science and machine learning." },
+    { cat:'math', tier:'top', start:1666, end:2025, year:2025, status:'ongoing', title:"Calculus — the math of change", who:"Newton & Leibniz → Cauchy → Weierstrass → modern analysis",
+      contributions:[
+        { year:1666, label:"Newton — fluxions (rates of change), kept unpublished for two decades" },
+        { year:1684, label:"Leibniz — differentials (dx, dy, ∫); notation we still use" },
+        { year:1755, label:"Euler — Introductio: standard formulation of analysis" },
+        { year:1821, label:"Cauchy — rigorous limits and continuity" },
+        { year:1872, label:"Weierstrass — ε-δ definitions; modern rigorous analysis" },
+        { year:1933, label:"Lebesgue integral standard; functional analysis (Banach spaces)" },
+      ],
+      detail:"Calculus measures change — derivatives capture instantaneous rates, integrals add up accumulating quantities. Newton's fluxions (1666) and Leibniz's differentials (1684) were equivalent but notation differed; Leibniz's dx/∫ won. Cauchy and Weierstrass rigorised it in the 1800s. Used today for everything that varies — planetary motion, compound interest, fluid flow, gene expression, every continuous physical model." },
     { cat:'math', year:1801, title:"Gauss — number theory", who:"Carl Friedrich Gauss",
       detail:"Disquisitiones Arithmeticae. Modular arithmetic, quadratic reciprocity, the proof that you can construct a 17-gon with compass and straightedge." },
-    { cat:'math', tier:'top', year:1830, title:"Non-Euclidean geometry", who:"Lobachevsky, Bolyai",
-      detail:"Drop Euclid's fifth postulate. Get consistent geometries where parallel lines diverge or converge. Mathematics is no longer about the world we live in — and yet, sixty years later, Einstein needs it for general relativity." },
-    { cat:'math', year:1854, title:"Riemann manifolds", who:"Bernhard Riemann",
-      detail:"In his habilitation lecture, defined intrinsic geometry on curved spaces of any dimension. Einstein would build general relativity directly on this scaffolding." },
-    { cat:'math', year:1874, title:"Transfinites &amp; set theory (Cantor)", who:"Georg Cantor",
+    { cat:'math', year:1874, title:"Transfinites &amp; set theory", who:"Georg Cantor",
       detail:"Some infinities are bigger than others. The continuum is uncountable. Aleph numbers. Foundations of all modern mathematics, and a small psychological breakdown for Cantor when contemporaries called it pathological." },
-    { cat:'math', tier:'top', year:1931, title:"Gödel's incompleteness", who:"Kurt Gödel",
+    { cat:'math', year:1931, title:"Gödel's incompleteness", who:"Kurt Gödel",
       detail:"Any sufficiently rich consistent formal system contains true statements it cannot prove. The end of Hilbert's dream of a complete mechanical foundation for mathematics." },
-    { cat:'math', year:1963, title:"Atiyah-Singer index theorem", who:"Michael Atiyah, Isadore Singer",
-      detail:"The bridge between analysis (kernels of differential operators) and topology (characteristic classes). The foundation of the geometric reformulation of quantum field theory." },
 
     // ============ PHYSICS & ASTRONOMY ============
-    { cat:'physics', year:-450, title:"Atomism (Democritus) — philosophical", who:"Democritus, Leucippus",
+    { cat:'physics', year:-450, title:"Atomism", who:"Democritus, Leucippus",
       detail:"Matter is made of indivisible atoms moving in empty space. A purely PHILOSOPHICAL claim about what stuff IS — no chemistry, no combination rules, no testable predictions. Sidelined by Aristotle for two thousand years. The modern scientific atom (atoms as chemical building blocks that combine into molecules) is a separate development that begins with Gassendi (1649) and Boyle (1661), not with Dalton." },
-    { cat:'physics', tier:'top', start:-450, end:1897, year:1897, status:'killed', title:"Atom (atomos → chemical unit → divisible)", who:"Democritus → Gassendi → Boyle → Dalton → Thomson",
+    { cat:'physics', tier:'top', start:-450, end:1897, year:1897, status:'killed', title:"Atom", who:"Democritus → Gassendi → Boyle → Dalton → Thomson",
       stages:[
-        { from:-450, to:1649, stage:'speculative', who:"Democritus, Epicurus, Lucretius — philosophical 'atomos', no chemistry attached" },
-        { from:1649, to:1808, stage:'progress',    who:"Gassendi revives atomism &amp; coins 'molecule'; Boyle (Sceptical Chymist, 1661) corpuscularianism; Newton's Opticks Query 31 (1704); W. Higgins (1789)" },
-        { from:1808, to:1869, stage:'testable',    who:"Dalton — atomic weights + law of multiple proportions (quantitative); Avogadro (1811) distinguishes atoms from molecules" },
-        { from:1869, to:1897, stage:'figured',     who:"Mendeleev orders elements by atomic weight; chemistry is unambiguously atomic" },
+        { from:-450, to:1649, stage:'ip0', who:"Democritus, Epicurus, Lucretius — philosophical 'atomos', no chemistry attached (purely speculative)" },
+        { from:1649, to:1808, stage:'ip1', who:"Gassendi revives atomism, coins 'molecule'; Boyle (Sceptical Chymist 1661) corpuscularianism; Newton's Opticks Query 31 (1704); W. Higgins (1789) — qualitative" },
+        { from:1808, to:1869, stage:'ip2', who:"Dalton — atomic weights + law of multiple proportions (quantitative); Avogadro (1811) distinguishes atoms from molecules" },
+        { from:1869, to:1897, stage:'ip3', who:"Mendeleev orders elements by atomic weight — chemistry is unambiguously atomic, but 'indivisibility' still unproven" },
       ],
       firstTest:1808,
-      detail:"Differentiate atomos from atom. The Greek 'atomos' (Democritus, ~−450) was a PHILOSOPHICAL claim — there must exist a smallest indivisible thing — with nothing chemical attached. The MODERN atom (a particle that combines with others in fixed ratios to form compounds) is a separate, later development. Pierre Gassendi (Syntagma, posthumous 1658) revived Epicurean atomism in a Christian-compatible form and used 'molecule' for clusters of atoms. Robert Boyle's Sceptical Chymist (1661) introduced corpuscularianism — chemical change as rearrangement of small particles. Newton's Opticks Query 31 (1704) hypothesised atoms held by short-range forces. William Higgins (1789) sketched specific atomic combinations. Dalton (1808) made it quantitative for the first time — every element has a characteristic atomic weight, compounds form in integer ratios — that is the testability threshold, not the invention of the atom. Avogadro (1811) cleanly separated atoms from molecules. Mendeleev (1869) ordered the elements by atomic weight. The 'truly indivisible' claim was killed by Thomson's electron (1897), but the atom-as-chemical-unit survives untouched." },
+      detail:"The atom-as-indivisible-particle hypothesis ran on faith for 2300 years. Democritus' 'atomos' (~−450) was philosophical — no chemistry attached. Gassendi (1658) and Boyle (1661) revived it as corpuscularianism. Dalton (1808) made it quantitative — fixed atomic weights, compounds in integer ratios. Mendeleev (1869) ordered the elements by atomic weight. All dashed (grayscale getting darker) because the central indivisibility claim was never proven — and was finally killed by Thomson's electron (1897), which showed atoms have insides. The 'atom as chemical unit' (a particle that combines in fixed ratios) survives — it just isn't indivisible." },
     { cat:'physics', start:-350, end:-322, year:-322, title:"Aristotle's natural philosophy", who:"Aristotle (~−350 → −322)",
       detail:"The foundational framework — four elements, natural place, teleology. Wrote and taught these doctrines from roughly −350 (Physics, Metaphysics, On the Heavens) until his death in −322. Wrong about almost everything physical, but defined the questions for two millennia. Every later foundation is in conversation with Aristotle." },
-    { cat:'physics', tier:'top', year:1687, title:"Heliocentric model", who:"Aristarchus → Copernicus → Galileo → Newton",
+    { cat:'physics', tier:'top', start:-280, end:2025, year:2025, status:'ongoing', title:"Universe", who:"Aristarchus → Copernicus → Hubble → Lemaître → modern cosmology",
       stages:[
-        { from:-280, to:1543, stage:'speculative', who:"Aristarchus of Samos" },
-        { from:1543, to:1610, stage:'progress',    who:"Copernicus (De Revolutionibus)" },
-        { from:1610, to:1687, stage:'testable',    who:"Galileo, Kepler, Newton" },
+        { from:-280, to:1543, stage:'speculative', who:"Aristarchus heliocentric proposal (~−280) — ignored. Aristotle/Ptolemy geocentric cosmos rules ~1800 years" },
+        { from:1543, to:1687, stage:'progress',    who:"Copernicus revives heliocentric (1543); Galileo's telescope (1610) shows moons of Jupiter + phases of Venus; Kepler's laws; Newton's Principia closes it mathematically (1687)" },
+        { from:1687, to:1923, stage:'testable',    who:"Solar system understood (Neptune predicted 1846). Bessel — first stellar parallax (1838) — stars are distant suns. \"Universe\" still thought to be the Milky Way" },
+        { from:1923, to:1965, stage:'progress',    who:"Hubble — Andromeda is a separate galaxy (1923); galaxies recede (1929) → expanding universe; Lemaître + Gamow propose Big Bang (1927–48)" },
+        { from:1965, to:2025, stage:'figured',     who:"CMB (1965) confirms Big Bang; precision cosmology pins down ΛCDM (dark matter + dark energy + ordinary matter); JWST probes earliest galaxies (2022)" },
       ],
-      firstTest:1610,
-      detail:"Aristarchus of Samos proposed it -280; ignored for 1800 years. Copernicus revived it 1543 in De Revolutionibus — significant progress. Galileo's telescope (1610) gave the first observational test: phases of Venus, moons not orbiting Earth. Newton's Principia (1687) closed it out — heliocentric orbits emerge from F = GMm/r². Settled science." },
+      contributions:[
+        { year:-280, label:"Aristarchus — first heliocentric proposal (1800 years before Copernicus)" },
+        { year:1543, label:"Copernicus — De Revolutionibus (heliocentric revived)" },
+        { year:1610, label:"Galileo — moons of Jupiter + phases of Venus (Earth isn't the centre)" },
+        { year:1619, label:"Kepler's three laws of planetary motion" },
+        { year:1687, label:"Newton — Principia: heliocentric orbits from F = GMm/r²" },
+        { year:1781, label:"Herschel discovers Uranus — solar system is bigger than expected" },
+        { year:1838, label:"Bessel — first stellar parallax (61 Cygni); stars are distant suns" },
+        { year:1923, label:"Hubble — Andromeda is a galaxy outside the Milky Way (universe is far bigger than thought)" },
+        { year:1929, label:"Hubble — galaxies recede with distance (universe is expanding)" },
+        { year:1933, label:"Zwicky — galaxy clusters have 'missing mass' (first dark-matter hint)" },
+        { year:1948, label:"Gamow, Alpher, Herman — Big Bang nucleosynthesis + CMB prediction" },
+        { year:1965, label:"Penzias-Wilson — CMB discovered; Big Bang confirmed; steady-state killed" },
+        { year:1970, label:"Vera Rubin — galaxy rotation curves cement dark matter" },
+        { year:1980, label:"Guth — cosmic inflation (solves horizon + flatness problems)" },
+        { year:1992, label:"COBE — CMB anisotropies (seeds of cosmic structure)" },
+        { year:1998, label:"Riess, Perlmutter, Schmidt — expansion accelerating → dark energy" },
+        { year:2003, label:"WMAP — precision cosmology, ΛCDM model emerges" },
+        { year:2013, label:"Planck — refined ΛCDM parameters; Hubble tension surfaces" },
+        { year:2022, label:"JWST — earliest galaxies imaged, some surprisingly massive" },
+      ],
+      problems:[
+        { year:1970, label:"~85% of matter is dark and unobserved (dark matter)" },
+        { year:1998, label:"~70% of energy is unexplained (dark energy / cosmological constant)" },
+        { year:2019, label:"Hubble tension — local vs early-universe expansion rate disagree" },
+      ],
+      children:[
+        { cat:'physics', start:1948, end:1965, year:1965, status:'killed', title:"Steady-state universe", who:"Hoyle → CMB",
+          detail:"The universe has no beginning, with continuous creation of matter to maintain constant density. Killed by the discovery of the cosmic microwave background — a definite cooling glow of a hot early state." },
+        { cat:'physics', year:1965, title:"Cosmic microwave background", who:"Penzias, Wilson",
+          detail:"A persistent microwave hiss from every direction in the sky. The thermal afterglow of the Big Bang, 380,000 years after it started. Killed steady-state cosmology." },
+        { cat:'physics', start:1933, end:2025, year:2025, status:'ongoing', title:"Dark matter", who:"Zwicky → Rubin → axion + WIMP searches",
+          stages:[
+            { from:1933, to:1970, stage:'ip0', who:"Zwicky — Coma cluster galaxies moving too fast for visible mass (called 'dunkle Materie'); ignored" },
+            { from:1970, to:1998, stage:'ip2', who:"Rubin + Ford — galaxy rotation curves are flat at large radii; needs ~5× more mass than visible. Dark matter goes mainstream" },
+            { from:1998, to:2025, stage:'ip3', who:"Precision cosmology (CMB, BAO) confirms ~85% of matter is dark. Many candidate-particle searches (WIMPs, axions, sterile neutrinos) — none detected yet" },
+          ],
+          contributions:[
+            { year:1933, label:"Zwicky — Coma cluster 'missing mass' (first hint)" },
+            { year:1970, label:"Vera Rubin + Kent Ford — flat galaxy rotation curves make dark matter mainstream" },
+            { year:1977, label:"Axion proposed (Peccei-Quinn) — fixes strong-CP problem, also a DM candidate" },
+            { year:1983, label:"Sikivie — haloscope concept for axion detection" },
+            { year:1990, label:"WIMP direct-detection era begins (CDMS, then XENON family)" },
+            { year:2006, label:"Bullet Cluster — dark matter mapped offset from gas (direct gravitational evidence)" },
+            { year:2013, label:"Planck CMB pins Ω_DM = 26.8%" },
+            { year:2020, label:"LUX-ZEPLIN, PandaX-4T pushing WIMP limits to neutrino floor" },
+            { year:2024, label:"ADMX, HAYSTAC, IAXO scanning axion parameter space; pulsar-timing constrains ultra-light DM" },
+          ],
+          detail:"Galaxies rotate as if there's five times more mass than we can see. Zwicky proposed it 1933 (ignored), Rubin's rotation curves (1970) made it canonical, CMB precision cosmology (2003-13) confirmed ~26.8% of the universe is dark matter. Three big candidate classes — WIMPs (heavy weak-interacting particles), axions (ultra-light Peccei-Quinn particles, double as the strong-CP fix), sterile neutrinos. Direct-detection limits drop every decade with no signal." },
+        { cat:'physics', start:1998, end:2025, year:2025, status:'ongoing', title:"Dark energy", who:"Riess, Perlmutter, Schmidt → CMB surveys",
+          stages:[
+            { from:1998, to:2003, stage:'speculative', who:"Riess, Perlmutter, Schmidt" },
+            { from:2003, to:2025, stage:'testable',    who:"WMAP, Planck, BOSS, DESI" },
+          ],
+          firstTest:2003,
+          detail:"~70% of cosmic energy budget. Type Ia supernovae (1998) showed expansion accelerating. WMAP CMB (2003) confirmed. Cosmological constant? Quintessence? Something else? Open." },
+        { cat:'physics', start:1980, end:2025, year:2025, status:'ongoing', title:"Cosmic inflation", who:"Alan Guth → BICEP, Planck",
+          detail:"~10⁻³² s of exponential expansion just after the Big Bang explains why the universe is uniform (horizon problem) and flat (flatness problem). Predictions confirmed by CMB anisotropy patterns. Not directly observed yet — primordial gravitational waves would be the smoking gun." },
+      ],
+      detail:"Where do we live? Earth at the centre (Aristotle/Ptolemy) → Sun at the centre (Copernicus 1543, Newton 1687) → one of many stars in the Milky Way (Bessel 1838) → one of many galaxies in an expanding universe (Hubble 1929) → 13.8-billion-year-old universe described by ΛCDM (CMB 1965 → Planck 2013). Open: ~95% of the energy budget (dark matter + dark energy) is unexplained, the Hubble tension suggests we're missing something, and the JWST is finding galaxies too massive too early for current models. Expand the children for the major sub-stories." },
     { cat:'physics', start:-330, end:1610, year:1610, status:'killed', title:"Geocentric model", who:"Aristotle → Galileo",
       detail:"Earth at the centre of the universe with celestial spheres around it. Held for 2000 years; killed slowly by Copernicus (1543) and Galileo's telescope (1610) showing moons that don't orbit Earth and phases of Venus." },
     { cat:'physics', start:-330, end:1638, year:1638, status:'killed', title:"Aristotelian physics", who:"Aristotle → Galileo",
@@ -674,7 +879,7 @@
       detail:"The first quantitative laws of mechanics: force × distance is conserved, buoyant force equals displaced fluid weight. Foundational physics derived by pure reasoning." },
     { cat:'physics', year:150, title:"Ptolemy's Almagest", who:"Claudius Ptolemy",
       detail:"The foundational cosmological framework — Earth-centred with epicycles. Predicted planetary positions accurately enough to remain the working model for 1400 years before Copernicus." },
-    { cat:'physics', year:1020, title:"Optics (Alhazen)", who:"Ibn al-Haytham",
+    { cat:'physics', year:1020, title:"Optics", who:"Ibn al-Haytham",
       detail:"Light travels in straight lines, vision is light entering the eye. Foundational physics of light, and arguably the first explicit use of the scientific method." },
     { cat:'physics', year:1600, title:"Gilbert — De Magnete", who:"William Gilbert",
       detail:"Earth itself is a giant magnet. Foundational study of magnetism as a phenomenon of matter (not the heavens). Necessary precursor to Faraday and Maxwell." },
@@ -682,23 +887,29 @@
       detail:"Pointed a 20× refractor at Jupiter (saw four moons), the Moon (saw craters), the Sun (saw spots), Venus (saw phases). The end of Aristotelian celestial perfection." },
     { cat:'physics', start:1609, end:1619, year:1619, title:"Kepler's laws", who:"Johannes Kepler",
       detail:"Three laws of planetary motion from Tycho Brahe's twenty years of Mars data. The empirical bridge Newton would later explain." },
-    { cat:'physics', tier:'top', start:1666, end:1687, year:1687, title:"Newton's Principia", who:"Isaac Newton",
-      detail:"Plague-year insight 1666, published 1687. Three laws of motion plus universal gravitation, in one mathematical framework. Defined what \"physics\" would mean for 220 years." },
-    { cat:'physics', tier:'top', start:1687, end:2025, year:2025, status:'ongoing', title:"Newtonian gravity", who:"Newton — still in use wherever relativity isn't needed",
+    { cat:'physics', tier:'top', start:1666, end:2025, year:2025, status:'ongoing', title:"Newtonian mechanics & gravity", who:"Isaac Newton — still the working physics for non-relativistic, non-quantum problems",
       stages:[
-        { from:1687, to:1799, stage:'figured', who:"Newton 1687; Bernoulli, Euler, Lagrange 1788; Laplace 1799 — celestial mechanics canonical" },
-        { from:1799, to:2025, stage:'dormant', who:"Settled — no fundamental change; refined (not replaced) by GR for relativistic cases" },
+        { from:1666, to:1687, stage:'progress', who:"Newton's plague-year insights (1666) → Principia (1687) — three laws of motion + universal gravitation" },
+        { from:1687, to:1799, stage:'figured',  who:"Euler, Lagrange, Laplace formalise it; celestial mechanics becomes canonical" },
+        { from:1799, to:2025, stage:'dormant',  who:"Settled — no fundamental change. Refined (not replaced) by GR for relativistic cases and by QM for atomic scales" },
       ],
       contributions:[
-        { year:1687, label:"F = G·m₁m₂/r² — universal gravitation" },
-        { year:1798, label:"Cavendish — G measured to ~1%" },
-        { year:1846, label:"Neptune predicted from Uranus perturbations — Newtonian triumph" },
+        { year:1666, label:"Annus mirabilis — gravity, calculus, prism (unpublished for two decades)" },
+        { year:1684, label:"Halley asks: \"what orbit does an inverse-square force produce?\" — triggers the Principia" },
+        { year:1687, label:"Principia · 1st law (inertia) — bodies persist in uniform motion unless forced" },
+        { year:1687, label:"Principia · 2nd law (F = m·a) — force changes momentum proportionally" },
+        { year:1687, label:"Principia · 3rd law (action ↔ reaction) — every force has an equal opposite" },
+        { year:1687, label:"Principia · F = G·m₁m₂/r² — universal gravitation, same law for apples and planets" },
+        { year:1788, label:"Lagrange — Mécanique Analytique recasts mechanics as a variational principle (least action)" },
+        { year:1798, label:"Cavendish — measures G with a torsion balance, gives gravity its absolute scale" },
+        { year:1834, label:"Hamilton — Hamiltonian formulation (energy as generator of time evolution)" },
+        { year:1846, label:"Neptune predicted from Uranus perturbations — Newtonian triumph (Adams, Le Verrier, Galle)" },
       ],
       problems:[
         { year:1859, label:"Mercury perihelion shift (43″/century)", fixedYear:1915, fixLabel:"GR explains it exactly — Newtonian gravity is the weak-field limit" },
       ],
-      detail:"Newtonian gravity is still everywhere relativistic effects don't matter — orbits, ballistics, engineering, spacecraft trajectories. Mercury's perihelion (1859) was an anomaly Newton couldn't explain, fixed in 1915 by GR — but GR didn't replace Newton, it contains Newton as its weak-field, low-velocity limit. The line continues to today because the theory continues to work." },
-    { cat:'physics', tier:'top', start:1785, end:1888, year:1888, title:"Electromagnetism (Coulomb → Faraday → Maxwell → Hertz)", who:"unification of electricity, magnetism and light",
+      detail:"Newton's Principia (1687) bound together three laws of motion and universal gravitation in one mathematical framework — and defined what \"physics\" would mean for 220 years. Lagrange (1788) and Hamilton (1834) rewrote the same content as variational principles, the form modern physics still teaches. GR (1915) refined the gravity side and QM (1925) the small-scale side, but in regimes where they don't matter, Newtonian mechanics is exactly what engineers, astronomers, and spacecraft navigators use today. The line continues to 2025 because the theory continues to work." },
+    { cat:'physics', tier:'top', start:1785, end:1888, year:1888, title:"Electromagnetism", who:"unification of electricity, magnetism and light",
       stages:[
         { from:1785, to:1820, stage:'progress', who:"Coulomb (1785) inverse-square electrostatics; Volta (1800) first steady current" },
         { from:1820, to:1865, stage:'testable', who:"Ørsted &amp; Ampère (1820) current ⇒ magnetism; Faraday (1831) changing magnetism ⇒ current" },
@@ -721,7 +932,7 @@
           detail:"Generated and detected electromagnetic waves in his Karlsruhe lab. Confirmed Maxwell's prediction. Asked what it was good for, replied: \"nothing, probably.\"" },
       ] },
 
-    { cat:'physics', start:1798, end:1877, year:1877, title:"Thermodynamics (Carnot → Clausius → Boltzmann)", who:"engines → entropy → kinetic theory",
+    { cat:'physics', start:1798, end:1877, year:1877, title:"Thermodynamics", who:"engines → entropy → kinetic theory",
       stages:[
         { from:1798, to:1824, stage:'speculative', who:"Rumford's cannon-boring (1798) — heat from work, suggests heat is motion not substance" },
         { from:1824, to:1850, stage:'progress',    who:"Carnot cycle (1824) — max engine efficiency; Joule (1843) — mechanical equivalent of heat" },
@@ -738,15 +949,15 @@
         { year:1860, title:"Kinetic theory of gases", who:"Maxwell, Boltzmann",
           detail:"Heat is the kinetic energy of molecules. Temperature is their average kinetic energy. Pressure is their collisions on container walls. Caloric killed in print." },
       ] },
-    { cat:'physics', start:1780, end:1850, year:1850, status:'killed', title:"Caloric (heat as substance)", who:"Lavoisier → Clausius",
+    { cat:'physics', start:1780, end:1850, year:1850, status:'killed', title:"Caloric", who:"Lavoisier → Clausius",
       detail:"Heat is a conserved fluid that flows from hot to cold. Killed by Rumford (cannon-boring 1798), Joule (mechanical equivalent 1843), and the kinetic theory (1850s)." },
     { cat:'physics', start:1670, end:1887, year:1887, status:'killed', title:"Luminiferous aether", who:"Huygens → Michelson-Morley",
       detail:"A medium pervading all space, the carrier of light waves. Killed by Michelson-Morley's interferometer experiment finding no motion of Earth through it. Special relativity removed any remaining need." },
-    { cat:'physics', year:1895, title:"X-rays (Röntgen)", who:"Wilhelm Röntgen",
+    { cat:'physics', year:1895, title:"X-rays", who:"Wilhelm Röntgen",
       detail:"A new kind of penetrating radiation, accidentally discovered with a cathode-ray tube. Hand-bone images in weeks. First Nobel Prize in Physics, 1901." },
-    { cat:'physics', year:1896, title:"Radioactivity (Becquerel)", who:"Henri Becquerel",
+    { cat:'physics', year:1896, title:"Radioactivity", who:"Henri Becquerel",
       detail:"Uranium salts spontaneously emit penetrating radiation without external excitation. The first hint that atoms have internal structure and can change." },
-    { cat:'physics', year:1897, title:"Electron (Thomson)", who:"J.J. Thomson",
+    { cat:'physics', year:1897, title:"Electron", who:"J.J. Thomson",
       detail:"Cathode rays are streams of negatively charged particles, far lighter than any atom. Atoms have insides. The first elementary particle." },
     { cat:'physics', year:1900, title:"Planck's quantum hypothesis", who:"Max Planck",
       detail:"To explain black-body radiation, energy must come in discrete chunks E = hν. Planck called it a \"desperate act\". Quantum mechanics, just barely begun." },
@@ -782,43 +993,102 @@
       ],
       detail:"GR is the most precisely-tested theory in physics, and yet it predicts its own breakdown (singularities) and clashes with QM. Red dots are open tensions; the thick bands are periods when those problems were unresolved." },
 
-    { cat:'physics', tier:'top', start:1925, end:2025, year:2025, status:'ongoing', title:"Quantum mechanics + QFT", who:"Heisenberg, Schrödinger → Dirac → Feynman → 't Hooft → Standard Model",
-      contributions:[
-        { year:1925, label:"Heisenberg matrix mechanics" },
-        { year:1926, label:"Schrödinger wave equation; Born probability rule" },
-        { year:1927, label:"Heisenberg uncertainty principle" },
-        { year:1928, label:"Dirac equation — relativistic spin-½ (QFT begins)" },
-        { year:1932, label:"von Neumann mathematical foundations" },
-        { year:1934, label:"Fermi 4-fermion theory of β-decay" },
-        { year:1948, label:"QED renormalisation (Schwinger, Tomonaga, Feynman)" },
-        { year:1954, label:"Yang-Mills non-abelian gauge theory" },
-        { year:1957, label:"Everett many-worlds" },
-        { year:1964, label:"Bell's theorem" },
-        { year:1967, label:"Electroweak unification (Weinberg, Salam, Glashow)" },
-        { year:1971, label:"'t Hooft renormalises non-abelian gauge theories" },
-        { year:1973, label:"QCD asymptotic freedom (Gross, Wilczek, Politzer)" },
-        { year:1982, label:"Aspect experiment — local realism falsified" },
-        { year:1983, label:"W, Z bosons discovered" },
-        { year:1995, label:"Top quark" },
-        { year:2012, label:"Higgs boson confirmed" },
-        { year:2022, label:"Nobel Prize for tests of Bell inequalities" },
+    { cat:'physics', tier:'top', start:1900, end:2025, year:2025, status:'ongoing', title:"Quantum mechanics + QFT", who:"Planck → Bohr → Heisenberg, Schrödinger → Dirac → Feynman → 't Hooft → Standard Model",
+      stages:[
+        { from:1900, to:1925, stage:'progress', who:"Old quantum theory — Planck (1900) E = hν, Einstein (1905) photons, Bohr (1913) atom, de Broglie (1924) matter waves" },
+        { from:1925, to:1932, stage:'figured',  who:"Heisenberg matrix mechanics, Schrödinger wave mechanics, Dirac equation, von Neumann mathematical foundations — non-relativistic QM formalism complete" },
+        { from:1932, to:2025, stage:'dormant',  who:"Non-relativistic QM math hasn't changed; QFT and the Standard Model are extensions built on top of that core" },
       ],
-      problems:[
-        { year:1925, label:"Measurement problem — wave-function collapse?" },
-        { year:1927, label:"Interpretation: what does the wave function mean?" },
-        { year:1930, label:"Infinities — perturbative expansions diverge", fixedYear:1948, fixLabel:"Renormalisation programme (QED)" },
-        { year:1935, label:"EPR paradox — apparent nonlocality", fixedYear:1982, fixLabel:"Aspect: nonlocality is real" },
-        { year:1954, label:"Non-abelian gauge theories: are they renormalisable?", fixedYear:1971, fixLabel:"'t Hooft proves yes" },
-        { year:1973, label:"Strong-CP problem — why is θ_QCD ≈ 0?" },
-        { year:1978, label:"Hierarchy problem — why is the Higgs so light?" },
-        { year:1998, label:"Neutrino masses don't fit the original SM cleanly" },
-      ],
-      detail:"QM and QFT are one thread — QFT is QM applied to relativistic fields. Born in 1925 with matrix mechanics, completed (as the Standard Model) in 2012 with the Higgs. Thick red bands show problems while unresolved; green dots mark when they were fixed. Still-open tensions: measurement problem, interpretation, strong-CP, hierarchy, neutrino masses." },
+      detail:"QM started in 1900 with Planck's 'desperate' quantum hypothesis (E = hν), grew through the old quantum theory, then the full mathematical formalism arrived in 1925–1932. QFT extends the same framework to relativistic fields and yields the Standard Model — completed in 2012 with the Higgs. Expand the four sub-threads to drill into specific contributions and problems.",
+      children:[
+        { start:1900, end:1925, year:1925, title:"Old quantum theory", who:"Planck → de Broglie",
+          detail:"25 years where quantisation was forced on physicists by experiment, before the full formalism existed.",
+          children:[
+            { year:1900, title:"Planck quantum hypothesis", who:"Max Planck",
+              detail:"To explain black-body radiation, energy must come in discrete chunks E = hν. Planck called it a 'desperate act.'" },
+            { year:1905, title:"Photoelectric effect", who:"Albert Einstein",
+              detail:"Light arrives in quanta (photons). Einstein's Nobel was for this, not relativity." },
+            { year:1913, title:"Bohr atomic model", who:"Niels Bohr",
+              detail:"Quantised electron orbits explain the hydrogen spectrum lines. The first time atoms were modelled with quantum rules." },
+            { year:1924, title:"Matter waves", who:"Louis de Broglie",
+              detail:"λ = h/p — particles have wave properties too. Doctoral thesis. Confirmed by Davisson-Germer electron-diffraction (1927)." },
+          ] },
+        { start:1925, end:1932, year:1932, title:"QM mathematical formalism", who:"Heisenberg → von Neumann",
+          detail:"Seven years that produced the full mathematical theory and made the old quantum theory obsolete.",
+          children:[
+            { year:1925, title:"Matrix mechanics", who:"Heisenberg",
+              detail:"First complete formulation of QM, expressed in matrices. Heisenberg was 23." },
+            { year:1926, title:"Schrödinger equation", who:"Schrödinger",
+              detail:"Wave-mechanics formulation. Shown equivalent to matrix mechanics within months." },
+            { year:1926, title:"Born probability rule", who:"Max Born",
+              detail:"|ψ|² is the probability density of finding the particle. Nobel 1954 — delayed by 28 years." },
+            { year:1927, title:"Uncertainty principle", who:"Heisenberg",
+              detail:"Δx · Δp ≥ ℏ/2 — fundamental limit on simultaneous knowledge of position and momentum." },
+            { year:1928, title:"Dirac equation", who:"Paul Dirac",
+              detail:"Relativistic QM for the spin-½ electron; predicts antimatter as a mathematical inevitability." },
+            { year:1932, title:"Mathematical foundations", who:"John von Neumann",
+              detail:"Hilbert-space formalism — rigorous mathematical theory underpinning everything else." },
+          ] },
+        { start:1927, end:2025, year:2025, status:'ongoing', title:"Foundations / interpretation", who:"Bohr → Bell → Aspect",
+          detail:"The math works, but what does it mean? A century of debate over collapse, locality, ontology — with experiment slowly closing options without settling interpretation.",
+          children:[
+            { year:1927, title:"Copenhagen interpretation", who:"Bohr (Como lecture)",
+              detail:"Complementarity — measurement collapses the wave function. The orthodox view for most of the 20th century." },
+            { year:1935, title:"EPR paradox", who:"Einstein, Podolsky, Rosen",
+              detail:"Two entangled particles seem to coordinate instantly across any distance. Einstein argued QM was incomplete; nature later proved him wrong." },
+            { year:1935, title:"Schrödinger's cat + 'entanglement' coined", who:"Schrödinger",
+              detail:"Macroscopic superposition was intended as reductio ad absurdum. The word 'entanglement' is his." },
+            { year:1957, title:"Many-worlds", who:"Hugh Everett III",
+              detail:"Wave function never collapses; every outcome happens in a branching multiverse. Rejected at the time, mainstream candidate now." },
+            { year:1964, title:"Bell's theorem", who:"John Bell",
+              detail:"Any local hidden-variable theory satisfies inequalities that QM provably violates." },
+            { year:1982, title:"Aspect experiment", who:"Alain Aspect",
+              detail:"First definitive Bell test — local realism falsified, EPR's worry resolved (against Einstein)." },
+            { year:2022, title:"Bell-test Nobel", who:"Aspect, Clauser, Zeilinger",
+              detail:"Nobel Prize for the tests of Bell inequalities and pioneering quantum information science." },
+          ],
+          problems:[
+            { year:1925, label:"Measurement problem — what causes wave-function collapse?" },
+            { year:1927, label:"Interpretation: what does the wave function mean ontologically?" },
+            { year:1935, label:"EPR paradox — apparent nonlocality", fixedYear:1982, fixLabel:"Aspect: nonlocality is real" },
+          ] },
+        { start:1928, end:2025, year:2025, status:'ongoing', title:"Quantum field theory & Standard Model", who:"Dirac → 't Hooft → LHC",
+          detail:"QM extended to relativistic fields. Tamed infinities through renormalisation. Yielded the Standard Model, completed 2012 with the Higgs.",
+          children:[
+            { year:1928, title:"Dirac equation", who:"Dirac",
+              detail:"Combining QM with special relativity for spin-½. The first relativistic quantum field theory in embryo." },
+            { year:1934, title:"Fermi β-decay theory", who:"Enrico Fermi",
+              detail:"4-fermion contact interaction — first field-theoretic model of the weak force." },
+            { year:1948, title:"QED renormalisation", who:"Schwinger, Tomonaga, Feynman",
+              detail:"Quantum electrodynamics produces finite, accurate predictions despite naive infinities. Nobel 1965." },
+            { year:1954, title:"Yang-Mills gauge theory", who:"Yang, Mills",
+              detail:"Non-abelian gauge theory — the mathematical scaffolding all of the Standard Model is built on." },
+            { year:1967, title:"Electroweak unification", who:"Weinberg, Salam, Glashow",
+              detail:"EM and weak forces unified at high energy via Higgs mechanism. Nobel 1979." },
+            { year:1971, title:"'t Hooft renormalisation", who:"'t Hooft, Veltman",
+              detail:"Non-abelian gauge theories proven renormalisable. The result that made the Standard Model possible. Nobel 1999." },
+            { year:1973, title:"QCD asymptotic freedom", who:"Gross, Wilczek, Politzer",
+              detail:"The strong force gets weaker at higher energy — why quarks behave as nearly-free inside protons. Nobel 2004." },
+            { year:1983, title:"W, Z bosons discovered", who:"UA1, UA2 at CERN",
+              detail:"~91 GeV carriers of the weak force. Electroweak prediction confirmed. Rubbia, van der Meer Nobel 1984." },
+            { year:1995, title:"Top quark discovered", who:"Fermilab Tevatron",
+              detail:"~173 GeV — heaviest known fundamental particle. Third quark family closed, 22 years after Kobayashi-Maskawa predicted it." },
+            { year:2012, title:"Higgs boson confirmed", who:"ATLAS & CMS at LHC",
+              detail:"~125 GeV scalar field that gives mass to elementary particles. The last missing piece of the Standard Model, 48 years after the prediction." },
+          ],
+          problems:[
+            { year:1930, label:"Infinities — perturbative expansions diverge", fixedYear:1948, fixLabel:"Renormalisation programme (QED)" },
+            { year:1954, label:"Non-abelian gauge theories: are they renormalisable?", fixedYear:1971, fixLabel:"'t Hooft proves yes" },
+            { year:1973, label:"Strong-CP problem — why is θ_QCD ≈ 0?" },
+            { year:1978, label:"Hierarchy problem — why is the Higgs so light?" },
+            { year:1998, label:"Neutrino masses don't fit the original SM cleanly" },
+          ] },
+      ] },
     { cat:'physics', year:1928, title:"Dirac equation", who:"Paul Dirac",
       detail:"Relativistic quantum mechanics for the electron. Predicted antimatter as a mathematical inevitability. Anderson found the positron four years later." },
     { cat:'physics', year:1932, title:"Neutron + positron", who:"Chadwick, Anderson",
       detail:"Neutron (Chadwick, Cambridge): the second nucleon. Positron (Anderson, cosmic-ray cloud chamber): Dirac's antimatter confirmed." },
-    { cat:'physics', start:1936, end:1964, year:1964, title:"Particle zoo (cosmic-ray era)", who:"various",
+    { cat:'physics', start:1936, end:1964, year:1964, title:"Particle zoo", who:"various",
       detail:"Before accelerators, exotic particles came from above. Cloud chambers on mountaintops and in balloons turned up a menagerie of unstable particles between the muon (1936) and the Omega-minus (1964). Expand to see the individual discoveries.",
       children:[
         { year:1936, title:"Muon (μ)", who:"Anderson, Neddermeyer",
@@ -840,11 +1110,7 @@
       detail:"Any local hidden-variable theory makes predictions that quantum mechanics violates. Aspect's 1972 experiment killed local realism. Spooky action at a distance is real." },
     { cat:'physics', start:1932, end:1972, year:1972, status:'killed', title:"Local hidden variables", who:"von Neumann → Aspect",
       detail:"Quantum randomness is just our ignorance of underlying classical variables. Killed by Bell's theorem (1964) and Aspect's first-generation experiments (1972)." },
-    { cat:'physics', year:1965, title:"Cosmic microwave background", who:"Penzias, Wilson",
-      detail:"A persistent microwave hiss from every direction in the sky. The thermal afterglow of the Big Bang, 380,000 years after it started. Killed steady-state cosmology." },
-    { cat:'physics', start:1948, end:1965, year:1965, status:'killed', title:"Steady-state universe", who:"Hoyle → CMB",
-      detail:"The universe has no beginning, with continuous creation of matter to maintain constant density. Killed by the discovery of the cosmic microwave background — a definite cooling glow of a hot early state." },
-    { cat:'physics', start:1917, end:1964, year:1964, status:'killed', title:"Proton (elementary)", who:"Rutherford → Gell-Mann quark model",
+    { cat:'physics', start:1917, end:1964, year:1964, status:'killed', title:"Proton as elementary", who:"Rutherford → Gell-Mann quark model",
       detail:"Rutherford named the proton 1917 as the second fundamental particle (with the electron). Held as elementary until the quark model (Gell-Mann 1964) and SLAC deep inelastic scattering (1968) revealed it is composed of three quarks." },
     { cat:'physics', year:1983, title:"W, Z bosons", who:"UA1 / UA2 at CERN",
       detail:"The carriers of the weak force, ~91 GeV. Electroweak unification confirmed. Rubbia and van der Meer got the Nobel a year later." },
@@ -852,14 +1118,10 @@
       detail:"~173 GeV — the heaviest known fundamental particle. The third quark family closed. 22 years after Kobayashi & Maskawa predicted it." },
     { cat:'physics', tier:'top', year:2012, title:"Higgs boson", who:"ATLAS & CMS at LHC",
       detail:"~125 GeV. The scalar field that gives elementary particles mass. 48 years after the prediction. The last piece of the Standard Model." },
-    { cat:'physics', tier:'top', year:2015, title:"Gravitational waves (LIGO)", who:"LIGO collaboration",
+    { cat:'physics', tier:'top', year:2015, title:"Gravitational waves", who:"LIGO collaboration",
       detail:"A merging binary black hole, detected as a sub-attometre stretch of two 4 km arms. A century after Einstein predicted them. New astronomy entirely." },
-    { cat:'physics', year:2019, title:"First black hole image", who:"Event Horizon Telescope",
-      detail:"M87's central black hole, imaged by a virtual Earth-sized radio interferometer. A donut of light around the event horizon." },
-    { cat:'physics', year:2022, title:"JWST first images", who:"JWST team",
-      detail:"Infrared view of the early universe, deeper than Hubble ever managed. Galaxies appear earlier and more massive than models predicted." },
     // ─── still open / speculative physics ───
-    { cat:'physics', start:1930, end:2025, year:2025, status:'ongoing', title:"Quantum gravity (strings → M-theory → holography → ER=EPR)", who:"Bronstein → DeWitt → Witten → Maldacena",
+    { cat:'physics', start:1930, end:2025, year:2025, status:'ongoing', title:"Quantum gravity", who:"Bronstein → DeWitt → Witten → Maldacena",
       stages:[
         { from:1930, to:1968, stage:'speculative', who:"Bronstein (1930s); Wheeler-DeWitt canonical formulation (1967)" },
         { from:1968, to:1984, stage:'progress',    who:"Veneziano dual resonance (1968); Schwarz-Scherk reinterpret as quantum gravity (1973); Ashtekar / Rovelli / Smolin loop QG" },
@@ -891,79 +1153,122 @@
           detail:"Entangled particles connected by tiny wormholes? Suggestive math linking entanglement and spacetime geometry. No experimental hook." },
       ] },
 
-    { cat:'physics', start:1933, end:2025, year:2025, status:'ongoing', title:"Dark matter", who:"Zwicky → Rubin → direct-detection collaborations",
-      stages:[
-        { from:1933, to:1970, stage:'speculative', who:"Fritz Zwicky" },
-        { from:1970, to:1990, stage:'progress',    who:"Vera Rubin, Kent Ford" },
-        { from:1990, to:2025, stage:'testable',    who:"XENON, LUX-ZEPLIN, PandaX, ADMX" },
-      ],
-      firstTest:1970,
-      detail:"Galaxies rotate as if there's five times more mass than we can see. Zwicky proposed it 1933, Rubin's rotation curves (1970) made it canonical, WIMP searches from 1990 keep dropping limits with no signal." },
-    { cat:'physics', start:1998, end:2025, year:2025, status:'ongoing', title:"Dark energy", who:"Riess, Perlmutter, Schmidt → CMB surveys",
-      stages:[
-        { from:1998, to:2003, stage:'speculative', who:"Riess, Perlmutter, Schmidt" },
-        { from:2003, to:2025, stage:'testable',    who:"WMAP, Planck, BOSS, DESI" },
-      ],
-      firstTest:2003,
-      detail:"~70 % of cosmic energy budget. Type Ia supernovae (1998) showed expansion accelerating. WMAP CMB (2003) confirmed. Cosmological constant? Quintessence? Something else? Open." },
-    { cat:'physics', start:1973, end:2025, year:2025, status:'ongoing', title:"Supersymmetry", who:"Wess, Zumino → LHC",
-      stages:[
-        { from:1973, to:1981, stage:'speculative', who:"Wess, Zumino, Golfand, Likhtman" },
-        { from:1981, to:1998, stage:'progress',    who:"Dimopoulos, Georgi (MSSM)" },
-        { from:1998, to:2010, stage:'testable',    who:"Tevatron searches (CDF, DØ)" },
-        { from:2010, to:2025, stage:'figured',     who:"ATLAS, CMS at LHC" },
-      ],
-      firstTest:2010,
-      detail:"Every fermion has a boson partner. Was supposed to solve hierarchy, give dark matter, unify couplings. LHC turned on 2010 and has not seen it. Increasingly disfavoured." },
-    { cat:'physics', start:1977, end:2025, year:2025, status:'ongoing', title:"Axion", who:"Peccei, Quinn → ADMX",
-      stages:[
-        { from:1977, to:1983, stage:'speculative', who:"Peccei, Quinn, Weinberg, Wilczek" },
-        { from:1983, to:2000, stage:'progress',    who:"Pierre Sikivie (haloscope)" },
-        { from:2000, to:2025, stage:'testable',    who:"ADMX, IAXO, HAYSTAC" },
-      ],
-      firstTest:1983,
-      detail:"Proposed 1977 to fix the strong-CP problem. Light boson, doubles as a dark-matter candidate. First haloscope searches in the 1980s, ADMX/IAXO/haloscopes since 2000 still hunting." },
-
     // ============ PHYSICS & CHEMISTRY (continued — same foundational lens) ============
-    { cat:'physics', start:-450, end:1789, year:1789, status:'killed', title:"Four elements (earth, water, air, fire)", who:"Empedocles → Lavoisier",
-      detail:"Empedocles 450 BCE: all matter is built from four basic stuffs. Aristotle made it canonical. Killed by Lavoisier (1789), who defined a chemical element operationally as something that cannot be decomposed further — and listed 33 of them, none of which were earth/water/air/fire." },
-    { cat:'physics', year:1662, title:"Boyle's law", who:"Robert Boyle",
-      detail:"Pressure and volume of a gas are inversely proportional. The first quantitative gas law. Boyle insisted on numerical data — an early rejection of the Aristotelian style." },
-    { cat:'physics', year:1669, title:"Phosphorus", who:"Hennig Brand",
-      detail:"Trying to make gold from urine, the alchemist Brand instead distilled a new glowing element. The first element discovered scientifically." },
-    { cat:'physics', year:1913, title:"Hydrogen (inflammable air → simplest atom)", who:"Paracelsus → Cavendish → Lavoisier → Bohr",
+    { cat:'physics', tier:'top', start:-450, end:1789, year:1789, status:'killed', title:"Element search (Aristotelian → alchemical → Lavoisier)", who:"Empedocles → Geber → Paracelsus → Brand → Lavoisier",
       stages:[
-        { from:1520, to:1671, stage:'speculative', who:"Paracelsus &amp; alchemists — 'inflammable air' from acid + metal, unnamed" },
-        { from:1671, to:1766, stage:'progress',    who:"Boyle (iron + vitriol gas), Hales — gas collected and burned" },
-        { from:1766, to:1783, stage:'testable',    who:"Cavendish isolates &amp; weighs 'inflammable air'; combustion → water" },
-        { from:1783, to:1913, stage:'figured',     who:"Lavoisier names it 'hydrogen' (water-former); Dalton atomic weight 1; Bohr solves H atom" },
+        { from:-450, to:1669, stage:'ip0', who:"Greek: Empedocles four elements (earth, water, air, fire); Aristotle adds aether. Alchemists: Geber's 7 metals; Paracelsus' three principles (sulfur, mercury, salt) — what is matter MADE of?" },
+        { from:1669, to:1789, stage:'ip2', who:"Brand discovers phosphorus from urine (1669) — first scientifically isolated element. Boyle defines 'element' operationally (1661). Lavoisier (1789) lists 33 elements — none of them earth/water/air/fire" },
       ],
-      firstTest:1766,
-      detail:"Alchemists from Paracelsus onward noted that acid on iron evolves an inflammable gas, but couldn't name it. Boyle (1671) collected and burned it. Cavendish (1766) isolated it as a distinct 'inflammable air' and showed it produces water on combustion. Lavoisier (1783) named it hydrogen — 'water-former.' Dalton gave it atomic weight 1. Bohr (1913) solved the hydrogen atom quantum mechanically — the simplest atom in the universe, one proton + one electron, exactly explained." },
-    { cat:'physics', year:1774, title:"Oxygen", who:"Priestley, Scheele",
-      detail:"Independently isolated by Priestley and Scheele. Lavoisier named it and understood it. The reactive component of air that makes combustion possible." },
+      contributions:[
+        { year:-450, label:"Empedocles — four elements (earth, water, air, fire) make all matter" },
+        { year:-350, label:"Aristotle — adds aether (quintessence) for celestial matter" },
+        { year:800, label:"Jābir ibn Hayyān (Geber) — sulfur-mercury theory of metals, alchemical 7 metals" },
+        { year:1530, label:"Paracelsus — tria prima (sulfur, mercury, salt) replaces the Greek four" },
+        { year:1661, label:"Boyle (Sceptical Chymist) — element = what cannot be decomposed further (operational definition)" },
+        { year:1669, label:"Hennig Brand isolates phosphorus from urine — first element discovered scientifically (looking for gold)" },
+        { year:1789, label:"Lavoisier — Traité élémentaire de chimie lists 33 elements; kills the four-elements framework" },
+      ],
+      detail:"For two millennia, 'what is matter made of?' was answered by short lists of mystical principles. Empedocles' four elements were canonical from −450 to Aristotle to medieval alchemy. Alchemists added systems of their own: Geber's seven metals, Paracelsus' three principles. Brand (1669) accidentally distilled phosphorus while trying to make gold from urine — the first element isolated by experimental method. Boyle (1661) gave a modern operational definition. Lavoisier (1789) listed 33 elements that couldn't be decomposed, none of which were earth/water/air/fire — the four-elements framework was officially dead." },
+    { cat:'physics', tier:'top', start:-450, end:2025, year:2025, status:'ongoing', title:"Gases", who:"alchemists → Helmont → Boyle → Cavendish → Lavoisier → Ramsay",
+      stages:[
+        { from:-450, to:1648, stage:'ip0', who:"Ancient: pneuma (Greek 'breath/spirit'); air as one of four elements; alchemists' mystical 'spirits' and 'inflammable airs' — gases are supernatural" },
+        { from:1648, to:1754, stage:'ip2', who:"Helmont coins 'gas' (1648); Boyle's law quantifies pressure-volume (1662); Hales collects gases over water — gas is studied, but air still treated as one substance" },
+        { from:1754, to:1898, stage:'bt0', who:"Air is multiple substances. Black isolates CO₂ (1754); Cavendish H₂ (1766); Priestley/Scheele O₂ (1774); Lavoisier names them; Ramsay et al find noble gases (1894-98)" },
+        { from:1898, to:2025, stage:'bt3', who:"Kinetic theory of gases (Maxwell, Boltzmann); ideal gas law from molecular motion; quantum mechanics explains gas spectra; spectroscopy reads cosmic + exoplanet atmospheres" },
+      ],
+      contributions:[
+        { year:-450, label:"Empedocles — air is one of four elements" },
+        { year:-300, label:"Greek 'pneuma' (breath, spirit) — gases as animating substance" },
+        { year:1648, label:"Van Helmont coins 'gas' (from Greek 'chaos')" },
+        { year:1662, label:"Boyle's law — PV = const, the first quantitative gas law" },
+        { year:1727, label:"Hales — pneumatic chemistry, collects gases over water" },
+        { year:1754, label:"Joseph Black isolates 'fixed air' (CO₂) — proves air isn't a single substance" },
+        { year:1766, label:"Cavendish isolates hydrogen ('inflammable air')" },
+        { year:1774, label:"Priestley, Scheele isolate oxygen (independently)" },
+        { year:1783, label:"Lavoisier names them; combustion = oxidation, not phlogiston" },
+        { year:1860, label:"Kinetic theory of gases (Maxwell, Boltzmann)" },
+        { year:1868, label:"Helium found in solar spectrum (Janssen) — first element discovered in space" },
+        { year:1894, label:"Argon discovered (Rayleigh, Ramsay) — atmosphere is 1% argon" },
+        { year:1898, label:"Krypton, neon, xenon (Ramsay, Travers) — noble-gas family complete" },
+        { year:1962, label:"Bartlett — even 'noble' gases CAN react (XePtF₆)" },
+        { year:2017, label:"Exoplanet atmospheres analysed by transit spectroscopy" },
+      ],
+      detail:"From mystical 'spirits' to the best-understood phase of matter. The conceptual breakthrough was Black's 1754 isolation of CO₂ — proof that 'air' is not a single substance. After that, every decade brought new gases. Cavendish, Priestley/Scheele, Lavoisier (the chemical revolution); Ramsay (noble gases); kinetic theory (statistical mechanics' first triumph). Now spectroscopy lets us read the gases of stars, interstellar clouds, and exoplanet atmospheres." },
     { cat:'physics', start:1667, end:1774, year:1774, status:'killed', title:"Phlogiston", who:"Becher → Lavoisier",
       detail:"Combustion releases a substance called phlogiston. Lavoisier weighed everything and showed combustion ADDS mass (oxygen), it doesn't release anything." },
-    { cat:'physics', start:1772, end:1789, year:1789, title:"Conservation of mass", who:"Antoine Lavoisier",
-      detail:"In a closed system, mass is conserved through chemical reaction. Killed phlogiston. Lavoisier guillotined five years later — \"the Republic has no need of savants.\"" },
-    { cat:'physics', start:1803, end:1808, year:1808, title:"Dalton's atomic theory", who:"John Dalton",
-      detail:"All matter is made of atoms; atoms of an element are identical; compounds form in fixed integer ratios. Democritus given quantitative bite after 2200 years." },
+    { cat:'physics', tier:'top', start:1644, end:2025, year:2025, status:'ongoing', title:"Conservation laws", who:"Descartes → Lavoisier → Joule → Noether → Standard Model",
+      contributions:[
+        { year:1644, label:"Descartes — proposes 'quantity of motion' (momentum) is conserved in collisions" },
+        { year:1687, label:"Newton's 3rd law ⇒ momentum + angular momentum conservation" },
+        { year:1750, label:"Franklin — conservation of electric charge (one charge type, two signs)" },
+        { year:1789, label:"Lavoisier — conservation of mass in chemical reactions (kills phlogiston)" },
+        { year:1842, label:"Mayer — first statement of energy conservation (work + heat interconvertible)" },
+        { year:1843, label:"Joule — mechanical equivalent of heat (paddle-wheel experiment)" },
+        { year:1847, label:"Helmholtz — On the Conservation of Force (full 1st law of thermodynamics)" },
+        { year:1905, label:"Einstein — E = mc² (mass and energy are the same conserved quantity)" },
+        { year:1918, label:"Noether's theorem — every continuous symmetry yields a conservation law (the deepest one)" },
+        { year:1956, label:"Parity NOT conserved in weak interactions (Lee, Yang, Wu) — symmetries can break" },
+        { year:1964, label:"CP violation discovered (Cronin, Fitch) — but CPT is conserved" },
+        { year:2020, label:"Lepton + baryon number conservation still being tested (proton decay searches)" },
+      ],
+      detail:"What stays the same when everything else changes. Started piecemeal — Descartes notices momentum is preserved in collisions (1644), Lavoisier proves chemical reactions conserve mass (1789), 1840s physicists realise energy is also conserved. Then Noether (1918) collapsed them all into one principle: every continuous symmetry of the laws of physics yields a conserved quantity. Time-translation ⇒ energy. Spatial-translation ⇒ momentum. Rotation ⇒ angular momentum. Gauge symmetry ⇒ charge. The deepest fact in modern physics, and the framework for everything from the Standard Model to ongoing proton-decay searches." },
     { cat:'physics', start:1700, end:1828, year:1828, status:'killed', title:"Vitalism", who:"folk → Wöhler",
-      detail:"Living matter contains a special \"vital force\" inorganic chemistry cannot replicate. Killed by Wöhler synthesising urea from inorganic ammonium cyanate." },
-    { cat:'physics', year:1828, title:"Wöhler's urea synthesis", who:"Friedrich Wöhler",
-      detail:"Made urea from inorganic ammonium cyanate in his Berlin lab. Killed vitalism — there is no special \"life force\" separating organic from inorganic chemistry." },
-    { cat:'physics', year:1897, title:"Periodic table (recurring element properties)", who:"Döbereiner → Mendeleev → Thomson",
+      contributions:[
+        { year:1828, label:"Wöhler synthesises urea from inorganic ammonium cyanate — kills vitalism" },
+      ],
+      detail:"Living matter contains a special \"vital force\" inorganic chemistry cannot replicate. Killed by Friedrich Wöhler's accidental urea synthesis (1828) in his Berlin lab — proved organic compounds can be made from inorganic starting materials. There is no special \"life force\" separating organic from inorganic chemistry." },
+    { cat:'physics', year:1897, title:"Periodic table", who:"Döbereiner → Mendeleev → Thomson",
       stages:[
         { from:1817, to:1869, stage:'speculative', who:"Döbereiner triads, Newlands octaves" },
         { from:1869, to:1897, stage:'progress',    who:"Mendeleev — predicts Ga, Sc, Ge" },
       ],
       firstTest:1869,
       detail:"The first pattern (Döbereiner 1817: triads of similar elements) hinted that elements come in families. Newlands' octaves (1865) noticed every 8th element rhymed. Mendeleev (1869) built the full table and left holes — gallium, scandium, germanium — all found within 17 years with the predicted properties. The recurrence implied a smaller inner part inside every atom. Thomson's electron (1897) proved atoms are divisible, and electron shells eventually explained the pattern." },
-    { cat:'physics', year:1894, title:"Argon (inert gases)", who:"Rayleigh, Ramsay",
-      detail:"A new column of the periodic table no one had anticipated — the noble gases. The atmosphere contains 1 % argon and nobody had noticed." },
+    { cat:'physics', tier:'top', start:1868, end:1962, year:1962, title:"Noble gases", who:"Janssen → Ramsay → Bartlett",
+      contributions:[
+        { year:1868, label:"Helium identified in solar spectrum (Janssen, Lockyer) — first element found in space before Earth" },
+        { year:1894, label:"Argon discovered in air (Rayleigh, Ramsay) — atmosphere is 1% argon, nobody had noticed" },
+        { year:1895, label:"Helium found on Earth in cleveite uranium ore (Ramsay)" },
+        { year:1898, label:"Krypton, neon, xenon isolated (Ramsay, Travers) — fractional distillation of liquid air" },
+        { year:1900, label:"Radon discovered (Dorn) — radioactive noble gas" },
+        { year:1904, label:"Ramsay Nobel Prize in Chemistry for noble-gas discoveries" },
+        { year:1916, label:"Lewis explains inertness — closed electron shells (octet rule)" },
+        { year:1962, label:"Bartlett synthesises XePtF₆ — \"noble\" gases CAN react after all (xenon, krypton fluorides)" },
+      ],
+      detail:"A whole column of the periodic table no one anticipated. Helium was spotted in the Sun (1868) 27 years before being isolated on Earth — the only element ever discovered in space first. Then Rayleigh and Ramsay found a 'missing' constituent of air (1894): argon, at 1% of the atmosphere, hiding in plain sight. The rest of the column (neon, krypton, xenon) fell out of fractional distillation within four years. Their inertness was explained by closed electron shells (Lewis, 1916) — and the name 'noble' implied they never reacted. Then Bartlett (1962) made xenon hexafluoroplatinate, proving even nobles can be persuaded." },
 
     // ============ TOOLS & MEASUREMENT — capability tiers (each color = ~10× jump) ============
-    { cat:'tools', tier:'top', start:1608, end:2030, year:2030, status:'ongoing', title:"Telescope — light gathering",
+    { cat:'tools', tier:'top', start:500, end:2025, year:2025, status:'ongoing', title:"Notation & symbolism",
+      who:"Aryabhata → al-Khwarizmi → Viète → Descartes → Leibniz → Euler → Dirac → Knuth",
+      stages:[
+        { from:500,  to:1591, stage:'progress', who:"Positional decimal (Aryabhata, Brahmagupta); al-Khwarizmi's verbal algebra; Hindu-Arabic numerals reach Europe (Fibonacci 1202)" },
+        { from:1591, to:1900, stage:'testable', who:"Viète (1591) + Descartes (1637) literal symbolism; Leibniz calculus notation (dx, ∫); Euler standardises Σ, f(x), π, e, i" },
+        { from:1900, to:1978, stage:'figured',  who:"Index notation + Einstein summation; vectors / tensors; Dirac bra-kets; Feynman diagrams" },
+        { from:1978, to:2025, stage:'progress', who:"Computer-era — TeX/LaTeX standardises typesetting; computer algebra systems (Mathematica, SageMath) make notation executable; formal proof assistants (Coq, Lean) + AI (AlphaProof 2024) make notation machine-verifiable" },
+      ],
+      contributions:[
+        { year:500,  label:"Aryabhata, Brahmagupta — positional decimal notation (place-value, zero as digit)" },
+        { year:820,  label:"al-Khwarizmi — verbal algebra, foundational move from numbers-on-things to operations-on-symbols" },
+        { year:1202, label:"Fibonacci's Liber Abaci brings Hindu-Arabic numerals to Europe (replaces Roman numerals)" },
+        { year:1591, label:"François Viète — literal symbolism (vowels for unknowns, consonants for knowns)" },
+        { year:1637, label:"Descartes — x y z for unknowns, a b c for constants (today's convention)" },
+        { year:1655, label:"Wallis — symbol ∞ for infinity" },
+        { year:1684, label:"Leibniz — calculus notation (dx, dy, ∫) — still in use" },
+        { year:1734, label:"Euler — function notation f(x)" },
+        { year:1755, label:"Euler — Σ summation; standardises π, e, i" },
+        { year:1881, label:"Gibbs, Heaviside — modern vector notation (·, ×)" },
+        { year:1916, label:"Einstein — index notation + summation convention for tensors" },
+        { year:1939, label:"Dirac — ⟨bra|ket⟩ notation for quantum mechanics" },
+        { year:1948, label:"Feynman — diagrams as graphical notation for QFT processes" },
+        { year:1971, label:"Penrose graphical notation — tensors as diagrams" },
+        { year:1978, label:"Knuth — TeX/LaTeX, the universal mathematical typesetting standard" },
+        { year:1988, label:"Mathematica released — computer algebra goes mainstream (Maple, SageMath follow)" },
+        { year:2013, label:"Lean theorem prover — formal verification of mathematical proofs (Coq earlier 1989)" },
+        { year:2024, label:"AlphaProof — AI generates and verifies formal proofs at olympiad level" },
+      ],
+      detail:"Notation isn't decoration — it's cognitive infrastructure, a tool for thought. Decimal place-value (~500) made arithmetic mechanical. al-Khwarizmi's symbolic manipulation (820) let geometry and algebra fuse. Viète and Descartes (1591/1637) gave us x as an unknown. Leibniz's calculus notation (1684) is still THE way calculus is written. Each notation layer compresses what was previously cumbersome and unlocks the next abstraction. Modern frontier: LaTeX standardised typesetting since the 1980s, computer algebra made notation interactive, and formal proof assistants (Lean, Coq) + AI (AlphaProof 2024) point toward proofs machines can verify." },
+
+    { cat:'tools', tier:'top', start:1608, end:2030, year:2030, status:'ongoing', title:"Telescope",
       who:"Lippershey → Galileo → Herschel → Hooker → Hubble → JWST",
       stages:[
         { from:1608, to:1668, stage:'tier0', who:"Refractors — Lippershey, Galileo (3–30× magnification, ~4cm aperture)" },
@@ -973,9 +1278,20 @@
         { from:1990, to:2021, stage:'tier4', who:"Hubble, Keck 10m above-atmosphere (~10,000×)" },
         { from:2021, to:2030, stage:'tier5', who:"JWST 6.5m infrared at L2 (~100,000× vs Galileo)" },
       ],
-      detail:"Each color ≈ 10× the photon-collecting area (∝ aperture²). Galileo's 3.7cm objective to JWST's 6.5m segmented mirror is >300,000× more photons. Angular resolution tracks aperture too — and going above the atmosphere (Hubble, JWST) finally removed the seeing ceiling." },
+      contributions:[
+        { year:1610, label:"Galileo — moons of Jupiter, phases of Venus, Sun spots, lunar craters" },
+        { year:1781, label:"Herschel discovers Uranus" },
+        { year:1846, label:"Neptune found within 1° of Le Verrier's prediction" },
+        { year:1923, label:"Hubble — Andromeda is its own galaxy (the universe is much bigger)" },
+        { year:1929, label:"Hubble — galactic redshift / cosmic expansion" },
+        { year:1965, label:"CMB discovered by Penzias-Wilson (radio telescope)" },
+        { year:1995, label:"First exoplanet — 51 Pegasi b (Mayor, Queloz)" },
+        { year:2019, label:"First black-hole image (Event Horizon Telescope, M87*)" },
+        { year:2022, label:"JWST — earliest galaxies imaged, exoplanet atmospheres" },
+      ],
+      detail:"Each color ≈ 10× the photon-collecting area (∝ aperture²). Galileo's 3.7cm objective to JWST's 6.5m segmented mirror is >300,000× more photons. Angular resolution tracks aperture too — and going above the atmosphere (Hubble, JWST) finally removed the seeing ceiling. Dots mark major discoveries the tool enabled." },
 
-    { cat:'tools', tier:'top', start:1590, end:2030, year:2030, status:'ongoing', title:"Microscope — spatial resolution",
+    { cat:'tools', tier:'top', start:1590, end:2030, year:2030, status:'ongoing', title:"Microscope",
       who:"Janssen → Hooke → Leeuwenhoek → Ruska → Binnig/Rohrer → Betzig/Hell",
       stages:[
         { from:1590, to:1665, stage:'tier0', who:"Janssen compound microscope — ~10× magnification" },
@@ -986,7 +1302,7 @@
       ],
       detail:"From seeing cells (Hooke, 1665) to microbes (Leeuwenhoek, 1670s) to individual atoms (STM, 1981). Each tier ≈ 10× finer. The 1873 Abbe diffraction limit (~λ/2) seemed absolute until electron microscopy used shorter de Broglie wavelengths, then STM bypassed wavelengths entirely with tunneling." },
 
-    { cat:'tools', tier:'top', start:-1500, end:2030, year:2030, status:'ongoing', title:"Clock — time precision",
+    { cat:'tools', tier:'top', start:-1500, end:2030, year:2030, status:'ongoing', title:"Clock",
       who:"sundial → Huygens → Harrison → quartz → cesium → optical lattice",
       stages:[
         { from:-1500, to:1656, stage:'tier0', who:"Sundials, water clocks, verge escapement — error ~minutes/day" },
@@ -998,7 +1314,7 @@
       ],
       detail:"Huygens' pendulum was the first clock you could trust within minutes/day, enabling longitude-at-sea and quantitative physics. Harrison's H4 (1761) won the Longitude Prize. Atomic clocks (1955) decoupled time from astronomy. Today's optical lattice clocks would lose less than a second over the age of the universe." },
 
-    { cat:'tools', start:1932, end:2030, year:2030, status:'ongoing', title:"Particle accelerator — collision energy",
+    { cat:'tools', tier:'top', start:1932, end:2030, year:2030, status:'ongoing', title:"Particle accelerator",
       who:"Cockcroft-Walton → Lawrence → Bevatron → Tevatron → LHC",
       stages:[
         { from:1932, to:1952, stage:'tier0', who:"Cockcroft-Walton, Lawrence cyclotron — ~MeV" },
@@ -1008,7 +1324,7 @@
       ],
       detail:"Each generation cracked open structure at smaller scales. Lawrence's cyclotron disintegrated nuclei (MeV); Bevatron found the antiproton (GeV); Tevatron found the top quark; LHC found the Higgs. Livingston's law: accelerator energy roughly tripled per decade for 80 years." },
 
-    { cat:'tools', start:1814, end:2030, year:2030, status:'ongoing', title:"Spectroscopy — chemical fingerprinting",
+    { cat:'tools', tier:'top', start:1814, end:2030, year:2030, status:'ongoing', title:"Spectroscopy",
       who:"Fraunhofer → Bunsen-Kirchhoff → Bohr → laser → LIGO",
       stages:[
         { from:1814, to:1859, stage:'tier0', who:"Fraunhofer lines in the solar spectrum — pattern noted, unexplained" },
@@ -1017,6 +1333,168 @@
         { from:1960, to:2030, stage:'tier4', who:"Laser spectroscopy, NMR, mass spec — atom-by-atom composition" },
       ],
       detail:"Spectra turned the sun and stars into chemistry labs you could read from Earth. Bunsen-Kirchhoff (1859) showed each element has a unique fingerprint; Bohr (1913) explained why. Modern spectroscopy lets us identify molecules in interstellar clouds and exoplanet atmospheres." },
+
+    // ============ DETECTORS — cosmic, particle, gravitational ============
+    { cat:'detectors', start:1956, end:2030, year:2030, status:'ongoing', title:"Neutrino detectors",
+      who:"Cowan-Reines → Homestake → Kamiokande → Super-K → IceCube",
+      stages:[
+        { from:1956, to:1968, stage:'tier0', who:"Cowan-Reines (Savannah River) — first detection of the electron antineutrino" },
+        { from:1968, to:1987, stage:'tier1', who:"Davis Homestake (chlorine) — solar neutrinos, deficit problem" },
+        { from:1987, to:2002, stage:'tier2', who:"Kamiokande & IMB catch SN 1987A neutrinos; Super-K confirms oscillations" },
+        { from:2002, to:2030, stage:'tier4', who:"SNO, KamLAND, T2K, IceCube — full oscillation picture; astrophysical neutrinos" },
+      ],
+      contributions:[
+        { year:1956, label:"First neutrino detection (Cowan-Reines) — predicted by Pauli 1930" },
+        { year:1968, label:"Solar neutrino deficit — only ~1/3 of expected flux" },
+        { year:1987, label:"Supernova 1987A neutrinos — first extragalactic neutrinos, arrived ~3h before light" },
+        { year:1998, label:"Super-K — neutrino oscillation confirmed (neutrinos have mass)" },
+        { year:2013, label:"IceCube — first detection of astrophysical TeV neutrinos" },
+        { year:2018, label:"IceCube + multi-messenger — neutrino traced to a flaring blazar (TXS 0506)" },
+      ],
+      detail:"Neutrinos barely interact — Pauli (1930) called proposing them 'a desperate remedy.' Cowan-Reines caught one 26 years later. Detector tiers ≈ orders of magnitude in target mass + sensitivity. Solar-neutrino deficit (1968) → mass + oscillation (1998 Nobel) → IceCube cubic-kilometre neutrino astronomy today." },
+
+    { cat:'detectors', start:1969, end:2030, year:2030, status:'ongoing', title:"Gravitational-wave detectors",
+      who:"Weber bars → LIGO → Virgo → LISA",
+      stages:[
+        { from:1969, to:1994, stage:'tier0', who:"Weber resonant bars — early attempts, mostly false alarms" },
+        { from:1994, to:2015, stage:'tier1', who:"Initial & Advanced LIGO/Virgo construction; sensitivity to 10⁻²¹ strain" },
+        { from:2015, to:2030, stage:'tier3', who:"LIGO/Virgo direct detections; LISA planned for 2030s (space-based, lower frequency)" },
+      ],
+      contributions:[
+        { year:1974, label:"Hulse-Taylor binary pulsar — indirect evidence for GWs (Nobel 1993)" },
+        { year:2015, label:"GW150914 — first direct detection (binary black hole merger)" },
+        { year:2017, label:"GW170817 — neutron-star merger, multi-messenger with EM follow-up" },
+        { year:2017, label:"Nobel Prize for GW detection (Weiss, Barish, Thorne)" },
+        { year:2023, label:"Nanohertz GW background from pulsar-timing arrays (NANOGrav)" },
+      ],
+      detail:"Einstein predicted gravitational waves in 1916; it took a century to detect them directly. LIGO measures strain ~10⁻²¹ — a ~10⁻¹⁸m wiggle in 4 km arms. Multi-messenger astronomy (GW + EM + neutrinos) is the new way to study extreme cosmic events. LISA (2030s) will open the millihertz band where supermassive-BH mergers live." },
+
+    { cat:'detectors', start:1912, end:2030, year:2030, status:'ongoing', title:"Cosmic-ray + particle-astrophysics detectors",
+      who:"Hess balloons → cloud chambers → Pierre Auger → AMS-02",
+      stages:[
+        { from:1912, to:1932, stage:'tier0', who:"Hess balloon flights — cosmic rays discovered; ionisation rises with altitude" },
+        { from:1932, to:1964, stage:'tier1', who:"Cloud chambers — positron (1932), muon (1936), pion, kaon, lambda, Ω⁻ (1964)" },
+        { from:1964, to:2000, stage:'tier2', who:"Spark chambers, Cherenkov arrays (Haverah Park, AGASA)" },
+        { from:2000, to:2030, stage:'tier4', who:"Pierre Auger Observatory (3000 km²), AMS-02 (ISS, antimatter search)" },
+      ],
+      contributions:[
+        { year:1912, label:"Hess — cosmic rays discovered via balloon ionisation experiments" },
+        { year:1932, label:"Anderson — positron in cloud chamber (Dirac's antimatter)" },
+        { year:1936, label:"Muon discovered (Anderson, Neddermeyer)" },
+        { year:1991, label:"Highest-energy cosmic ray recorded — 'Oh-My-God particle' (~3 × 10²⁰ eV)" },
+        { year:2011, label:"AMS-02 deployed on ISS — antimatter & dark-matter searches in space" },
+      ],
+      detail:"Before accelerators, the only way to study high-energy particles was to look up. Cloud chambers caught the positron, muon, pion, kaon — the whole 'particle zoo' before the 1960s. Today's cosmic-ray observatories cover thousands of square kilometres on the ground (Pierre Auger) and ride on the ISS (AMS-02) hunting dark-matter signatures." },
+
+    // ============ PARADIGMS, PHILOSOPHY & THEOLOGY ============
+    { cat:'paradigms', tier:'top', start:-400, end:2025, year:2025, status:'ongoing', title:"Mathematisation of nature",
+      who:"Plato → Pythagoreans → Galileo → Newton → modern physics",
+      stages:[
+        { from:-400, to:1543, stage:'speculative', who:"Plato + Pythagoreans — \"forms\" and number-mysticism" },
+        { from:1543, to:1687, stage:'progress',    who:"Galileo: \"the book of nature is written in mathematics\"" },
+        { from:1687, to:2025, stage:'dormant',     who:"From Newton onward: physics IS mathematics applied to nature" },
+      ],
+      detail:"The claim that nature is fundamentally mathematical, not just describable in math. Plato + Pythagoreans (4th c. BCE) treated math as the eternal forms; Galileo (1623) made it the methodological commitment of modern science. Wigner famously called the success of mathematics in physics 'unreasonable.'" },
+
+    { cat:'paradigms', tier:'top', start:-350, end:1687, year:1687, status:'killed', title:"Aristotelian framework",
+      who:"Aristotle → Aquinas → Galileo, Newton",
+      stages:[
+        { from:-350, to:1200, stage:'figured', who:"Aristotle's four causes, teleology, hierarchy of being — canonical in antiquity" },
+        { from:1200, to:1543, stage:'dormant', who:"Synthesis with Christian theology (Aquinas) — dominant in medieval university curriculum" },
+        { from:1543, to:1687, stage:'problem-active', who:"Copernicus, Galileo, Newton dismantle the physics; Cartesian/empiricist philosophy displaces the metaphysics" },
+      ],
+      detail:"Aristotle's framework — four causes, natural place, teleology, geocentric cosmos — was the integrated worldview of Western thought for two millennia. Aquinas fused it with Christian theology. Galileo's mechanics and Newton's universal physics killed the physics half; the metaphysics lingered as Scholasticism." },
+
+    { cat:'paradigms', tier:'top', start:1543, end:1687, year:1687, title:"Copernican revolution",
+      who:"Copernicus → Galileo → Kepler → Newton",
+      contributions:[
+        { year:1543, label:"Copernicus — De Revolutionibus published the year he dies" },
+        { year:1572, label:"Tycho's supernova breaks the immutable heavens" },
+        { year:1610, label:"Galileo's telescope — moons of Jupiter, phases of Venus" },
+        { year:1619, label:"Kepler's three laws" },
+        { year:1687, label:"Newton's Principia closes it out mathematically" },
+      ],
+      detail:"More than just heliocentrism — the demotion of Earth from cosmic centre to ordinary planet, the dissolution of the celestial-vs-terrestrial divide, the realisation that the same physics applies everywhere. Defines what \"a Copernican turn\" means as a metaphor across disciplines today." },
+
+    { cat:'paradigms', tier:'top', start:1610, end:1633, year:1633, title:"Galileo affair",
+      who:"Galileo vs Holy Office",
+      contributions:[
+        { year:1616, label:"Cardinal Bellarmine warns Galileo — heliocentrism declared \"formally heretical\"" },
+        { year:1632, label:"Dialogue Concerning Two Chief World Systems published" },
+        { year:1633, label:"Trial, abjuration, house arrest for life" },
+        { year:1992, label:"Pope John Paul II officially acknowledges the church's error" },
+      ],
+      detail:"The defining historical event for the science-religion relationship in Western culture. The trial of Galileo (1633) became the founding myth of Enlightenment-era anti-clericalism. The church formally rehabilitated him 359 years later." },
+
+    { cat:'paradigms', tier:'top', start:1543, end:1687, year:1687, title:"Scientific revolution",
+      who:"Copernicus → Bacon → Galileo → Boyle → Newton",
+      contributions:[
+        { year:1543, label:"Copernicus De Revolutionibus + Vesalius De Humani Corporis Fabrica" },
+        { year:1620, label:"Francis Bacon — Novum Organum (inductive method)" },
+        { year:1637, label:"Descartes — Discourse on Method" },
+        { year:1660, label:"Royal Society of London chartered" },
+        { year:1666, label:"French Académie des Sciences" },
+        { year:1687, label:"Newton's Principia — mature mathematical physics" },
+      ],
+      detail:"The ~140-year shift from natural philosophy to modern science: empirical method (Bacon), mathematisation (Galileo), institutional infrastructure (Royal Societies), mechanistic philosophy (Descartes), and a worked mathematical example (Newton). The model the rest of science would imitate." },
+
+    { cat:'paradigms', tier:'top', start:1644, end:1900, year:1900, status:'killed', title:"Mechanism / clockwork universe",
+      who:"Descartes → Newton → Laplace → quantum mechanics",
+      stages:[
+        { from:1644, to:1687, stage:'speculative', who:"Descartes — universe as machine, animals as automata" },
+        { from:1687, to:1814, stage:'progress',    who:"Newton — celestial mechanics actually IS clockwork" },
+        { from:1814, to:1900, stage:'figured',     who:"Laplace's demon — perfect knowledge of state ⇒ perfect prediction of past and future" },
+      ],
+      detail:"The dominant philosophical interpretation of physics from Descartes (1644) to 1900: the universe is a deterministic mechanism. Laplace formalised it (1814) — given exact knowledge of every particle, an intellect could predict everything. Killed by quantum mechanics (intrinsic randomness) and chaos theory (sensitive dependence)." },
+
+    { cat:'paradigms', tier:'top', start:1687, end:1800, year:1800, title:"Enlightenment",
+      who:"Newton → Locke → Voltaire → Kant",
+      contributions:[
+        { year:1687, label:"Newton's Principia provides the model" },
+        { year:1690, label:"Locke — Essay Concerning Human Understanding" },
+        { year:1738, label:"Voltaire — Letters on the English (introduces Newton to France)" },
+        { year:1781, label:"Kant — Critique of Pure Reason" },
+      ],
+      detail:"\"Dare to know\" (Kant 1784). Newton's success at explaining nature mathematically convinced philosophers that reason — applied carefully — could resolve any question, including political and theological ones. Reframed religion as natural theology / deism (the clockmaker God who set things going and stepped back)." },
+
+    { cat:'paradigms', start:1900, end:1931, year:1931, status:'killed', title:"Foundational crisis in mathematics",
+      who:"Cantor → Russell → Hilbert → Gödel",
+      contributions:[
+        { year:1900, label:"Hilbert's 23 problems — programme for foundations" },
+        { year:1901, label:"Russell's paradox — set of all sets that don't contain themselves" },
+        { year:1910, label:"Principia Mathematica (Russell + Whitehead) — attempt to ground all math in logic" },
+        { year:1928, label:"Hilbert's programme: prove math consistent + complete + decidable" },
+        { year:1931, label:"Gödel's incompleteness — Hilbert's dream is impossible in principle" },
+      ],
+      detail:"For 30 years, the foundations of mathematics seemed broken. Cantor's paradoxes, Russell's paradox, the Burali-Forti paradox — set theory was tearing itself apart. Hilbert proposed to rescue everything via formalisation. Gödel proved (1931) you can't have a finitely-axiomatisable system that's both consistent and complete. We've lived with that ever since." },
+
+    { cat:'paradigms', tier:'top', start:1962, end:2025, year:2025, status:'ongoing', title:"Kuhnian paradigm shifts",
+      who:"Thomas Kuhn → philosophy and history of science",
+      contributions:[
+        { year:1962, label:"Kuhn — The Structure of Scientific Revolutions" },
+        { year:1970, label:"2nd edition with 'Postscript' clarifying paradigms" },
+        { year:1992, label:"Sokal hoax + 'Science Wars' over social constructivism" },
+      ],
+      detail:"Kuhn argued science doesn't progress smoothly — it lurches between 'normal science' (puzzle-solving within a paradigm) and 'revolutions' (paradigm replaced wholesale). The word \"paradigm shift\" entered general culture from here. Made everyone realise scientific consensus is historically situated, sometimes overcorrected by post-modernist science studies." },
+
+    { cat:'paradigms', start:1973, end:2025, year:2025, status:'ongoing', title:"Anthropic principle / fine-tuning",
+      who:"Brandon Carter → modern cosmology",
+      contributions:[
+        { year:1973, label:"Brandon Carter coins 'anthropic principle'" },
+        { year:1986, label:"Barrow & Tipler — The Anthropic Cosmological Principle book" },
+        { year:1998, label:"Discovery of dark energy revives multiverse explanations" },
+        { year:2003, label:"Susskind — string-theory landscape lends multiverse credibility" },
+      ],
+      detail:"Many physical constants seem fine-tuned for life — change them slightly and chemistry breaks. Anthropic 'explanations' say: in a vast multiverse, we observe ourselves where the constants permit observers. Critics call this no explanation at all. Open philosophical question with serious physics behind it." },
+
+    { cat:'paradigms', start:1572, end:1843, year:1843, title:"Imaginary numbers acceptance",
+      who:"Bombelli → Descartes → Euler → Gauss → Hamilton",
+      stages:[
+        { from:1572, to:1748, stage:'speculative', who:"Bombelli uses √-1 as a calculational trick; Descartes coins 'imaginary' as a slur (1637)" },
+        { from:1748, to:1831, stage:'progress',    who:"Euler's identity e^iπ + 1 = 0; Wessel + Argand give them a geometric plane" },
+        { from:1831, to:1843, stage:'figured',     who:"Gauss legitimises 'complex numbers'; Hamilton extends to quaternions" },
+      ],
+      detail:"A philosophical case study in mathematics: a concept can be calculated with for centuries while being considered 'not really a number.' Took 250 years for imaginary numbers to move from suspicious trick to accepted mathematical object — now indispensable in quantum mechanics, signal processing, electrical engineering." },
 
     // ============ PEOPLE — MATHEMATICIANS (sorted by main mathematical contribution) ============
     { cat:'people-math', tier:'top', start:-570, end:-495, year:-530, title:"Pythagoras", who:"mathematician / mystic (~570–495 BCE)",
@@ -1029,8 +1507,8 @@
       contributions:[{ year:-300, label:"Elements — axiomatic geometry" }],
       detail:"23 definitions, 5 postulates. The template for axiomatic mathematics for 2300 years." },
     { cat:'people-math', tier:'top', start:-287, end:-212, year:-250, title:"Archimedes of Syracuse", who:"mathematician / physicist (287–212 BCE)",
-      contributions:[{ year:-250, label:"Lever law, buoyancy, π bounded, integration in spirit" }],
-      detail:"Mechanics from first principles. Killed by a Roman soldier during the sack of Syracuse." },
+      contributions:[{ year:-250, label:"π bounded by polygons (96-gon → 3.140 < π < 3.143); method of exhaustion = precursor of integration; sphere &amp; cylinder volumes" }],
+      detail:"Mathematical contributions: rigorous bounds for π, the method of exhaustion (effectively integration via inscribed/circumscribed polygons), sphere/cylinder ratios. Killed by a Roman soldier during the sack of Syracuse — reportedly while drawing geometric figures in the sand." },
     { cat:'people-math', start:360, end:415, year:400, title:"Hypatia of Alexandria", who:"mathematician / philosopher (~360–415)",
       contributions:[{ year:400, label:"Commentaries on Diophantus and Apollonius" }],
       detail:"Neoplatonist scholar. Murdered by a Christian mob — a symbolic end of classical scholarship in Alexandria." },
@@ -1046,7 +1524,7 @@
         { year:825, label:"On Calculation with Hindu Numerals" },
       ],
       detail:"His name became 'algorithm'. Brought the Hindu decimal system west via Arabic translation." },
-    { cat:'people-math', start:1170, end:1250, year:1202, title:"Fibonacci (Leonardo of Pisa)", who:"mathematician (~1170–1250)",
+    { cat:'people-math', start:1170, end:1250, year:1202, title:"Fibonacci", who:"mathematician (~1170–1250)",
       contributions:[{ year:1202, label:"Liber Abaci — Hindu-Arabic numerals to Europe" }],
       detail:"Displaced Roman numerals across Europe. The famous sequence appears in a rabbit-breeding problem." },
     { cat:'people-math', start:1596, end:1650, year:1637, title:"René Descartes", who:"philosopher / mathematician (1596–1650)",
@@ -1066,11 +1544,11 @@
       detail:"Religious crisis in his mid-30s, abandoned math. The Pensées followed." },
     { cat:'people-math', tier:'top', start:1643, end:1727, year:1666, title:"Isaac Newton", who:"physicist / mathematician (1643–1727)",
       contributions:[
-        { year:1666, label:"Annus mirabilis — calculus, prism, gravity" },
-        { year:1687, label:"Principia — laws of motion + universal gravitation" },
-        { year:1704, label:"Opticks" },
+        { year:1666, label:"Calculus / method of fluxions (kept unpublished for two decades — fuelled the Leibniz priority dispute)" },
+        { year:1669, label:"Generalised binomial theorem; power-series methods" },
+        { year:1704, label:"De Quadratura — formal exposition of calculus" },
       ],
-      detail:"Defined what 'physics' meant for 220 years. Alchemy in secret." },
+      detail:"Mathematical contributions: invented calculus (1666, in the plague year), generalised the binomial theorem, developed power series methods. Bitter priority dispute with Leibniz over calculus." },
     { cat:'people-math', tier:'top', start:1646, end:1716, year:1684, title:"Gottfried Wilhelm Leibniz", who:"mathematician / philosopher (1646–1716)",
       contributions:[
         { year:1684, label:"Nova Methodus — calculus (notation we still use)" },
@@ -1084,8 +1562,12 @@
       ],
       detail:"Touched every branch of mathematics. Worked through his last 17 years totally blind, output undiminished." },
     { cat:'people-math', start:1736, end:1813, year:1788, title:"Joseph-Louis Lagrange", who:"mathematician (1736–1813)",
-      contributions:[{ year:1788, label:"Mécanique Analytique — Lagrangian mechanics" }],
-      detail:"Variational principles, number theory, celestial mechanics. Survived the Terror; Napoleon made him a count." },
+      contributions:[
+        { year:1770, label:"Lagrange's four-square theorem (every natural number = sum of 4 squares)" },
+        { year:1788, label:"Calculus of variations — Mécanique Analytique formulates physics via least action" },
+        { year:1797, label:"Théorie des fonctions analytiques — power-series foundation of analysis" },
+      ],
+      detail:"Mathematical contributions: variational calculus, number theory (four-square theorem), foundations of analysis, group theory precursors (the 'Lagrange theorem' on subgroup orders). Survived the Terror; Napoleon made him a count." },
     { cat:'people-math', tier:'top', start:1777, end:1855, year:1801, title:"Carl Friedrich Gauss", who:"mathematician (1777–1855)",
       contributions:[
         { year:1801, label:"Disquisitiones Arithmeticae" },
@@ -1095,10 +1577,11 @@
       detail:"The 'prince of mathematicians' — and a famously slow, perfectionist publisher." },
     { cat:'people-math', start:1749, end:1827, year:1812, title:"Pierre-Simon Laplace", who:"mathematician / astronomer (1749–1827)",
       contributions:[
-        { year:1799, label:"Mécanique Céleste — solar system as clockwork" },
-        { year:1812, label:"Théorie analytique des probabilités" },
+        { year:1782, label:"Laplace transform — integral transform now central to engineering math" },
+        { year:1812, label:"Théorie analytique des probabilités — first comprehensive probability theory" },
+        { year:1814, label:"Essai philosophique — Bayesian inference, principle of insufficient reason" },
       ],
-      detail:"Laplacian determinism. 'I had no need of that hypothesis' (when Napoleon asked about God in his system)." },
+      detail:"Mathematical contributions: probability theory (the foundational textbook), Laplace transform, Laplacian operator (∇²), Laplace's equation. Bayesian reasoning before Bayesian was a word." },
     { cat:'people-math', start:1809, end:1877, year:1844, title:"Hermann Grassmann", who:"mathematician (1809–1877)",
       contributions:[
         { year:1844, label:"Ausdehnungslehre — exterior algebra (largely ignored)" },
@@ -1115,26 +1598,25 @@
       detail:"Riemann surfaces, manifolds, Riemann hypothesis. The geometric scaffolding for general relativity." },
     { cat:'people-math', start:1854, end:1912, year:1895, title:"Henri Poincaré", who:"mathematician / physicist (1854–1912)",
       contributions:[
-        { year:1887, label:"Three-body problem — seed of chaos theory" },
-        { year:1895, label:"Analysis Situs — founding paper of topology" },
-        { year:1904, label:"Poincaré conjecture posed" },
-        { year:1905, label:"Sur la dynamique de l'électron — relativity foundations" },
+        { year:1887, label:"Three-body problem — first chaotic behaviour proved in a dynamical system" },
+        { year:1895, label:"Analysis Situs — founding paper of algebraic topology" },
+        { year:1904, label:"Poincaré conjecture posed (every simply-connected closed 3-manifold is a 3-sphere)" },
       ],
-      detail:"Topology, three-body problem, foundations of special relativity. The last universalist." },
+      detail:"Mathematical contributions: founded algebraic topology, posed the Poincaré conjecture (open for 99 years until Perelman 2003), discovered chaos in the three-body problem. The last universalist." },
     { cat:'people-math', start:1862, end:1943, year:1900, title:"David Hilbert", who:"mathematician (1862–1943)",
       contributions:[
-        { year:1900, label:"23 problems address (Paris ICM)" },
-        { year:1909, label:"Spectral theory — basis of Hilbert spaces" },
-        { year:1915, label:"GR field equations (essentially simultaneous with Einstein)" },
-        { year:1928, label:"Hilbert programme — formalisation manifesto" },
+        { year:1899, label:"Foundations of Geometry — modern axiomatic rigour for Euclidean geometry" },
+        { year:1900, label:"23 problems address (Paris ICM) — set the agenda for 20th-century math" },
+        { year:1909, label:"Spectral theory of operators — basis of Hilbert spaces" },
+        { year:1928, label:"Hilbert programme — prove all math consistent, complete, decidable (killed by Gödel 1931)" },
       ],
-      detail:"Hilbert space, the formalist programme, 23 problems. Closed in on general relativity at the same time as Einstein." },
+      detail:"Mathematical contributions: axiomatic geometry, Hilbert spaces, the famous 23 problems, the Hilbert programme of formalisation (whose impossibility Gödel proved 1931)." },
     { cat:'people-math', start:1864, end:1909, year:1907, title:"Hermann Minkowski", who:"mathematician / physicist (1864–1909)",
       contributions:[
-        { year:1907, label:"4D spacetime formulation of special relativity" },
-        { year:1908, label:"\"Space and Time\" Cologne lecture" },
+        { year:1889, label:"Geometry of numbers — lattice points in convex bodies (Minkowski's theorem)" },
+        { year:1907, label:"Pseudo-Euclidean 4D geometry — the mathematical structure underlying spacetime" },
       ],
-      detail:"Spacetime as a 4D geometric object. Gave special relativity its modern formulation." },
+      detail:"Mathematical contributions: founded the 'geometry of numbers' (lattices + convex bodies, used in number theory), invented the pseudo-Euclidean 4D geometry that became Minkowski spacetime." },
     { cat:'people-math', tier:'top', start:1872, end:1970, year:1910, title:"Bertrand Russell", who:"philosopher / logician (1872–1970)",
       contributions:[
         { year:1901, label:"Russell's paradox — the set of all sets that don't contain themselves" },
@@ -1142,21 +1624,20 @@
         { year:1950, label:"Nobel Prize in Literature" },
       ],
       detail:"Principia Mathematica with Whitehead. Russell's paradox. Foundational logic and set theory." },
-    { cat:'people-math', start:1882, end:1935, year:1918, title:"Emmy Noether", who:"mathematician (1882–1935)",
+    { cat:'people-math', start:1882, end:1935, year:1921, title:"Emmy Noether", who:"mathematician (1882–1935)",
       contributions:[
-        { year:1918, label:"Noether's theorem — symmetry ↔ conservation law" },
-        { year:1921, label:"Ring theory foundations (Idealtheorie in Ringbereichen)" },
+        { year:1921, label:"Idealtheorie in Ringbereichen — foundations of modern ring theory" },
+        { year:1927, label:"Hypercomplex systems classification (Wedderburn-Artin-Noether)" },
+        { year:1933, label:"Algebraic topology + homological algebra precursors" },
       ],
-      detail:"Noether's theorem: every continuous symmetry yields a conservation law. The deepest fact in modern theoretical physics." },
+      detail:"Mathematical contributions: founded abstract ring theory, ideal theory, modern algebra. Bourbaki later structured most of mathematics in her style. Forced out of Göttingen by the Nazis in 1933, died in exile two years later." },
     { cat:'people-math', tier:'top', start:1931, end:2026, year:1974, status:'ongoing', title:"Roger Penrose", who:"physicist / mathematician (b.1931)",
       contributions:[
-        { year:1965, label:"Singularity theorem — gravitational collapse forces a singularity" },
-        { year:1967, label:"Twistor theory" },
-        { year:1974, label:"Penrose tilings — aperiodic five-fold symmetry" },
-        { year:1989, label:"The Emperor's New Mind — consciousness ↔ QM" },
-        { year:2020, label:"Nobel Prize for the singularity theorem" },
+        { year:1967, label:"Twistor theory — complex-geometric reformulation of spacetime" },
+        { year:1971, label:"Penrose graphical notation — tensor diagrams" },
+        { year:1974, label:"Penrose tilings — aperiodic five-fold symmetric tiling, later realised in quasicrystals" },
       ],
-      detail:"Penrose tilings, singularity theorems (with Hawking), twistor theory. Nobel 2020." },
+      detail:"Penrose's mathematical contributions: twistor theory, Penrose tilings (aperiodic with five-fold symmetry — Nature later found them as quasicrystals), and the graphical tensor notation now used across mathematical physics." },
 
     // ============ PEOPLE — PHYSICISTS & ASTRONOMERS (sorted by main physics contribution) ============
     { cat:'people-physics', start:-624, end:-546, year:-585, title:"Thales of Miletus", who:"first natural philosopher (~624–546 BCE)",
@@ -1175,8 +1656,8 @@
       contributions:[{ year:-280, label:"Heliocentric proposal — 1800 years before Copernicus" }],
       detail:"Estimated relative sizes of Sun, Moon, Earth by geometry. Ignored." },
     { cat:'people-physics', tier:'top', start:-287, end:-212, year:-250, title:"Archimedes of Syracuse", who:"mathematician / physicist (287–212 BCE)",
-      contributions:[{ year:-250, label:"Lever law, buoyancy, π bounded, integration in spirit" }],
-      detail:"Mechanics from first principles. Killed by a Roman soldier during the sack of Syracuse." },
+      contributions:[{ year:-250, label:"Lever law (force × distance is conserved); Archimedes' principle (buoyancy = displaced fluid weight); first quantitative mechanics" }],
+      detail:"Physics contributions: the lever law and the buoyancy principle — the first quantitative physical laws derived from first principles. \"Give me a place to stand and I will move the Earth.\"" },
     { cat:'people-physics', start:-276, end:-194, year:-240, title:"Eratosthenes", who:"polymath (~276–194 BCE)",
       contributions:[{ year:-240, label:"Measured Earth's circumference (~2% off)" }],
       detail:"Director of the Library of Alexandria. Computed Earth's size from shadow lengths at Syene vs Alexandria." },
@@ -1186,7 +1667,7 @@
     { cat:'people-physics', start:100, end:170, year:150, title:"Claudius Ptolemy", who:"astronomer / geographer (~100–170)",
       contributions:[{ year:150, label:"Almagest — geocentric epicycles, ruled for 1400 years" }],
       detail:"Predicted planetary positions accurately. Geographia mapped the known world." },
-    { cat:'people-physics', start:965, end:1040, year:1020, title:"Ibn al-Haytham (Alhazen)", who:"polymath (~965–1040)",
+    { cat:'people-physics', start:965, end:1040, year:1020, title:"Ibn al-Haytham", who:"polymath (~965–1040)",
       contributions:[{ year:1020, label:"Book of Optics — vision is light entering the eye" }],
       detail:"Insisted on experimental verification — arguably the first explicit use of the scientific method." },
     { cat:'people-physics', tier:'top', start:1473, end:1543, year:1543, title:"Nicolaus Copernicus", who:"astronomer (1473–1543)",
@@ -1232,17 +1713,21 @@
       detail:"Inverse-square gravity hint Newton refused to credit. Bitter rivalry that lasted past Hooke's death." },
     { cat:'people-physics', tier:'top', start:1643, end:1727, year:1687, title:"Isaac Newton", who:"physicist / mathematician (1643–1727)",
       contributions:[
-        { year:1666, label:"Annus mirabilis — calculus, prism, gravity" },
-        { year:1687, label:"Principia — laws of motion + universal gravitation" },
-        { year:1704, label:"Opticks" },
+        { year:1666, label:"Annus mirabilis — gravity (apple), prism (white light = spectrum), inverse-square insight" },
+        { year:1668, label:"First reflecting telescope" },
+        { year:1687, label:"Principia — three laws of motion + universal gravitation F = GMm/r²" },
+        { year:1704, label:"Opticks — particle theory of light, colour spectrum, diffraction observations" },
       ],
-      detail:"Defined what 'physics' meant for 220 years. Alchemy in secret." },
+      detail:"Physics contributions: laws of motion, universal gravitation, optics (prism + reflecting telescope + particle theory of light). Defined what 'physics' meant for 220 years. Alchemy in secret." },
     { cat:'people-physics', start:1736, end:1806, year:1785, title:"Charles-Augustin de Coulomb", who:"physicist (1736–1806)",
       contributions:[{ year:1785, label:"Coulomb's law — F ∝ q₁q₂/r²" }],
       detail:"Same mathematical shape as Newton's gravity — first hint of EM unification." },
     { cat:'people-physics', start:1736, end:1813, year:1788, title:"Joseph-Louis Lagrange", who:"mathematician (1736–1813)",
-      contributions:[{ year:1788, label:"Mécanique Analytique — Lagrangian mechanics" }],
-      detail:"Variational principles, number theory, celestial mechanics. Survived the Terror; Napoleon made him a count." },
+      contributions:[
+        { year:1772, label:"Lagrange points — five gravitational equilibria in the three-body problem" },
+        { year:1788, label:"Mécanique Analytique — physics from a single principle (least action, no force diagrams)" },
+      ],
+      detail:"Physics contributions: Lagrangian mechanics (least action principle — the formulation modern physics still uses), Lagrange points in celestial mechanics. \"Lagrange did not draw a single diagram\" (his proud claim about the Mécanique Analytique)." },
     { cat:'people-physics', start:1743, end:1794, year:1789, title:"Antoine Lavoisier", who:"chemist (1743–1794)",
       contributions:[
         { year:1772, label:"Combustion experiments — mass conservation" },
@@ -1257,10 +1742,11 @@
       detail:"Pathologically shy — many results published posthumously by Maxwell." },
     { cat:'people-physics', start:1749, end:1827, year:1799, title:"Pierre-Simon Laplace", who:"mathematician / astronomer (1749–1827)",
       contributions:[
-        { year:1799, label:"Mécanique Céleste — solar system as clockwork" },
-        { year:1812, label:"Théorie analytique des probabilités" },
+        { year:1796, label:"Predicted 'dark stars' (proto-black-holes) from escape-velocity calculation" },
+        { year:1799, label:"Mécanique Céleste — solar system as a self-correcting clockwork (5 volumes)" },
+        { year:1814, label:"Laplace's demon — perfect knowledge ⇒ perfect prediction (deterministic universe)" },
       ],
-      detail:"Laplacian determinism. 'I had no need of that hypothesis' (when Napoleon asked about God in his system)." },
+      detail:"Physics contributions: celestial mechanics (Mécanique Céleste — proved solar system stability), early black-hole prediction, deterministic worldview. 'I had no need of that hypothesis' (when Napoleon asked about God in his system)." },
     { cat:'people-physics', start:1745, end:1827, year:1800, title:"Alessandro Volta", who:"physicist (1745–1827)",
       contributions:[{ year:1800, label:"Voltaic pile — first chemical battery" }],
       detail:"The volt is named after him. Triggered a century of electromagnetic discovery." },
@@ -1318,12 +1804,11 @@
       detail:"E = hν quantum hypothesis (1900). Started the quantum revolution as a 'desperate act'." },
     { cat:'people-physics', start:1854, end:1912, year:1905, title:"Henri Poincaré", who:"mathematician / physicist (1854–1912)",
       contributions:[
-        { year:1887, label:"Three-body problem — seed of chaos theory" },
-        { year:1895, label:"Analysis Situs — founding paper of topology" },
-        { year:1904, label:"Poincaré conjecture posed" },
-        { year:1905, label:"Sur la dynamique de l'électron — relativity foundations" },
+        { year:1887, label:"Three-body problem — chaos in celestial mechanics; orbits don't always close" },
+        { year:1904, label:"Poincaré recurrence theorem (statistical mechanics)" },
+        { year:1905, label:"Sur la dynamique de l'électron — Lorentz transformations + relativity principle, weeks before Einstein" },
       ],
-      detail:"Topology, three-body problem, foundations of special relativity. The last universalist." },
+      detail:"Physics contributions: nailed the Lorentz transformations and the relativity principle independently of Einstein (1905), discovered chaos in celestial mechanics. Argued Einstein's interpretation was preferable later in life." },
     { cat:'people-physics', tier:'top', start:1879, end:1955, year:1905, title:"Albert Einstein", who:"physicist (1879–1955)",
       contributions:[
         { year:1905, label:"Annus mirabilis — SR, photoelectric effect, Brownian motion, E=mc²" },
@@ -1335,10 +1820,10 @@
       detail:"Special + general relativity, photoelectric effect, Brownian motion, mass-energy equivalence." },
     { cat:'people-physics', start:1864, end:1909, year:1907, title:"Hermann Minkowski", who:"mathematician / physicist (1864–1909)",
       contributions:[
-        { year:1907, label:"4D spacetime formulation of special relativity" },
-        { year:1908, label:"\"Space and Time\" Cologne lecture" },
+        { year:1907, label:"Recasts SR geometrically: events as points in 4D spacetime" },
+        { year:1908, label:"\"Space and Time\" Cologne lecture — \"space by itself is doomed to fade…\"" },
       ],
-      detail:"Spacetime as a 4D geometric object. Gave special relativity its modern formulation." },
+      detail:"Physics contributions: gave SR its modern 4D geometric formulation (Einstein's former math teacher — initially called Einstein's work too physical). Died of appendicitis at 44, the year after the Cologne lecture." },
     { cat:'people-physics', tier:'top', start:1885, end:1962, year:1913, title:"Niels Bohr", who:"physicist (1885–1962)",
       contributions:[
         { year:1913, label:"Bohr atomic model — quantised electron orbits" },
@@ -1349,12 +1834,10 @@
       detail:"Bohr atomic model. Complementarity, Copenhagen interpretation. Father figure to a generation of physicists." },
     { cat:'people-physics', start:1862, end:1943, year:1915, title:"David Hilbert", who:"mathematician (1862–1943)",
       contributions:[
-        { year:1900, label:"23 problems address (Paris ICM)" },
-        { year:1909, label:"Spectral theory — basis of Hilbert spaces" },
-        { year:1915, label:"GR field equations (essentially simultaneous with Einstein)" },
-        { year:1928, label:"Hilbert programme — formalisation manifesto" },
+        { year:1915, label:"Einstein-Hilbert action — GR field equations from a variational principle (Nov 1915, days before Einstein's final form)" },
+        { year:1924, label:"Hilbert spaces become the mathematical setting for quantum mechanics" },
       ],
-      detail:"Hilbert space, the formalist programme, 23 problems. Closed in on general relativity at the same time as Einstein." },
+      detail:"Physics contributions: derived GR field equations via the Einstein-Hilbert action essentially simultaneously with Einstein (graciously credited Einstein); Hilbert spaces became the framework for QM." },
     { cat:'people-physics', start:1872, end:1934, year:1917, title:"Willem de Sitter", who:"astronomer (1872–1934)",
       contributions:[
         { year:1916, label:"Relativistic orbit predictions (de Sitter precession)" },
@@ -1364,10 +1847,9 @@
       detail:"de Sitter space, expanding-universe cosmologies. Predicted relativistic orbit effects." },
     { cat:'people-physics', start:1882, end:1935, year:1918, title:"Emmy Noether", who:"mathematician (1882–1935)",
       contributions:[
-        { year:1918, label:"Noether's theorem — symmetry ↔ conservation law" },
-        { year:1921, label:"Ring theory foundations (Idealtheorie in Ringbereichen)" },
+        { year:1918, label:"Noether's theorem — every continuous symmetry of a physical system yields a conservation law" },
       ],
-      detail:"Noether's theorem: every continuous symmetry yields a conservation law. The deepest fact in modern theoretical physics." },
+      detail:"Physics contributions: Noether's theorem — the deepest fact in modern theoretical physics. Time-translation symmetry ⇒ energy conservation, spatial-translation ⇒ momentum, rotational ⇒ angular momentum, gauge symmetry ⇒ charge conservation. Proved while she was barred from a paid position at Göttingen because she was a woman." },
     { cat:'people-physics', start:1900, end:1958, year:1925, title:"Wolfgang Pauli", who:"physicist (1900–1958)",
       contributions:[
         { year:1925, label:"Exclusion principle" },
@@ -1443,13 +1925,12 @@
       detail:"Quark model, SU(3) Eightfold Way, strangeness. Nobel 1969." },
     { cat:'people-physics', tier:'top', start:1931, end:2026, year:1965, status:'ongoing', title:"Roger Penrose", who:"physicist / mathematician (b.1931)",
       contributions:[
-        { year:1965, label:"Singularity theorem — gravitational collapse forces a singularity" },
-        { year:1967, label:"Twistor theory" },
-        { year:1974, label:"Penrose tilings — aperiodic five-fold symmetry" },
-        { year:1989, label:"The Emperor's New Mind — consciousness ↔ QM" },
-        { year:2020, label:"Nobel Prize for the singularity theorem" },
+        { year:1965, label:"Singularity theorem — gravitational collapse inevitably produces a singularity" },
+        { year:1970, label:"Hawking-Penrose singularity theorems — extended to cosmology (the universe began in a singularity)" },
+        { year:1989, label:"The Emperor's New Mind — consciousness ↔ QM (controversial physics-of-mind argument)" },
+        { year:2020, label:"Nobel Prize in Physics for the singularity theorem" },
       ],
-      detail:"Penrose tilings, singularity theorems (with Hawking), twistor theory. Nobel 2020." },
+      detail:"Penrose's physics: GR singularity theorems (proved that gravitational collapse forces a singularity), Hawking-Penrose cosmological singularity (Big Bang), Orch-OR consciousness theory, Nobel Prize 2020." },
     { cat:'people-physics', start:1923, end:2004, year:1967, title:"Bryce DeWitt", who:"physicist (1923–2004)",
       contributions:[
         { year:1957, label:"Coined 'many-worlds' (championing Everett)" },
@@ -1512,6 +1993,8 @@
     math:             'Mathematics',
     physics:          'Physics, chemistry & astronomy',
     tools:            'Tools & measurement',
+    detectors:        'Detectors (cosmic, particle, GW)',
+    paradigms:        'Paradigms, philosophy & theology',
     'people-math':    'Mathematicians',
     'people-physics': 'Physicists & astronomers',
   };
@@ -1557,7 +2040,7 @@
   // ─── shared horizontal axis state — synced across panes ───
   let pxPerYear = 2;
   let pxPerLogUnit = 800;
-  let logMode = false;
+  let logMode = true;
   const panes = [];
 
   function yearToTrackX(year){
@@ -1793,6 +2276,20 @@
       });
       detailHtml += '</div>';
     }
+    if(Array.isArray(ev.problems) && ev.problems.length){
+      detailHtml += '<div class="tl-contrib-list">';
+      ev.problems.slice().sort((a,b) => a.year - b.year).forEach(p => {
+        const fixStr = (typeof p.fixedYear === 'number')
+          ? ' <span style="color:#10b981;">● ' + formatYear(p.fixedYear) + ' — ' + (p.fixLabel || 'resolved') + '</span>'
+          : ' <span style="color:#888;">(open)</span>';
+        detailHtml +=
+          '<div class="tl-contrib-row">' +
+            '<span class="tl-contrib-year" style="color:#dc2626;">● ' + formatYear(p.year) + '</span>' +
+            '<span class="tl-contrib-label">' + p.label + fixStr + '</span>' +
+          '</div>';
+      });
+      detailHtml += '</div>';
+    }
     detail.innerHTML = detailHtml;
 
     row.appendChild(main);
@@ -1817,25 +2314,35 @@
   }
 
   function buildRows(){
-    let lastCat = null;
-    let lastHeader = null;
-    let topInSection = false;
+    // Group entries by cat, preserving original cat order
+    const byCat = new Map();
+    const catOrder = [];
     EVENTS.forEach((ev, i) => {
-      if(ev.cat !== lastCat){
-        // Finalize the previous section's header empty-state
-        if(lastHeader && !topInSection) lastHeader.classList.add('empty-in-top');
-        lastCat = ev.cat;
-        topInSection = false;
-        const h = document.createElement('div');
-        h.className = 'tl-section-header cat-' + ev.cat;
-        h.textContent = CAT_NAMES[ev.cat] || ev.cat;
-        rowsEl.appendChild(h);
-        lastHeader = h;
-      }
-      if(ev.tier === 'top') topInSection = true;
-      rowsEl.appendChild(buildRow(ev, String(i), null));
+      if(!byCat.has(ev.cat)){ byCat.set(ev.cat, []); catOrder.push(ev.cat); }
+      byCat.get(ev.cat).push([ev, i]);
     });
-    if(lastHeader && !topInSection) lastHeader.classList.add('empty-in-top');
+
+    function renderBlock(blockClass, markerText, isTopPredicate){
+      const block = document.createElement('div');
+      block.className = 'tl-tier-block ' + blockClass;
+      const marker = document.createElement('div');
+      marker.className = 'tl-tier-marker';
+      marker.textContent = markerText;
+      block.appendChild(marker);
+      catOrder.forEach(cat => {
+        const entries = byCat.get(cat).filter(([ev]) => isTopPredicate(ev));
+        if(entries.length === 0) return;
+        const h = document.createElement('div');
+        h.className = 'tl-section-header cat-' + cat;
+        h.textContent = CAT_NAMES[cat] || cat;
+        block.appendChild(h);
+        entries.forEach(([ev, i]) => block.appendChild(buildRow(ev, String(i), null)));
+      });
+      rowsEl.appendChild(block);
+    }
+
+    renderBlock('tl-tier-top',   '⭐ TOP — essentials',         ev => ev.tier === 'top');
+    renderBlock('tl-tier-other', '— Other',                     ev => ev.tier !== 'top');
   }
 
   function clearGridlines(){
@@ -2079,7 +2586,12 @@
     // ─── boot this pane ───
     buildRows();
     relayout();
-    scroll.scrollLeft = (1500 - AXIS_MIN) * pxPerYear;
+    if(logMode){
+      // Default: full view in log mode (antiquity → 2040)
+      scrollToRange(-2000, 2040);
+    } else {
+      scroll.scrollLeft = (1500 - AXIS_MIN) * pxPerYear;
+    }
     layoutAxis();
     updateInfo();
   } // end makeTimeline
@@ -2087,9 +2599,11 @@
   makeTimeline('A');
   makeTimeline('B');
 
-  // TOP-only toggle — hides every row not marked tier:'top' (and their headers)
+  // Defaults: show both TOP and OTHER (TOP is rendered first anyway, OTHER below); log mode on; full-view scroll
+  broadcastLogButtonState();
   const topBtn = document.getElementById('tlTopOnly');
   if(topBtn){
+    topBtn.textContent = '⭐ TOP only';
     topBtn.addEventListener('click', () => {
       const on = document.body.classList.toggle('top-only');
       topBtn.classList.toggle('on', on);
