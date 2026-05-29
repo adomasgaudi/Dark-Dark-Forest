@@ -205,6 +205,27 @@ The two ideas from language-learning pedagogy that transfer cleanly:
 
 This way, when the SR engine ships, the content is already structured for it. No retroactive scrape needed.
 
+### 12. Synonyms — every term seen from many angles
+
+Each technical term should travel with a small set of synonyms. The canonical word stays in the text, but a parallel "synonym pass" lets the student see the same idea phrased two or three ways. The versions are not redundant. Each synonym highlights a different facet of the same concept.
+
+**Examples.**
+
+- *Force* → *push*, *interaction*, *agency*, *compulsion*, *driver*. The math is identical. The intuition each word triggers is different. *Force* sounds violent. *Interaction* sounds gentle and symmetric. *Compulsion* hints at constraint.
+- *Energy* → *capacity for change*, *bookkeeping number*, *doing-ability*. The first makes its conservation feel natural. The second makes its abstraction explicit.
+- *Field* → *carpet of values*, *background everywhere-quantity*, *plenum*. *Carpet* gets the spatial extension right. *Plenum* hooks back to the term's 17th-century philosophical roots.
+- *Wave* → *ripple*, *oscillation*, *periodic disturbance*. *Ripple* is concrete water imagery. *Oscillation* is abstract pure-math.
+- *Spin* → *intrinsic angular degree of freedom*, *built-in two-state property*. The canonical case of a misleading word. The synonyms make clear that nothing is actually rotating.
+- *Particle* → *quantum*, *excitation*, *lump*, *localised disturbance*. *Quantum* and *excitation* both fight the marble-in-empty-space picture the word *particle* invites.
+
+**The mechanism.** Words come with embedded metaphors. The first time a student hears *force*, the muscular meaning bleeds in. The first time they hear *spin*, they picture a top. These metaphors are useful for getting started and become traps later. The synonym pass keeps the metaphor present (so the term remains intuitive) and provisional (so the student sees through the word to the underlying concept).
+
+**Style.** Synonyms belong alongside the canonical text, not buried in footnotes. Inline parentheses work — *(also called X, or in everyday terms, Y)*. For longer pieces a parallel margin column, a hover-reveal, or a small "alt-term" pill near the heading makes the swap effortless without breaking the reading flow.
+
+**Edge case — when the technical term is honest, name it.** *Acceleration* really does mean the second derivative of position. Inventing a folksy synonym ("speed-changing-ness") buys nothing. The synonym pass is for words that are *misleading* (spin, force, particle, field) or *abstract* (energy, entropy, action). Where the literal word already paints the right picture, leave it alone.
+
+**Pairs with #6 (don't trust your knowledge)** and **#4 (math integrated)**. A student who can name three synonyms for *energy* is harder to fool by anyone (themselves or others) using the word loosely. And the synonyms make it visible *which* mathematical move the word is shorthand for.
+
 ---
 
 ## Segway hooks
