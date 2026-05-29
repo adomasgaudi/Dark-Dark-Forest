@@ -27,10 +27,12 @@
   .tb-btn { font-family:inherit; font-size:13px; padding:6px 14px; background:#fff; border:1px solid #ddd; border-radius:6px; cursor:pointer; color:#333; transition:border-color .12s, background .12s; }
   .tb-btn:hover { border-color:#111; background:#fafafa; }
   .tb-btn:active { background:#f0f0f0; }
+  .tb-btn.on { background:#1e40af; color:#fff; border-color:#1e40af; }
+  .tb-btn.on:hover { background:#1d4ed8; }
   .tb-info { font-family:'SF Mono',Consolas,monospace; font-size:12px; color:#666; margin-left:8px; }
   .tb-hint { font-size:12px; color:#888; margin-left:auto; }
 
-  :root { --lbl-w: 220px; --ax-h: 40px; }
+  :root { --ax-h: 40px; }
 
   .tl-frame { position:relative; border:1px solid #e8e8e8; border-radius:6px; background:#fff; overflow:hidden; }
   .tl-scroll {
@@ -44,18 +46,19 @@
   .tl-scroll.grabbing { cursor:grabbing; }
   .tl-inner { position:relative; min-width:100%; }
 
-  .tl-axis-row { position:sticky; top:0; z-index:10; display:flex; height:var(--ax-h); background:#fff; border-bottom:1px solid #eee; }
-  .tl-label-spacer { position:sticky; left:0; z-index:11; width:var(--lbl-w); flex-shrink:0; background:#fff; border-right:1px solid #eee; }
-  .tl-axis { flex:1; position:relative; }
+  .tl-axis-row { position:sticky; top:0; z-index:10; height:var(--ax-h); background:#fff; border-bottom:1px solid #eee; }
+  .tl-axis { position:relative; height:100%; }
   .tl-tick { position:absolute; top:8px; transform:translateX(-50%); font-family:'SF Mono',Consolas,monospace; font-size:11px; color:#888; pointer-events:none; white-space:nowrap; }
   .tl-tick::after { content:''; position:absolute; left:50%; top:18px; width:1px; height:6px; background:#ccc; }
   .tl-gridline { position:absolute; top:var(--ax-h); bottom:0; width:1px; background:#f6f6f0; pointer-events:none; z-index:0; }
 
   .tl-section-header {
-    position:sticky; left:0; z-index:5;
-    padding:14px 16px 8px;
-    font-size:10.5px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
-    background:#fff; border-top:1px solid #f0f0f0; width:var(--lbl-w);
+    position:sticky; left:0; z-index:6;
+    display:inline-block; width:max-content;
+    padding:8px 14px 4px 8px;
+    margin-top:6px;
+    font-size:10px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+    background:#fff;
   }
   .tl-section-header.cat-ancient     { color:#475569; }
   .tl-section-header.cat-math        { color:#7c3aed; }
@@ -66,22 +69,32 @@
   .tl-section-header.cat-falsified   { color:#52525b; }
 
   .tl-row { position:relative; border-bottom:1px solid #f5f5f5; }
-  .tl-row-main { display:flex; min-height:38px; cursor:pointer; transition:background .12s; }
-  .tl-row-main:hover { background:rgba(0,0,0,.02); }
-  .tl-row-label {
-    position:sticky; left:0; z-index:3;
-    width:var(--lbl-w); flex-shrink:0;
-    padding:0 14px;
-    background:#fff; border-right:1px solid #eee;
-    font-size:12.5px; color:#222;
-    display:flex; align-items:center; text-align:right; justify-content:flex-end;
-    line-height:1.3;
-  }
-  .tl-row-track { flex:1; position:relative; min-height:38px; }
+  .tl-row-main { display:block; min-height:10px; cursor:pointer; transition:background .12s; }
+  .tl-row-main:hover { background:rgba(0,0,0,.03); }
+  .tl-row-track { position:relative; min-height:10px; width:100%; }
 
-  /* Bars (stretch with pxPerYear) */
-  .tl-bar { position:absolute; top:50%; height:4px; transform:translateY(-50%); border-radius:2px; z-index:1; }
-  .tl-bar.cat-ancient     { background:#cbd5e1; }
+  /* Sticky-left overlay: chevron always visible, title appears on hover */
+  .tl-row-overlay {
+    position:sticky; left:4px;
+    display:inline-flex; align-items:center; gap:4px;
+    z-index:5; pointer-events:none;
+    white-space:nowrap;
+    width:max-content;
+  }
+  .tl-row-title {
+    font-size:11px; color:#222;
+    background:rgba(255,255,255,0.96);
+    padding:1px 7px; border-radius:3px;
+    box-shadow:0 1px 3px rgba(0,0,0,.1);
+    border:1px solid #eee;
+    opacity:0; transition:opacity .12s;
+    max-width:280px; overflow:hidden; text-overflow:ellipsis;
+  }
+  .tl-row-main:hover .tl-row-title { opacity:1; }
+  .tl-row.expanded > .tl-row-main .tl-row-title { opacity:1; }
+
+  /* Bars */
+  .tl-bar { position:absolute; top:50%; height:2px; transform:translateY(-50%); border-radius:1px; z-index:1; }
   .tl-bar.cat-math        { background:#c4b5fd; }
   .tl-bar.cat-physics     { background:#93c5fd; }
   .tl-bar.cat-chemistry   { background:#fcd34d; }
@@ -89,10 +102,51 @@
   .tl-bar.cat-speculative { background:#fca5a5; }
   .tl-bar.cat-falsified   { background:#d4d4d8; }
 
+  /* Stage colors — override cat color when a bar belongs to a staged event */
+  .tl-bar.stage-speculative { background:#94a3b8; }
+  .tl-bar.stage-progress    { background:#eab308; }
+  .tl-bar.stage-testable    { background:#16a34a; }
+  .tl-bar.stage-figured     { background:#2563eb; }
+
+  /* ✕ first-test / first-contest marker (red) */
+  .tl-firsttest {
+    position:absolute; top:50%;
+    width:9px; height:9px;
+    transform:translate(-50%,-50%);
+    z-index:3;
+  }
+  .tl-firsttest::before,
+  .tl-firsttest::after {
+    content:''; position:absolute;
+    top:50%; left:50%;
+    width:9px; height:1.5px;
+    background:#dc2626;
+    transform-origin:center;
+  }
+  .tl-firsttest::before { transform:translate(-50%,-50%) rotate(45deg); }
+  .tl-firsttest::after  { transform:translate(-50%,-50%) rotate(-45deg); }
+
+  /* Legend */
+  .tl-legend {
+    display:flex; flex-wrap:wrap; gap:14px;
+    margin:12px 0 8px;
+    font-size:11.5px; color:#666;
+    align-items:center;
+  }
+  .tl-legend .swatch {
+    display:inline-block; width:10px; height:10px;
+    border-radius:50%; margin-right:5px;
+    vertical-align:middle;
+  }
+  .tl-legend .x {
+    display:inline-block; color:#dc2626; font-weight:700;
+    margin-right:5px;
+  }
+
   /* Markers */
   .tl-marker {
     position:absolute; top:50%;
-    width:11px; height:11px; border-radius:50%;
+    width:7px; height:7px; border-radius:50%;
     transform:translate(-50%,-50%);
     background:#fff; box-sizing:border-box; z-index:2;
   }
@@ -120,13 +174,13 @@
   .tl-marker-end.killed {
     background:transparent;
     border:none;
-    width:14px; height:14px;
+    width:9px; height:9px;
   }
   .tl-marker-end.killed::before,
   .tl-marker-end.killed::after {
     content:''; position:absolute;
     top:50%; left:50%;
-    width:13px; height:2px;
+    width:9px; height:1.5px;
     background:#52525b;
     transform-origin:center;
   }
@@ -169,13 +223,40 @@
     margin-bottom:8px; letter-spacing:.02em;
   }
   .tl-row.expanded { background:rgba(0,0,0,.012); }
-  .tl-row.expanded .tl-row-detail { display:block; }
-  .tl-row.expanded .tl-row-main { background:rgba(0,0,0,.02); }
+  .tl-row.expanded > .tl-row-detail { display:block; }
+  .tl-row.expanded > .tl-row-main { background:rgba(0,0,0,.02); }
+
+  /* Nested children — disclosure chevron on parent, indented child rows */
+  .tl-chev {
+    display:inline-block; margin-right:6px;
+    font-size:9px; color:#888;
+    transition:transform .12s ease;
+    transform-origin:center;
+  }
+  .tl-row.expanded > .tl-row-main .tl-chev { transform:rotate(90deg); color:#333; }
+
+  .tl-children { display:none; background:#fafaf7; border-top:1px solid #f0f0f0; }
+  .tl-row.expanded > .tl-children { display:block; }
+
+  .tl-row.nested .tl-row-main { min-height:8px; }
+  .tl-row.nested .tl-row-label {
+    background:#fafaf7;
+    font-size:10.5px;
+  }
+  .tl-row.nested .tl-row-main:hover .tl-row-label { color:#555; }
+  .tl-row.nested .tl-row-label::before {
+    content:'·';
+    color:#bbb;
+    margin-right:6px;
+    font-weight:700;
+  }
+  .tl-row.nested .tl-row-track { min-height:8px; }
+  .tl-row.nested .tl-marker { width:5px; height:5px; }
+  .tl-row.nested .tl-bar { height:1.5px; }
 
   footer { margin-top:80px; padding-top:24px; border-top:1px solid #eee; font-size:12px; color:#aaa; }
   @media (max-width:640px){
     h1{font-size:24px;}
-    :root { --lbl-w:160px; }
     .tl-scroll{ height:540px; }
     .tb-hint{display:none;}
   }
@@ -196,16 +277,24 @@
 <h1>The whole arc, drawn in time</h1>
 <div class="grades">~2000 BCE → 2025 CE · all sciences · stretch, pan, hover, click</div>
 
-<p class="lede">Every event from the previous three tables (<a href="ancient-sciences.html">ancient</a>, <a href="chemistry-table.html">1600–1900</a>, <a href="physics-table.html">modern</a>) folded onto one interactive Gantt. <kbd>scroll</kbd> stretches the time axis at the cursor. <kbd>drag</kbd> pans. <kbd>hover</kbd> a row to see its years. <kbd>click</kbd> to expand the full detail. The axis extends from 3000 BCE to 3100 CE, so you can pan off either end into empty space.</p>
+<p class="lede">Every foundational event from the previous three tables, on one interactive Gantt. <kbd>scroll</kbd> moves down. <kbd>shift+scroll</kbd> stretches the time axis. <kbd>drag</kbd> pans. <kbd>hover</kbd> for years. <kbd>click</kbd> a row to expand the full detail.</p>
+<p class="lede">The <strong>Log</strong> button switches the time axis to log₁₀(2050 − year). The asymptote at <strong>2050</strong> is a Kurzweil-style estimate of when the rate of foundational progress would go to infinity. On the log axis, ancient eras compress together and recent decades spread out, because each newer paradigm shift takes less calendar time than the one before. Toggle the button and watch ~3500 years of progress reshape itself.</p>
 
 <div class="toolbar">
-  <button class="tb-btn" id="tlIn">＋ Stretch</button>
-  <button class="tb-btn" id="tlOut">－ Compress</button>
-  <button class="tb-btn" id="tlReset">↺ Reset</button>
-  <button class="tb-btn" id="tlExpandAll">Expand all</button>
-  <button class="tb-btn" id="tlCollapseAll">Collapse all</button>
+  <button class="tb-btn" id="tlGoAncient">⇤ Antiquity → 1600</button>
+  <button class="tb-btn" id="tlGoFound">1600 → 1900</button>
+  <button class="tb-btn" id="tlGoModern">1900 → 2050 ⇥</button>
+  <button class="tb-btn" id="tlLog">📈 Log (→ 2050)</button>
   <span class="tb-info" id="tlInfo">…</span>
-  <span class="tb-hint">scroll to stretch · drag to pan · hover for years</span>
+  <span class="tb-hint">click a row to expand · scroll = down · shift+scroll = stretch · drag = pan</span>
+</div>
+
+<div class="tl-legend">
+  <span><span class="swatch" style="background:#94a3b8;"></span>Speculative / initial</span>
+  <span><span class="swatch" style="background:#eab308;"></span>Significant progress</span>
+  <span><span class="swatch" style="background:#16a34a;"></span>Testable / experimented</span>
+  <span><span class="swatch" style="background:#2563eb;"></span>Close to figured out</span>
+  <span><span class="x">✕</span>first test / first theoretical contest</span>
 </div>
 
 
@@ -213,7 +302,6 @@
   <div class="tl-scroll" id="tlScroll">
     <div class="tl-inner" id="tlInner">
       <div class="tl-axis-row">
-        <div class="tl-label-spacer"></div>
         <div class="tl-axis" id="tlAxis"></div>
       </div>
       <div id="tlRows"></div>
@@ -229,37 +317,27 @@
 (function(){
   // ─── data ───
   const EVENTS = [
-    // ============ ANTIQUITY ============
-    { cat:'ancient', year:-1800, title:"Babylonian astronomy", who:"Babylonian scribes",
-      detail:"Cuneiform sky catalogues from Hammurabi's Babylon. Planetary positions recorded with enough precision to predict eclipses." },
-    { cat:'ancient', year:-1600, title:"Egyptian medicine papyri", who:"Egyptian physicians",
-      detail:"The Edwin Smith papyrus (~1600 BCE) describes 48 surgical cases with anatomical detail and rational treatments. No magic, just observation." },
+    // ============ ANTIQUITY (foundational only) ============
     { cat:'ancient', year:-450, title:"Atomism (Democritus)", who:"Democritus, Leucippus",
-      detail:"Matter is made of indivisible atoms moving in empty space. Sidelined by Aristotle for two thousand years, revived by Dalton in 1808." },
-    { cat:'ancient', year:-400, title:"Hippocratic medicine", who:"Hippocrates and school",
-      detail:"Disease is natural, not divine. The earliest deliberate separation of medicine from religion." },
+      detail:"Matter is made of indivisible atoms moving in empty space. The foundational claim about what stuff IS. Sidelined by Aristotle for two thousand years, revived by Dalton in 1808." },
     { cat:'ancient', year:-330, title:"Aristotle's natural philosophy", who:"Aristotle",
-      detail:"Biology, physics, cosmology, ethics, logic — the most influential single body of natural philosophy in history. Wrong about heavy things falling faster, right about almost everything else for two millennia." },
+      detail:"The foundational framework — four elements, natural place, teleology. Wrong about almost everything physical, but defined the questions for two millennia. Every later foundation is in conversation with Aristotle." },
     { cat:'ancient', year:-280, title:"Aristarchus' heliocentric proposal", who:"Aristarchus of Samos",
-      detail:"Proposed the Earth orbits the Sun, 1800 years before Copernicus. Ignored. Almost all his writings lost." },
-    { cat:'ancient', year:-250, title:"Archimedes — lever, buoyancy, π", who:"Archimedes of Syracuse",
-      detail:"Mechanical advantage, displacement, an algorithm for π, near-calculus integration arguments. Killed by a Roman soldier in 212 BCE while doing geometry in the sand." },
-    { cat:'ancient', year:-240, title:"Eratosthenes' earth circumference", who:"Eratosthenes of Cyrene",
-      detail:"Measured the Earth's circumference to within 2 % using shadows at noon in two cities. The first global-scale physical measurement." },
+      detail:"Proposed the Earth orbits the Sun, 1800 years before Copernicus. The foundational suggestion that Earth is not special. Ignored. Almost all his writings lost." },
+    { cat:'ancient', year:-250, title:"Archimedes — lever and buoyancy", who:"Archimedes of Syracuse",
+      detail:"The first quantitative laws of mechanics: force × distance is conserved, buoyant force equals displaced fluid weight. Foundational physics derived by pure reasoning." },
     { cat:'ancient', year:150, title:"Ptolemy's Almagest", who:"Claudius Ptolemy",
-      detail:"Geocentric astronomy with epicycles. Predicted planetary positions accurately enough to remain the working model for 1400 years." },
-    { cat:'ancient', year:500, title:"Indian decimal system & zero", who:"Aryabhata, Brahmagupta",
-      detail:"Place-value decimal notation with an explicit zero as a number. Reached Europe via Al-Khwarizmi 300 years later. The foundation of all subsequent computation." },
-    { cat:'ancient', year:820, title:"Algebra (al-Khwarizmi)", who:"Muhammad ibn Musa al-Khwarizmi",
-      detail:"His al-jabr gave us the word algebra (and via his Latinised name, the word algorithm). Systematic solutions to linear and quadratic equations." },
-    { cat:'ancient', year:1020, title:"Optics (Alhazen)", who:"Ibn al-Haytham (Alhazen)",
-      detail:"Light travels in straight lines, vision is light entering the eye (not rays leaving it). Book of Optics: arguably the first work in modern scientific method." },
+      detail:"The foundational cosmological framework — Earth-centred with epicycles. Predicted planetary positions accurately enough to remain the working model for 1400 years before Copernicus." },
+    { cat:'ancient', year:500, title:"Indian decimal system &amp; zero", who:"Aryabhata, Brahmagupta",
+      detail:"Place-value decimal notation with an explicit zero as a number. The foundational representational shift — zero as a thing, not just an absence. The foundation of all subsequent computation." },
+    { cat:'ancient', year:820, title:"Algebra (al-Khwarizmi)", who:"al-Khwarizmi",
+      detail:"Symbolic manipulation of unknowns. The foundational move from arithmetic-on-numbers to arithmetic-on-symbols. Geometry and algebra become separable and recombinable." },
+    { cat:'ancient', year:1020, title:"Optics (Alhazen)", who:"Ibn al-Haytham",
+      detail:"Light travels in straight lines, vision is light entering the eye. Foundational physics of light, and arguably the first explicit use of the scientific method." },
     { cat:'ancient', year:1543, title:"Copernicus — heliocentric", who:"Nicolaus Copernicus",
-      detail:"De revolutionibus orbium coelestium published the year he died. The Sun (roughly) at the centre of the planetary system. Revived Aristarchus and started the chain that ended in Newton." },
-    { cat:'ancient', year:1543, title:"Vesalius — human anatomy", who:"Andreas Vesalius",
-      detail:"De humani corporis fabrica, with extraordinary woodcuts. Corrected Galen's animal-derived anatomy and made the body a thing to be observed, not reasoned about from humours." },
+      detail:"De revolutionibus published the year he died. Foundational shift in cosmology — Earth is a planet. Revived Aristarchus and started the chain that ended in Newton." },
     { cat:'ancient', year:1600, title:"Gilbert — De Magnete", who:"William Gilbert",
-      detail:"Earth itself is a giant magnet. First systematic experimental study of magnetism. Foundational for everything from compasses to Maxwell." },
+      detail:"Earth itself is a giant magnet. Foundational study of magnetism as a phenomenon of matter (not the heavens). Necessary precursor to Faraday and Maxwell." },
 
     // ============ MATHEMATICS ============
     { cat:'math', year:-500, title:"Pythagorean theorem (formal)", who:"Pythagoras (attributed)",
@@ -326,6 +404,24 @@
       detail:"Relativistic quantum mechanics for the electron. Predicted antimatter as a mathematical inevitability. Anderson found the positron four years later." },
     { cat:'physics', year:1932, title:"Neutron + positron", who:"Chadwick, Anderson",
       detail:"Neutron (Chadwick, Cambridge): the second nucleon. Positron (Anderson, cosmic-ray cloud chamber): Dirac's antimatter confirmed." },
+    { cat:'physics', start:1936, end:1964, year:1964, title:"Particle zoo (cosmic-ray era)", who:"various",
+      detail:"Before accelerators, exotic particles came from above. Cloud chambers on mountaintops and in balloons turned up a menagerie of unstable particles between the muon (1936) and the Omega-minus (1964). Expand to see the individual discoveries.",
+      children:[
+        { year:1936, title:"Muon (μ)", who:"Anderson, Neddermeyer",
+          detail:"Cosmic-ray particle ~200× the electron mass. Initially mistaken for Yukawa's predicted pion. \"Who ordered that?\" — Rabi." },
+        { year:1947, title:"Pion (π)", who:"Powell, Lattes, Occhialini",
+          detail:"Photographic emulsions on the Pic du Midi caught the actual Yukawa particle, distinct from the muon. Nobel for Powell, 1950." },
+        { year:1947, title:"Kaon (K)", who:"Rochester, Butler",
+          detail:"Manchester cloud-chamber V-tracks — a neutral particle decaying into two charged daughters. The first \"strange\" particle." },
+        { year:1950, title:"Lambda (Λ)", who:"Melbourne, Caltech",
+          detail:"Neutral baryon decaying into proton + pion. Long-lived enough to leave a visible gap in cloud chambers. Strangeness +1." },
+        { year:1952, title:"Xi (Ξ)", who:"Manchester group",
+          detail:"Doubly-strange baryon. Cascade decays photographed in cosmic-ray plates exposed in Bolivia." },
+        { year:1953, title:"Sigma (Σ)", who:"Bonetti et al.",
+          detail:"Charged strange baryon. Filled a predicted slot in the early SU(3) classification." },
+        { year:1964, title:"Omega-minus (Ω⁻)", who:"BNL bubble chamber",
+          detail:"The triply-strange baryon predicted by Gell-Mann's SU(3) Eightfold Way. Found exactly where predicted — accelerator era now in full swing." },
+      ] },
     { cat:'physics', year:1964, title:"Bell's theorem", who:"John Bell",
       detail:"Any local hidden-variable theory makes predictions that quantum mechanics violates. Aspect's 1972 experiment killed local realism. Spooky action at a distance is real." },
     { cat:'physics', year:1965, title:"Cosmic microwave background", who:"Penzias, Wilson",
@@ -362,14 +458,6 @@
       detail:"63 elements arranged by atomic weight reveal periodic chemical properties. Mendeleev left gaps for gallium, scandium, germanium — all found within 17 years with the predicted properties." },
     { cat:'chemistry', year:1894, title:"Argon (inert gases)", who:"Rayleigh, Ramsay",
       detail:"A new column of the periodic table no one had anticipated — the noble gases. The atmosphere contains 1 % argon and nobody had noticed." },
-    { cat:'chemistry', year:1928, title:"Penicillin", who:"Alexander Fleming",
-      detail:"Fleming noticed a mould had killed bacteria on a forgotten Petri dish. Florey and Chain turned it into a drug by 1941. Mass deployment in WWII. The antibiotic era." },
-    { cat:'chemistry', year:1953, title:"DNA double helix", who:"Watson, Crick (Franklin)",
-      detail:"From Rosalind Franklin's X-ray diffraction images (Photo 51) and Chargaff's base-pairing ratios. The molecular basis of heredity." },
-    { cat:'chemistry', year:1983, title:"PCR", who:"Kary Mullis",
-      detail:"Polymerase chain reaction. Amplify a tiny DNA sample by orders of magnitude in hours. Made forensic genetics and molecular biology practical." },
-    { cat:'chemistry', year:2020, title:"mRNA vaccines", who:"BioNTech, Moderna",
-      detail:"Decades of mRNA technology development paid off in months — COVID-19 vaccines from sequence to deployment in under a year. A new vaccine platform." },
 
     // ============ BIOLOGY ============
     { cat:'biology', year:1665, title:"Hooke sees cells", who:"Robert Hooke",
@@ -455,6 +543,23 @@
   const LBL_W = 220;
   const AX_H  = 40;
 
+  // Log mode — axis becomes log10(SINGULARITY - year).
+  // Idea: scientific progress accelerates; on a log scale where T_s is the
+  // asymptote, foundational events become roughly evenly spaced. The chosen
+  // T_s is the date the rate of progress goes to infinity. 2050 ≈ Kurzweil.
+  let logMode = false;
+  const SINGULARITY = 2050;
+  let pxPerLogUnit = 800;
+  const LOG_PX_MIN = 80;
+  const LOG_PX_MAX = 4000;
+  // LOG_REF: log distance from AXIS_MIN to SINGULARITY — defines our x=0 anchor.
+  const LOG_REF = Math.log10(SINGULARITY - AXIS_MIN);
+  // Tick years chosen by hand to look reasonable on the log axis.
+  const LOG_TICK_YEARS = [
+    -2500, -2000, -1500, -1000, -500, 0, 500, 1000, 1300, 1500, 1700, 1800,
+    1850, 1900, 1925, 1950, 1970, 1990, 2000, 2010, 2020, 2030, 2040, 2045, 2048
+  ];
+
   const scroll = document.getElementById('tlScroll');
   const inner  = document.getElementById('tlInner');
   const axis   = document.getElementById('tlAxis');
@@ -464,10 +569,110 @@
   function formatYear(y){
     if(y < 0) return Math.abs(y) + ' BCE';
     if(y === 0) return '0';
-    return String(y);
+    return String(Math.round(y));
   }
-  function yearToTrackX(year){ return (year - AXIS_MIN) * pxPerYear; }
+  function yearToTrackX(year){
+    if(logMode){
+      if(year >= SINGULARITY) return 1e7; // past the asymptote → off-chart
+      const dist = SINGULARITY - year;
+      return (LOG_REF - Math.log10(dist)) * pxPerLogUnit;
+    }
+    return (year - AXIS_MIN) * pxPerYear;
+  }
   function yearToInnerX(year){ return LBL_W + yearToTrackX(year); }
+  function xToYear(xInner){
+    const trackX = xInner - LBL_W;
+    if(logMode){
+      const logDist = LOG_REF - trackX / pxPerLogUnit;
+      const dist = Math.pow(10, logDist);
+      return SINGULARITY - dist;
+    }
+    return AXIS_MIN + trackX / pxPerYear;
+  }
+
+  function buildRow(ev, idx, parentCat){
+    const cat = ev.cat || parentCat;
+    const isChild = !!parentCat;
+    const hasKids = Array.isArray(ev.children) && ev.children.length > 0;
+
+    const row = document.createElement('div');
+    let rowCls = 'tl-row';
+    if(isChild)  rowCls += ' nested';
+    if(hasKids)  rowCls += ' has-children';
+    row.className = rowCls;
+    row.dataset.idx = idx;
+
+    const main = document.createElement('div');
+    main.className = 'tl-row-main';
+
+    const label = document.createElement('div');
+    label.className = 'tl-row-label';
+    if(hasKids){
+      const chev = document.createElement('span');
+      chev.className = 'tl-chev';
+      chev.textContent = '▸';
+      label.appendChild(chev);
+    }
+    label.appendChild(document.createTextNode(ev.title));
+
+    const track = document.createElement('div');
+    track.className = 'tl-row-track';
+
+    const hasRange = typeof ev.start === 'number' && typeof ev.end === 'number' && ev.end > ev.start;
+    if(hasRange){
+      const bar = document.createElement('div');
+      bar.className = 'tl-bar cat-' + cat;
+      bar.dataset.start = ev.start;
+      bar.dataset.end = ev.end;
+      track.appendChild(bar);
+
+      const ms = document.createElement('div');
+      ms.className = 'tl-marker tl-marker-start cat-' + cat;
+      ms.dataset.year = ev.start;
+      track.appendChild(ms);
+    }
+    const me = document.createElement('div');
+    let endCls = 'tl-marker tl-marker-end cat-' + cat;
+    if(ev.status === 'killed')   endCls += ' killed';
+    if(ev.status === 'ongoing')  endCls += ' ongoing';
+    me.className = endCls;
+    me.dataset.year = ev.year;
+    track.appendChild(me);
+
+    const yr = document.createElement('div');
+    yr.className = 'tl-row-year';
+    yr.dataset.year = ev.year;
+    yr.textContent = hasRange ? (formatYear(ev.start) + ' → ' + formatYear(ev.end)) : formatYear(ev.year);
+    track.appendChild(yr);
+
+    main.appendChild(label);
+    main.appendChild(track);
+
+    const detail = document.createElement('div');
+    detail.className = 'tl-row-detail';
+    const dateStr = hasRange ? (formatYear(ev.start) + ' → ' + formatYear(ev.end)) : formatYear(ev.year);
+    detail.innerHTML = '<div class="tl-detail-meta">' + dateStr + ' · ' + ev.who + '</div>' + ev.detail;
+
+    row.appendChild(main);
+    row.appendChild(detail);
+
+    if(hasKids){
+      const kids = document.createElement('div');
+      kids.className = 'tl-children';
+      ev.children.forEach((c, j) => {
+        kids.appendChild(buildRow(c, idx + '.' + j, cat));
+      });
+      row.appendChild(kids);
+    }
+
+    main.addEventListener('click', (e) => {
+      if(suppressClick){ return; }
+      e.stopPropagation();
+      row.classList.toggle('expanded');
+    });
+
+    return row;
+  }
 
   function buildRows(){
     let lastCat = null;
@@ -479,75 +684,44 @@
         h.textContent = CAT_NAMES[ev.cat] || ev.cat;
         rowsEl.appendChild(h);
       }
-
-      const row = document.createElement('div');
-      row.className = 'tl-row';
-      row.dataset.idx = i;
-
-      const main = document.createElement('div');
-      main.className = 'tl-row-main';
-
-      const label = document.createElement('div');
-      label.className = 'tl-row-label';
-      label.textContent = ev.title;
-
-      const track = document.createElement('div');
-      track.className = 'tl-row-track';
-
-      const hasRange = typeof ev.start === 'number' && typeof ev.end === 'number' && ev.end > ev.start;
-      if(hasRange){
-        const bar = document.createElement('div');
-        bar.className = 'tl-bar cat-' + ev.cat;
-        bar.dataset.start = ev.start;
-        bar.dataset.end = ev.end;
-        track.appendChild(bar);
-
-        const ms = document.createElement('div');
-        ms.className = 'tl-marker tl-marker-start cat-' + ev.cat;
-        ms.dataset.year = ev.start;
-        track.appendChild(ms);
-      }
-      const me = document.createElement('div');
-      let endCls = 'tl-marker tl-marker-end cat-' + ev.cat;
-      if(ev.status === 'killed')   endCls += ' killed';
-      if(ev.status === 'ongoing')  endCls += ' ongoing';
-      me.className = endCls;
-      me.dataset.year = ev.year;
-      track.appendChild(me);
-
-      const yr = document.createElement('div');
-      yr.className = 'tl-row-year';
-      yr.dataset.year = ev.year;
-      yr.textContent = hasRange ? (formatYear(ev.start) + ' → ' + formatYear(ev.end)) : formatYear(ev.year);
-      track.appendChild(yr);
-
-      main.appendChild(label);
-      main.appendChild(track);
-
-      const detail = document.createElement('div');
-      detail.className = 'tl-row-detail';
-      const dateStr = hasRange ? (formatYear(ev.start) + ' → ' + formatYear(ev.end)) : formatYear(ev.year);
-      detail.innerHTML = '<div class="tl-detail-meta">' + dateStr + ' · ' + ev.who + '</div>' + ev.detail;
-
-      row.appendChild(main);
-      row.appendChild(detail);
-
-      main.addEventListener('click', () => {
-        if(suppressClick){ return; }
-        row.classList.toggle('expanded');
-      });
-
-      rowsEl.appendChild(row);
+      rowsEl.appendChild(buildRow(ev, String(i), null));
     });
   }
 
   function clearGridlines(){
     document.querySelectorAll('.tl-gridline').forEach(g => g.remove());
   }
+  function addTick(y){
+    const tick = document.createElement('div');
+    tick.className = 'tl-tick';
+    tick.style.left = yearToTrackX(y) + 'px';
+    tick.textContent = formatYear(y);
+    axis.appendChild(tick);
+    const line = document.createElement('div');
+    line.className = 'tl-gridline';
+    line.style.left = yearToInnerX(y) + 'px';
+    inner.appendChild(line);
+  }
+
   function layoutAxis(){
     axis.innerHTML = '';
     clearGridlines();
 
+    const visLeft  = scroll.scrollLeft;
+    const visRight = visLeft + scroll.clientWidth;
+    const buf = 600;
+
+    if(logMode){
+      // Use a fixed tick set; show only those whose x falls in the buffered window.
+      LOG_TICK_YEARS.forEach(y => {
+        const x = yearToInnerX(y);
+        if(x < visLeft - buf || x > visRight + buf) return;
+        addTick(y);
+      });
+      return;
+    }
+
+    // Linear mode — adaptive tick interval.
     let step;
     if(pxPerYear >= 25)        step = 5;
     else if(pxPerYear >= 10)   step = 10;
@@ -557,26 +731,10 @@
     else if(pxPerYear >= 0.3)  step = 250;
     else                       step = 500;
 
-    const visLeft  = scroll.scrollLeft;
-    const visRight = visLeft + scroll.clientWidth;
-    const buf = 600;
-    const xToYear = (xInner) => AXIS_MIN + (xInner - LBL_W) / pxPerYear;
     const yStart = Math.max(AXIS_MIN, xToYear(visLeft  - buf));
     const yEnd   = Math.min(AXIS_MAX, xToYear(visRight + buf));
-
     const first = Math.ceil(yStart / step) * step;
-    for(let y = first; y <= yEnd; y += step){
-      const tick = document.createElement('div');
-      tick.className = 'tl-tick';
-      tick.style.left = yearToTrackX(y) + 'px';
-      tick.textContent = formatYear(y);
-      axis.appendChild(tick);
-
-      const line = document.createElement('div');
-      line.className = 'tl-gridline';
-      line.style.left = yearToInnerX(y) + 'px';
-      inner.appendChild(line);
-    }
+    for(let y = first; y <= yEnd; y += step) addTick(y);
   }
 
   function layoutEvents(){
@@ -595,8 +753,14 @@
   }
 
   function relayout(){
-    const total = LBL_W + (AXIS_MAX - AXIS_MIN) * pxPerYear + 60;
-    inner.style.width = total + 'px';
+    let trackWidth;
+    if(logMode){
+      // Cap at one year before the singularity so the asymptote stays off-screen.
+      trackWidth = yearToTrackX(SINGULARITY - 1);
+    } else {
+      trackWidth = (AXIS_MAX - AXIS_MIN) * pxPerYear;
+    }
+    inner.style.width = (LBL_W + trackWidth + 60) + 'px';
     layoutAxis();
     layoutEvents();
   }
@@ -604,17 +768,24 @@
   function zoomAt(factor, anchorClientX){
     const rect = scroll.getBoundingClientRect();
     const anchorOffset = anchorClientX - rect.left;
-    const yearAtAnchor = AXIS_MIN + (scroll.scrollLeft + anchorOffset - LBL_W) / pxPerYear;
+    const yearAtAnchor = xToYear(scroll.scrollLeft + anchorOffset);
 
-    pxPerYear = Math.max(PX_MIN, Math.min(PX_MAX, pxPerYear * factor));
+    if(logMode){
+      pxPerLogUnit = Math.max(LOG_PX_MIN, Math.min(LOG_PX_MAX, pxPerLogUnit * factor));
+    } else {
+      pxPerYear = Math.max(PX_MIN, Math.min(PX_MAX, pxPerYear * factor));
+    }
     relayout();
 
-    scroll.scrollLeft = (yearAtAnchor - AXIS_MIN) * pxPerYear + LBL_W - anchorOffset;
+    scroll.scrollLeft = yearToTrackX(yearAtAnchor) + LBL_W - anchorOffset;
     layoutAxis();
     updateInfo();
   }
 
   scroll.addEventListener('wheel', function(e){
+    // Shift + wheel = stretch the time axis. Plain wheel scrolls naturally
+    // (vertical for through the rows, horizontal trackpad swipes pan).
+    if(!e.shiftKey) return;
     if(Math.abs(e.deltaY) < 0.5) return;
     e.preventDefault();
     const factor = e.deltaY > 0 ? 0.88 : 1.135;
@@ -627,8 +798,33 @@
   let dragMoved = 0;
   let suppressClick = false;
 
+  // We deliberately avoid setPointerCapture here — it interferes with the
+  // click event firing on individual rows. Instead we listen on `window`
+  // for the duration of the drag, so the drag tracks even if the cursor
+  // leaves the scroll area.
+  function onDragMove(e){
+    if(!dragging) return;
+    const dx = e.clientX - dragStartX;
+    const dy = e.clientY - dragStartY;
+    dragMoved = Math.max(dragMoved, Math.hypot(dx, dy));
+    scroll.scrollLeft = dragStartScrollX - dx;
+    scroll.scrollTop  = dragStartScrollY - dy;
+  }
+  function onDragEnd(){
+    if(!dragging) return;
+    dragging = false;
+    scroll.classList.remove('grabbing');
+    window.removeEventListener('pointermove', onDragMove);
+    window.removeEventListener('pointerup', onDragEnd);
+    window.removeEventListener('pointercancel', onDragEnd);
+    if(dragMoved > 10){
+      suppressClick = true;
+      setTimeout(() => { suppressClick = false; }, 60);
+    }
+  }
   scroll.addEventListener('pointerdown', function(e){
     if(e.target.closest('.tl-row-detail')) return;
+    if(e.button !== 0 && e.pointerType === 'mouse') return; // left button / touch only
     dragging = true;
     dragStartX = e.clientX;
     dragStartY = e.clientY;
@@ -636,50 +832,48 @@
     dragStartScrollY = scroll.scrollTop;
     dragMoved = 0;
     scroll.classList.add('grabbing');
-    scroll.setPointerCapture(e.pointerId);
+    window.addEventListener('pointermove', onDragMove);
+    window.addEventListener('pointerup', onDragEnd);
+    window.addEventListener('pointercancel', onDragEnd);
   });
-  scroll.addEventListener('pointermove', function(e){
-    if(!dragging) return;
-    const dx = e.clientX - dragStartX;
-    const dy = e.clientY - dragStartY;
-    dragMoved = Math.max(dragMoved, Math.hypot(dx, dy));
-    scroll.scrollLeft = dragStartScrollX - dx;
-    scroll.scrollTop  = dragStartScrollY - dy;
-  });
-  function endDrag(e){
-    if(!dragging) return;
-    dragging = false;
-    scroll.classList.remove('grabbing');
-    try{ scroll.releasePointerCapture(e.pointerId); }catch(_){ }
-    if(dragMoved > 5){
-      suppressClick = true;
-      setTimeout(() => { suppressClick = false; }, 50);
-    }
-  }
-  scroll.addEventListener('pointerup', endDrag);
-  scroll.addEventListener('pointercancel', endDrag);
 
-  document.getElementById('tlIn').addEventListener('click', () => {
-    const rect = scroll.getBoundingClientRect();
-    zoomAt(1.4, rect.left + rect.width / 2);
-  });
-  document.getElementById('tlOut').addEventListener('click', () => {
-    const rect = scroll.getBoundingClientRect();
-    zoomAt(0.7, rect.left + rect.width / 2);
-  });
-  document.getElementById('tlReset').addEventListener('click', () => {
-    pxPerYear = 2;
+  // Jump-to-era: fit the chosen year range to the visible chart width.
+  function scrollToRange(startYear, endYear){
+    const visibleWidth = Math.max(200, scroll.clientWidth - LBL_W);
+    if(logMode){
+      const logStart = Math.log10(SINGULARITY - startYear);
+      const logEnd   = Math.log10(SINGULARITY - endYear);
+      const logRange = Math.max(0.1, logStart - logEnd);
+      pxPerLogUnit = Math.max(LOG_PX_MIN, Math.min(LOG_PX_MAX, visibleWidth / logRange));
+    } else {
+      pxPerYear = Math.max(PX_MIN, Math.min(PX_MAX, visibleWidth / (endYear - startYear)));
+    }
     relayout();
-    scroll.scrollLeft = (1500 - AXIS_MIN) * pxPerYear;
+    scroll.scrollLeft = yearToTrackX(startYear);
     scroll.scrollTop = 0;
     layoutAxis();
     updateInfo();
-  });
-  document.getElementById('tlExpandAll').addEventListener('click', () => {
-    document.querySelectorAll('.tl-row').forEach(el => el.classList.add('expanded'));
-  });
-  document.getElementById('tlCollapseAll').addEventListener('click', () => {
-    document.querySelectorAll('.tl-row').forEach(el => el.classList.remove('expanded'));
+  }
+  document.getElementById('tlGoAncient').addEventListener('click', () => scrollToRange(-2000, 1600));
+  document.getElementById('tlGoFound'  ).addEventListener('click', () => scrollToRange(1600, 1900));
+  document.getElementById('tlGoModern' ).addEventListener('click', () => scrollToRange(1900, 2049));
+
+  // Log toggle — switches the time axis to log(distance to singularity).
+  // Recent events spread out, ancient events compress, asymptote at 2050.
+  document.getElementById('tlLog').addEventListener('click', (e) => {
+    // preserve the year currently at the viewport center
+    const centerOffset = scroll.clientWidth / 2;
+    const centerYear = xToYear(scroll.scrollLeft + centerOffset);
+
+    logMode = !logMode;
+    e.currentTarget.classList.toggle('on', logMode);
+    e.currentTarget.textContent = logMode ? '📉 Linear' : '📈 Log (→ 2050)';
+
+    relayout();
+    const newTrackX = yearToTrackX(centerYear);
+    scroll.scrollLeft = Math.max(0, newTrackX - centerOffset);
+    layoutAxis();
+    updateInfo();
   });
 
   let scrollRaf = 0;
@@ -694,10 +888,10 @@
   function updateInfo(){
     const left = scroll.scrollLeft;
     const right = left + scroll.clientWidth;
-    const xToYear = (x) => AXIS_MIN + (x - LBL_W) / pxPerYear;
     const y1 = Math.round(xToYear(left));
     const y2 = Math.round(xToYear(right));
-    info.textContent = formatYear(y1) + ' → ' + formatYear(y2);
+    info.textContent = formatYear(y1) + ' → ' + formatYear(y2)
+      + (logMode ? '  ·  log → ' + SINGULARITY : '');
   }
 
   // ─── boot ───
