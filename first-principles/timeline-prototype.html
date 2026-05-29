@@ -212,7 +212,7 @@
   .tl-row-detail {
     display:none; position:sticky; left:0; z-index:4;
     margin:2px 0 10px;
-    padding:12px 16px 14px calc(var(--lbl-w) + 16px);
+    padding:12px 16px 14px 16px;
     background:#fafafa; border-top:1px solid #eee; border-bottom:1px solid #eee;
     font-size:13px; line-height:1.6; color:#444;
     width:880px; max-width:100%;
@@ -278,13 +278,13 @@
 <div class="grades">~2000 BCE → 2025 CE · all sciences · stretch, pan, hover, click</div>
 
 <p class="lede">Every foundational event from the previous three tables, on one interactive Gantt. <kbd>scroll</kbd> moves down. <kbd>shift+scroll</kbd> stretches the time axis. <kbd>drag</kbd> pans. <kbd>hover</kbd> for years. <kbd>click</kbd> a row to expand the full detail.</p>
-<p class="lede">The <strong>Log</strong> button switches the time axis to log₁₀(2050 − year). The asymptote at <strong>2050</strong> is a Kurzweil-style estimate of when the rate of foundational progress would go to infinity. On the log axis, ancient eras compress together and recent decades spread out, because each newer paradigm shift takes less calendar time than the one before. Toggle the button and watch ~3500 years of progress reshape itself.</p>
+<p class="lede">The <strong>Log</strong> button switches the time axis to log₁₀(2100 − year). The asymptote at <strong>2100</strong> is a Kurzweil-style estimate of when the rate of foundational progress would go to infinity. On the log axis, ancient eras compress together and recent decades spread out, because each newer paradigm shift takes less calendar time than the one before. Toggle the button and watch ~3500 years of progress reshape itself.</p>
 
 <div class="toolbar">
   <button class="tb-btn" id="tlGoAncient">⇤ Antiquity → 1600</button>
   <button class="tb-btn" id="tlGoFound">1600 → 1900</button>
-  <button class="tb-btn" id="tlGoModern">1900 → 2050 ⇥</button>
-  <button class="tb-btn" id="tlLog">📈 Log (→ 2050)</button>
+  <button class="tb-btn" id="tlGoModern">1900 → 2100 ⇥</button>
+  <button class="tb-btn" id="tlLog">📈 Log (→ 2100)</button>
   <span class="tb-info" id="tlInfo">…</span>
   <span class="tb-hint">click a row to expand · scroll = down · shift+scroll = stretch · drag = pan</span>
 </div>
@@ -317,51 +317,66 @@
 (function(){
   // ─── data ───
   const EVENTS = [
-    // ============ ANTIQUITY (foundational only) ============
-    { cat:'ancient', year:-450, title:"Atomism (Democritus)", who:"Democritus, Leucippus",
-      detail:"Matter is made of indivisible atoms moving in empty space. The foundational claim about what stuff IS. Sidelined by Aristotle for two thousand years, revived by Dalton in 1808." },
-    { cat:'ancient', year:-330, title:"Aristotle's natural philosophy", who:"Aristotle",
-      detail:"The foundational framework — four elements, natural place, teleology. Wrong about almost everything physical, but defined the questions for two millennia. Every later foundation is in conversation with Aristotle." },
-    { cat:'ancient', year:-280, title:"Aristarchus' heliocentric proposal", who:"Aristarchus of Samos",
-      detail:"Proposed the Earth orbits the Sun, 1800 years before Copernicus. The foundational suggestion that Earth is not special. Ignored. Almost all his writings lost." },
-    { cat:'ancient', year:-250, title:"Archimedes — lever and buoyancy", who:"Archimedes of Syracuse",
-      detail:"The first quantitative laws of mechanics: force × distance is conserved, buoyant force equals displaced fluid weight. Foundational physics derived by pure reasoning." },
-    { cat:'ancient', year:150, title:"Ptolemy's Almagest", who:"Claudius Ptolemy",
-      detail:"The foundational cosmological framework — Earth-centred with epicycles. Predicted planetary positions accurately enough to remain the working model for 1400 years before Copernicus." },
-    { cat:'ancient', year:500, title:"Indian decimal system &amp; zero", who:"Aryabhata, Brahmagupta",
-      detail:"Place-value decimal notation with an explicit zero as a number. The foundational representational shift — zero as a thing, not just an absence. The foundation of all subsequent computation." },
-    { cat:'ancient', year:820, title:"Algebra (al-Khwarizmi)", who:"al-Khwarizmi",
-      detail:"Symbolic manipulation of unknowns. The foundational move from arithmetic-on-numbers to arithmetic-on-symbols. Geometry and algebra become separable and recombinable." },
-    { cat:'ancient', year:1020, title:"Optics (Alhazen)", who:"Ibn al-Haytham",
-      detail:"Light travels in straight lines, vision is light entering the eye. Foundational physics of light, and arguably the first explicit use of the scientific method." },
-    { cat:'ancient', year:1543, title:"Copernicus — heliocentric", who:"Nicolaus Copernicus",
-      detail:"De revolutionibus published the year he died. Foundational shift in cosmology — Earth is a planet. Revived Aristarchus and started the chain that ended in Newton." },
-    { cat:'ancient', year:1600, title:"Gilbert — De Magnete", who:"William Gilbert",
-      detail:"Earth itself is a giant magnet. Foundational study of magnetism as a phenomenon of matter (not the heavens). Necessary precursor to Faraday and Maxwell." },
-
     // ============ MATHEMATICS ============
+    { cat:'math', year:-550, title:"Irrational numbers (√2 incommensurable)", who:"Pythagoreans (Hippasus)",
+      detail:"The diagonal of a unit square has no rational length. Discovery attributed to Hippasus of Metapontum — legend says the Pythagoreans drowned him for it. The number line is not just ratios." },
     { cat:'math', year:-500, title:"Pythagorean theorem (formal)", who:"Pythagoras (attributed)",
       detail:"a² + b² = c² for a right triangle. Known empirically in Babylon a millennium earlier, formally proved in the Greek tradition." },
     { cat:'math', year:-300, title:"Euclidean geometry", who:"Euclid",
       detail:"The Elements: 23 definitions, 5 postulates, 5 common notions, then everything else as theorems. The model of axiomatic mathematics for 2300 years." },
+    { cat:'math', year:500, title:"Indian decimal system &amp; zero", who:"Aryabhata, Brahmagupta",
+      detail:"Place-value decimal notation with an explicit zero as a number. The foundational representational shift — zero as a thing, not just an absence. The foundation of all subsequent computation." },
+    { cat:'math', year:628, title:"Negative numbers (formal rules)", who:"Brahmagupta",
+      detail:"Brāhmasphuṭasiddhānta sets out the arithmetic of debts and fortunes — negatives as first-class numbers with sign rules. Europe would reject negatives as \"absurd\" for another thousand years." },
+    { cat:'math', year:820, title:"Algebra (al-Khwarizmi)", who:"al-Khwarizmi",
+      detail:"Symbolic manipulation of unknowns. The foundational move from arithmetic-on-numbers to arithmetic-on-symbols. Geometry and algebra become separable and recombinable." },
+    { cat:'math', year:1572, title:"Imaginary numbers (√−1)", who:"Rafael Bombelli",
+      detail:"Bombelli's Algebra accepts √−1 as a calculational object, needed to reach the real roots of cubic equations. The square root of a negative as a legitimate symbol." },
     { cat:'math', start:1637, end:1637, year:1637, title:"Analytic geometry", who:"René Descartes",
       detail:"Coordinates. Lines, curves, and shapes as equations. The bridge that lets algebra and geometry talk to each other." },
     { cat:'math', start:1666, end:1684, year:1684, title:"Calculus", who:"Newton & Leibniz",
       detail:"Newton's fluxions (1666, unpublished for two decades) and Leibniz's differentials (published 1684). The mathematics of change, used for everything from planetary motion to compound interest." },
+    { cat:'math', year:1748, title:"Complex numbers (Euler's identity)", who:"Leonhard Euler",
+      detail:"e^(iπ) + 1 = 0. Imaginary and real folded into a single number system. The complex plane becomes the natural home of analysis." },
     { cat:'math', year:1801, title:"Gauss — number theory", who:"Carl Friedrich Gauss",
       detail:"Disquisitiones Arithmeticae. Modular arithmetic, quadratic reciprocity, the proof that you can construct a 17-gon with compass and straightedge." },
     { cat:'math', year:1830, title:"Non-Euclidean geometry", who:"Lobachevsky, Bolyai",
       detail:"Drop Euclid's fifth postulate. Get consistent geometries where parallel lines diverge or converge. Mathematics is no longer about the world we live in — and yet, sixty years later, Einstein needs it for general relativity." },
+    { cat:'math', year:1843, title:"Quaternions", who:"William Rowan Hamilton",
+      detail:"Numbers that don't commute: i² = j² = k² = ijk = −1. Hamilton carved the relation into Brougham Bridge in Dublin. Foundation of rotations in 3D, later vector calculus, later spinors." },
     { cat:'math', year:1854, title:"Riemann manifolds", who:"Bernhard Riemann",
       detail:"In his habilitation lecture, defined intrinsic geometry on curved spaces of any dimension. Einstein would build general relativity directly on this scaffolding." },
-    { cat:'math', year:1874, title:"Set theory (Cantor)", who:"Georg Cantor",
-      detail:"Some infinities are bigger than others. The continuum is uncountable. Foundations of all modern mathematics, and a small psychological breakdown for Cantor when contemporaries called it pathological." },
+    { cat:'math', year:1872, title:"Real numbers (Dedekind cuts)", who:"Richard Dedekind",
+      detail:"A real number defined as a partition of the rationals. The continuum given a rigorous foundation. The 19th-century arithmetisation of analysis: no more hand-waving about \"infinitesimals\"." },
+    { cat:'math', year:1874, title:"Transfinites &amp; set theory (Cantor)", who:"Georg Cantor",
+      detail:"Some infinities are bigger than others. The continuum is uncountable. Aleph numbers. Foundations of all modern mathematics, and a small psychological breakdown for Cantor when contemporaries called it pathological." },
     { cat:'math', year:1931, title:"Gödel's incompleteness", who:"Kurt Gödel",
       detail:"Any sufficiently rich consistent formal system contains true statements it cannot prove. The end of Hilbert's dream of a complete mechanical foundation for mathematics." },
     { cat:'math', year:1963, title:"Atiyah-Singer index theorem", who:"Michael Atiyah, Isadore Singer",
       detail:"The bridge between analysis (kernels of differential operators) and topology (characteristic classes). The foundation of the geometric reformulation of quantum field theory." },
 
     // ============ PHYSICS & ASTRONOMY ============
+    { cat:'physics', year:-450, title:"Atomism (Democritus)", who:"Democritus, Leucippus",
+      detail:"Matter is made of indivisible atoms moving in empty space. The foundational claim about what stuff IS. Sidelined by Aristotle for two thousand years, revived by Dalton in 1808." },
+    { cat:'physics', year:-330, title:"Aristotle's natural philosophy", who:"Aristotle",
+      detail:"The foundational framework — four elements, natural place, teleology. Wrong about almost everything physical, but defined the questions for two millennia. Every later foundation is in conversation with Aristotle." },
+    { cat:'physics', start:-280, end:1687, year:1687, title:"Heliocentric model", who:"Aristarchus → Copernicus → Galileo → Newton",
+      stages:[
+        { from:-280, to:1543, stage:'speculative' },
+        { from:1543, to:1610, stage:'progress' },
+        { from:1610, to:1687, stage:'testable' },
+        { from:1687, to:2025, stage:'figured' },
+      ],
+      firstTest:1610,
+      detail:"Aristarchus of Samos proposed it -280; ignored for 1800 years. Copernicus revived it 1543 in De Revolutionibus — significant progress. Galileo's telescope (1610) gave the first observational test: phases of Venus, moons not orbiting Earth. Newton's Principia (1687) closed it out — heliocentric orbits emerge from F = GMm/r². Settled science." },
+    { cat:'physics', year:-250, title:"Archimedes — lever and buoyancy", who:"Archimedes of Syracuse",
+      detail:"The first quantitative laws of mechanics: force × distance is conserved, buoyant force equals displaced fluid weight. Foundational physics derived by pure reasoning." },
+    { cat:'physics', year:150, title:"Ptolemy's Almagest", who:"Claudius Ptolemy",
+      detail:"The foundational cosmological framework — Earth-centred with epicycles. Predicted planetary positions accurately enough to remain the working model for 1400 years before Copernicus." },
+    { cat:'physics', year:1020, title:"Optics (Alhazen)", who:"Ibn al-Haytham",
+      detail:"Light travels in straight lines, vision is light entering the eye. Foundational physics of light, and arguably the first explicit use of the scientific method." },
+    { cat:'physics', year:1600, title:"Gilbert — De Magnete", who:"William Gilbert",
+      detail:"Earth itself is a giant magnet. Foundational study of magnetism as a phenomenon of matter (not the heavens). Necessary precursor to Faraday and Maxwell." },
     { cat:'physics', year:1610, title:"Galileo's telescope", who:"Galileo Galilei",
       detail:"Pointed a 20× refractor at Jupiter (saw four moons), the Moon (saw craters), the Sun (saw spots), Venus (saw phases). The end of Aristotelian celestial perfection." },
     { cat:'physics', start:1609, end:1619, year:1619, title:"Kepler's laws", who:"Johannes Kepler",
@@ -482,23 +497,62 @@
       detail:"A bacterial defence system, repurposed as a programmable gene editor. Cuts any DNA sequence you specify. Nobel Prize 2020. Therapeutic applications follow now." },
 
     // ============ SPECULATIVE / OPEN (ongoing) ============
-    { cat:'speculative', start:1930, end:2025, year:2025, status:'ongoing', title:"Quantum gravity", who:"open",
+    { cat:'speculative', year:2025, status:'ongoing', title:"Quantum gravity", who:"open",
+      stages:[{ from:1930, to:2025, stage:'speculative' }],
       detail:"GR and QM do not combine. We have no controlled theory of gravity at the Planck scale. Strings, loop quantum gravity, causal sets — all candidates, none confirmed." },
-    { cat:'speculative', start:1933, end:2025, year:2025, status:'ongoing', title:"Dark matter", who:"open since Zwicky",
-      detail:"Galaxies rotate as if there's five times more mass than we can see. Identity unknown. WIMP searches keep dropping limits with no signal." },
-    { cat:'speculative', start:1968, end:2025, year:2025, status:'ongoing', title:"String theory", who:"Veneziano onward",
-      detail:"1D vibrating objects in 10D. Originally a model of the strong force, then unification, then a vast mathematical landscape. No experimental test." },
-    { cat:'speculative', start:1973, end:2025, year:2025, status:'ongoing', title:"Supersymmetry", who:"Wess, Zumino, …",
-      detail:"Every fermion has a boson partner. Was supposed to solve hierarchy, give dark matter, unify couplings. LHC has not seen it. Increasingly disfavoured." },
-    { cat:'speculative', start:1977, end:2025, year:2025, status:'ongoing', title:"Axion", who:"Peccei, Quinn",
-      detail:"Proposed to fix the strong-CP problem. Light boson. Doubles as a dark-matter candidate. Searched in many bands, not found." },
-    { cat:'speculative', start:1995, end:2025, year:2025, status:'ongoing', title:"M-theory", who:"Witten et al.",
+    { cat:'speculative', year:2025, status:'ongoing', title:"Dark matter", who:"open since Zwicky",
+      stages:[
+        { from:1933, to:1970, stage:'speculative' },
+        { from:1970, to:1990, stage:'progress' },
+        { from:1990, to:2025, stage:'testable' },
+      ],
+      firstTest:1970,
+      detail:"Galaxies rotate as if there's five times more mass than we can see. Zwicky proposed it 1933, Rubin's rotation curves (1970) made it canonical, WIMP searches from 1990 keep dropping limits with no signal." },
+    { cat:'speculative', year:2025, status:'ongoing', title:"String theory", who:"Veneziano onward",
+      stages:[
+        { from:1968, to:1973, stage:'speculative' },
+        { from:1973, to:1984, stage:'progress' },
+        { from:1984, to:2025, stage:'testable' },
+      ],
+      firstTest:1984,
+      detail:"1D vibrating objects in 10D. Originally a model of the strong force, then unification after Schwarz/Scherk (1973), then the first superstring revolution (1984) opened a vast mathematical landscape. No experimental test." },
+    { cat:'speculative', year:2025, status:'ongoing', title:"Supersymmetry", who:"Wess, Zumino, …",
+      stages:[
+        { from:1973, to:1981, stage:'speculative' },
+        { from:1981, to:1998, stage:'progress' },
+        { from:1998, to:2010, stage:'testable' },
+        { from:2010, to:2025, stage:'figured' },
+      ],
+      firstTest:2010,
+      detail:"Every fermion has a boson partner. Was supposed to solve hierarchy, give dark matter, unify couplings. LHC turned on 2010 and has not seen it. Increasingly disfavoured." },
+    { cat:'speculative', year:2025, status:'ongoing', title:"Axion", who:"Peccei, Quinn",
+      stages:[
+        { from:1977, to:1983, stage:'speculative' },
+        { from:1983, to:2000, stage:'progress' },
+        { from:2000, to:2025, stage:'testable' },
+      ],
+      firstTest:1983,
+      detail:"Proposed 1977 to fix the strong-CP problem. Light boson, doubles as a dark-matter candidate. First haloscope searches in the 1980s, ADMX/IAXO/haloscopes since 2000 still hunting." },
+    { cat:'speculative', year:2025, status:'ongoing', title:"M-theory", who:"Witten et al.",
+      stages:[{ from:1995, to:2025, stage:'speculative' }],
       detail:"Conjectured unification of the five string theories in 11 dimensions. Mostly a name for what we don't yet have." },
-    { cat:'speculative', start:1997, end:2025, year:2025, status:'ongoing', title:"AdS/CFT", who:"Juan Maldacena",
-      detail:"Quantum gravity in anti-de Sitter space equals a conformal gauge theory on its boundary. Holography made concrete. Works in toy universes." },
-    { cat:'speculative', start:1998, end:2025, year:2025, status:'ongoing', title:"Dark energy", who:"Riess, Perlmutter",
-      detail:"~70 % of cosmic energy budget. Expansion of the universe is accelerating. Cosmological constant? Quintessence? Something else? Open." },
-    { cat:'speculative', start:2013, end:2025, year:2025, status:'ongoing', title:"ER = EPR", who:"Maldacena, Susskind",
+    { cat:'speculative', year:2025, status:'ongoing', title:"AdS/CFT", who:"Juan Maldacena",
+      stages:[
+        { from:1997, to:1998, stage:'speculative' },
+        { from:1998, to:2010, stage:'progress' },
+        { from:2010, to:2025, stage:'testable' },
+      ],
+      firstTest:1998,
+      detail:"Quantum gravity in anti-de Sitter space equals a conformal gauge theory on its boundary. Maldacena's 1997 conjecture, quickly verified in numerous toy-model checks. Works in AdS — our universe is de Sitter." },
+    { cat:'speculative', year:2025, status:'ongoing', title:"Dark energy", who:"Riess, Perlmutter",
+      stages:[
+        { from:1998, to:2003, stage:'speculative' },
+        { from:2003, to:2025, stage:'testable' },
+      ],
+      firstTest:2003,
+      detail:"~70 % of cosmic energy budget. Type Ia supernovae (1998) showed expansion accelerating. WMAP CMB (2003) confirmed. Cosmological constant? Quintessence? Something else? Open." },
+    { cat:'speculative', year:2025, status:'ongoing', title:"ER = EPR", who:"Maldacena, Susskind",
+      stages:[{ from:2013, to:2025, stage:'speculative' }],
       detail:"Entangled particles connected by tiny wormholes? Suggestive math linking entanglement and spacetime geometry. No experimental hook." },
 
     // ============ FALSIFIED ============
@@ -523,7 +577,6 @@
   ];
 
   const CAT_NAMES = {
-    ancient:     'Antiquity & pre-modern',
     math:        'Mathematics',
     physics:     'Physics & astronomy',
     chemistry:   'Chemistry',
@@ -540,15 +593,15 @@
   const AXIS_MIN = -3000;
   const AXIS_MAX = 3100;
 
-  const LBL_W = 220;
+  const LBL_W = 0;
   const AX_H  = 40;
 
   // Log mode — axis becomes log10(SINGULARITY - year).
   // Idea: scientific progress accelerates; on a log scale where T_s is the
   // asymptote, foundational events become roughly evenly spaced. The chosen
-  // T_s is the date the rate of progress goes to infinity. 2050 ≈ Kurzweil.
+  // T_s is the date the rate of progress goes to infinity. 2100 ≈ Kurzweil.
   let logMode = false;
-  const SINGULARITY = 2050;
+  const SINGULARITY = 2100;
   let pxPerLogUnit = 800;
   const LOG_PX_MIN = 80;
   const LOG_PX_MAX = 4000;
@@ -557,7 +610,7 @@
   // Tick years chosen by hand to look reasonable on the log axis.
   const LOG_TICK_YEARS = [
     -2500, -2000, -1500, -1000, -500, 0, 500, 1000, 1300, 1500, 1700, 1800,
-    1850, 1900, 1925, 1950, 1970, 1990, 2000, 2010, 2020, 2030, 2040, 2045, 2048
+    1850, 1900, 1950, 1980, 2000, 2020, 2040, 2060, 2080, 2090, 2095, 2098
   ];
 
   const scroll = document.getElementById('tlScroll');
@@ -594,6 +647,14 @@
     const cat = ev.cat || parentCat;
     const isChild = !!parentCat;
     const hasKids = Array.isArray(ev.children) && ev.children.length > 0;
+    const hasStages = Array.isArray(ev.stages) && ev.stages.length > 0;
+
+    // Derive the bar's start/end from stages OR explicit start/end. Single source.
+    const barStart = hasStages ? ev.stages[0].from
+      : (typeof ev.start === 'number' ? ev.start : null);
+    const barEnd = hasStages ? ev.stages[ev.stages.length - 1].to
+      : (typeof ev.end === 'number' ? ev.end : null);
+    const hasRange = barStart != null && barEnd != null && barEnd > barStart;
 
     const row = document.createElement('div');
     let rowCls = 'tl-row';
@@ -605,32 +666,56 @@
     const main = document.createElement('div');
     main.className = 'tl-row-main';
 
-    const label = document.createElement('div');
-    label.className = 'tl-row-label';
+    const track = document.createElement('div');
+    track.className = 'tl-row-track';
+
+    // Sticky-left overlay: chevron always visible, title shows on hover
+    const overlay = document.createElement('div');
+    overlay.className = 'tl-row-overlay';
     if(hasKids){
       const chev = document.createElement('span');
       chev.className = 'tl-chev';
       chev.textContent = '▸';
-      label.appendChild(chev);
+      overlay.appendChild(chev);
     }
-    label.appendChild(document.createTextNode(ev.title));
+    const title = document.createElement('span');
+    title.className = 'tl-row-title';
+    title.textContent = ev.title;
+    overlay.appendChild(title);
+    track.appendChild(overlay);
 
-    const track = document.createElement('div');
-    track.className = 'tl-row-track';
-
-    const hasRange = typeof ev.start === 'number' && typeof ev.end === 'number' && ev.end > ev.start;
-    if(hasRange){
+    // Bar(s) — staged segments OR single bar
+    if(hasStages){
+      ev.stages.forEach(seg => {
+        const bar = document.createElement('div');
+        bar.className = 'tl-bar stage-' + seg.stage;
+        bar.dataset.start = seg.from;
+        bar.dataset.end = seg.to;
+        track.appendChild(bar);
+      });
+    } else if(hasRange){
       const bar = document.createElement('div');
       bar.className = 'tl-bar cat-' + cat;
-      bar.dataset.start = ev.start;
-      bar.dataset.end = ev.end;
+      bar.dataset.start = barStart;
+      bar.dataset.end = barEnd;
       track.appendChild(bar);
+    }
 
+    if(hasRange){
       const ms = document.createElement('div');
       ms.className = 'tl-marker tl-marker-start cat-' + cat;
-      ms.dataset.year = ev.start;
+      ms.dataset.year = barStart;
       track.appendChild(ms);
     }
+
+    // ✕ first-test marker
+    if(typeof ev.firstTest === 'number'){
+      const ft = document.createElement('div');
+      ft.className = 'tl-firsttest';
+      ft.dataset.year = ev.firstTest;
+      track.appendChild(ft);
+    }
+
     const me = document.createElement('div');
     let endCls = 'tl-marker tl-marker-end cat-' + cat;
     if(ev.status === 'killed')   endCls += ' killed';
@@ -642,15 +727,14 @@
     const yr = document.createElement('div');
     yr.className = 'tl-row-year';
     yr.dataset.year = ev.year;
-    yr.textContent = hasRange ? (formatYear(ev.start) + ' → ' + formatYear(ev.end)) : formatYear(ev.year);
+    yr.textContent = hasRange ? (formatYear(barStart) + ' → ' + formatYear(barEnd)) : formatYear(ev.year);
     track.appendChild(yr);
 
-    main.appendChild(label);
     main.appendChild(track);
 
     const detail = document.createElement('div');
     detail.className = 'tl-row-detail';
-    const dateStr = hasRange ? (formatYear(ev.start) + ' → ' + formatYear(ev.end)) : formatYear(ev.year);
+    const dateStr = hasRange ? (formatYear(barStart) + ' → ' + formatYear(barEnd)) : formatYear(ev.year);
     detail.innerHTML = '<div class="tl-detail-meta">' + dateStr + ' · ' + ev.who + '</div>' + ev.detail;
 
     row.appendChild(main);
@@ -738,16 +822,17 @@
   }
 
   function layoutEvents(){
+    // Single source of truth: every horizontal position derives from yearToTrackX.
+    // Widths are differences between two yearToTrackX values, so linear/log Just Works.
     document.querySelectorAll('.tl-bar').forEach(el => {
       const s = parseFloat(el.dataset.start);
       const e = parseFloat(el.dataset.end);
-      el.style.left  = yearToTrackX(s) + 'px';
-      el.style.width = Math.max(0, (e - s) * pxPerYear) + 'px';
+      const x1 = yearToTrackX(s);
+      const x2 = yearToTrackX(e);
+      el.style.left  = x1 + 'px';
+      el.style.width = Math.max(0, x2 - x1) + 'px';
     });
-    document.querySelectorAll('.tl-marker').forEach(el => {
-      el.style.left = yearToTrackX(parseFloat(el.dataset.year)) + 'px';
-    });
-    document.querySelectorAll('.tl-row-year').forEach(el => {
+    document.querySelectorAll('.tl-marker, .tl-firsttest, .tl-row-year').forEach(el => {
       el.style.left = yearToTrackX(parseFloat(el.dataset.year)) + 'px';
     });
   }
@@ -856,10 +941,10 @@
   }
   document.getElementById('tlGoAncient').addEventListener('click', () => scrollToRange(-2000, 1600));
   document.getElementById('tlGoFound'  ).addEventListener('click', () => scrollToRange(1600, 1900));
-  document.getElementById('tlGoModern' ).addEventListener('click', () => scrollToRange(1900, 2049));
+  document.getElementById('tlGoModern' ).addEventListener('click', () => scrollToRange(1900, 2099));
 
   // Log toggle — switches the time axis to log(distance to singularity).
-  // Recent events spread out, ancient events compress, asymptote at 2050.
+  // Recent events spread out, ancient events compress, asymptote at 2100.
   document.getElementById('tlLog').addEventListener('click', (e) => {
     // preserve the year currently at the viewport center
     const centerOffset = scroll.clientWidth / 2;
@@ -867,7 +952,7 @@
 
     logMode = !logMode;
     e.currentTarget.classList.toggle('on', logMode);
-    e.currentTarget.textContent = logMode ? '📉 Linear' : '📈 Log (→ 2050)';
+    e.currentTarget.textContent = logMode ? '📉 Linear' : '📈 Log (→ 2100)';
 
     relayout();
     const newTrackX = yearToTrackX(centerYear);
