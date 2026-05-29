@@ -207,6 +207,27 @@ This way, when the SR engine ships, the content is already structured for it. No
 
 ---
 
+## Segway hooks
+
+A bank of specific worked-example pivots — moments where one concept can be used to land another. List grows over time. The assistant checks this section when the relevant topics come up in a lecture or conversation, so it can suggest the segway at the right moment rather than after the fact.
+
+### Lifeguard's path — fastest, not straightest (sand vs sea, mud vs road)
+
+**Trigger when:** introducing optics (refraction, Snell's law), Fermat's principle, Lagrangian mechanics, principle of least action, variational principles, geodesics — or whenever "shortest path" gets discussed.
+
+**The hook.** A lifeguard on the beach has to reach a swimmer in the water. Running on sand is fast (say 5 m/s), swimming is slow (say 1 m/s). The straight line from lifeguard to swimmer is *not* the fastest path — too much of it is spent in the slow medium. The fastest path bends at the water's edge, with more distance covered on land and less in the water. Work out the angles and the ratio of the sines equals the ratio of the speeds. That is Snell's law for refraction — discovered for light, derived here for a lifeguard.
+
+(Equivalent framings: mud vs road, walking vs running, walking vs swimming. Pick whichever lands best for the audience.)
+
+**Why this segways everywhere.**
+- **Optics.** This is exactly Fermat's principle. Light takes the path of least *time*, not least distance. Refraction bends light at boundaries between media of different speed (different refractive index) for the same reason the lifeguard bends. Snell's law and the lifeguard's optimal angle are the same equation.
+- **Lagrangian mechanics.** Once you accept that nature minimises time (or, more generally, action) rather than distance, the principle of least action stops being mystical. The lifeguard problem is a baby variational problem — minimise total time over a path, get a curve that satisfies Snell's law / the Euler-Lagrange equation. The grown-up version replaces "time" with "action" and the answer is mechanics.
+- **General relativity.** Geodesics in curved spacetime are also "least-action" paths. Same idea, generalised to a manifold where the "speed" depends on the local metric. The lifeguard intuition scales all the way up to gravity.
+
+**Why it works pedagogically.** It hands the student a variational principle without naming it. By the time they meet Fermat or Lagrange formally, they already have the picture in their bones — and they got it from a scenario, not a formula. Pairs with Idea #1 (start with the practical question), Idea #4 (math arrives when physics needs it), and Idea #5 (cross-connect formulas — Snell's law and least-action are the same shape).
+
+---
+
 ## TODO
 
 More ideas to come as the curriculum evolves. Add them here.

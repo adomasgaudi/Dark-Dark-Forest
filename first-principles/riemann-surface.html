@@ -1,0 +1,2118 @@
+<!DOCTYPE html>
+<!-- Riemann Surface v1.23.7 -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riemann Surface v1.23.7 — Physics &amp; Alchemy Math</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAFAF7; --ink:#15151B; --muted:#8A8A95; --line:#E6E6E0;
+    --accent:#1F1F28; --hit:#15151B; --ok:#2F8F5F; --no:#C0463A;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:'Fredoka',sans-serif;background:var(--bg);color:var(--ink);
+    min-height:100dvh;padding:24px 24px 60px;-webkit-font-smoothing:antialiased;
+  }
+  .stage{
+    width:100%;max-width:520px;margin:0 auto;background:var(--bg);
+    padding:8px 4px;position:relative;
+  }
+  .mono{font-family:'DM Mono',monospace;}
+  h1{font-size:1.8rem;line-height:1.1;font-weight:600;letter-spacing:-.5px;}
+  h1 .accent{color:var(--muted);font-weight:400;}
+  .tag{font-size:.95rem;color:var(--muted);margin-top:6px;font-weight:400;}
+
+  .screen{display:none;animation:pop .25s ease;}
+  .screen.on{display:block;}
+  @keyframes pop{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+
+  .topbar{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+  .back{
+    cursor:pointer;font-family:inherit;font-weight:500;font-size:.92rem;
+    background:none;border:none;padding:4px 0;color:var(--muted);
+    transition:color .12s;
+  }
+  .back:hover{color:var(--ink);}
+  .crumb{font-weight:500;font-size:.95rem;color:var(--ink);}
+
+  .topics{display:grid;gap:1px;margin-top:24px;border-top:1px solid var(--line);}
+  .topic{
+    text-align:left;cursor:pointer;font-family:inherit;
+    background:none;border:none;border-bottom:1px solid var(--line);
+    padding:18px 4px;color:var(--ink);
+    transition:background .12s;
+    display:flex;align-items:center;gap:16px;width:100%;
+  }
+  .topic:hover{background:rgba(0,0,0,.025);}
+  .topic.disabled{opacity:.35;cursor:not-allowed;}
+  .topic.disabled:hover{background:none;}
+  .topic .ic{width:38px;height:38px;flex:none;display:flex;align-items:center;justify-content:center;
+    font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:400;opacity:.95;color:var(--ink);}
+  .topic .tt{font-weight:500;font-size:1.05rem;}
+  .topic .td{font-size:.85rem;color:var(--muted);font-weight:400;margin-top:2px;}
+  .topic .arr{margin-left:auto;color:var(--muted);font-size:1.1rem;}
+  .topic.disabled .arr{font-family:'DM Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;}
+
+  .setblock{margin-top:22px;}
+  .setlabel{font-weight:500;font-size:.82rem;margin-bottom:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+  .opts{display:flex;gap:6px;flex-wrap:wrap;}
+  .opt{
+    cursor:pointer;font-family:inherit;font-weight:500;font-size:.95rem;
+    background:none;border:1px solid var(--line);border-radius:8px;
+    padding:7px 13px;color:var(--ink);
+    transition:border-color .12s, background .12s, color .12s;
+  }
+  .opt:hover{border-color:var(--ink);}
+  .opt.sel{background:var(--ink);color:var(--bg);border-color:var(--ink);}
+  .opt .sub{display:block;font-size:.72rem;font-weight:400;opacity:.7;margin-top:1px;}
+  .startbtn{
+    display:block;width:100%;margin-top:30px;cursor:pointer;
+    font-family:inherit;font-weight:500;font-size:1.05rem;
+    background:var(--ink);color:var(--bg);border:none;border-radius:10px;
+    padding:14px;transition:opacity .12s;
+  }
+  .startbtn:hover{opacity:.85;}
+
+  .hud{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:16px;}
+  .chip{font-family:'DM Mono',monospace;font-weight:400;font-size:.85rem;color:var(--muted);padding:2px 0;}
+  .progress{height:2px;background:var(--line);overflow:hidden;margin-bottom:24px;}
+  .progress > div{height:100%;background:var(--ink);width:0%;transition:width .3s ease;}
+
+  .scenario{
+    border-left:2px solid var(--ink);padding:6px 12px;margin-bottom:22px;
+    font-size:.95rem;line-height:1.45;color:var(--ink);display:none;
+  }
+  .scenario.on{display:block;}
+  .scenario .topictag{display:inline-block;font-family:'DM Mono',monospace;font-size:.72rem;
+    color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
+
+  .q{text-align:center;font-family:'DM Mono',monospace;font-weight:400;
+     font-size:clamp(1.5rem,6.5vw,2.4rem);margin:24px 0 32px;letter-spacing:.5px;color:var(--ink);
+     overflow-wrap:break-word;word-break:normal;line-height:1.25;}
+  .q .cplx{font-size:.85em;white-space:nowrap;}
+  .q .op, .q .opd{color:var(--muted);}
+  .q .qmark{color:var(--muted);}
+  .frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.05;font-size:.7em;}
+  .frac .den{border-top:2px solid currentColor;padding-top:2px;}
+
+  .vec{display:inline-flex;vertical-align:middle;font-family:'DM Mono',monospace;
+    padding:2px 0;line-height:1;align-items:baseline;}
+  .vec::before{content:'(';color:currentColor;padding-right:1px;}
+  .vec::after{content:')';color:currentColor;padding-left:1px;}
+  .vec .el{padding:0 3px;display:inline-flex;align-items:baseline;gap:1px;}
+  .vec .el:not(:first-child)::before{content:',';margin-right:5px;color:var(--muted);}
+  .vec .elaxis{font-size:.5em;color:var(--muted);font-style:italic;
+    transform:translateY(.25em);padding-left:1px;}
+  .mat{display:inline-grid;vertical-align:middle;font-family:'DM Mono',monospace;
+    border-left:2px solid currentColor;border-right:2px solid currentColor;
+    padding:6px 8px;column-gap:10px;row-gap:4px;line-height:1.1;
+    grid-template-columns:repeat(var(--cols,2),auto);}
+  .mat .el{text-align:right;min-width:18px;}
+  .mat .el.hl{background:rgba(0,0,0,.08);border-radius:3px;font-weight:600;}
+  .q .vec, .q .mat{font-size:.55em;}
+  .q .matlabel{font-size:.4em;color:var(--muted);display:block;margin-top:14px;letter-spacing:.04em;}
+  .vdiag{display:block;margin:16px auto 4px;max-width:280px;width:100%;height:auto;}
+  .visualtoggle{display:inline-flex;align-items:center;gap:6px;
+    background:none;border:1px solid var(--line);border-radius:8px;
+    padding:5px 11px;cursor:pointer;font-family:inherit;font-size:.82rem;
+    color:var(--muted);margin:0 auto 8px;
+    transition:border-color .12s,color .12s;}
+  .visualtoggle:hover{border-color:var(--ink);color:var(--ink);}
+  .qvisual{margin:0 auto 16px;}
+  .qvisual:empty{display:none !important;}
+  .vistoggles{display:flex;justify-content:center;gap:6px;margin:0 auto 8px;flex-wrap:wrap;}
+  .vischip{font-family:'DM Mono',monospace;font-size:.78rem;padding:3px 10px;
+    background:none;border:1px solid;border-radius:6px;cursor:pointer;
+    transition:opacity .12s,background .12s;}
+  .vischip:not(.on){opacity:.35;}
+  .vischip.on{background:rgba(0,0,0,.025);}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+    background:var(--ink);color:var(--bg);padding:14px 22px 18px;
+    border:none;border-radius:12px;display:flex;flex-direction:column;align-items:center;gap:6px;
+    box-shadow:0 10px 28px rgba(0,0,0,.22);z-index:200;cursor:pointer;
+    font-family:'Fredoka',sans-serif;animation:toastpop .25s ease;
+    min-width:260px;text-align:center;}
+  .toast:hover{background:#000;}
+  @keyframes toastpop{from{opacity:0;transform:translateX(-50%) translateY(8px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+  .toastmsg{font-size:.98rem;font-weight:500;}
+  .toasthint{font-size:.78rem;opacity:.75;letter-spacing:.04em;}
+  .toastbar{position:absolute;bottom:0;left:0;height:2px;width:100%;background:rgba(255,255,255,.2);border-radius:0 0 12px 12px;overflow:hidden;}
+  .toastbar > div{height:100%;background:rgba(255,255,255,.85);width:100%;transition:width 8s linear;}
+  .toast.toast-undo{background:#2F8F5F;}
+  .toast.toast-undo:hover{background:#267A4F;}
+  .gabreak{margin-top:14px;font-family:'DM Mono',monospace;font-size:.85rem;text-align:left;
+    background:rgba(0,0,0,.03);border-left:2px solid var(--ink);padding:10px 14px;border-radius:0 6px 6px 0;}
+  .gabreak .ghdr{font-family:'Fredoka',sans-serif;font-weight:500;font-size:.95rem;margin-bottom:6px;}
+  .gabreak .grow{display:flex;justify-content:space-between;gap:8px;padding:3px 0;}
+  .gabreak .gtag{color:var(--muted);}
+  .gabreak .pyth{margin-top:8px;padding-top:8px;border-top:1px solid var(--line);color:var(--muted);font-family:'Fredoka',sans-serif;font-size:.85rem;}
+  .dotop{color:var(--no);font-weight:600;padding:0 2px;}
+  .lessonbody{padding:6px 2px;}
+  .lessonbody h2{font-size:1.5rem;font-weight:600;margin-bottom:8px;}
+  .lessonbody p{font-size:.98rem;line-height:1.5;color:var(--ink);margin:8px 0;}
+  .lessonbody p .dotop{font-family:'DM Mono',monospace;}
+  .lessonbody p.lesson-formula{background:rgba(0,0,0,.03);border-radius:8px;padding:10px 14px;
+    text-align:center;font-size:1.02rem;margin:10px 0;}
+  .lesson-interactive{margin:18px auto;display:flex;flex-direction:column;align-items:center;gap:10px;}
+  .lesson-interactive svg{touch-action:none;border:1px solid var(--line);border-radius:10px;
+    background:rgba(0,0,0,.015);max-width:100%;height:auto;}
+  .lesson-output{font-family:'DM Mono',monospace;font-size:.95rem;color:var(--ink);
+    background:rgba(0,0,0,.03);padding:10px 14px;border-radius:8px;text-align:center;line-height:1.5;}
+  .lesson-output b{color:var(--no);}
+  .lesson-hint{font-size:.82rem;color:var(--muted);text-align:center;}
+  .lesson-persp{font-family:inherit;font-size:.85rem;font-weight:500;cursor:pointer;
+    background:none;border:1px solid var(--line);border-radius:8px;padding:6px 12px;
+    color:var(--ink);transition:border-color .12s,background .12s;}
+  .lesson-persp:hover{border-color:var(--ink);background:rgba(0,0,0,.025);}
+  .lessonbody #lessonPlayBtn{margin-top:16px;}
+
+  .answers{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .ans{font-family:'DM Mono',monospace;font-weight:400;font-size:1.25rem;cursor:pointer;
+    background:none;border:1px solid var(--line);border-radius:10px;padding:18px 8px;color:var(--ink);
+    transition:border-color .12s, background .12s;}
+  .ans:hover:not(:disabled){border-color:var(--ink);}
+  .ans.correct{background:var(--ok);color:#fff;border-color:var(--ok);}
+  .ans.wrong{background:var(--no);color:#fff;border-color:var(--no);}
+  .ans:disabled{cursor:default;}
+
+  .typewrap{display:flex;flex-direction:column;gap:12px;align-items:center;}
+  .typeline{display:flex;align-items:center;gap:10px;}
+  .unitlabel{font-family:'DM Mono',monospace;font-size:1.1rem;color:var(--muted);min-width:32px;}
+  .typein{font-family:'DM Mono',monospace;font-size:1.7rem;text-align:center;width:100%;max-width:200px;
+    border:1px solid var(--line);border-radius:10px;padding:14px;background:none;color:var(--ink);}
+  .typein:focus{outline:none;border-color:var(--ink);}
+  .typein.correct{background:var(--ok);color:#fff;border-color:var(--ok);}
+  .typein.wrong{background:var(--no);color:#fff;border-color:var(--no);}
+  .submitbtn{cursor:pointer;font-family:inherit;font-weight:500;font-size:.98rem;
+    background:var(--ink);color:var(--bg);border:none;border-radius:10px;
+    padding:11px 28px;transition:opacity .12s;}
+  .submitbtn:hover{opacity:.85;}
+
+  .explain{margin-top:24px;display:none;padding-top:20px;border-top:1px solid var(--line);}
+  .explain.on{display:block;animation:pop .25s ease;}
+  .verdict{font-weight:500;font-size:1rem;text-align:center;margin-bottom:16px;letter-spacing:.02em;}
+  .verdict.ok{color:var(--ok);}
+  .verdict.no{color:var(--no);}
+  .slidebox{padding:8px 4px;}
+  .numline{font-family:'DM Mono',monospace;font-size:clamp(1.4rem,6.5vw,2rem);text-align:center;letter-spacing:1.5px;
+    display:flex;justify-content:center;align-items:flex-end;flex-wrap:wrap;color:var(--ink);}
+  .digit{display:inline-block;padding:0 1px;}
+  .point{display:inline-block;color:var(--ink);font-weight:600;transform:translateY(2px);}
+  .point.move{animation:hop .8s ease 1;}
+  @keyframes hop{0%{transform:translateY(2px) scale(1);}40%{transform:translateY(-14px) scale(1.4);}100%{transform:translateY(2px) scale(1);}}
+  .moveword{text-align:center;font-weight:400;font-size:.92rem;color:var(--muted);margin:12px 0;}
+  .moveword .r, .moveword .l{color:var(--ink);font-weight:500;}
+  .why{text-align:center;font-size:.95rem;margin-top:14px;color:var(--ink);font-weight:400;}
+  .why .fact{display:block;margin-top:8px;font-size:.88rem;color:var(--muted);}
+  .nlwrap{overflow-x:auto;padding-bottom:4px;}
+  .nl{display:flex;justify-content:center;gap:2px;min-width:min-content;}
+  .nl-cell{font-family:'DM Mono',monospace;font-weight:400;min-width:30px;padding:6px 4px;text-align:center;
+    border:1px solid var(--line);border-radius:6px;font-size:.92rem;color:var(--ink);}
+  .nl-cell.zero{border-color:var(--ink);font-weight:500;}
+  .nl-cell.start{background:var(--ink);color:var(--bg);border-color:var(--ink);}
+  .nl-cell.end{background:var(--ok);color:#fff;border-color:var(--ok);}
+  .nl-cell.start.end{background:var(--ok);}
+  .fexp{font-family:'DM Mono',monospace;text-align:center;font-size:1.3rem;color:var(--ink);}
+
+  .next{display:block;width:100%;margin-top:20px;cursor:pointer;font-family:inherit;
+    font-weight:500;font-size:1rem;background:var(--ink);color:var(--bg);border:none;
+    border-radius:10px;padding:13px;transition:opacity .12s;}
+  .next:hover{opacity:.85;}
+  .explainfoot{display:flex;gap:10px;align-items:stretch;margin-top:20px;}
+  .explainfoot .next{margin-top:0;flex:1;}
+  .pausebtn{cursor:pointer;font-family:inherit;font-weight:500;font-size:.88rem;
+    background:none;border:1px solid var(--line);border-radius:10px;padding:0 14px;color:var(--muted);
+    white-space:nowrap;transition:border-color .12s,color .12s;}
+  .pausebtn:hover{border-color:var(--ink);color:var(--ink);}
+
+  .endcard{text-align:center;padding-top:8px;}
+  .gradebox{display:inline-flex;flex-direction:column;align-items:center;
+    margin:18px auto 12px;padding:14px 26px;border-radius:14px;border:1px solid var(--line);
+    background:rgba(0,0,0,.025);}
+  .gradelvl{font-family:'DM Mono',monospace;font-weight:500;font-size:1.9rem;line-height:1;color:var(--ink);}
+  .gradetier{font-family:'Fredoka',sans-serif;font-weight:500;font-size:1rem;color:var(--muted);
+    margin-top:4px;letter-spacing:.04em;text-transform:uppercase;}
+  .gradebox[data-tier="4"]{background:rgba(120,120,120,.06);border-color:rgba(120,120,120,.3);}
+  .gradebox[data-tier="4"] .gradetier{color:#6a6a6a;}
+  .gradebox[data-tier="5"]{background:rgba(31,143,95,.07);border-color:rgba(31,143,95,.35);}
+  .gradebox[data-tier="5"] .gradetier{color:#2F8F5F;}
+  .gradebox[data-tier="6"]{background:rgba(58,110,165,.07);border-color:rgba(58,110,165,.35);}
+  .gradebox[data-tier="6"] .gradetier{color:#3A6EA5;}
+  .gradebox[data-tier="7"]{background:rgba(82,160,255,.08);border-color:rgba(82,160,255,.4);}
+  .gradebox[data-tier="7"] .gradetier{color:#3A6EA5;}
+  .gradebox[data-tier="8"]{background:rgba(155,92,255,.08);border-color:rgba(155,92,255,.4);}
+  .gradebox[data-tier="8"] .gradetier{color:#7A3FE6;}
+  .gradebox[data-tier="9"]{background:rgba(155,92,255,.12);border-color:rgba(120,60,200,.5);}
+  .gradebox[data-tier="9"] .gradetier{color:#5A2EB0;}
+  .gradebox[data-tier="10"]{background:rgba(255,201,60,.12);border-color:rgba(200,140,30,.45);}
+  .gradebox[data-tier="10"] .gradetier{color:#B07A1E;}
+  .gradebox[data-tier="11"]{background:linear-gradient(135deg,rgba(255,201,60,.18),rgba(255,61,113,.12));
+    border-color:rgba(200,80,40,.5);}
+  .gradebox[data-tier="11"] .gradetier{color:#B33B1F;font-weight:600;}
+
+  .bigscore{font-family:'DM Mono',monospace;font-weight:400;font-size:3.4rem;line-height:1;margin:16px 0;color:var(--ink);}
+  .bigscore .of{color:var(--muted);font-size:1.8rem;}
+  .stats{display:flex;justify-content:center;gap:24px;margin:20px 0 8px;flex-wrap:wrap;}
+  .stat{padding:0;min-width:auto;}
+  .stat .v{font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:400;color:var(--ink);}
+  .stat .k{font-size:.75rem;color:var(--muted);font-weight:400;text-transform:uppercase;letter-spacing:.06em;margin-top:2px;}
+  .msg{font-size:1rem;font-weight:400;margin:20px 0 4px;color:var(--muted);}
+  .endbtns{display:grid;gap:8px;margin-top:20px;}
+  .countCustom{margin-top:8px;width:100%;max-width:240px;
+    border:1px solid var(--line);border-radius:8px;padding:7px 12px;
+    font-size:.92rem;background:none;color:var(--ink);font-family:'DM Mono',monospace;}
+  .countCustom:focus{outline:none;border-color:var(--ink);}
+  .ratesection{margin-top:24px;padding:18px 0 4px;border-top:1px solid var(--line);text-align:left;}
+  .ratecap{font-size:.82rem;color:var(--muted);margin:6px 0 10px;}
+  .ratecap b{color:var(--ink);font-family:'DM Mono',monospace;}
+  .rateopts{display:flex;gap:5px;flex-wrap:wrap;}
+  .rate-btn{font-family:'DM Mono',monospace;font-size:.82rem;font-weight:500;
+    padding:5px 10px;background:none;border:1px solid var(--line);border-radius:7px;
+    cursor:pointer;color:var(--ink);transition:border-color .12s,background .12s,color .12s;}
+  .rate-btn:hover{border-color:var(--ink);}
+  .rate-btn.sel{background:var(--ink);color:var(--bg);border-color:var(--ink);}
+  .qsumsection{margin-top:24px;padding-top:18px;border-top:1px solid var(--line);text-align:left;}
+  .qsumlist{display:grid;gap:6px;margin-top:10px;}
+  .qsumrow{display:grid;grid-template-columns:24px 1fr auto;gap:10px;align-items:center;
+    padding:8px 10px;border:1px solid var(--line);border-radius:8px;}
+  .qsumrow.ok{background:rgba(31,143,95,.06);border-color:rgba(31,143,95,.3);}
+  .qsumrow.no{background:rgba(192,70,58,.06);border-color:rgba(192,70,58,.3);}
+  .qsumrow .qidx{font-family:'DM Mono',monospace;font-size:.78rem;color:var(--muted);text-align:right;}
+  .qsumrow .qprompt{font-family:'DM Mono',monospace;font-size:.92rem;color:var(--ink);overflow:hidden;}
+  .qsumrow .qprompt .frac,.qsumrow .qprompt .vec,.qsumrow .qprompt .mat{font-size:.8em;}
+  .qsumrow .qprompt .qmark,.qsumrow .qprompt .op,.qsumrow .qprompt .opd{color:var(--muted);}
+  .qsumrow .qprompt sup{font-size:.7em;}
+  .qsumrow .qres{font-family:'DM Mono',monospace;font-size:.82rem;text-align:right;white-space:nowrap;}
+  .qsumrow .qres .your{color:var(--ink);}
+  .qsumrow.no .qres .your{color:var(--no);text-decoration:line-through;}
+  .qsumrow .qres .ans{color:var(--ok);}
+  .rate-higher{border-style:dashed;color:var(--muted);}
+  .rate-higher:hover{color:var(--ink);}
+  .rate-higher.sel{background:transparent;color:var(--ink);border-color:var(--ink);border-style:solid;}
+  .rate-coarse{background:rgba(0,0,0,.03);font-weight:500;}
+  .commavg{margin-top:10px;font-size:.8rem;color:var(--muted);letter-spacing:.02em;}
+  .commavg b{color:var(--ink);}
+
+  .confetti{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+  .conf{position:absolute;width:6px;height:6px;opacity:0;background:var(--ink);}
+  @keyframes fall{0%{opacity:.7;transform:translateY(-20px) rotate(0);}100%{opacity:0;transform:translateY(500px) rotate(360deg);}}
+
+  .userchip{cursor:pointer;font-family:'DM Mono',monospace;font-size:.78rem;
+    background:none;border:1px solid var(--line);border-radius:20px;padding:5px 11px;
+    color:var(--ink);transition:border-color .12s;display:flex;align-items:center;gap:6px;
+    white-space:nowrap;max-width:180px;overflow:hidden;text-overflow:ellipsis;}
+  .userchip:hover{border-color:var(--ink);}
+  .userchip .pts{color:var(--muted);font-size:.72rem;}
+  .emailin{font-family:'DM Mono',monospace;font-size:1.05rem;width:100%;
+    border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:none;color:var(--ink);}
+  .emailin:focus{outline:none;border-color:var(--ink);}
+  .profspider{display:flex;justify-content:center;align-items:center;margin:8px auto 0;}
+  .spider{width:100%;max-width:320px;height:auto;display:block;}
+  .proftopics{display:grid;gap:18px;margin-top:10px;}
+  .emptyprof{padding:14px 0;color:var(--muted);font-size:.92rem;}
+  .profgroup{border-top:1px solid var(--line);padding-top:12px;}
+  .profhead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+  .profheadl{font-weight:500;font-size:1rem;display:flex;align-items:center;gap:10px;}
+  .profsym{font-family:'DM Mono',monospace;color:var(--muted);font-size:1.05rem;width:18px;text-align:center;}
+  .profheadr{font-size:.82rem;color:var(--muted);}
+  .proftopic{padding:8px 0 6px;}
+  .proftopic .profrow{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;}
+  .proftopic .tk{color:var(--ink);font-size:.92rem;}
+  .proftopic .tv{font-family:'DM Mono',monospace;color:var(--muted);font-size:.82rem;}
+  .proftopic .bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;}
+  .proftopic .bar > div{height:100%;background:var(--ink);transition:width .3s;}
+  .proftopic .diffrow{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap;}
+  .diffpill{font-family:'DM Mono',monospace;font-size:.7rem;color:var(--muted);
+    border:1px solid var(--line);border-radius:8px;padding:1px 7px;}
+  .profactions{display:inline-flex;gap:4px;margin-left:8px;}
+  .profact{background:none;border:1px solid var(--line);border-radius:6px;
+    width:24px;height:24px;font-family:'DM Mono',monospace;font-size:.9rem;
+    color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+    transition:border-color .12s,color .12s,background .12s;}
+  .profact:hover{border-color:var(--ink);color:var(--ink);background:rgba(0,0,0,.03);}
+  .profact.delact:hover{border-color:var(--no);color:var(--no);background:rgba(192,70,58,.06);}
+  .gradebadge{display:inline-block;font-family:'DM Mono',monospace;font-size:.7rem;
+    padding:1px 7px;border-radius:8px;border:1px solid var(--line);color:var(--muted);
+    margin-left:6px;letter-spacing:.02em;vertical-align:middle;}
+  .gradebadge[data-tier="4"]{background:rgba(120,120,120,.08);border-color:rgba(120,120,120,.35);color:#6a6a6a;}
+  .gradebadge[data-tier="5"]{background:rgba(31,143,95,.08);border-color:rgba(31,143,95,.35);color:#2F8F5F;}
+  .gradebadge[data-tier="6"]{background:rgba(58,110,165,.08);border-color:rgba(58,110,165,.4);color:#3A6EA5;}
+  .gradebadge[data-tier="7"]{background:rgba(82,160,255,.1);border-color:rgba(82,160,255,.45);color:#3A6EA5;}
+  .gradebadge[data-tier="8"]{background:rgba(155,92,255,.1);border-color:rgba(155,92,255,.45);color:#7A3FE6;}
+  .gradebadge[data-tier="9"]{background:rgba(155,92,255,.15);border-color:rgba(120,60,200,.55);color:#5A2EB0;}
+  .gradebadge[data-tier="10"]{background:rgba(255,201,60,.15);border-color:rgba(200,140,30,.5);color:#B07A1E;}
+  .gradebadge[data-tier="11"]{
+    background:linear-gradient(135deg,rgba(255,201,60,.2),rgba(255,61,113,.15));
+    border-color:rgba(200,80,40,.55);color:#B33B1F;font-weight:600;}
+  .settingsrow{padding:8px 0 4px;border-top:1px dashed rgba(0,0,0,.06);margin-top:6px;}
+  .qdots{display:inline-flex;gap:2px;flex-wrap:wrap;margin-left:8px;vertical-align:middle;max-width:160px;}
+  .qdot{width:8px;height:8px;border-radius:2px;display:inline-block;}
+  .qdot.ok{background:var(--ok);}
+  .qdot.no{background:var(--no);}
+  .settingsrow:first-child{border-top:none;margin-top:0;}
+  .rategrid{display:grid;grid-template-columns:auto 1fr auto 1fr;gap:2px 10px;
+    margin-top:6px;font-size:.78rem;}
+  .rategrid .rg-lbl{color:var(--muted);letter-spacing:.04em;}
+  .rategrid .rg-val{color:var(--ink);text-align:left;}
+
+  .startgate{padding:32px 8px 16px;text-align:center;}
+  .gatemsg{font-size:1.3rem;font-weight:500;color:var(--ink);margin-bottom:6px;}
+
+  .navbar{display:flex;align-items:center;gap:6px;margin-bottom:12px;padding:2px 0;}
+  .navbtn{font-family:inherit;font-size:.95rem;font-weight:500;cursor:pointer;
+    background:none;border:1px solid var(--line);border-radius:10px;padding:6px 11px;
+    color:var(--muted);transition:border-color .12s,color .12s,background .12s;}
+  .navbtn:hover:not(:disabled){border-color:var(--ink);color:var(--ink);}
+  .navbtn:disabled{opacity:.35;cursor:default;}
+  .navbtn.navspacer{flex:1;border:none;background:none;pointer-events:none;}
+
+  .advtoggle{display:flex;align-items:center;gap:8px;margin-top:24px;width:100%;
+    background:none;border:1px dashed var(--line);border-radius:10px;padding:11px 14px;
+    color:var(--muted);font-family:inherit;font-size:.92rem;cursor:pointer;
+    transition:border-color .12s,color .12s;}
+  .advtoggle:hover{border-color:var(--ink);color:var(--ink);}
+  .advtoggle .advicon{font-size:1.05rem;}
+  .advtoggle .advcaret{margin-left:auto;font-size:.85rem;transition:transform .15s;}
+  .advtoggle[aria-expanded="true"] .advcaret{transform:rotate(180deg);}
+  .advanced{animation:advexp .2s ease;}
+  @keyframes advexp{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
+
+  .recents{margin-top:18px;padding-bottom:18px;border-bottom:1px solid var(--line);}
+  .recentheader{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+  .recentlabel{font-weight:500;font-size:.82rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+  .clearbtn{background:none;border:none;color:var(--muted);cursor:pointer;font-family:'DM Mono',monospace;
+    font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;padding:2px 4px;
+    transition:color .12s;}
+  .clearbtn:hover{color:var(--no);}
+  .recentlist{display:grid;gap:6px;}
+  .recent{display:flex;justify-content:space-between;align-items:center;gap:10px;
+    background:none;border:1px solid var(--line);border-radius:10px;padding:9px 13px;cursor:pointer;
+    font-family:inherit;color:var(--ink);text-align:left;
+    transition:border-color .12s,background .12s;}
+  .recent:hover{border-color:var(--ink);background:rgba(0,0,0,.025);}
+  .recent .rname{font-weight:500;font-size:.96rem;flex:1;}
+  .recent .rmeta{font-family:'DM Mono',monospace;font-size:.78rem;color:var(--muted);white-space:nowrap;}
+  .recent .rclose{font-family:'DM Mono',monospace;font-size:.9rem;color:var(--muted);
+    padding:2px 6px;background:none;border:none;cursor:pointer;border-radius:6px;}
+  .recent .rclose:hover{color:var(--no);background:rgba(0,0,0,.05);}
+
+  .version{position:fixed;bottom:10px;right:14px;font-family:'DM Mono',monospace;
+    font-size:.7rem;color:var(--muted);opacity:.6;letter-spacing:.04em;pointer-events:none;}
+  .versionline{margin-top:6px;color:var(--muted);font-size:.72rem;letter-spacing:.06em;}
+  .hvtag{font-size:.55em;color:var(--muted);font-weight:400;margin-left:6px;vertical-align:middle;letter-spacing:0;}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="confetti" id="confetti"></div>
+
+  <button class="toast" id="discardToast" type="button" style="display:none;">
+    <span class="toastmsg" id="toastMsg"></span>
+    <span class="toasthint">Tap anywhere to discard</span>
+    <div class="toastbar"><div id="toastBar"></div></div>
+  </button>
+
+  <nav class="navbar" id="navbar">
+    <button class="navbtn" id="navBack" type="button" title="Back">←</button>
+    <button class="navbtn" id="navHome" type="button" title="Home">🏠</button>
+    <button class="navbtn navspacer" tabindex="-1" disabled></button>
+    <button class="navbtn" id="navProfile" type="button" title="Profile">👤</button>
+  </nav>
+
+  <section class="screen on" id="numbers">
+    <div class="topbar">
+      <div style="flex:1;">
+        <h1>Riemann <span class="accent">Surface</span> <span class="hvtag mono" id="homeVersionTag"></span></h1>
+      </div>
+      <button class="userchip" id="userChip"></button>
+    </div>
+
+    <div class="recents" id="recents" style="display:none;">
+      <div class="recentheader">
+        <span class="recentlabel">Recent</span>
+        <button class="clearbtn" id="clearRecentsBtn" type="button">Clear</button>
+      </div>
+      <div class="recentlist" id="recentList"></div>
+    </div>
+
+    <div class="topics" id="numberList"></div>
+  </section>
+
+  <section class="screen" id="categories">
+    <div class="topbar">
+      <button class="back" data-go="numbers">← Numbers</button>
+      <span class="crumb" id="catCrumb"></span>
+    </div>
+    <div class="topics" id="categoryList"></div>
+  </section>
+
+  <section class="screen" id="operations">
+    <div class="topbar">
+      <button class="back" data-go="categories">← Back</button>
+      <span class="crumb" id="opCrumb"></span>
+    </div>
+    <div class="topics" id="operationList"></div>
+  </section>
+
+  <section class="screen" id="signin">
+    <div class="topbar"><button class="back" data-go="numbers">← Numbers</button><span class="crumb">Sign in</span></div>
+    <p class="tag" style="margin-top:16px;">Track your points across sessions. Stored locally — no server.</p>
+    <div class="setblock">
+      <div class="setlabel">Username or email</div>
+      <input class="emailin mono" id="emailIn" type="text" placeholder="yourname or you@example.com" autocomplete="username" autocapitalize="none" spellcheck="false">
+    </div>
+    <button class="startbtn" id="signinBtn">Continue →</button>
+  </section>
+
+  <section class="screen" id="profile">
+    <div class="topbar"><button class="back" data-go="numbers">← Numbers</button><span class="crumb">Profile</span></div>
+    <div class="endcard" style="text-align:left;">
+      <div class="versionline mono" id="profileVersion"></div>
+      <div class="setlabel" style="margin-top:18px;">Signed in as</div>
+      <div class="mono" id="profEmail" style="font-size:1.1rem;margin-top:4px;word-break:break-all;"></div>
+      <div class="setlabel" style="margin-top:24px;">Discipline overview</div>
+      <div id="profSpider" class="profspider"></div>
+      <div class="setlabel" style="margin-top:24px;">History</div>
+      <div id="profTopics" class="proftopics"></div>
+      <div class="endbtns" style="margin-top:24px;">
+        <button class="next" id="resetStatsBtn" type="button" style="background:none;color:var(--ink);border:1px solid var(--line);">Reset my stats</button>
+        <button class="next" id="logoutBtn" style="background:none;color:var(--no);border:1px solid var(--no);">Sign out</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="lesson">
+    <div class="topbar">
+      <span class="crumb" id="lessonCrumb"></span>
+    </div>
+    <div class="lessonbody" id="lessonBody"></div>
+    <button class="startbtn" id="lessonPlayBtn">Play quiz →</button>
+  </section>
+
+  <section class="screen" id="settings">
+    <div class="topbar">
+      <button class="back" data-go="operations">← Back</button>
+      <span class="crumb" id="setCrumb"></span>
+    </div>
+
+    <div class="setblock">
+      <div class="setlabel">Mode</div>
+      <div class="opts" id="optMode"></div>
+    </div>
+    <div class="setblock" id="setViewBlock" style="display:none;">
+      <div class="setlabel">View as</div>
+      <div class="opts" id="optView"></div>
+    </div>
+
+    <button class="advtoggle" id="advToggle" type="button" aria-expanded="false">
+      <span class="advicon">⚙</span><span>More options</span><span class="advcaret">▾</span>
+    </button>
+    <div class="advanced" id="advancedBlock" style="display:none;">
+      <div class="setblock">
+        <div class="setlabel">Difficulty</div>
+        <div class="opts" id="optDiff"></div>
+      </div>
+      <div class="setblock">
+        <div class="setlabel">How many questions</div>
+        <div class="opts" id="optCount"></div>
+        <input type="number" id="countCustom" class="countCustom mono" min="1" max="500" placeholder="Or type any number 1–500">
+      </div>
+      <div class="setblock">
+        <div class="setlabel">How you answer</div>
+        <div class="opts" id="optMethod"></div>
+      </div>
+      <div class="setblock" id="setEqBlock" style="display:none;">
+        <div class="setlabel">Equation</div>
+        <div class="opts" id="optEq"></div>
+      </div>
+      <div class="setblock" id="setVcmCompBlock" style="display:none;">
+        <div class="setlabel">Which component to ask</div>
+        <div class="opts" id="optVcmComp"></div>
+      </div>
+      <div class="setblock" id="setNumScaleBlock" style="display:none;">
+        <div class="setlabel">Number complexity</div>
+        <div class="opts" id="optNumScale"></div>
+      </div>
+      <div class="setblock" id="setUnitBlock" style="display:none;">
+        <div class="setlabel">Units in answer</div>
+        <div class="opts" id="optUnit"></div>
+      </div>
+      <div class="setblock" id="setNumBlock" style="display:none;">
+        <div class="setlabel">Numerals</div>
+        <div class="opts" id="optNumForm"></div>
+      </div>
+      <div class="setblock" id="setDivBlock" style="display:none;">
+        <div class="setlabel">Division shown as</div>
+        <div class="opts" id="optDivForm"></div>
+      </div>
+      <div class="setblock">
+        <div class="setlabel">Feedback after each answer</div>
+        <div class="opts" id="optFb"></div>
+      </div>
+    </div>
+
+    <button class="startbtn" id="startBtn">Play →</button>
+  </section>
+
+  <section class="screen" id="play">
+    <div class="hud">
+      <button class="back" id="finishBtn" type="button" title="Finish early and see the summary">⏹ Finish</button>
+      <span class="chip" id="qcount">1 / 10</span>
+      <span class="chip time" id="timer">0.0s</span>
+      <span class="chip score" id="score">★ 0</span>
+    </div>
+    <div class="progress"><div id="bar"></div></div>
+
+    <div id="startGate" class="startgate">
+      <div class="gatemsg">Ready when you are.</div>
+      <p class="tag" style="text-align:center;margin-bottom:18px;">Timer starts on click.</p>
+      <button class="startbtn" id="gateBtn">Start →</button>
+    </div>
+
+    <div id="playBody" style="display:none;">
+      <div class="scenario" id="scenario"></div>
+      <div class="q mono" id="question"></div>
+
+      <button class="visualtoggle" id="visualToggle" type="button" style="display:none;"></button>
+      <div class="vistoggles" id="visToggles" style="display:none;"></div>
+      <div class="qvisual" id="qVisual" style="display:none;"></div>
+
+      <div class="answers" id="answers"></div>
+
+      <div class="typewrap" id="typewrap" style="display:none;">
+        <div class="typeline"><input class="typein mono" id="typein" inputmode="decimal" autocomplete="off" placeholder="?"><span class="unitlabel" id="unitLabel"></span></div>
+        <button class="submitbtn" id="submitBtn">Check</button>
+      </div>
+
+      <div class="explain" id="explain">
+        <div class="verdict" id="verdict"></div>
+        <div id="explainBody"></div>
+        <div class="explainfoot">
+          <button class="pausebtn" id="pauseBtn" type="button" style="display:none;">⏸ Pause to read</button>
+          <button class="next" id="nextBtn">Next →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="end">
+    <div class="topbar"><button class="back" data-go="numbers">← Numbers</button></div>
+    <div class="endcard">
+      <h1 id="endTitle">Done!</h1>
+      <div class="gradebox" id="finalGradeBox" data-tier="1">
+        <div class="gradelvl" id="finalGrade">Lvl 1</div>
+        <div class="gradetier" id="finalTier">Layman</div>
+      </div>
+      <div class="bigscore"><span id="finalScore">0</span><span class="of" id="finalOf"> / 10</span></div>
+      <div class="stats">
+        <div class="stat"><div class="v" id="finalTime">0s</div><div class="k">total time</div></div>
+        <div class="stat"><div class="v" id="finalAcc">0%</div><div class="k">accuracy</div></div>
+      </div>
+      <p class="msg" id="endMsg"></p>
+      <div class="ratesection" id="rateSection" style="display:none;">
+        <div class="setlabel">Rate this game's difficulty</div>
+        <div class="ratecap" id="rateCap"></div>
+        <div class="rateopts" id="rateOpts"></div>
+        <div class="commavg mono" id="rateCommunity"></div>
+      </div>
+      <div class="qsumsection" id="qSumSection" style="display:none;">
+        <div class="setlabel">Question summary</div>
+        <div class="qsumlist" id="qSumList"></div>
+      </div>
+      <div class="endbtns">
+        <button class="next" id="againBtn">Play again</button>
+        <button class="next" id="changeBtn" style="background:none;color:var(--ink);border:1px solid var(--line);">Change settings</button>
+        <button class="next" id="leaveBtn" style="background:none;color:var(--muted);border:1px solid var(--line);">Leave</button>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="version">v1.23.7</div>
+
+<script>
+/* Riemann Surface — math drill app, single file. See header comments in
+ * the source archive for the full architecture map. This is a port from the
+ * original v1.23.7 with mojibake characters repaired so the UI renders. */
+
+function shiftPoint(numStr, places){
+  let s = String(numStr);
+  const neg = s.startsWith('-');
+  if(neg) s = s.slice(1);
+  let [intPart, fracPart = ''] = s.split('.');
+  let digits = (intPart + fracPart).replace(/^0+(?=\d)/, '');
+  const fracTail = fracPart.length - places;
+  if(fracTail <= 0){
+    digits = digits + '0'.repeat(-fracTail);
+    intPart = digits; fracPart = '';
+  } else if(fracTail >= digits.length){
+    digits = '0'.repeat(fracTail - digits.length + 1) + digits;
+    const splitAt = digits.length - fracTail;
+    intPart = digits.slice(0, splitAt); fracPart = digits.slice(splitAt);
+  } else {
+    const splitAt = digits.length - fracTail;
+    intPart = digits.slice(0, splitAt); fracPart = digits.slice(splitAt);
+  }
+  intPart = intPart.replace(/^0+(?=\d)/, '') || '0';
+  fracPart = fracPart.replace(/0+$/, '');
+  let out = fracPart ? intPart + '.' + fracPart : intPart;
+  if(neg && out !== '0') out = '-' + out;
+  return out;
+}
+
+function normalize(s){
+  s = String(s).trim().replace(/\s+/g, '').replace(/^\+/, '');
+  if(s === '') return null;
+  const fracMatch = s.match(/^(-?)(\d+)\/(\d+)$/);
+  if(fracMatch){
+    const num = parseInt(fracMatch[2], 10);
+    const den = parseInt(fracMatch[3], 10);
+    if(den === 0) return 'INVALID';
+    const signed = (num / den) * (fracMatch[1] ? -1 : 1);
+    s = String(signed);
+  }
+  if(!/^-?\d*\.?\d*$/.test(s) || s === '-' || s === '.') return 'INVALID';
+  const neg = s.startsWith('-');
+  if(neg) s = s.slice(1);
+  let [intPart = '', fracPart = ''] = s.split('.');
+  intPart = intPart.replace(/^0+(?=\d)/, '') || '0';
+  fracPart = fracPart.replace(/0+$/, '');
+  let out = fracPart ? intPart + '.' + fracPart : intPart;
+  if(neg && out !== '0') out = '-' + out;
+  return out;
+}
+
+function fracToDec(n, d){
+  const s = (n / d).toFixed(8);
+  return s.replace(/0+$/, '').replace(/\.$/, '');
+}
+
+const intStr = n => String(n === 0 ? 0 : n);
+const rnd    = arr => arr[Math.floor(Math.random() * arr.length)];
+
+function gcd(a, b){
+  a = Math.abs(a); b = Math.abs(b);
+  while(b){ [a, b] = [b, a % b]; }
+  return a || 1;
+}
+
+function decToFrac(s){
+  const x = parseFloat(s);
+  if(Number.isInteger(x)) return null;
+  const sign = x < 0 ? '-' : '';
+  const abs  = Math.abs(x);
+  const str  = String(abs);
+  const decimalPlaces = str.length - str.indexOf('.') - 1;
+  let num = Math.round(abs * Math.pow(10, decimalPlaces));
+  let den = Math.pow(10, decimalPlaces);
+  const g = gcd(num, den);
+  return [sign + (num / g), den / g];
+}
+function fmtVal(s){
+  if(SET.numForm!=='fraction') return String(s);
+  const f = decToFrac(s); if(!f) return String(s);
+  return `<span class="frac"><span>${f[0]}</span><span class="den">${f[1]}</span></span>`;
+}
+function shiftPrompt(a, op){
+  const sym = op[0]; const k = op.slice(1);
+  if(SET.divForm==='fraction' && sym==='÷'){
+    return `<span class="frac"><span>${fmtVal(a)}</span><span class="den">${k}</span></span> = <span class="qmark">?</span>`;
+  }
+  const cls = sym==='÷' ? 'opd' : 'op';
+  return `${fmtVal(a)} <span class="${cls}">${op}</span> = <span class="qmark">?</span>`;
+}
+
+const _opPhrase = {
+  '×10':'ten times','×100':'a hundred times','×1000':'a thousand times',
+  '÷10':'one tenth','÷100':'one hundredth','÷1000':'one thousandth'
+};
+const _as = (adj, op) => `${_opPhrase[op]||op} as ${adj}`;
+
+const SCENARIOS = {
+  scale:[
+    {tag:'Black Holes', unit:'km',
+      intro:(a,op)=>`The Schwarzschild radius of a small black hole is <b>${a} km</b>. A black hole <b>${op}</b> as massive has a radius...`,
+      prose:(a,op)=>`A small black hole has a Schwarzschild radius of ${a} km. A black hole ${_as('massive',op)} has what radius?`,
+      fact:`A black hole's event horizon scales linearly with mass — 10× the mass means 10× the radius.`},
+    {tag:'Neutron Stars', unit:'km',
+      intro:(a,op)=>`A neutron star is about <b>${a} km</b> across. In a 3D simulation scaled <b>${op}</b>, its diameter becomes...`,
+      prose:(a,op)=>`A neutron star is about ${a} km across. A scaled simulation makes it ${_as('wide',op)}. What's the new diameter?`,
+      fact:`Real neutron stars are ~20 km across yet pack 1.4 Sun-masses — denser than an atomic nucleus.`},
+    {tag:'Atomic Radius', unit:'Å',
+      intro:(a,op)=>`A hydrogen atom has a radius of <b>${a} Å</b>. Stretched <b>${op}</b> in a Rydberg state, the radius is...`,
+      prose:(a,op)=>`A hydrogen atom has a radius of ${a} Å. A Rydberg cousin is ${_as('wide',op)}. What's its radius?`,
+      fact:`1 Ångström = 10⁻¹⁰ m. Excited "Rydberg atoms" can balloon thousands of times larger.`},
+    {tag:'Light & Distance', unit:'ly',
+      intro:(a,op)=>`A star sits <b>${a} ly</b> away. A galaxy <b>${op}</b> as far would be at...`,
+      prose:(a,op)=>`A star sits ${a} light-years away. A distant galaxy is ${_as('far',op)}. What's its distance?`,
+      fact:`The Milky Way is ~100,000 light-years across; Andromeda is 2.5 million ly away.`},
+    {tag:'Alchemy / Concentration', unit:'mol/L',
+      intro:(a,op)=>`A reagent sits at <b>${a} mol/L</b>. After a <b>${op}</b> dilution step the concentration is...`,
+      prose:(a,op)=>`A reagent sits at ${a} mol/L. After a dilution it ends up ${_as('concentrated',op)}. Final molarity?`,
+      fact:`Each ×10 dilution drops concentration by one order of magnitude — homeopathy abuses this.`},
+    {tag:'Half-life', unit:'s',
+      intro:(a,op)=>`An isotope has a half-life of <b>${a} s</b>. A nucleus <b>${op}</b> more stable lasts...`,
+      prose:(a,op)=>`An isotope has a half-life of ${a} seconds. A more stable isotope lasts ${_as('long',op)}. What's its half-life?`,
+      fact:`Half-lives span 30 orders of magnitude — from yoctoseconds to billions of years.`},
+    {tag:'Wavelengths', unit:'nm',
+      intro:(a,op)=>`A laser emits at <b>${a} nm</b>. Shifted <b>${op}</b>, the new wavelength is...`,
+      prose:(a,op)=>`A laser emits at ${a} nm. A second source emits ${_as('long',op)} a wavelength. What's its wavelength?`,
+      fact:`Visible light: 380–750 nm. Radio: meters. Gamma: picometers. All the same EM spectrum.`}
+  ],
+  cross:[
+    {tag:'Cryogenics', unit:'°C',
+      intro:(x,op,y)=>`Liquid helium sits at <b>${x}°C</b>. Heat it by <b>${op} ${y<0?`(${y})`:y} °C</b>. New temperature?`,
+      prose:(x,op,y)=>{
+        const d = op==='−' ? -y : y;
+        const xP = x<0 ? `${Math.abs(x)} degrees below zero` : `${x} degrees above zero`;
+        const dP = d>=0 ? `warms it by ${Math.abs(d)} degrees` : `cools it by ${Math.abs(d)} degrees`;
+        return `A flask of liquid helium reads ${xP}. A pad ${dP}. What does the thermometer read now?`;
+      },
+      fact:`Absolute zero is −273.15°C. Below ~−270°C, helium becomes a superfluid that climbs walls.`},
+    {tag:'Voltage', unit:'V',
+      intro:(x,op,y)=>`A capacitor plate is at <b>${x} V</b>. Apply a swing of <b>${op} ${y<0?`(${y})`:y} V</b>. Final potential?`,
+      prose:(x,op,y)=>{
+        const d = op==='−' ? -y : y;
+        const xP = x<0 ? `${Math.abs(x)} volts below ground` : `${x} volts above ground`;
+        const dP = d>=0 ? `raises the plate by ${Math.abs(d)} volts` : `drops the plate by ${Math.abs(d)} volts`;
+        return `A capacitor plate sits at ${xP}. A pulse ${dP}. What's the new potential?`;
+      },
+      fact:`Crossing zero volts changes the direction current wants to flow — that's how alternators work.`},
+    {tag:'Atmospheric Pressure', unit:'kPa',
+      intro:(x,op,y)=>`Pressure deviation reads <b>${x} kPa</b>. A storm front brings <b>${op} ${y<0?`(${y})`:y} kPa</b>. New reading?`,
+      prose:(x,op,y)=>{
+        const d = op==='−' ? -y : y;
+        const xP = x<0 ? `${Math.abs(x)} kPa below the baseline` : `${x} kPa above the baseline`;
+        const dP = d>=0 ? `pushes pressure up by ${Math.abs(d)} kPa` : `drops pressure by ${Math.abs(d)} kPa`;
+        return `A barometer sits ${xP}. A weather front ${dP}. What does it read now?`;
+      },
+      fact:`Negative = below sea-level baseline. Hurricane eyes can drop pressure 100+ kPa below normal.`},
+    {tag:'Electron Energy Levels', unit:'eV',
+      intro:(x,op,y)=>`A bound electron sits at <b>${x} eV</b> (negative = bound). Absorb <b>${op} ${y<0?`(${y})`:y} eV</b>. New level?`,
+      prose:(x,op,y)=>{
+        const d = op==='−' ? -y : y;
+        const xP = x<0 ? `${Math.abs(x)} eV below the vacuum level` : `${x} eV above the vacuum level`;
+        const dP = d>=0 ? `gains ${Math.abs(d)} eV from a photon` : `releases ${Math.abs(d)} eV as a photon`;
+        return `An electron sits ${xP}. It ${dP}. Where's its energy now?`;
+      },
+      fact:`Hydrogen's ground state is −13.6 eV. Reach 0 eV and the electron escapes — ionization.`},
+    {tag:'Charge Balance', unit:'e',
+      intro:(x,op,y)=>`A particle carries <b>${x} e</b> of charge. It captures a partner of <b>${op} ${y<0?`(${y})`:y} e</b>. Net charge?`,
+      prose:(x,op,y)=>{
+        const d = op==='−' ? -y : y;
+        const xP = x<0 ? `${Math.abs(x)} units of negative charge` : `${x} units of positive charge`;
+        const dP = d>=0 ? `gains ${Math.abs(d)} units of positive charge` : `gains ${Math.abs(d)} units of negative charge`;
+        return `An ion holds ${xP}. It ${dP}. What's the net charge in units of e?`;
+      },
+      fact:`Antiparticles have opposite charge — annihilation collapses charge to zero, releasing γ-rays.`},
+    {tag:'Heat of Reaction', unit:'kJ/mol',
+      intro:(x,op,y)=>`A reaction's ΔH starts at <b>${x} kJ/mol</b>. A catalyst shifts it by <b>${op} ${y<0?`(${y})`:y} kJ/mol</b>. New ΔH?`,
+      prose:(x,op,y)=>{
+        const d = op==='−' ? -y : y;
+        const xP = x<0 ? `releases ${Math.abs(x)} kJ/mol (exothermic)` : `absorbs ${x} kJ/mol (endothermic)`;
+        const dP = d>=0 ? `raises ΔH by ${Math.abs(d)} kJ/mol` : `lowers ΔH by ${Math.abs(d)} kJ/mol`;
+        return `A reaction ${xP}. A catalyst ${dP}. What's the new ΔH in kJ/mol?`;
+      },
+      fact:`Negative ΔH = exothermic (releases heat). Crossing zero flips the reaction's spontaneity story.`}
+  ],
+  ratio:[
+    {tag:'Universe Composition',
+      intro:(n,d)=>`Hydrogen makes up <b>${n}/${d}</b> of the ordinary mass in a star. As a decimal mass-fraction?`,
+      prose:(n,d)=>`Hydrogen makes up ${n} out of every ${d} parts of a star's ordinary mass. What's that as a decimal?`,
+      fact:`Stars are ~75% H, ~24% He by mass — the rest is everything else.`},
+    {tag:'Isotopic Abundance',
+      intro:(n,d)=>`A sample of an element is <b>${n}/${d}</b> a single isotope. The decimal abundance?`,
+      prose:(n,d)=>`In a sample of ${d} atoms, ${n} are a single isotope. What's the decimal abundance?`,
+      fact:`Carbon is 98.9% ¹²C, 1.1% ¹³C. Mass spectrometry can measure parts-per-million abundances.`},
+    {tag:'Alloy / Alchemy',
+      intro:(n,d)=>`A gold-copper alloy is <b>${n}/${d}</b> gold by mass. Express as a decimal:`,
+      prose:(n,d)=>`A gold-copper alloy contains ${n} parts gold for every ${d} parts total. As a decimal?`,
+      fact:`24-karat gold = 1.000 pure. 18-karat = 18/24 = 0.75. Karat is just a fraction in disguise.`},
+    {tag:'Molarity',
+      intro:(n,d)=>`A solution contains <b>${n}/${d}</b> of a mole per liter. As a decimal mol/L?`,
+      prose:(n,d)=>`A solution contains ${n} parts solute for every ${d} parts of a mole per liter. As a decimal?`,
+      fact:`Concentration in decimal form is easier to plug into the rate equation k[A][B].`},
+    {tag:'Decay Survival',
+      intro:(n,d)=>`After several half-lives, <b>${n}/${d}</b> of the original nuclei remain. As a decimal:`,
+      prose:(n,d)=>`After several half-lives, ${n} out of every ${d} nuclei remain. What's that as a decimal?`,
+      fact:`Each half-life halves what's left: 1, 1/2, 1/4, 1/8, ... a geometric series with ratio 1/2.`},
+    {tag:'Eclipse Coverage',
+      intro:(n,d)=>`The Moon covers <b>${n}/${d}</b> of the Sun's disk. As a decimal fraction:`,
+      prose:(n,d)=>`The Moon covers ${n} parts out of every ${d} of the Sun's disk. As a decimal?`,
+      fact:`A total eclipse needs 1.000 coverage. At 0.999 you still need eye protection.`}
+  ],
+  vec:[
+    {tag:'Work Done', unit:'J',
+      intro:(u,v)=>`A force vector <b>F = ${vecHTML(u)} N</b> acts along displacement <b>d = ${vecHTML(v)} m</b>. The work done is F·d.`,
+      prose:(u,v)=>{
+        const names=['east','north','up'].slice(0,u.length);
+        const fParts=u.map((c,i)=>`${c} N ${names[i]}`).join(', ');
+        const dParts=v.map((c,i)=>`${c} m ${names[i]}`).join(', ');
+        return `A force of (${fParts}) pushes a cart through a displacement of (${dParts}). How much work is done?`;
+      },
+      fact:`Work = F·d. Only the component of force parallel to the path counts.`},
+    {tag:'Quantum Inner Product', unit:'',
+      intro:(u,v)=>`Two state amplitudes are <b>${vecHTML(u)}</b> and <b>${vecHTML(v)}</b>. Their inner product:`,
+      fact:`Quantum states live in inner-product spaces. The dot product probes how parallel two states are.`},
+    {tag:'Render Lighting', unit:'',
+      intro:(u,v)=>`A surface normal is <b>${vecHTML(u)}</b> and a light direction is <b>${vecHTML(v)}</b>. The diffuse-light coefficient is n·l.`,
+      fact:`In computer graphics, dot(normal, light) gives the cosine of the angle — it's how every pixel decides brightness.`}
+  ],
+  mat:[
+    {tag:'Linear Transform', unit:'',
+      intro:(A,B,r,c)=>`Matrix <b>A</b> transforms then <b>B</b> transforms. The composition <b>B·A</b> applies both. What lives at row ${r+1}, column ${c+1} of the product?`,
+      fact:`Matrix multiplication composes transformations — first the right one, then the left one.`},
+    {tag:'Markov Step', unit:'',
+      intro:(A,B,r,c)=>`Transition matrix <b>P</b> followed by another <b>P'</b> gives <b>P·P'</b>. What's entry (${r+1}, ${c+1}) of the two-step matrix?`,
+      fact:`Multiplying a Markov matrix by itself gives the two-step transition probabilities.`},
+    {tag:'Quantum Gate Product', unit:'',
+      intro:(A,B,r,c)=>`Two unitary gates compose: <b>U₂ · U₁</b>. The student must build the circuit's combined matrix. Entry (${r+1}, ${c+1}):`,
+      fact:`Quantum circuits multiply gates in matrix form. Order matters — U₁·U₂ ≠ U₂·U₁ in general.`}
+  ],
+  vcm:[
+    {tag:'Spin Superposition',
+      intro:(a,b,c,d,op)=>`Two qubits sit in states with amplitudes <b>α₁ = ${a}</b>, <b>β₁ = ${b}</b> and <b>α₂ = ${c}</b>, <b>β₂ = ${d}</b>. The combined amplitude (un-normalized) is found by ${op==='+'?'adding':op==='−'?'subtracting':'multiplying'} them.`,
+      fact:`Quantum states live in a 2D complex Hilbert space. A spin-½ state |ψ⟩ = α|↑⟩ + β|↓⟩ has α and β as complex amplitudes — exactly the components of a 2-vector or a 2×1 column matrix.`},
+    {tag:'Polarized Photon',
+      intro:(a,b,c,d,op)=>`A horizontally-polarized photon has Jones vector <b>(${a}, ${b})</b>. A second has <b>(${c}, ${d})</b>. Combine their fields.`,
+      fact:`Optical polarization is described by 2-component Jones vectors — same math as spin-½.`},
+    {tag:'Phase Rotation',
+      intro:(a,b,c,d,op)=>`A complex amplitude <b>${a} + ${b}i</b> gets rotated by phase factor <b>${c} + ${d}i</b>. ${op==='×'?'Multiply':'Combine'} them in any view you like.`,
+      fact:`Multiplying by e^(iθ) rotates a complex number — the same as a 2×2 rotation matrix acting on a 2-vector.`},
+    {tag:'Pauli σ Action',
+      intro:(a,b,c,d,op)=>`A spinor (${a}, ${b}) interacts with another (${c}, ${d}). Compute their ${op==='×'?'product (with the rotational sense of complex multiplication)':'sum'}.`,
+      fact:`The Pauli matrices σx, σy, σz generate all rotations of 2D quantum states. Complex × 2D rotation matrix × spinor — three views, one operation.`}
+  ]
+};
+
+const BASIS_AXES = ['x','y','z','w'];
+function vecHTML(v){
+  return `<span class="vec">${v.map((e,i)=>`<span class="el">${e}<span class="elaxis">${BASIS_AXES[i]||''}</span></span>`).join('')}</span>`;
+}
+
+function quatHTML(q){
+  const labels = ['', 'i', 'j', 'k'];
+  const parts = [];
+  q.forEach((v, i) => {
+    if(v === 0) return;
+    const lbl = labels[i];
+    const abs = Math.abs(v);
+    const numStr = (abs === 1 && lbl) ? '' : abs;
+    const sign = v < 0 ? '−' : (parts.length ? '+' : '');
+    parts.push(`${sign}${sign?' ':''}${numStr}${lbl ? ` ${lbl}` : ''}`.trim());
+  });
+  const body = parts.length ? parts.join(' ') : '0';
+  return `<span class="cplx">(${body})</span>`;
+}
+function matHTML(M, hlRow, hlCol){
+  const cols = M[0].length;
+  let html = `<span class="mat" style="--cols:${cols};">`;
+  for(let i=0;i<M.length;i++) for(let j=0;j<cols;j++){
+    const hl = (hlRow===i || hlCol===j) ? ' hl' : '';
+    html += `<span class="el${hl}">${M[i][j]}</span>`;
+  }
+  return html + `</span>`;
+}
+/* SVG diagram helpers */
+function drawArrow(x1,y1,x2,y2,color,lw,dashed,headSize){
+  const dx=x2-x1, dy=y2-y1, len=Math.hypot(dx,dy);
+  if(len<.001) return '';
+  const ux=dx/len, uy=dy/len;
+  let head = (headSize > 0 ? headSize : 0.3);
+  if(head > len * 0.85) head = len * 0.85;
+  const lx=x2-ux*head*0.55, ly=y2-uy*head*0.55;
+  const dash=dashed?`stroke-dasharray="0.3,0.18"`:'';
+  let s=`<line x1="${x1}" y1="${y1}" x2="${lx}" y2="${ly}" stroke="${color}" stroke-width="${lw}" ${dash} stroke-linecap="round"/>`;
+  const a=Math.atan2(uy,ux);
+  const p1x=x2-head*Math.cos(a-Math.PI/6), p1y=y2-head*Math.sin(a-Math.PI/6);
+  const p2x=x2-head*Math.cos(a+Math.PI/6), p2y=y2-head*Math.sin(a+Math.PI/6);
+  s+=`<path d="M${x2},${y2} L${p1x},${p1y} L${p2x},${p2y} Z" fill="${color}"/>`;
+  return s;
+}
+function vecDiag(arrows, opts){
+  opts=opts||{};
+  const pts=[[0,0]];
+  arrows.forEach(a=>pts.push(a.v));
+  if(opts.resultant) pts.push(opts.resultant);
+  if(opts.parallelogram && arrows.length>=2){ const u=arrows[0].v,w=arrows[1].v; pts.push([u[0]+w[0],u[1]+w[1]]); }
+  const xs=pts.map(p=>p[0]), ys=pts.map(p=>p[1]);
+  const pad=1.2;
+  const minX=Math.min(...xs)-pad, maxX=Math.max(...xs)+pad;
+  const minY=Math.min(...ys)-pad, maxY=Math.max(...ys)+pad;
+  const W=maxX-minX, H=maxY-minY;
+  const scale=Math.max(W,H), lw=scale*0.013;
+  const arrowHead = scale * 0.05;
+  const parts=[];
+  parts.push(`<svg class="vdiag" viewBox="${minX} ${-maxY} ${W} ${H}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">`);
+  const pid='g'+Math.floor(Math.random()*1e9);
+  parts.push(`<defs><pattern id="${pid}" width="1" height="1" patternUnits="userSpaceOnUse"><path d="M1,0 L0,0 0,1" fill="none" stroke="rgba(0,0,0,.07)" stroke-width="${lw*0.4}"/></pattern></defs>`);
+  parts.push(`<rect x="${minX}" y="${-maxY}" width="${W}" height="${H}" fill="url(#${pid})"/>`);
+  parts.push(`<line x1="${minX}" y1="0" x2="${maxX}" y2="0" stroke="rgba(0,0,0,.25)" stroke-width="${lw*0.65}"/>`);
+  parts.push(`<line x1="0" y1="${-maxY}" x2="0" y2="${-minY}" stroke="rgba(0,0,0,.25)" stroke-width="${lw*0.65}"/>`);
+  const tickLen = scale * 0.04;
+  const tickFont = scale * 0.05;
+  for(let x = Math.ceil(minX); x <= Math.floor(maxX); x++){
+    if(x === 0) continue;
+    parts.push(`<line x1="${x}" y1="${-tickLen}" x2="${x}" y2="${tickLen}" stroke="rgba(0,0,0,.4)" stroke-width="${lw*0.5}"/>`);
+    parts.push(`<text x="${x}" y="${tickFont*1.6}" fill="rgba(0,0,0,.55)" font-size="${tickFont}" font-family="DM Mono" text-anchor="middle">${x}</text>`);
+  }
+  for(let y = Math.ceil(minY); y <= Math.floor(maxY); y++){
+    if(y === 0) continue;
+    parts.push(`<line x1="${-tickLen}" y1="${-y}" x2="${tickLen}" y2="${-y}" stroke="rgba(0,0,0,.4)" stroke-width="${lw*0.5}"/>`);
+    parts.push(`<text x="${-tickLen*1.6}" y="${-y + tickFont*0.35}" fill="rgba(0,0,0,.55)" font-size="${tickFont}" font-family="DM Mono" text-anchor="end">${y}</text>`);
+  }
+  parts.push(`<text x="${-tickLen*0.5}" y="${tickFont*1.6}" fill="rgba(0,0,0,.5)" font-size="${tickFont}" font-family="DM Mono" text-anchor="end">0</text>`);
+  parts.push(`<text x="${maxX - tickFont*0.5}" y="${-tickFont*0.6}" fill="rgba(0,0,0,.55)" font-size="${tickFont*1.1}" font-family="DM Mono" text-anchor="end" font-style="italic">x</text>`);
+  parts.push(`<text x="${tickFont*0.8}" y="${-maxY + tickFont*1.4}" fill="rgba(0,0,0,.55)" font-size="${tickFont*1.1}" font-family="DM Mono" font-style="italic">y</text>`);
+  if(opts.parallelogram && arrows.length>=2){
+    const u=arrows[0].v, w=arrows[1].v;
+    parts.push(`<path d="M0,0 L${u[0]},${-u[1]} L${u[0]+w[0]},${-(u[1]+w[1])} L${w[0]},${-w[1]} Z" fill="rgba(155,92,255,.13)" stroke="rgba(155,92,255,.5)" stroke-width="${lw*0.55}" stroke-dasharray="0.2,0.12"/>`);
+  }
+  if(opts.projection && arrows.length>=2){
+    const u=arrows[0].v, w=arrows[1].v, m=u[0]*u[0]+u[1]*u[1];
+    if(m>0){
+      const t=(u[0]*w[0]+u[1]*w[1])/m, px=u[0]*t, py=u[1]*t;
+      parts.push(`<line x1="${w[0]}" y1="${-w[1]}" x2="${px}" y2="${-py}" stroke="rgba(31,143,95,.55)" stroke-width="${lw*0.85}" stroke-dasharray="0.16,0.1"/>`);
+      parts.push(`<line x1="0" y1="0" x2="${px}" y2="${-py}" stroke="rgba(31,143,95,.85)" stroke-width="${lw*1.4}" stroke-linecap="round"/>`);
+    }
+  }
+  if(opts.resultant){
+    parts.push(drawArrow(0,0,opts.resultant[0],-opts.resultant[1],opts.resultantColor||'#2F8F5F',lw*1.15,true,arrowHead));
+    if(opts.resultantLabel){
+      parts.push(`<text x="${opts.resultant[0]+0.25}" y="${-opts.resultant[1]-0.3}" fill="${opts.resultantColor||'#2F8F5F'}" font-size="${scale*0.055}" font-family="DM Mono">${opts.resultantLabel}</text>`);
+    }
+  }
+  const labelTaken = [];
+  const labelFont = scale * 0.06;
+  arrows.forEach(a=>{
+    parts.push(drawArrow(0,0,a.v[0],-a.v[1],a.color||'#15151B',lw*1.25,false,arrowHead));
+    if(!a.label) return;
+    let lx = a.v[0] + (a.v[0]>=0 ? 0.3 : -0.6);
+    let ly = -a.v[1] - 0.3;
+    const tol = labelFont * 1.2;
+    while(labelTaken.some(p => Math.abs(p.x - lx) < tol && Math.abs(p.y - ly) < tol)){
+      ly += labelFont * 1.4;
+    }
+    labelTaken.push({x: lx, y: ly});
+    parts.push(`<text x="${lx}" y="${ly}" fill="${a.color||'#15151B'}" font-size="${labelFont}" font-family="DM Mono" font-weight="600">${a.label}</text>`);
+  });
+  parts.push('</svg>');
+  return parts.join('');
+}
+function gaBreakdown(a,b,c,d){
+  const dot = a*c + b*d;
+  const wedge = a*d - b*c;
+  const D = `<span class="dotop">·</span>`;
+  return `<div class="gabreak">
+    <div class="ghdr">Geometric product &nbsp; <span class="mono">u v  =  (u ${D} v)  +  (u ∧ v)</span></div>
+    <div class="grow"><span class="gtag">Dot u ${D} v (xx + yy):</span> <span>${a}×${c} + ${b}×${d} = <b>${dot}</b></span></div>
+    <div class="grow"><span class="gtag">Wedge u ∧ v (xy − yx):</span> <span>${a}×${d} − ${b}×${c} = <b>${wedge}</b></span></div>
+    <div class="pyth">Pythagoras view: |u+v|² = a²+b²+c²+d² + 2(u ${D} v) — the dot is the cosine part, the wedge is the sine part (signed area of the parallelogram).</div>
+  </div>`;
+}
+function fmt2D(a, b, view){
+  if(view==='complex'){
+    const sign = b>=0 ? ' + ' : ' − ';
+    const bAbs = Math.abs(b);
+    const bStr = bAbs===1 ? 'i' : `${bAbs}i`;
+    return `<span class="cplx">(${a}${sign}${bStr})</span>`;
+  }
+  if(view==='matrix'){
+    return `<span class="mat" style="--cols:1;"><span class="el">${a}</span><span class="el">${b}</span></span>`;
+  }
+  return `<span class="vec">
+    <span class="el">${a}<span class="elaxis">x</span></span>
+    <span class="el">${b}<span class="elaxis">y</span></span>
+  </span>`;
+}
+function askLabel(view, idx){
+  if(view==='complex') return idx===0 ? 'real part' : 'imaginary part';
+  if(view==='matrix') return idx===0 ? 'top cell' : 'bottom cell';
+  return idx===0 ? '1st component' : '2nd component';
+}
+function vcmPrompt(a,b,c,d,op,idx){
+  const v = SET.viewForm || 'vector';
+  const isMul = op==='·' || op==='×' || op==='∘';
+  let left, right, sym;
+  if(isMul){
+    if(v==='matrix'){
+      left  = matHTML([[a,-b],[b,a]], undefined, undefined);
+      right = matHTML([[c],[d]], undefined, undefined);
+      sym   = '·';
+    } else if(v==='complex'){
+      left  = fmt2D(a,b,v); right = fmt2D(c,d,v); sym = '';
+    } else {
+      left  = fmt2D(a,b,v); right = fmt2D(c,d,v); sym = '∘';
+    }
+  } else { left = fmt2D(a,b,v); right = fmt2D(c,d,v); sym = op; }
+  return `${left} ${sym?`<span class="op">${sym}</span> `:''}${right}<span class="matlabel">${askLabel(v,idx)} = ?</span>`;
+}
+function pickScenario(category){
+  const list = SCENARIOS[category];
+  return list[Math.floor(Math.random()*list.length)];
+}
+
+/* TOPICS — one entry per (numberSet, op) */
+const TOPICS = {
+  natAdd:{title:'Natural number addition',diffs:['Easy','Medium','Hard'],
+    make(diff){
+      const max = diff==='Easy' ? 10 : diff==='Medium' ? 25 : 99;
+      const a = 1 + Math.floor(Math.random()*max);
+      const b = 1 + Math.floor(Math.random()*max);
+      const ans = a + b;
+      const dist = [intStr(a-b), intStr(a*b), intStr(ans-1), intStr(ans+1)];
+      return {promptHTML:`${a} <span class="op">+</span> ${b} = <span class="qmark">?</span>`,
+              scenarioHTML:null, proseHTML:null, scenarioFact:null,
+              answer:intStr(ans), distractors:dist, type:'arith',
+              exp:{expr:`${a} + ${b}`, ans:intStr(ans), why:'Counting forward.'}};
+    }},
+  natSub:{title:'Natural number subtraction',diffs:['Easy','Medium','Hard'],
+    make(diff){
+      const max = diff==='Easy' ? 10 : diff==='Medium' ? 25 : 99;
+      const a = 1 + Math.floor(Math.random()*max);
+      const b = 1 + Math.floor(Math.random()*a);
+      const ans = a - b;
+      const dist = [intStr(a+b), intStr(b-a), intStr(ans+1), intStr(ans-1<0?ans+2:ans-1)];
+      return {promptHTML:`${a} <span class="op">−</span> ${b} = <span class="qmark">?</span>`,
+              scenarioHTML:null, proseHTML:null, scenarioFact:null,
+              answer:intStr(ans), distractors:dist, type:'arith',
+              exp:{expr:`${a} − ${b}`, ans:intStr(ans), why:'Counting backward.'}};
+    }},
+  natMul:{title:'Times tables',diffs:['Easy','Medium','Hard'],
+    make(diff){
+      const top = diff==='Easy' ? 10 : diff==='Medium' ? 12 : 15;
+      const a = 2 + Math.floor(Math.random()*(top-1));
+      const b = 2 + Math.floor(Math.random()*(top-1));
+      const ans = a * b;
+      const dist = [intStr(a+b), intStr(a*b + a), intStr(a*b - b), intStr(ans+a)];
+      return {promptHTML:`${a} <span class="op">×</span> ${b} = <span class="qmark">?</span>`,
+              scenarioHTML:null, proseHTML:null, scenarioFact:null,
+              answer:intStr(ans), distractors:dist, type:'arith',
+              exp:{expr:`${a} × ${b}`, ans:intStr(ans), why:`${a} groups of ${b}.`}};
+    }},
+  natDiv:{title:'Exact division',diffs:['Easy','Medium','Hard'],
+    make(diff){
+      const bRange = diff==='Easy' ? [2,3,4,5] : diff==='Medium' ? [2,3,4,5,6,7,8,9] : [3,4,6,7,8,9,11,12];
+      const cMax   = diff==='Easy' ? 10 : diff==='Medium' ? 12 : 15;
+      const b = rnd(bRange);
+      const c = 2 + Math.floor(Math.random()*(cMax-1));
+      const a = b * c;
+      const ans = c;
+      const dist = [intStr(a-b), intStr(b), intStr(c+1), intStr(c-1<1?c+2:c-1)];
+      return {promptHTML:`${a} <span class="opd">÷</span> ${b} = <span class="qmark">?</span>`,
+              scenarioHTML:null, proseHTML:null, scenarioFact:null,
+              answer:intStr(ans), distractors:dist, type:'arith',
+              exp:{expr:`${a} ÷ ${b}`, ans:intStr(ans), why:`${a} split into ${b} equal groups.`}};
+    }},
+  natExp:{title:'Powers — natural base',diffs:['Easy','Medium','Hard'],
+    make(diff){
+      const aRange = diff==='Easy' ? [2,3,4,5] : diff==='Medium' ? [2,3,4,5,6,7] : [2,3,4,5,6,7,8,9,10];
+      const bRange = diff==='Easy' ? [2,3]     : diff==='Medium' ? [2,3,4]       : [2,3,4,5];
+      const a = rnd(aRange); const b = rnd(bRange);
+      const ans = Math.pow(a, b);
+      const dist = [intStr(a*b), intStr(Math.pow(a, b-1)), intStr(Math.pow(a, b+1)), intStr(ans+a)];
+      return {promptHTML:`${a}<sup class="op">${b}</sup> = <span class="qmark">?</span>`,
+              scenarioHTML:null, proseHTML:null, scenarioFact:null,
+              answer:intStr(ans), distractors:dist, type:'arith',
+              exp:{expr:`${a}^${b}`, ans:intStr(ans), why:`${a} multiplied by itself ${b} time${b>1?'s':''}.`}};
+    }},
+  intExp:{title:'Powers — signed base',diffs:['Easy','Medium','Hard'],
+    make(diff){
+      const aRange = diff==='Easy' ? [-3,-2,2,3] : diff==='Medium' ? [-5,-4,-3,-2,2,3,4,5] : [-7,-5,-4,-3,3,4,5,7];
+      const bRange = diff==='Easy' ? [2,3]       : diff==='Medium' ? [2,3,4]               : [2,3,4,5];
+      const a = rnd(aRange); const b = rnd(bRange);
+      const ans = Math.pow(a, b);
+      const dist = [intStr(-ans), intStr(a*b), intStr(Math.pow(Math.abs(a), b)), intStr(ans+a)];
+      return {promptHTML:`(${a})<sup class="op">${b}</sup> = <span class="qmark">?</span>`,
+              scenarioHTML:null, proseHTML:null, scenarioFact:null,
+              answer:intStr(ans), distractors:dist, type:'arith',
+              exp:{expr:`(${a})^${b}`, ans:intStr(ans), why:b%2===0?'Even power — positive result, sign cancels.':'Odd power — sign of base is preserved.'}};
+    }},
+  realExp:{title:'Powers — decimal base',diffs:['Easy','Medium','Hard'],
+    make(diff){
+      const aRange = diff==='Easy'   ? ['0.5','0.1','0.2','2','3']
+                    : diff==='Medium'? ['0.5','0.1','0.4','0.25','1.5','2.5']
+                    :                  ['0.05','0.4','0.25','0.75','1.2','1.5'];
+      const bRange = [2,3];
+      const a = rnd(aRange); const b = rnd(bRange);
+      const numericPow = Math.pow(parseFloat(a), b);
+      const ans = normalize(String(parseFloat(numericPow.toPrecision(8))));
+      const dist = [shiftPoint(ans,1), shiftPoint(ans,-1), normalize(String(parseFloat(a)*b)), a];
+      return {promptHTML:`${a}<sup class="op">${b}</sup> = <span class="qmark">?</span>`,
+              scenarioHTML:null, proseHTML:null, scenarioFact:null,
+              answer:ans, distractors:dist, type:'arith',
+              exp:{expr:`${a}^${b}`, ans, why:`${a} multiplied by itself ${b} time${b>1?'s':''}.`}};
+    }},
+  intAdd:{title:'Integer addition',diffs:['Easy','Medium','Hard'],
+    make(diff){
+      let x,y;
+      if(diff==='Easy'){ x=rnd([-3,-2,-4,-1,2,3]); y=rnd([2,3,4,5]); }
+      else if(diff==='Medium'){ x=rnd([-8,-6,-7,-5,4,6,7]); y=rnd([3,5,8,9,11,12]); }
+      else { x=rnd([-9,-7,5,6,-4,8]); y=rnd([-6,-9,-3,7,12,-5]); }
+      const opShown='+', res=x+y;
+      const ystr = y<0 ? `(${y})` : `${y}`;
+      const ans = intStr(res);
+      const dist=[ intStr(x-y), intStr(-res), intStr(res+(res>=0?-1:1)), intStr(res+(Math.random()<.5?2:-2)) ];
+      const sc = pickScenario('cross');
+      return {promptHTML:`${x} <span class="op">${opShown}</span> ${ystr} = <span class="qmark">?</span>`,
+              scenarioHTML:`<span class="topictag">${sc.tag}</span><div>${sc.intro(x,opShown,y)}</div>`,
+              proseHTML:sc.prose?`<span class="topictag">${sc.tag}</span><div>${sc.prose(x,opShown,y)}</div>`:null,
+              scenarioFact:sc.fact, answer:ans, distractors:dist, type:'neg',
+              exp:{start:x, delta:y, end:res, unit:sc.unit||'', tag:sc.tag}};
+    }},
+  intSub:{title:'Integer subtraction',diffs:['Easy','Medium','Hard'],
+    make(diff){
+      let x,y;
+      if(diff==='Easy'){ x=rnd([-3,-2,-4,-1,2,3]); y=rnd([2,3,4,5]); }
+      else if(diff==='Medium'){ x=rnd([-8,-6,-7,-5,4,6,7]); y=rnd([3,5,8,9,11,12]); }
+      else { x=rnd([-9,-7,5,6,-4,8]); y=rnd([-6,-9,-3,7,12,-5]); }
+      const opShown='−', res=x-y;
+      const ystr = y<0 ? `(${y})` : `${y}`;
+      const ans = intStr(res);
+      const dist=[ intStr(x+y), intStr(-res), intStr(res+(res>=0?-1:1)), intStr(res+(Math.random()<.5?2:-2)) ];
+      const sc = pickScenario('cross');
+      return {promptHTML:`${x} <span class="op">${opShown}</span> ${ystr} = <span class="qmark">?</span>`,
+              scenarioHTML:`<span class="topictag">${sc.tag}</span><div>${sc.intro(x,opShown,y)}</div>`,
+              proseHTML:sc.prose?`<span class="topictag">${sc.tag}</span><div>${sc.prose(x,opShown,y)}</div>`:null,
+              scenarioFact:sc.fact, answer:ans, distractors:dist, type:'neg',
+              exp:{start:x, delta:-y, end:res, unit:sc.unit||'', tag:sc.tag}};
+    }},
+  realMul:{title:'Real ×10, ×100, ×1000',diffs:['Easy','Medium','Hard'],
+    make(diff){
+      let a, opnum;
+      if(diff==='Easy'){ a=rnd(['3','7','4','8','6','9','5','12','15','11','20']); opnum=10; }
+      else if(diff==='Medium'){ a=rnd(['0.5','0.3','0.7','2.4','1.6','0.9','3.5','0.08','4.2']); opnum=rnd([10,100]); }
+      else { a=rnd(['2.5','0.04','-1.5','340','0.8','-25','1.25','0.5']); opnum=rnd([10,100,1000]); }
+      const op = '×'+opnum;
+      const k = String(opnum).length-1, places = k;
+      const ans = shiftPoint(a, places);
+      const dist=[shiftPoint(a,-places), shiftPoint(a,places-1), shiftPoint(a,places+1), a];
+      const sc = pickScenario('scale');
+      return {promptHTML:shiftPrompt(a, op),
+              scenarioHTML:`<span class="topictag">${sc.tag}</span><div>${sc.intro(a,op)}</div>`,
+              proseHTML:sc.prose?`<span class="topictag">${sc.tag}</span><div>${sc.prose(a,op)}</div>`:null,
+              scenarioFact:sc.fact, answer:ans, distractors:dist, type:'shift',
+              exp:{a, op, places, ans, unit:sc.unit||'', tag:sc.tag}};
+    }},
+  realDiv:{title:'Real ÷10, ÷100, ÷1000',diffs:['Easy','Medium','Hard'],
+    make(diff){
+      let a, opnum;
+      if(diff==='Easy'){ a=rnd(['30','70','40','80','60','90','50','120','150','110','200']); opnum=10; }
+      else if(diff==='Medium'){ a=rnd(['5','3','7','24','16','9','35','42','120','85']); opnum=rnd([10,100]); }
+      else { a=rnd(['2500','0.04','-1.5','340','-25','1250','-60','875']); opnum=rnd([10,100,1000]); }
+      const op = '÷'+opnum;
+      const k = String(opnum).length-1, places = -k;
+      const ans = shiftPoint(a, places);
+      const dist=[shiftPoint(a,-places), shiftPoint(a,places+1), shiftPoint(a,places-1), a];
+      const sc = pickScenario('scale');
+      return {promptHTML:shiftPrompt(a, op),
+              scenarioHTML:`<span class="topictag">${sc.tag}</span><div>${sc.intro(a,op)}</div>`,
+              proseHTML:sc.prose?`<span class="topictag">${sc.tag}</span><div>${sc.prose(a,op)}</div>`:null,
+              scenarioFact:sc.fact, answer:ans, distractors:dist, type:'shift',
+              exp:{a, op, places, ans, unit:sc.unit||'', tag:sc.tag}};
+    }},
+  fracDiv:{title:'Fraction → Decimal',diffs:['Easy','Medium','Hard'],
+    make(diff){
+      let n,d;
+      if(diff==='Easy'){ const p=rnd([[1,2],[1,4],[3,4],[1,10],[3,10],[1,5],[2,5]]); n=p[0];d=p[1]; }
+      else if(diff==='Medium'){ const p=rnd([[1,8],[3,8],[5,8],[7,8],[7,10],[4,5],[3,4]]); n=p[0];d=p[1]; }
+      else { const p=rnd([[3,16],[1,16],[5,16],[9,20],[7,20],[11,20],[5,8]]); n=p[0];d=p[1]; }
+      const ans=fracToDec(n,d);
+      const dist=[ shiftPoint(ans,1), shiftPoint(ans,-1), normalize('0.'+n+d), fracToDec(d,n) ];
+      const sc = pickScenario('ratio');
+      return {promptHTML:`<span class="frac"><span class="num">${n}</span><span class="den">${d}</span></span> = <span class="qmark">?</span>`,
+              scenarioHTML:`<span class="topictag">${sc.tag}</span><div>${sc.intro(n,d)}</div>`,
+              proseHTML:sc.prose?`<span class="topictag">${sc.tag}</span><div>${sc.prose(n,d)}</div>`:null,
+              scenarioFact:sc.fact, answer:ans, distractors:dist, type:'frac',
+              exp:{n, d, ans, tag:sc.tag}};
+    }},
+  vecDot:{title:'Vector dot product',diffs:['Easy','Medium','Hard'],
+    make(diff){
+      const range = vecDotPool(diff);
+      const u = [rnd(range), rnd(range)];
+      const v = [rnd(range), rnd(range)];
+      const ans = u.reduce((s,ui,i)=>s+ui*v[i], 0);
+      const ansStr = intStr(ans);
+      const wrongAdd = u.reduce((s,ui,i)=>s+ui+v[i], 0);
+      const wrongSwap = u[0]*v[1] + u[1]*v[0];
+      const dist = [ intStr(wrongAdd), intStr(wrongSwap), intStr(ans+1), intStr(-ans) ];
+      const sc = pickScenario('vec');
+      const dArrows = [{v:u,label:'u',color:'#FF3D71'},{v:v,label:'v',color:'#3A6EA5'}];
+      return {promptHTML:`${vecHTML(u)} <span class="op">·</span> ${vecHTML(v)} = <span class="qmark">?</span>`,
+              diagramArrows:dArrows, diagramResultant:null,
+              scenarioHTML:`<span class="topictag">${sc.tag}</span><div>${sc.intro(u,v)}</div>`,
+              proseHTML:sc.prose?`<span class="topictag">${sc.tag}</span><div>${sc.prose(u,v)}</div>`:null,
+              scenarioFact:sc.fact, answer:ansStr, distractors:dist, type:'vecdot',
+              exp:{u, v, ans:ansStr, unit:sc.unit||'', tag:sc.tag}};
+    }},
+  matMul:{title:'Matrix multiplication',diffs:['Easy','Medium','Hard'],
+    make(diff){
+      let n=2,m=2,p=2,range;
+      if(diff==='Easy'){ range=[0,1]; }
+      else if(diff==='Medium'){ range=[-1,0,1,2]; }
+      else { n=m=p=3; range=[-1,0,1,2]; }
+      const mkM = (rows,cols)=>Array.from({length:rows},()=>Array.from({length:cols},()=>rnd(range)));
+      const A = mkM(n,m), B = mkM(m,p);
+      const r = Math.floor(Math.random()*n), c = Math.floor(Math.random()*p);
+      let ans = 0; for(let k=0;k<m;k++) ans += A[r][k]*B[k][c];
+      const ansStr = intStr(ans);
+      const wrongRow = (r+1)%n, wrongCol = (c+1)%p;
+      let w1=0; for(let k=0;k<m;k++) w1 += A[wrongRow][k]*B[k][c];
+      let w2=0; for(let k=0;k<m;k++) w2 += A[r][k]*B[k][wrongCol];
+      const dist = [ intStr(w1), intStr(w2), intStr(A[r][0]*B[0][c]), intStr(ans + (Math.random()<.5?1:-1)) ];
+      const sc = pickScenario('mat');
+      return {promptHTML:`${matHTML(A, r, undefined)} <span class="op">·</span> ${matHTML(B, undefined, c)}<span class="matlabel">cell (${r+1}, ${c+1}) = ?</span>`,
+              scenarioHTML:`<span class="topictag">${sc.tag}</span><div>${sc.intro(A,B,r,c)}</div>`,
+              proseHTML:null, scenarioFact:sc.fact,
+              answer:ansStr, distractors:dist, type:'matmul',
+              exp:{A, B, r, c, ans:ansStr, unit:'', tag:sc.tag}};
+    }},
+  vcmAdd:{title:'Addition',diffs:['Easy','Medium','Hard'],
+    make(diff){
+      const range = vcmPool(diff);
+      const a=rnd(range),b=rnd(range),c=rnd(range),d=rnd(range);
+      const idx = (_vcmIdxOverride != null) ? _vcmIdxOverride : Math.floor(Math.random()*2);
+      const ans = idx===0 ? a+c : b+d;
+      const ansStr=intStr(ans);
+      const dist=[intStr(idx===0?a-c:b-d), intStr(-ans), intStr(ans+1), intStr(idx===0?b+d:a+c)];
+      const sc = pickScenario('vcm');
+      return {promptHTML:vcmPrompt(a,b,c,d,'+',idx),
+              diagramArrows:[{v:[a,b],label:'u',color:'#FF3D71'},{v:[c,d],label:'v',color:'#3A6EA5'}],
+              diagramResultant:{v:[a+c,b+d],label:'u+v',color:'#2F8F5F'},
+              scenarioHTML:`<span class="topictag">${sc.tag}</span><div>${sc.intro(a,b,c,d,'+')}</div>`,
+              proseHTML:null, scenarioFact:sc.fact,
+              answer:ansStr, distractors:dist, type:'vcm',
+              exp:{a,b,c,d,op:'+',idx, ans:ansStr, tag:sc.tag}};
+    }},
+  vcmSub:{title:'Subtraction',diffs:['Easy','Medium','Hard'],
+    make(diff){
+      const range = vcmPool(diff);
+      const a=rnd(range),b=rnd(range),c=rnd(range),d=rnd(range);
+      const idx = (_vcmIdxOverride != null) ? _vcmIdxOverride : Math.floor(Math.random()*2);
+      const ans = idx===0 ? a-c : b-d;
+      const ansStr=intStr(ans);
+      const dist=[intStr(idx===0?a+c:b+d), intStr(-ans), intStr(ans+1), intStr(idx===0?b-d:a-c)];
+      const sc = pickScenario('vcm');
+      return {promptHTML:vcmPrompt(a,b,c,d,'−',idx),
+              diagramArrows:[{v:[a,b],label:'u',color:'#FF3D71'},{v:[c,d],label:'v',color:'#3A6EA5'}],
+              diagramResultant:{v:[a-c,b-d],label:'u−v',color:'#2F8F5F'},
+              scenarioHTML:`<span class="topictag">${sc.tag}</span><div>${sc.intro(a,b,c,d,'−')}</div>`,
+              proseHTML:null, scenarioFact:sc.fact,
+              answer:ansStr, distractors:dist, type:'vcm',
+              exp:{a,b,c,d,op:'−',idx, ans:ansStr, tag:sc.tag}};
+    }},
+  vcmMul:{title:'Multiplication',diffs:['Easy','Medium','Hard'],
+    make(diff){
+      const range = vcmMulPool(diff);
+      const a=rnd(range),b=rnd(range),c=rnd(range),d=rnd(range);
+      const idx = (_vcmIdxOverride != null) ? _vcmIdxOverride : Math.floor(Math.random()*2);
+      const real=a*c - b*d, imag=a*d + b*c;
+      const ans = idx===0 ? real : imag;
+      const ansStr=intStr(ans);
+      const wrongSign = idx===0 ? a*c + b*d : a*d - b*c;
+      const wrongOther = idx===0 ? imag : real;
+      const dist=[intStr(wrongSign), intStr(wrongOther), intStr(-ans), intStr(ans+1)];
+      const sc = pickScenario('vcm');
+      return {promptHTML:vcmPrompt(a,b,c,d,'·',idx),
+              diagramArrows:[{v:[a,b],label:'u',color:'#FF3D71'},{v:[c,d],label:'v',color:'#3A6EA5'}],
+              diagramResultant:null,
+              scenarioHTML:`<span class="topictag">${sc.tag}</span><div>${sc.intro(a,b,c,d,'×')}</div>`,
+              proseHTML:null, scenarioFact:sc.fact,
+              answer:ansStr, distractors:dist, type:'vcm',
+              exp:{a,b,c,d,op:'×',idx, ans:ansStr, real, imag, tag:sc.tag}};
+    }},
+  vecWedge:{title:'Wedge / cross product',diffs:['Easy','Medium','Hard'],
+    make(diff){
+      const range = vcmMulPool(diff);
+      const a=rnd(range),b=rnd(range),c=rnd(range),d=rnd(range);
+      const ans = a*d - b*c;
+      const ansStr=intStr(ans);
+      const dot = a*c + b*d;
+      const dist=[intStr(dot), intStr(-ans), intStr(a*d+b*c), intStr(ans+1)];
+      const u=[a,b], v=[c,d];
+      return {promptHTML:`${vecHTML(u)} <span class="op">∧</span> ${vecHTML(v)} = <span class="qmark">?</span>`,
+              diagramArrows:[{v:u,label:'u',color:'#FF3D71'},{v:v,label:'v',color:'#3A6EA5'}],
+              diagramResultant:null,
+              scenarioHTML:`<span class="topictag">Signed area</span><div>The wedge of two 2-vectors is the signed area of the parallelogram they span. In 3D this becomes the cross-product vector.</div>`,
+              proseHTML:null, scenarioFact:'In geometric algebra, the full vector product is u v = u·v + u∧v — dot is the cosine part, wedge is the sine part.',
+              answer:ansStr, distractors:dist, type:'wedge',
+              exp:{a,b,c,d, ans:ansStr, dot, wedge:ans}};
+    }},
+  threeDAdd:{title:'Addition',diffs:['Easy','Medium','Hard'],
+    make(diff){
+      const range = ({Easy:[0,1,2], Medium:[-2,-1,0,1,2,5], Hard:[-3,-1,0,1,3,5,10]})[diff] || [0,1,2];
+      const u = [rnd(range), rnd(range), rnd(range)];
+      const v = [rnd(range), rnd(range), rnd(range)];
+      const idx = Math.floor(Math.random()*3);
+      const ans = u[idx] + v[idx];
+      const sum = u.map((x,i)=>x+v[i]);
+      const dist = [intStr(u[idx]-v[idx]), intStr(-ans), intStr(ans+1), intStr(sum[(idx+1)%3])];
+      const axis = ['x','y','z'][idx];
+      return {promptHTML:`${vecHTML(u)} <span class="op">+</span> ${vecHTML(v)}<span class="matlabel">${axis} component = ?</span>`,
+              scenarioHTML:null, proseHTML:null, scenarioFact:null,
+              answer:intStr(ans), distractors:dist, type:'arith',
+              exp:{expr:`(${u.join(', ')}) + (${v.join(', ')}) → ${axis}`, ans:intStr(ans),
+                   why:`Component-wise: ${u[idx]} + ${v[idx]} = ${ans}.`}};
+    }},
+  threeDDot:{title:'Dot product',diffs:['Easy','Medium','Hard'],
+    make(diff){
+      const range = ({Easy:[0,1], Medium:[-1,0,1,2], Hard:[-2,-1,0,1,2]})[diff] || [0,1];
+      const u = [rnd(range), rnd(range), rnd(range)];
+      const v = [rnd(range), rnd(range), rnd(range)];
+      const ans = u[0]*v[0] + u[1]*v[1] + u[2]*v[2];
+      const wrongAdd  = u[0]+v[0] + u[1]+v[1] + u[2]+v[2];
+      const wrongSwap = u[0]*v[1] + u[1]*v[2] + u[2]*v[0];
+      const dist = [intStr(wrongAdd), intStr(wrongSwap), intStr(-ans), intStr(ans+1)];
+      return {promptHTML:`${vecHTML(u)} <span class="op">·</span> ${vecHTML(v)} = <span class="qmark">?</span>`,
+              scenarioHTML:null, proseHTML:null, scenarioFact:null,
+              answer:intStr(ans), distractors:dist, type:'arith',
+              exp:{expr:`${u[0]}·${v[0]} + ${u[1]}·${v[1]} + ${u[2]}·${v[2]}`, ans:intStr(ans),
+                   why:`Sum of like-direction products (xx + yy + zz).`}};
+    }},
+  threeDCross:{title:'Cross product',diffs:['Easy','Medium','Hard'],
+    make(diff){
+      const range = ({Easy:[0,1], Medium:[-1,0,1,2], Hard:[-2,-1,0,1,2]})[diff] || [0,1];
+      const u = [rnd(range), rnd(range), rnd(range)];
+      const v = [rnd(range), rnd(range), rnd(range)];
+      const cross = [u[1]*v[2] - u[2]*v[1], u[2]*v[0] - u[0]*v[2], u[0]*v[1] - u[1]*v[0]];
+      const idx = Math.floor(Math.random()*3);
+      const ans = cross[idx];
+      const dist = [intStr(-ans), intStr(ans+1), intStr(cross[(idx+1)%3]), intStr(u[0]*v[0]+u[1]*v[1]+u[2]*v[2])];
+      const axis = ['x','y','z'][idx];
+      return {promptHTML:`${vecHTML(u)} <span class="op">×</span> ${vecHTML(v)}<span class="matlabel">${axis} component = ?</span>`,
+              scenarioHTML:null, proseHTML:null, scenarioFact:null,
+              answer:intStr(ans), distractors:dist, type:'arith',
+              exp:{expr:`(u × v).${axis}`, ans:intStr(ans),
+                   why:`Cross product cycles xyz.`}};
+    }},
+  quatMul:{title:'Quaternion product',diffs:['Easy','Medium','Hard'],
+    make(diff){
+      const range = ({Easy:[0,1], Medium:[-1,0,1,2], Hard:[-2,-1,0,1,2]})[diff] || [0,1];
+      const q = [rnd(range), rnd(range), rnd(range), rnd(range)];
+      const p = [rnd(range), rnd(range), rnd(range), rnd(range)];
+      const r = [
+        q[0]*p[0] - q[1]*p[1] - q[2]*p[2] - q[3]*p[3],
+        q[0]*p[1] + q[1]*p[0] + q[2]*p[3] - q[3]*p[2],
+        q[0]*p[2] - q[1]*p[3] + q[2]*p[0] + q[3]*p[1],
+        q[0]*p[3] + q[1]*p[2] - q[2]*p[1] + q[3]*p[0],
+      ];
+      const idx = Math.floor(Math.random()*4);
+      const ans = r[idx];
+      const dist = [intStr(-ans), intStr(ans+1), intStr(r[(idx+1)%4]), intStr(q[idx]*p[idx])];
+      const labels = ['real (w)', 'i', 'j', 'k'];
+      return {promptHTML:`${quatHTML(q)} <span class="op">·</span> ${quatHTML(p)}<span class="matlabel">${labels[idx]} part = ?</span>`,
+              scenarioHTML:null, proseHTML:null, scenarioFact:null,
+              answer:intStr(ans), distractors:dist, type:'arith',
+              exp:{expr:`(q · p).${labels[idx]}`, ans:intStr(ans),
+                   why:`Quaternion mult is non-commutative — ij = k but ji = −k.`}};
+    }}
+};
+
+/* Navigation hierarchy */
+const NUMBER_TYPES = [
+  {key:'natural',label:'Natural numbers',desc:'1, 2, 3 … the counting numbers',symbol:'ℕ',enabled:true},
+  {key:'integers',label:'Integers',desc:'… −2, −1, 0, 1, 2 …',symbol:'ℤ',enabled:true},
+  {key:'fractions',label:'Fractions',desc:'½, ¾, ⅓ …',symbol:'¾',enabled:true},
+  {key:'real',label:'Real numbers',desc:'0.5, 3.14 …',symbol:'ℝ',enabled:true},
+  {key:'vcm',label:'2D',desc:'vectors · matrix · complex',symbol:'ℂ',enabled:true},
+  {key:'threeD',label:'3D',desc:'vectors · 3×3 matrices · quaternions',symbol:'ℝ³',enabled:true}
+];
+const CATEGORIES_BASE = [
+  {key:'arithmetic',label:'Arithmetic',desc:'+, −, ×, ÷',symbol:'+÷'},
+  {key:'inequalities',label:'Inequalities',desc:'>, <, ≥, ≤',symbol:'≥'}
+];
+function categoriesFor(nt){
+  const enabled = {natural:{arithmetic:true},integers:{arithmetic:true},fractions:{arithmetic:true},real:{arithmetic:true},vcm:{arithmetic:true},threeD:{arithmetic:true}}[nt]||{};
+  return CATEGORIES_BASE.map(c=>({...c,enabled:!!enabled[c.key]}));
+}
+function operationsFor(nt,cat){
+  if(cat==='inequalities'){
+    return [{key:'gt',label:'Greater / Less than',desc:'>, <',symbol:'>',enabled:false},
+            {key:'gte',label:'Greater or equal',desc:'≥, ≤',symbol:'≥',enabled:false}];
+  }
+  return ({
+    natural:[
+      {key:'add',label:'Addition',desc:'a + b',symbol:'+',enabled:true,topic:'natAdd'},
+      {key:'sub',label:'Subtraction',desc:'a − b',symbol:'−',enabled:true,topic:'natSub'},
+      {key:'mul',label:'Multiplication',desc:'times tables',symbol:'×',enabled:true,topic:'natMul'},
+      {key:'div',label:'Division',desc:'a ÷ b (exact)',symbol:'÷',enabled:true,topic:'natDiv'},
+      {key:'exp',label:'Exponentiation',desc:'aᵇ — powers',symbol:'^',enabled:true,topic:'natExp'}
+    ],
+    integers:[
+      {key:'add',label:'Addition',desc:'cross zero with +',symbol:'+',enabled:true,topic:'intAdd'},
+      {key:'sub',label:'Subtraction',desc:'cross zero with −',symbol:'−',enabled:true,topic:'intSub'},
+      {key:'mul',label:'Multiplication',desc:'a × b',symbol:'×',enabled:false},
+      {key:'div',label:'Division',desc:'a ÷ b',symbol:'÷',enabled:false},
+      {key:'exp',label:'Exponentiation',desc:'aᵇ — sign matters',symbol:'^',enabled:true,topic:'intExp'}
+    ],
+    fractions:[
+      {key:'add',label:'Addition',desc:'common denominators',symbol:'+',enabled:false},
+      {key:'sub',label:'Subtraction',desc:'common denominators',symbol:'−',enabled:false},
+      {key:'mul',label:'Multiplication',desc:'numerator × numerator',symbol:'×',enabled:false},
+      {key:'div',label:'Division → Decimal',desc:'n ÷ d',symbol:'÷',enabled:true,topic:'fracDiv'}
+    ],
+    real:[
+      {key:'add',label:'Addition',desc:'decimal addition',symbol:'+',enabled:false},
+      {key:'sub',label:'Subtraction',desc:'decimal subtraction',symbol:'−',enabled:false},
+      {key:'mul',label:'Multiplication',desc:'×10, ×100, ×1000',symbol:'×',enabled:true,topic:'realMul'},
+      {key:'div',label:'Division',desc:'÷10, ÷100, ÷1000',symbol:'÷',enabled:true,topic:'realDiv'},
+      {key:'exp',label:'Exponentiation',desc:'small powers of small decimals',symbol:'^',enabled:true,topic:'realExp'}
+    ],
+    vcm:[
+      {key:'add',label:'Addition',desc:'2D add — pick the view',symbol:'+',enabled:true,topic:'vcmAdd'},
+      {key:'sub',label:'Subtraction',desc:'2D sub — pick the view',symbol:'−',enabled:true,topic:'vcmSub'},
+      {key:'mul',label:'Multiplication',desc:'complex / Argand product',symbol:'×',enabled:true,topic:'vcmMul'},
+      {key:'dot',label:'Dot product',desc:'u · v → scalar (cos / xx+yy)',symbol:'·',enabled:true,topic:'vecDot'},
+      {key:'wedge',label:'Wedge / Cross',desc:'u ∧ v → signed area',symbol:'∧',enabled:true,topic:'vecWedge'},
+      {key:'matmul',label:'Matrix multiplication',desc:'general A · B',symbol:'∘',enabled:true,topic:'matMul'}
+    ],
+    threeD:[
+      {key:'add',label:'Addition',desc:'3-vector componentwise',symbol:'+',enabled:true,topic:'threeDAdd'},
+      {key:'dot',label:'Dot product',desc:'u · v → scalar',symbol:'·',enabled:true,topic:'threeDDot'},
+      {key:'cross',label:'Cross product',desc:'u × v → 3-vector',symbol:'×',enabled:true,topic:'threeDCross'},
+      {key:'quat',label:'Quaternion product',desc:'q · p → q (non-commutative)',symbol:'∘',enabled:true,topic:'quatMul'}
+    ]
+  })[nt]||[];
+}
+const NAV = {numberType:null,category:null,operation:null};
+
+/* Settings */
+const SET = { topic:null, diff:'Easy', count:2, method:'choice', feedback:'long', mode:'pure', showEq:'show', useUnits:false, numForm:'decimal', divForm:'symbol', viewForm:'vector', vcmCompMode:'first', numScale:'simple' };
+const COUNTS=[2,5,10,15,20];
+const MODES=[['pure','Pure math','just numbers'],['real','Real world','physics & alchemy']];
+const EQS=[['show','Show','equation visible'],['hide','Hide','text only'],['prose','Prose','infer the math']];
+const UNITS=[[false,'Plain','just the number'],[true,'With units','km, V, °C…']];
+const NUMFORMS=[['decimal','Decimal','0.5'],['fraction','Fraction','½']];
+const DIVFORMS=[['symbol','÷ symbol','30 ÷ 10'],['fraction','Fraction bar','³⁰⁄₁₀']];
+const VIEWS=[['vector','Vector','[a, b]'],['complex','Complex','a + bi'],['matrix','Matrix','[a / b]']];
+const VCM_COMPS=[['first','1st only','only ask 1st component'],['second','2nd only','only ask 2nd component'],['half','Half-half','1st half, then 2nd'],['random','Random','either each time']];
+const NUM_SCALES=[['simple','Simple','0, 1, 2 — focus on structure'],['wide','Wider','larger values']];
+function vcmPool(diff){
+  if(SET.numScale === 'wide') return ({Easy:[-3,-2,-1,1,2,3,5,10],Medium:[-5,-3,-2,-1,1,2,3,5,10],Hard:[-9,-5,-3,-1,1,3,5,9,10]})[diff] || [];
+  return ({Easy:[0,1,2], Medium:[-1,0,1,2,10], Hard:[-2,-1,0,1,2,10]})[diff] || [];
+}
+function vcmMulPool(diff){
+  if(SET.numScale === 'wide') return ({Easy:[-2,-1,1,2,3], Medium:[-3,-2,-1,1,2,3,5], Hard:[-5,-3,-2,-1,1,2,3,5]})[diff] || [];
+  return ({Easy:[0,1], Medium:[-1,0,1,2], Hard:[-2,-1,0,1,2]})[diff] || [];
+}
+function vecDotPool(diff){
+  if(SET.numScale === 'wide') return ({Easy:[-2,-1,1,2,3], Medium:[-3,-2,-1,1,2,3], Hard:[-5,-3,-1,1,3,5]})[diff] || [];
+  return ({Easy:[0,1], Medium:[-1,0,1,2], Hard:[-2,-1,0,1,2,3]})[diff] || [];
+}
+const METHODS=[['choice','Multiple choice','easier'],['type','Type the answer','harder']];
+const FBS=[['off','Off','no feedback'],['short','Short','right/wrong · 1s'],['long','Long','panel · 10s']];
+const DIFF_MULT={Easy:1,Medium:2,Hard:3};
+const FB_TIMING={off:300, short:300, long:10000};
+const TIER_NAMES = {4:'Layman',5:'Beginner',6:'Highschool',7:'Undergrad',8:'Grad',9:'PhD',10:'Frontier',11:'Nobel'};
+
+/* Runtime state */
+let queue, idx, score, correctCount, attempts, startTime, timerInt, locked;
+let timerAccumulated = 0;
+let timerSegmentStart = null;
+let qHistory = [];
+let fbInterval = null, fbTimeout = null;
+let visualShown = false;
+let gameActive = false;
+let _vcmIdxOverride = null;
+let visFlags = { u:true, v:true, result:false };
+
+function timerNow(){ return timerAccumulated + (timerSegmentStart ? Date.now() - timerSegmentStart : 0); }
+function pausePlayTimer(){ if(timerSegmentStart != null){ timerAccumulated += Date.now() - timerSegmentStart; timerSegmentStart = null; } }
+function resumePlayTimer(){ if(timerSegmentStart == null) timerSegmentStart = Date.now(); }
+
+function initVisualState(){ visualShown = false; visFlags = { u:true, v:true, result:false }; }
+function buildCurrentDiagram(){
+  const q = (queue && queue[idx]) || null;
+  if(!q) return '';
+  if(q.diagramArrows){
+    const arrows = [];
+    if(visFlags.u && q.diagramArrows[0]) arrows.push(q.diagramArrows[0]);
+    if(visFlags.v && q.diagramArrows[1]) arrows.push(q.diagramArrows[1]);
+    const opts = {};
+    if(visFlags.result && q.diagramResultant){
+      opts.resultant = q.diagramResultant.v;
+      opts.resultantLabel = q.diagramResultant.label;
+      opts.resultantColor = q.diagramResultant.color;
+    }
+    if(!arrows.length && !opts.resultant) return '';
+    return vecDiag(arrows, opts);
+  }
+  return q.diagramHTML || '';
+}
+function renderVisToggles(){
+  const bar = $('visToggles');
+  bar.innerHTML = '';
+  const q = (queue && queue[idx]) || null;
+  if(!q || !q.diagramArrows){ bar.style.display = 'none'; return; }
+  const items = [];
+  if(q.diagramArrows[0]) items.push({key:'u', label:q.diagramArrows[0].label, color:q.diagramArrows[0].color});
+  if(q.diagramArrows[1]) items.push({key:'v', label:q.diagramArrows[1].label, color:q.diagramArrows[1].color});
+  if(q.diagramResultant) items.push({key:'result', label:q.diagramResultant.label, color:q.diagramResultant.color});
+  bar.style.display = 'flex';
+  items.forEach(it=>{
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    const isOn = !!visFlags[it.key];
+    btn.className = 'vischip' + (isOn ? ' on' : '');
+    btn.style.borderColor = it.color;
+    btn.style.color = isOn ? it.color : 'var(--muted)';
+    btn.textContent = it.label;
+    btn.addEventListener('click', ()=>{ visFlags[it.key] = !visFlags[it.key]; applyVisualState(); });
+    bar.appendChild(btn);
+  });
+}
+function applyVisualState(){
+  const toggle = $('visualToggle');
+  const div    = $('qVisual');
+  const bar    = $('visToggles');
+  const q = (queue && queue[idx]) || null;
+  const hasDiag = !!(q && (q.diagramArrows || q.diagramHTML));
+  if(!hasDiag){ toggle.style.display = 'none'; div.style.display = 'none'; bar.style.display = 'none'; return; }
+  toggle.style.display = 'inline-flex';
+  if(visualShown){
+    div.innerHTML = buildCurrentDiagram();
+    div.style.display = 'block';
+    renderVisToggles();
+    toggle.textContent = '👁 Hide diagram';
+  } else {
+    div.style.display = 'none';
+    bar.style.display = 'none';
+    toggle.textContent = '💡 Show diagram';
+  }
+}
+function clearFeedbackTimer(){
+  if(fbInterval){ clearInterval(fbInterval); fbInterval = null; }
+  if(fbTimeout){ clearTimeout(fbTimeout); fbTimeout = null; }
+  const pause = document.getElementById('pauseBtn'); if(pause) pause.style.display = 'none';
+  const next = document.getElementById('nextBtn'); if(next) next.textContent = 'Next →';
+}
+
+/* Navbar */
+const BACK_OF = { numbers:null, categories:'numbers', operations:'categories', settings:'operations', play:'settings', end:'numbers', signin:'numbers', profile:'numbers' };
+function currentScreen(){ const el = document.querySelector('.screen.on'); return el ? el.id : null; }
+function leavingCleanup(){ clearInterval(timerInt); clearFeedbackTimer(); gameActive = false; }
+function navBack(){ const target = BACK_OF[currentScreen()]; if(!target) return; leavingCleanup(); show(target); updateNavbar(); }
+function navHome(){ leavingCleanup(); show('numbers'); updateNavbar(); }
+function navProfile(){ leavingCleanup(); show('signin'); updateNavbar(); }
+function updateNavbar(){
+  const cur = currentScreen();
+  const back = $('navBack');
+  const home = $('navHome');
+  if(back) back.disabled = !(cur && BACK_OF[cur]);
+  if(home) home.disabled = (cur === 'numbers');
+}
+const $=id=>document.getElementById(id);
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  $(id).classList.add('on');
+  if(typeof updateNavbar === 'function') updateNavbar();
+}
+
+/* User chip (minimal — anonymous play, no accounts) */
+function renderUserChip(){
+  const chip=$('userChip');
+  chip.innerHTML=`<span>Anonymous</span>`;
+  chip.onclick=()=>{};
+}
+
+/* Number list rendering */
+function renderNumberList(){
+  const list=$('numberList'); list.innerHTML='';
+  NUMBER_TYPES.forEach(n=>{
+    const b=document.createElement('button');
+    b.className='topic'+(n.enabled?'':' disabled');
+    b.innerHTML=`<span class="ic">${n.symbol}</span>
+      <span><span class="tt">${n.label}</span><div class="td">${n.desc}</div></span>
+      <span class="arr">${n.enabled?'→':'soon'}</span>`;
+    if(n.enabled) b.addEventListener('click',()=>openCategories(n.key));
+    list.appendChild(b);
+  });
+}
+function openCategories(nt){
+  NAV.numberType=nt; saveNav();
+  const def=NUMBER_TYPES.find(x=>x.key===nt);
+  $('catCrumb').textContent=def.label;
+  const list=$('categoryList'); list.innerHTML='';
+  categoriesFor(nt).forEach(c=>{
+    const b=document.createElement('button');
+    b.className='topic'+(c.enabled?'':' disabled');
+    b.innerHTML=`<span class="ic">${c.symbol}</span>
+      <span><span class="tt">${c.label}</span><div class="td">${c.desc}</div></span>
+      <span class="arr">${c.enabled?'→':'soon'}</span>`;
+    if(c.enabled) b.addEventListener('click',()=>openOperations(c.key));
+    list.appendChild(b);
+  });
+  show('categories');
+}
+function openOperations(cat){
+  NAV.category=cat; saveNav();
+  const nt=NAV.numberType;
+  const ntDef=NUMBER_TYPES.find(x=>x.key===nt);
+  const catDef=CATEGORIES_BASE.find(x=>x.key===cat);
+  $('opCrumb').textContent=`${ntDef.label} · ${catDef.label}`;
+  const list=$('operationList'); list.innerHTML='';
+  operationsFor(nt,cat).forEach(o=>{
+    const b=document.createElement('button');
+    b.className='topic'+(o.enabled?'':' disabled');
+    b.innerHTML=`<span class="ic">${o.symbol}</span>
+      <span><span class="tt">${o.label}</span><div class="td">${o.desc}</div></span>
+      <span class="arr">${o.enabled?'→':'soon'}</span>`;
+    if(o.enabled) b.addEventListener('click',()=>{ NAV.operation=o.key; saveNav(); openSettings(o.topic); });
+    list.appendChild(b);
+  });
+  show('operations');
+}
+function openSettings(key){
+  SET.topic=key; saveSettings();
+  const t=TOPICS[key];
+  $('setCrumb').textContent=t.title;
+  if(!t.diffs.includes(SET.diff)) SET.diff=t.diffs[0];
+  renderOpts('optDiff', t.diffs.map(d=>[d,d]), 'diff');
+  renderOpts('optCount', COUNTS.map(c=>[c, String(c)]), 'count');
+  const preset = new Set(COUNTS);
+  $('countCustom').value = preset.has(SET.count) ? '' : String(SET.count);
+  renderOpts('optMode', MODES, 'mode', refreshConditionals);
+  renderOpts('optEq', EQS, 'showEq');
+  renderOpts('optUnit', UNITS, 'useUnits');
+  renderOpts('optNumForm', NUMFORMS, 'numForm');
+  renderOpts('optDivForm', DIVFORMS, 'divForm');
+  renderOpts('optView', VIEWS, 'viewForm');
+  renderOpts('optVcmComp', VCM_COMPS, 'vcmCompMode');
+  renderOpts('optNumScale', NUM_SCALES, 'numScale');
+  renderOpts('optMethod', METHODS, 'method');
+  renderOpts('optFb', FBS, 'feedback');
+  refreshConditionals();
+  $('advToggle').setAttribute('aria-expanded', 'false');
+  $('advancedBlock').style.display = 'none';
+  show('settings');
+}
+function refreshConditionals(){
+  const isReal = SET.mode==='real';
+  const topicHasUnits = ['intAdd','intSub','realMul','realDiv'].includes(SET.topic);
+  const topicHasDecimals = ['realMul','realDiv'].includes(SET.topic);
+  const topicHasDiv = ['realDiv'].includes(SET.topic);
+  const topicHasView = ['vcmAdd','vcmSub','vcmMul'].includes(SET.topic);
+  $('setEqBlock').style.display = isReal ? 'block' : 'none';
+  $('setUnitBlock').style.display = (isReal && topicHasUnits) ? 'block' : 'none';
+  $('setNumBlock').style.display = topicHasDecimals ? 'block' : 'none';
+  $('setDivBlock').style.display = topicHasDiv ? 'block' : 'none';
+  $('setViewBlock').style.display = topicHasView ? 'block' : 'none';
+  $('setVcmCompBlock').style.display = topicHasView ? 'block' : 'none';
+  const topicHasNumScale = ['vcmAdd','vcmSub','vcmMul','vecDot','vecWedge'].includes(SET.topic);
+  $('setNumScaleBlock').style.display = topicHasNumScale ? 'block' : 'none';
+}
+function renderOpts(containerId, items, field, onChange){
+  const c=$(containerId); c.innerHTML='';
+  items.forEach(it=>{
+    const [val,label,sub]=it;
+    const b=document.createElement('button'); b.className='opt'+(SET[field]===val?' sel':'');
+    b.innerHTML = sub ? `${label}<span class="sub">${sub}</span>` : label;
+    b.addEventListener('click',()=>{ SET[field]=val; saveSettings(); renderOpts(containerId, items, field, onChange); if(onChange) onChange(); });
+    c.appendChild(b);
+  });
+}
+
+/* Recents */
+const RECENTS_KEY = 'rs_recents';
+const RECENTS_MAX = 5;
+function loadRecents(){ try{ const r = localStorage.getItem(RECENTS_KEY); return r ? JSON.parse(r) : []; }catch{ return []; } }
+function saveRecents(arr){ try{ localStorage.setItem(RECENTS_KEY, JSON.stringify(arr.slice(0, RECENTS_MAX))); }catch{} }
+function pushRecent(){
+  if(!SET.topic) return;
+  const snapshot = { topic:SET.topic, diff:SET.diff, count:SET.count, mode:SET.mode, ts:Date.now() };
+  const existing = loadRecents().filter(r => r.topic !== SET.topic);
+  saveRecents([snapshot, ...existing]);
+}
+function renderRecents(){
+  const section = $('recents'); const list = $('recentList');
+  const recents = loadRecents();
+  if(!recents.length){ section.style.display = 'none'; return; }
+  section.style.display = 'block';
+  list.innerHTML = '';
+  recents.forEach((r, i) => {
+    const topic = TOPICS[r.topic]; if(!topic) return;
+    const btn = document.createElement('button');
+    btn.className = 'recent';
+    btn.innerHTML = `<span class="rname">${topic.title}</span>
+      <span class="rmeta">${r.diff} · ${r.count}q · ${r.mode === 'real' ? 'real' : 'pure'}</span>
+      <span class="rclose" data-i="${i}" title="Remove">×</span>`;
+    btn.addEventListener('click', (ev) => {
+      if(ev.target && ev.target.classList.contains('rclose')){
+        const idx = parseInt(ev.target.dataset.i, 10);
+        const arr = loadRecents(); arr.splice(idx, 1); saveRecents(arr);
+        renderRecents();
+        return;
+      }
+      Object.assign(SET, r);
+      saveSettings(); openSettings(r.topic);
+    });
+    list.appendChild(btn);
+  });
+}
+
+/* Persistence */
+const SETTINGS_KEY='rs_settings', NAV_KEY='rs_nav';
+const APP_VERSION = 'v1.23.7';
+function loadSettings(){
+  try{ const s = localStorage.getItem(SETTINGS_KEY); if(s) Object.assign(SET, JSON.parse(s)); }catch{}
+  try{ const n = localStorage.getItem(NAV_KEY); if(n) Object.assign(NAV, JSON.parse(n)); }catch{}
+  if(typeof SET.feedback === 'boolean') SET.feedback = SET.feedback ? 'long' : 'off';
+}
+function saveSettings(){ try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(SET)); }catch{} }
+function saveNav(){ try{ localStorage.setItem(NAV_KEY, JSON.stringify(NAV)); }catch{} }
+
+/* Game loop */
+function startGame(){
+  const t=TOPICS[SET.topic];
+  queue=[];
+  const halfMark = Math.floor(SET.count / 2);
+  for(let i=0;i<SET.count;i++){
+    if(SET.vcmCompMode === 'first')        _vcmIdxOverride = 0;
+    else if(SET.vcmCompMode === 'second')  _vcmIdxOverride = 1;
+    else if(SET.vcmCompMode === 'half')    _vcmIdxOverride = (i < halfMark) ? 0 : 1;
+    else                                   _vcmIdxOverride = null;
+    let q=t.make(SET.diff);
+    if(SET.mode==='real' && SET.showEq==='prose' && q.type==='shift'){
+      let tries=0;
+      while(String(q.exp.a).startsWith('-') && tries++<30) q=t.make(SET.diff);
+    }
+    queue.push(q);
+  }
+  _vcmIdxOverride = null;
+  pushRecent();
+  initVisualState();
+  idx=0; score=0; correctCount=0; attempts=0; locked=false; qHistory = [];
+  clearInterval(timerInt);
+  $('timer').textContent='0.0s';
+  $('qcount').textContent=`1 / ${SET.count}`;
+  $('score').textContent=`★ 0`;
+  $('bar').style.width='0%';
+  $('startGate').style.display='block';
+  $('playBody').style.display='none';
+  show('play');
+}
+function beginPlay(){
+  startTime = Date.now();
+  timerAccumulated = 0;
+  timerSegmentStart = Date.now();
+  timerInt = setInterval(()=>{ $('timer').textContent = (timerNow()/1000).toFixed(1)+'s'; }, 100);
+  $('startGate').style.display='none';
+  $('playBody').style.display='block';
+  gameActive = true;
+  renderQuestion();
+}
+function renderQuestion(){
+  locked=false;
+  const q=queue[idx];
+  const isReal = SET.mode==='real';
+  const useProse = isReal && SET.showEq==='prose';
+  const showBareEq = !isReal || SET.showEq==='show';
+  const unit = (isReal && SET.useUnits && q.exp && q.exp.unit) ? q.exp.unit : '';
+  $('question').innerHTML=q.promptHTML;
+  $('question').style.display = showBareEq ? 'block' : 'none';
+  $('qcount').textContent=`${idx+1} / ${SET.count}`;
+  $('score').textContent=`★ ${score}`;
+  $('bar').style.width=(idx/SET.count*100)+'%';
+  $('explain').classList.remove('on');
+  $('qVisual').innerHTML = q.diagramHTML || '';
+  applyVisualState();
+  const scn=$('scenario');
+  if(isReal){
+    const html = useProse && q.proseHTML ? q.proseHTML : q.scenarioHTML;
+    if(html){ scn.innerHTML=html; scn.classList.add('on'); }
+    else { scn.classList.remove('on'); scn.innerHTML=''; }
+  } else { scn.classList.remove('on'); scn.innerHTML=''; }
+  if(SET.method==='choice'){
+    $('answers').style.display='grid';
+    $('typewrap').style.display='none';
+    const set=new Set([q.answer]); const opts=[q.answer];
+    q.distractors.forEach(d=>{ if(d!=null && !set.has(d) && opts.length<4){set.add(d);opts.push(d);} });
+    let k=1, guard=0;
+    while(opts.length<4 && guard++<40){ const f=shiftPoint(q.answer,k); if(!set.has(f)){set.add(f);opts.push(f);} k=k>0?-k:(-k+1); }
+    while(opts.length<4){ const f=String(parseFloat(q.answer)+opts.length); if(!set.has(f)){set.add(f);opts.push(f);} }
+    opts.sort((a,b)=>parseFloat(a)-parseFloat(b));
+    const wrap=$('answers'); wrap.innerHTML='';
+    opts.forEach(o=>{
+      const btn=document.createElement('button'); btn.className='ans mono';
+      const val = fmtVal(o);
+      btn.innerHTML = unit ? `${val} ${unit}` : val;
+      btn.dataset.val = o;
+      btn.addEventListener('click',()=>resolve(o===q.answer, btn, q));
+      wrap.appendChild(btn);
+    });
+  } else {
+    $('answers').style.display='none';
+    $('typewrap').style.display='flex';
+    const ti=$('typein'); ti.value=''; ti.disabled=false; ti.className='typein mono'; ti.focus();
+    $('unitLabel').textContent = unit;
+    $('submitBtn').disabled=false;
+  }
+}
+function submitTyped(){
+  if(locked) return;
+  const ti=$('typein'); const norm=normalize(ti.value);
+  if(norm===null||norm==='INVALID'){ ti.focus(); return; }
+  const q=queue[idx];
+  const right = norm===q.answer;
+  ti.disabled=true; $('submitBtn').disabled=true;
+  ti.classList.add(right?'correct':'wrong');
+  resolve(right, null, q);
+}
+function resolve(right, btn, q){
+  if(locked) return; locked=true; attempts++;
+  let userAnswer = '';
+  if(SET.method==='choice'){
+    document.querySelectorAll('.ans').forEach(b=>{ b.disabled=true; if(b.dataset.val===q.answer) b.classList.add('correct'); });
+    if(btn){ userAnswer = btn.dataset.val || btn.textContent; if(!right) btn.classList.add('wrong'); }
+  } else { userAnswer = $('typein').value; }
+  qHistory.push({ promptHTML: q.promptHTML, userAnswer, correctAnswer: q.answer, correct: !!right });
+  if(right){ score += (DIFF_MULT[SET.diff]||1); correctCount++; $('score').textContent=`★ ${score}`; burst(); }
+  pausePlayTimer();
+  const fb = SET.feedback;
+  if(fb === 'long'){ showExplain(q, right); startFeedbackCountdown(FB_TIMING.long); }
+  else if(fb === 'short'){ fbTimeout = setTimeout(nextQuestion, FB_TIMING.short); }
+  else { fbTimeout = setTimeout(nextQuestion, FB_TIMING.off); }
+}
+function startFeedbackCountdown(totalMs){
+  let remaining = Math.round(totalMs / 1000);
+  const nextBtn  = $('nextBtn');
+  const pauseBtn = $('pauseBtn');
+  nextBtn.textContent  = `Next → (${remaining}s)`;
+  pauseBtn.style.display = 'inline-block';
+  fbInterval = setInterval(() => {
+    remaining -= 1;
+    if(remaining <= 0){ clearFeedbackTimer(); nextQuestion(); }
+    else { nextBtn.textContent = `Next → (${remaining}s)`; }
+  }, 1000);
+  pauseBtn.onclick = () => { clearFeedbackTimer(); nextBtn.textContent = 'Next →'; };
+}
+
+/* Explainers */
+function renderNum(str, move){
+  let h='';
+  for(const ch of str){
+    if(ch==='.') h+=`<span class="point${move?' move':''}">.</span>`;
+    else if(ch==='-') h+=`<span class="digit">−</span>`;
+    else h+=`<span class="digit">${ch}</span>`;
+  }
+  return h;
+}
+function numberLine(start,end){
+  let lo=Math.min(start,end,0)-1, hi=Math.max(start,end,0)+1;
+  if(hi-lo>14){ lo=Math.min(start,end)-1; hi=Math.max(start,end)+1; }
+  let cells='';
+  for(let n=lo;n<=hi;n++){
+    let cls='nl-cell';
+    if(n===0)cls+=' zero';
+    if(n===start)cls+=' start';
+    if(n===end)cls+=' end';
+    cells+=`<div class="${cls}">${n}</div>`;
+  }
+  return `<div class="nlwrap"><div class="nl">${cells}</div></div>`;
+}
+function factSpan(q){ return (SET.mode === 'real' && q.scenarioFact) ? `<span class="fact">${q.scenarioFact}</span>` : ''; }
+function unitSuffix(q){ return (SET.mode === 'real' && SET.useUnits && q.exp && q.exp.unit) ? ` ${q.exp.unit}` : ''; }
+function explainShift(q){
+  const e = q.exp;
+  const steps = Math.abs(e.places);
+  const dir = e.places > 0 ? 'right' : 'left';
+  const arr = e.places > 0 ? '→' : '←';
+  const unitTag = unitSuffix(q) ? `<span style="font-size:.55em;color:var(--muted);margin-left:8px;">${e.unit}</span>` : '';
+  const why = (e.places > 0 ? 'Bigger: each digit climbs a place value.' : 'Smaller: each digit drops a place value.')
+            + (e.a.startsWith('-') ? ' The minus sign rides along.' : '');
+  return `<div class="slidebox">
+    <div class="numline">${renderNum(e.a, false)}</div>
+    <div class="moveword">${e.op} — slide the point ${steps} step${steps>1?'s':''} ${dir} ${arr}</div>
+    <div class="numline">${renderNum(e.ans, true)}${unitTag}</div>
+  </div><div class="why">${why}${factSpan(q)}</div>`;
+}
+function explainNeg(q){
+  const e = q.exp;
+  const dir = e.delta >= 0 ? 'right' : 'left';
+  const mag = Math.abs(e.delta);
+  const unit = unitSuffix(q);
+  const crossed = (e.start < 0) !== (e.end < 0);
+  const why = crossed ? "You cross zero — that's the tricky part." : 'Same side of zero the whole way.';
+  return `<div class="slidebox">${numberLine(e.start, e.end)}
+    <div class="moveword">Start at <b>${e.start}${unit}</b>, hop <span class="${e.delta>=0?'r':'l'}">${mag} ${dir}</span>, land on <b>${e.end}${unit}</b></div>
+  </div><div class="why">${why}${factSpan(q)}</div>`;
+}
+function explainFrac(q){
+  const e = q.exp;
+  return `<div class="slidebox">
+    <div class="fexp"><span class="frac"><span>${e.n}</span><span class="den">${e.d}</span></span> &nbsp;=&nbsp; ${e.n} ÷ ${e.d}</div>
+    <div class="moveword">${e.n} ÷ ${e.d} = <b class="mono">${e.ans}</b></div>
+  </div><div class="why">A fraction is just a division waiting to happen.${factSpan(q)}</div>`;
+}
+function explainVcm(q){
+  const e = q.exp;
+  const isMul = e.op === '×';
+  const arrows = [{v:[e.a,e.b], label:'u', color:'#FF3D71'}, {v:[e.c,e.d], label:'v', color:'#3A6EA5'}];
+  let diagOpts;
+  if(e.op === '+')      diagOpts = {resultant:[e.a+e.c, e.b+e.d], resultantLabel:'u+v'};
+  else if(e.op === '−') diagOpts = {resultant:[e.a-e.c, e.b-e.d], resultantLabel:'u−v'};
+  else                  diagOpts = {parallelogram:true, projection:true};
+  const diagram = vecDiag(arrows, diagOpts);
+  const compName = isMul ? (e.idx === 0 ? 'real part' : 'imag part') : (e.idx === 0 ? '1st' : '2nd') + ' component';
+  const note = isMul ? 'Complex × matrix × vector are three views of one operation.' : 'Addition / subtraction is identical in all three views.';
+  return `<div class="slidebox">${diagram}
+    <div class="moveword">Answer (${compName}) = <b class="mono">${e.ans}</b></div>
+  </div>${isMul ? gaBreakdown(e.a, e.b, e.c, e.d) : ''}
+  <div class="why">${note}${factSpan(q)}</div>`;
+}
+function explainVecDot(q){
+  const e = q.exp;
+  const diagram = vecDiag([{v:e.u, label:'u', color:'#FF3D71'}, {v:e.v, label:'v', color:'#3A6EA5'}], {projection:true});
+  const sumExpr = e.u.map((ui, i) => `${ui}×${e.v[i]}`).join(' + ');
+  return `<div class="slidebox">${diagram}
+    <div class="moveword">u · v = ${sumExpr} = <b class="mono">${e.ans}</b></div>
+  </div>${gaBreakdown(e.u[0], e.u[1], e.v[0], e.v[1])}
+  <div class="why">Dot product = sum of like-direction products (xx + yy + zz) — cosine half of the geometric product.${factSpan(q)}</div>`;
+}
+function explainWedge(q){
+  const e = q.exp;
+  const diagram = vecDiag([{v:[e.a,e.b], label:'u', color:'#FF3D71'}, {v:[e.c,e.d], label:'v', color:'#3A6EA5'}], {parallelogram:true});
+  return `<div class="slidebox">${diagram}
+    <div class="moveword">u ∧ v = ${e.a}×${e.d} − ${e.b}×${e.c} = <b class="mono">${e.ans}</b></div>
+  </div>${gaBreakdown(e.a, e.b, e.c, e.d)}
+  <div class="why">Wedge is the signed area of the parallelogram — sine half of the geometric product.${factSpan(q)}</div>`;
+}
+function explainArith(q){
+  const e = q.exp;
+  return `<div class="slidebox">
+    <div class="moveword" style="font-size:1.35rem;">${e.expr} = <b class="mono">${e.ans}</b></div>
+  </div><div class="why">${e.why || ''}${factSpan(q)}</div>`;
+}
+function explainMatMul(q){
+  const e = q.exp;
+  const row = e.A[e.r];
+  const col = e.B.map(rw => rw[e.c]);
+  const terms = row.map((v, k) => `${v}×${col[k]}`).join(' + ');
+  return `<div class="slidebox">${matHTML(e.A, e.r, undefined)} <span class="op">·</span> ${matHTML(e.B, undefined, e.c)}
+    <div class="moveword">row ${e.r+1} · column ${e.c+1} = ${terms} = <b class="mono">${e.ans}</b></div>
+  </div><div class="why">Matrix mult: each output cell is a dot product of a row from A and a column from B.${factSpan(q)}</div>`;
+}
+const EXPLAINERS = { shift:explainShift, neg:explainNeg, frac:explainFrac, vcm:explainVcm, vecdot:explainVecDot, wedge:explainWedge, arith:explainArith, matmul:explainMatMul };
+function showExplain(q, right){
+  const verdict = $('verdict');
+  verdict.textContent = right ? 'Correct' : 'Not quite';
+  verdict.className = 'verdict ' + (right ? 'ok' : 'no');
+  const handler = EXPLAINERS[q.type] || explainArith;
+  $('explainBody').innerHTML = handler(q);
+  $('explain').classList.add('on');
+}
+function nextQuestion(){
+  clearFeedbackTimer();
+  idx++;
+  if(idx>=SET.count){ endGame(); return; }
+  renderQuestion();
+  resumePlayTimer();
+}
+function finishEarly(){
+  if(!gameActive){ show('settings'); return; }
+  clearFeedbackTimer();
+  endGame(true);
+}
+function renderQuestionSummary(){
+  const section = $('qSumSection'); const list = $('qSumList');
+  if(!qHistory.length){ section.style.display = 'none'; return; }
+  section.style.display = 'block';
+  list.innerHTML = '';
+  qHistory.forEach((rec, i)=>{
+    const row = document.createElement('div');
+    row.className = 'qsumrow ' + (rec.correct ? 'ok' : 'no');
+    const prompt = String(rec.promptHTML).replace(/\s*=\s*<span class="qmark">\?<\/span>\s*$/, '');
+    const user   = rec.userAnswer == null || rec.userAnswer === '' ? '—' : String(rec.userAnswer);
+    const correct = rec.correctAnswer;
+    const result = rec.correct ? `<span class="ans">${user}</span>` : `<span class="your">${user}</span> → <span class="ans">${correct}</span>`;
+    row.innerHTML = `<span class="qidx">${i+1}</span><span class="qprompt">${prompt}</span><span class="qres">${result}</span>`;
+    list.appendChild(row);
+  });
+}
+function endGame(earlyFinish){
+  clearInterval(timerInt);
+  pausePlayTimer();
+  const total = (timerNow()/1000).toFixed(1);
+  const answered  = earlyFinish ? attempts : SET.count;
+  const effective = Math.max(1, answered);
+  const maxScore  = effective * (DIFF_MULT[SET.diff]||1);
+  gameActive = false;
+  show('end');
+  const accuracy = correctCount / effective;
+  const tierNum = Math.max(4, Math.min(7, Math.round(4 + accuracy * 3)));
+  const letter = accuracy >= 0.85 ? 'A' : accuracy >= 0.55 ? 'B' : 'C';
+  $('finalScore').textContent=score;
+  $('finalOf').textContent=' / '+maxScore+'  ('+SET.diff+' ×'+(DIFF_MULT[SET.diff]||1)+(earlyFinish?` · answered ${answered}`:'')+')';
+  $('finalTime').textContent=total+'s';
+  $('finalAcc').textContent=Math.round(accuracy*100)+'%';
+  $('finalGrade').textContent='Lvl '+tierNum+letter;
+  $('finalTier').textContent=TIER_NAMES[tierNum] || '';
+  $('finalGradeBox').setAttribute('data-tier', tierNum);
+  $('bar').style.width='100%';
+  renderQuestionSummary();
+  const pct=score/maxScore;
+  let title,msg;
+  if(pct===1){title='Flawless';msg='Every one. The pattern is yours.';}
+  else if(pct>=0.7){title='Strong run';msg='A couple more rounds and it\'s instinct.';}
+  else if(pct>=0.4){title='Warming up';msg='You\'re getting it — try again, watch the feedback.';}
+  else {title='Keep going';msg='Turn feedback on, slow down — the pattern is there.';}
+  $('endTitle').textContent=title; $('endMsg').textContent=msg;
+}
+function burst(){
+  const c=$('confetti');
+  for(let i=0;i<10;i++){
+    const d=document.createElement('div'); d.className='conf';
+    d.style.left=(20+Math.random()*60)+'%';
+    d.style.animation=`fall ${0.7+Math.random()*0.5}s ease ${Math.random()*0.1}s forwards`;
+    d.style.borderRadius='50%';
+    c.appendChild(d); setTimeout(()=>d.remove(),1400);
+  }
+}
+
+/* Event listeners */
+$('startBtn').addEventListener('click', startGame);
+$('finishBtn').addEventListener('click', ()=>{ finishEarly(); });
+$('navBack').addEventListener('click', navBack);
+$('navHome').addEventListener('click', navHome);
+$('navProfile').addEventListener('click', navProfile);
+$('visualToggle').addEventListener('click', ()=>{ visualShown = !visualShown; applyVisualState(); });
+$('countCustom').addEventListener('input', ()=>{
+  const v = parseInt($('countCustom').value, 10);
+  if(!isNaN(v) && v >= 1 && v <= 500){
+    SET.count = v; saveSettings();
+    renderOpts('optCount', COUNTS.map(c=>[c, String(c)]), 'count');
+  }
+});
+$('clearRecentsBtn').addEventListener('click', ()=>{ saveRecents([]); renderRecents(); });
+$('nextBtn').addEventListener('click', nextQuestion);
+$('submitBtn').addEventListener('click', submitTyped);
+$('againBtn').addEventListener('click', startGame);
+$('changeBtn').addEventListener('click', ()=> show('settings'));
+$('leaveBtn').addEventListener('click', ()=>{ renderRecents(); show('numbers'); });
+$('gateBtn').addEventListener('click', beginPlay);
+$('signinBtn') && $('signinBtn').addEventListener('click', ()=>{ show('numbers'); });
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{ clearInterval(timerInt); if(b.dataset.go==='numbers') renderRecents(); show(b.dataset.go); }));
+$('advToggle').addEventListener('click', ()=>{
+  const block = $('advancedBlock'); const btn = $('advToggle');
+  const open  = btn.getAttribute('aria-expanded') === 'true';
+  btn.setAttribute('aria-expanded', open ? 'false' : 'true');
+  block.style.display = open ? 'none' : 'block';
+});
+$('typein').addEventListener('keydown', e=>{ if(e.key==='Enter') submitTyped(); });
+
+/* Init */
+loadSettings();
+$('homeVersionTag').textContent = APP_VERSION;
+renderNumberList();
+renderRecents();
+renderUserChip();
+updateNavbar();
+</script>
+</body>
+</html>

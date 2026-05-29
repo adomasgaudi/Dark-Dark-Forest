@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The periodic table of physics — still in its 1700s phase</title>
+<meta name="description" content="Modern physics laid out as a messy proto-table, the way chemistry looked before Mendeleev. Fields, spacetime, dark matter, symmetries, open puzzles, speculative entities — all on one page, sorted by confidence.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #fff; color: #111;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 15px; line-height: 1.6;
+  }
+  body { max-width: 1100px; margin: 0 auto; padding: 80px 24px 120px; }
+  a { color: inherit; }
+
+  /* Top nav */
+  .topnav {
+    position: fixed; top: 0; left: 0; right: 0; height: 48px;
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid #eee; z-index: 100;
+    display: flex; align-items: center;
+  }
+  .topnav-inner {
+    max-width: 1100px; margin: 0 auto;
+    padding: 0 24px; width: 100%;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .nav-back {
+    font-size: 12px; color: #555; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 10px; border-radius: 3px;
+    transition: background .15s, color .15s;
+  }
+  .nav-back:hover { background: #f5f5f5; color: #111; }
+  .nav-brand {
+    flex: 1; text-align: center; font-size: 12px;
+    font-weight: 600; color: #777; letter-spacing: .04em;
+    font-family: 'SF Mono', Consolas, monospace;
+  }
+  .nav-items { min-width: 80px; }
+
+  /* Hero */
+  .eyebrow {
+    font-size: 11px; letter-spacing: .12em;
+    text-transform: uppercase; color: #aaa;
+    margin: 24px 0 14px;
+  }
+  h1 {
+    font-size: 32px; font-weight: 600;
+    letter-spacing: -.015em; line-height: 1.18;
+    margin-bottom: 12px;
+  }
+  .grades { font-size: 13px; color: #888; margin-bottom: 28px; }
+  .lede {
+    font-size: 16px; color: #333; line-height: 1.7;
+    margin-bottom: 14px; max-width: 740px;
+  }
+  .lede em { color: #111; font-style: italic; }
+
+  hr.divider {
+    border: 0; border-top: 1px solid #eee;
+    margin: 44px 0;
+  }
+
+  /* Tier section */
+  .tier { margin-top: 52px; }
+  .tier-head {
+    display: flex; align-items: baseline; gap: 14px;
+    margin-bottom: 18px; flex-wrap: wrap;
+  }
+  .tier-label {
+    font-size: 11px; letter-spacing: .14em;
+    text-transform: uppercase; font-weight: 600;
+  }
+  .tier-sub { font-size: 13px; color: #888; }
+
+  .tier-known     .tier-label { color: #16a34a; }
+  .tier-candidate .tier-label { color: #ca8a04; }
+  .tier-spec      .tier-label { color: #7c3aed; }
+  .tier-puzzle    .tier-label { color: #dc2626; }
+  .tier-dead      .tier-label { color: #888; }
+
+  /* Entity grid */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 8px;
+  }
+
+  .entity {
+    border: 1px solid #eee;
+    border-radius: 5px;
+    padding: 12px 12px 10px;
+    background: #fafafa;
+    position: relative;
+    min-height: 96px;
+    display: flex; flex-direction: column;
+  }
+  .entity .sym {
+    font-family: 'SF Mono', Consolas, monospace;
+    font-size: 22px; font-weight: 600;
+    line-height: 1; margin-bottom: 6px;
+    color: #111;
+  }
+  .entity .name {
+    font-size: 11px; color: #777;
+    font-weight: 500; letter-spacing: .01em;
+  }
+  .entity .role {
+    font-size: 11px; color: #999;
+    margin-top: auto; padding-top: 8px;
+    line-height: 1.4;
+  }
+
+  .entity.known     { border-color: #bbf7d0; background: #f0fdf4; }
+  .entity.known     .sym { color: #16a34a; }
+
+  .entity.candidate { border: 1px dashed #fde68a; background: #fffbeb; }
+  .entity.candidate .sym { color: #ca8a04; }
+  .entity.candidate .sym::after {
+    content: '?'; color: rgba(202,138,4,.55);
+    margin-left: 4px; font-weight: 400;
+  }
+
+  .entity.spec      { border: 1px dotted #ddd6fe; background: #f7f5ff; }
+  .entity.spec      .sym { color: #7c3aed; font-style: italic; }
+  .entity.spec      .sym::after {
+    content: '?'; color: rgba(124,58,237,.5);
+    margin-left: 4px; font-weight: 400;
+  }
+
+  .entity.puzzle    { border: 1px solid #fecaca; background: #fef2f2; }
+  .entity.puzzle    .sym {
+    color: #dc2626; font-size: 14px;
+    font-style: italic; font-family: 'Inter', sans-serif;
+    font-weight: 600; line-height: 1.2;
+  }
+  .entity.puzzle    .role { color: #888; }
+
+  .entity.dead      { border: 1px solid #ddd; background: #f5f5f5; opacity: .65; }
+  .entity.dead      .sym { color: #888; text-decoration: line-through; }
+  .entity.dead      .role { color: #aaa; }
+
+  /* Timeline */
+  .tl-legend {
+    display: flex; gap: 18px; flex-wrap: wrap;
+    font-size: 12px; color: #888;
+    margin: 8px 0 18px 96px;
+  }
+  .tl-legend .dot {
+    display: inline-block; width: 9px; height: 9px;
+    border-radius: 50%; margin-right: 6px;
+    vertical-align: middle;
+  }
+  .tl-legend .dot.found { background: #16a34a; }
+  .tl-legend .dot.predicted { background: #ca8a04; }
+  .tl-legend .dot.unseen { background: #fff; border: 2px solid #ca8a04; box-sizing: border-box; }
+  .timeline {
+    position: relative;
+    margin: 8px 0 0 96px;
+    padding-left: 24px;
+  }
+  .timeline::before {
+    content: ''; position: absolute;
+    left: 0; top: 12px; bottom: 12px; width: 1px;
+    background: #e8e8e8;
+  }
+  .tl-row {
+    position: relative;
+    padding: 6px 0;
+  }
+  .tl-row::before {
+    content: ''; position: absolute;
+    left: -5px; top: 13px;
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    background: #16a34a;
+    border: 2px solid #fff;
+    box-sizing: border-box;
+  }
+  .tl-row.theory::before { background: #ca8a04; }
+  .tl-row.unseen::before { background: #fff; border: 2px solid #ca8a04; }
+  .tl-yr {
+    position: absolute; left: -88px; top: 8px;
+    font-family: 'SF Mono', Consolas, monospace;
+    font-size: 12px; color: #888;
+    width: 60px; text-align: right;
+  }
+  .tl-body {
+    font-size: 13px; line-height: 1.55;
+    color: #333; padding-left: 14px;
+    display: block;
+  }
+  .tl-body b { color: #111; font-weight: 600; }
+  .tl-body i { color: #555; font-style: italic; }
+  .tl-body .tl-meta { color: #888; }
+
+  /* Proportional Gantt-style timeline */
+  .gtl-legend {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    font-size: 12px; color: #666;
+    margin: 4px 0 16px;
+  }
+  .gtl-legend .dot {
+    display: inline-block; width: 10px; height: 10px;
+    border-radius: 50%; margin-right: 6px;
+    vertical-align: middle;
+  }
+  .gtl-wrap {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    border: 1px solid #f0f0f0;
+    border-radius: 6px;
+    background: #fff;
+  }
+  .gtl {
+    display: block;
+    width: 100%;
+    min-width: 720px;
+    height: auto;
+  }
+
+  /* Frayed predictions — promised but evidence is not appearing */
+  .tier-fray .tier-label { color: #94795a; }
+  .entity.fray {
+    border: 1px solid #d8d4cc;
+    background: #f8f5f0;
+    opacity: .85;
+  }
+  .entity.fray .sym {
+    color: #94795a; font-style: italic;
+    font-weight: 500;
+  }
+  .entity.fray .sym::after {
+    content: '?';
+    color: rgba(148,121,90,.5);
+    margin-left: 4px; font-weight: 400;
+  }
+  .entity.fray .role { color: #999; }
+
+  /* Closing reflection */
+  .closing {
+    margin-top: 84px;
+    padding: 28px;
+    background: #faf6ec;
+    border: 1px solid #ecdec0;
+    border-left: 3px solid #b45309;
+    border-radius: 0 6px 6px 0;
+  }
+  .closing h3 {
+    font-size: 18px; font-weight: 600;
+    margin-bottom: 12px; color: #111;
+  }
+  .closing p {
+    font-size: 14.5px; color: #2b2620;
+    line-height: 1.65; margin-bottom: 12px;
+  }
+  .closing p:last-child { margin-bottom: 0; }
+  .closing a {
+    color: #2563eb; text-decoration: none;
+    border-bottom: 1px dashed #cfd9eb;
+  }
+  .closing a:hover { border-bottom-color: #2563eb; }
+  .closing em { font-style: italic; color: #111; }
+
+  footer {
+    margin-top: 80px; padding-top: 24px;
+    border-top: 1px solid #eee;
+    font-size: 12px; color: #aaa; line-height: 1.7;
+  }
+
+  @media (max-width: 640px) {
+    h1 { font-size: 24px; }
+    .grid { grid-template-columns: repeat(auto-fill, minmax(125px, 1fr)); gap: 6px; }
+    .entity { padding: 10px; min-height: 88px; }
+    .entity .sym { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a class="nav-back" href="index.html">← Back to First Principles</a>
+    <div class="nav-brand">physics-table</div>
+    <div class="nav-items"></div>
+  </div>
+</nav>
+
+
+<!-- HERO -->
+<div class="eyebrow">Frontier · A messy snapshot</div>
+<h1>The periodic table of physics</h1>
+<div class="grades">still in its 1700s phase · waiting for its Mendeleev</div>
+
+<p class="lede">In 1700, chemistry was a mess. The four classical elements still lingered. Phlogiston was real. The luminiferous aether filled all space. Alchemists chased the philosopher's stone, gases were "airs" of different kinds, and Lavoisier had not yet shown that matter is conserved through a reaction. There were maybe forty things people had isolated and a hundred names for what to do with them, but no organising principle. Most of it was a collection of recipes.</p>
+<p class="lede">Modern physics is in roughly that phase. We have a small number of confidently understood pieces (the Standard Model, general relativity), a larger number of <em>almost</em>-known candidates (dark matter, dark energy, the inflaton), and a much larger pile of speculative entities, open puzzles, and rejected ideas. The page below is an honest attempt to put it all in one table, sorted by how confident we are. Mendeleev has not turned up yet.</p>
+
+<hr class="divider">
+
+
+<!-- ──────────────── PROPORTIONAL TIMELINE (GANTT) ──────────────── -->
+<section class="tier">
+  <div class="tier-head">
+    <div class="tier-label" style="color:#111;">The whole table, drawn in time</div>
+    <div class="tier-sub">Horizontal axis = year. Each row is one entity. Bar starts when the idea was first proposed, ends when it was confirmed (●) — or extends to "now" (→) if still pending. Colour = tier.</div>
+  </div>
+
+  <div class="gtl-legend">
+    <span><span class="dot" style="background:#16a34a;"></span>Discovered</span>
+    <span><span class="dot" style="background:#dc2626;"></span>Unexplained</span>
+    <span><span class="dot" style="background:#ca8a04;"></span>Promising undiscovered</span>
+    <span><span class="dot" style="background:#94795a;"></span>Frayed</span>
+    <span><span class="dot" style="background:#7c3aed;"></span>Speculative framework</span>
+    <span><span class="dot" style="background:#b91c1c;"></span>Open puzzle</span>
+    <span><span class="dot" style="background:#888;"></span>Falsified</span>
+  </div>
+
+  <div class="gtl-wrap">
+    <svg viewBox="0 0 920 1450" class="gtl" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+      <style>
+        .gtl text { font-family: 'Inter', sans-serif; font-size: 11px; }
+        .gtl .ax { font-family: 'SF Mono', Consolas, monospace; font-size: 10px; fill: #999; }
+        .gtl .ch { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+        .gtl .rl { font-size: 11px; fill: #333; }
+        .gtl .nl { font-family: 'SF Mono', monospace; font-size: 10px; fill: #ca8a04; }
+      </style>
+
+      <!-- vertical grid lines at decade boundaries -->
+      <g stroke="#f4f4f0" stroke-width="1">
+        <line x1="180" y1="44" x2="180" y2="1430"/>
+        <line x1="273" y1="44" x2="273" y2="1430"/>
+        <line x1="367" y1="44" x2="367" y2="1430"/>
+        <line x1="460" y1="44" x2="460" y2="1430"/>
+        <line x1="553" y1="44" x2="553" y2="1430"/>
+        <line x1="647" y1="44" x2="647" y2="1430"/>
+        <line x1="740" y1="44" x2="740" y2="1430"/>
+        <line x1="833" y1="44" x2="833" y2="1430"/>
+      </g>
+
+      <!-- axis line + year labels -->
+      <line x1="180" y1="44" x2="880" y2="44" stroke="#ccc" stroke-width="1"/>
+      <g class="ax" text-anchor="middle">
+        <text x="180" y="32">1880</text>
+        <text x="273" y="32">1900</text>
+        <text x="367" y="32">1920</text>
+        <text x="460" y="32">1940</text>
+        <text x="553" y="32">1960</text>
+        <text x="647" y="32">1980</text>
+        <text x="740" y="32">2000</text>
+        <text x="833" y="32">2020</text>
+      </g>
+
+      <!-- "now" vertical -->
+      <line x1="861" y1="44" x2="861" y2="1430" stroke="#ca8a04" stroke-width="1" stroke-dasharray="3,3" opacity="0.45"/>
+      <text x="861" y="1445" text-anchor="middle" class="nl">now</text>
+
+      <!-- ═══ Discovered ═══ -->
+      <text x="0" y="62" class="ch" fill="#16a34a">● Discovered</text>
+
+      <!-- electron 1897 (point) -->
+      <text x="170" y="86" text-anchor="end" class="rl">electron e⁻</text>
+      <circle cx="259" cy="82" r="4" fill="#16a34a"/>
+
+      <!-- photon 1900→1905 -->
+      <text x="170" y="104" text-anchor="end" class="rl">photon γ</text>
+      <rect x="273" y="98" width="24" height="4" rx="2" fill="#16a34a"/>
+      <circle cx="273" cy="100" r="3" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+      <circle cx="297" cy="100" r="4" fill="#16a34a"/>
+
+      <!-- proton 1919 (point) -->
+      <text x="170" y="122" text-anchor="end" class="rl">proton p</text>
+      <circle cx="362" cy="118" r="4" fill="#16a34a"/>
+
+      <!-- antimatter 1928→1932 -->
+      <text x="170" y="140" text-anchor="end" class="rl">antimatter (e⁺)</text>
+      <rect x="404" y="134" width="19" height="4" rx="2" fill="#16a34a"/>
+      <circle cx="404" cy="136" r="3" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+      <circle cx="423" cy="136" r="4" fill="#16a34a"/>
+
+      <!-- neutron 1920→1932 -->
+      <text x="170" y="158" text-anchor="end" class="rl">neutron n</text>
+      <rect x="367" y="152" width="56" height="4" rx="2" fill="#16a34a"/>
+      <circle cx="367" cy="154" r="3" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+      <circle cx="423" cy="154" r="4" fill="#16a34a"/>
+
+      <!-- neutrino νₑ 1930→1956 -->
+      <text x="170" y="176" text-anchor="end" class="rl">electron neutrino νₑ</text>
+      <rect x="413" y="170" width="122" height="4" rx="2" fill="#16a34a"/>
+      <circle cx="413" cy="172" r="3" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+      <circle cx="535" cy="172" r="4" fill="#16a34a"/>
+
+      <!-- pion 1934→1947 -->
+      <text x="170" y="194" text-anchor="end" class="rl">pion π</text>
+      <rect x="432" y="188" width="61" height="4" rx="2" fill="#16a34a"/>
+      <circle cx="432" cy="190" r="3" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+      <circle cx="493" cy="190" r="4" fill="#16a34a"/>
+
+      <!-- muon 1936 (point) -->
+      <text x="170" y="212" text-anchor="end" class="rl">muon μ</text>
+      <circle cx="441" cy="208" r="4" fill="#16a34a"/>
+
+      <!-- muon neutrino 1962 (point) -->
+      <text x="170" y="230" text-anchor="end" class="rl">muon neutrino νμ</text>
+      <circle cx="563" cy="226" r="4" fill="#16a34a"/>
+
+      <!-- quark model 1964→1969 -->
+      <text x="170" y="248" text-anchor="end" class="rl">quark model (u,d,s)</text>
+      <rect x="572" y="242" width="23" height="4" rx="2" fill="#16a34a"/>
+      <circle cx="572" cy="244" r="3" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+      <circle cx="595" cy="244" r="4" fill="#16a34a"/>
+
+      <!-- charm 1970→1974 -->
+      <text x="170" y="266" text-anchor="end" class="rl">charm quark c</text>
+      <rect x="600" y="260" width="19" height="4" rx="2" fill="#16a34a"/>
+      <circle cx="600" cy="262" r="3" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+      <circle cx="619" cy="262" r="4" fill="#16a34a"/>
+
+      <!-- tau 1975 (point) -->
+      <text x="170" y="284" text-anchor="end" class="rl">tau τ</text>
+      <circle cx="623" cy="280" r="4" fill="#16a34a"/>
+
+      <!-- bottom 1973→1977 -->
+      <text x="170" y="302" text-anchor="end" class="rl">bottom quark b</text>
+      <rect x="614" y="296" width="19" height="4" rx="2" fill="#16a34a"/>
+      <circle cx="614" cy="298" r="3" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+      <circle cx="633" cy="298" r="4" fill="#16a34a"/>
+
+      <!-- gluon 1972→1979 -->
+      <text x="170" y="320" text-anchor="end" class="rl">gluon g</text>
+      <rect x="609" y="314" width="33" height="4" rx="2" fill="#16a34a"/>
+      <circle cx="609" cy="316" r="3" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+      <circle cx="642" cy="316" r="4" fill="#16a34a"/>
+
+      <!-- W, Z 1967→1983 -->
+      <text x="170" y="338" text-anchor="end" class="rl">W, Z bosons</text>
+      <rect x="586" y="332" width="75" height="4" rx="2" fill="#16a34a"/>
+      <circle cx="586" cy="334" r="3" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+      <circle cx="661" cy="334" r="4" fill="#16a34a"/>
+
+      <!-- top 1973→1995 -->
+      <text x="170" y="356" text-anchor="end" class="rl">top quark t</text>
+      <rect x="614" y="350" width="103" height="4" rx="2" fill="#16a34a"/>
+      <circle cx="614" cy="352" r="3" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+      <circle cx="717" cy="352" r="4" fill="#16a34a"/>
+
+      <!-- tau ν 1975→2000 -->
+      <text x="170" y="374" text-anchor="end" class="rl">tau neutrino ντ</text>
+      <rect x="623" y="368" width="117" height="4" rx="2" fill="#16a34a"/>
+      <circle cx="623" cy="370" r="3" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+      <circle cx="740" cy="370" r="4" fill="#16a34a"/>
+
+      <!-- Higgs 1964→2012 -->
+      <text x="170" y="392" text-anchor="end" class="rl">Higgs boson H</text>
+      <rect x="572" y="386" width="224" height="4" rx="2" fill="#16a34a"/>
+      <circle cx="572" cy="388" r="3" fill="#fff" stroke="#16a34a" stroke-width="2"/>
+      <circle cx="796" cy="388" r="4" fill="#16a34a"/>
+
+      <!-- ═══ Unexplained ═══ -->
+      <text x="0" y="418" class="ch" fill="#dc2626">◐ Unexplained — phenomena without an entity</text>
+
+      <!-- dark matter 1933→now -->
+      <text x="170" y="442" text-anchor="end" class="rl">dark matter</text>
+      <rect x="427" y="436" width="434" height="4" rx="2" fill="#dc2626" opacity="0.85"/>
+      <circle cx="427" cy="438" r="3" fill="#fff" stroke="#dc2626" stroke-width="2"/>
+
+      <!-- matter > antimatter 1967→now -->
+      <text x="170" y="460" text-anchor="end" class="rl">matter &gt; antimatter</text>
+      <rect x="586" y="454" width="275" height="4" rx="2" fill="#dc2626" opacity="0.85"/>
+      <circle cx="586" cy="456" r="3" fill="#fff" stroke="#dc2626" stroke-width="2"/>
+
+      <!-- singularities 1965→now -->
+      <text x="170" y="478" text-anchor="end" class="rl">singularities</text>
+      <rect x="577" y="472" width="284" height="4" rx="2" fill="#dc2626" opacity="0.85"/>
+      <circle cx="577" cy="474" r="3" fill="#fff" stroke="#dc2626" stroke-width="2"/>
+
+      <!-- strong CP 1976→now -->
+      <text x="170" y="496" text-anchor="end" class="rl">strong CP</text>
+      <rect x="628" y="490" width="233" height="4" rx="2" fill="#dc2626" opacity="0.85"/>
+      <circle cx="628" cy="492" r="3" fill="#fff" stroke="#dc2626" stroke-width="2"/>
+
+      <!-- inflation 1980→now -->
+      <text x="170" y="514" text-anchor="end" class="rl">inflation mechanism</text>
+      <rect x="647" y="508" width="214" height="4" rx="2" fill="#dc2626" opacity="0.85"/>
+      <circle cx="647" cy="510" r="3" fill="#fff" stroke="#dc2626" stroke-width="2"/>
+
+      <!-- dark energy 1998→now -->
+      <text x="170" y="532" text-anchor="end" class="rl">dark energy</text>
+      <rect x="731" y="526" width="130" height="4" rx="2" fill="#dc2626" opacity="0.85"/>
+      <circle cx="731" cy="528" r="3" fill="#fff" stroke="#dc2626" stroke-width="2"/>
+
+      <!-- ν mass 1998→now -->
+      <text x="170" y="550" text-anchor="end" class="rl">neutrino mass mechanism</text>
+      <rect x="731" y="544" width="130" height="4" rx="2" fill="#dc2626" opacity="0.85"/>
+      <circle cx="731" cy="546" r="3" fill="#fff" stroke="#dc2626" stroke-width="2"/>
+
+      <!-- Λ value 1998→now -->
+      <text x="170" y="568" text-anchor="end" class="rl">Λ value</text>
+      <rect x="731" y="562" width="130" height="4" rx="2" fill="#dc2626" opacity="0.85"/>
+      <circle cx="731" cy="564" r="3" fill="#fff" stroke="#dc2626" stroke-width="2"/>
+
+      <!-- ═══ Promising undiscovered ═══ -->
+      <text x="0" y="594" class="ch" fill="#ca8a04">○ Promising undiscovered — predicted, still plausible</text>
+
+      <!-- magnetic monopole 1931→now -->
+      <text x="170" y="618" text-anchor="end" class="rl">magnetic monopole</text>
+      <rect x="418" y="612" width="443" height="4" rx="2" fill="#ca8a04"/>
+      <circle cx="418" cy="614" r="3" fill="#fff" stroke="#ca8a04" stroke-width="2"/>
+      <polygon points="861,610 870,614 861,618" fill="#ca8a04"/>
+
+      <!-- graviton 1934→now -->
+      <text x="170" y="636" text-anchor="end" class="rl">graviton G</text>
+      <rect x="432" y="630" width="429" height="4" rx="2" fill="#ca8a04"/>
+      <circle cx="432" cy="632" r="3" fill="#fff" stroke="#ca8a04" stroke-width="2"/>
+      <polygon points="861,628 870,632 861,636" fill="#ca8a04"/>
+
+      <!-- primordial BH 1971→now -->
+      <text x="170" y="654" text-anchor="end" class="rl">primordial BH</text>
+      <rect x="605" y="648" width="256" height="4" rx="2" fill="#ca8a04"/>
+      <circle cx="605" cy="650" r="3" fill="#fff" stroke="#ca8a04" stroke-width="2"/>
+      <polygon points="861,646 870,650 861,654" fill="#ca8a04"/>
+
+      <!-- axion 1977→now -->
+      <text x="170" y="672" text-anchor="end" class="rl">axion a</text>
+      <rect x="633" y="666" width="228" height="4" rx="2" fill="#ca8a04"/>
+      <circle cx="633" cy="668" r="3" fill="#fff" stroke="#ca8a04" stroke-width="2"/>
+      <polygon points="861,664 870,668 861,672" fill="#ca8a04"/>
+
+      <!-- inflaton 1980→now -->
+      <text x="170" y="690" text-anchor="end" class="rl">inflaton φ</text>
+      <rect x="647" y="684" width="214" height="4" rx="2" fill="#ca8a04"/>
+      <circle cx="647" cy="686" r="3" fill="#fff" stroke="#ca8a04" stroke-width="2"/>
+      <polygon points="861,682 870,686 861,690" fill="#ca8a04"/>
+
+      <!-- sterile ν 1980→now -->
+      <text x="170" y="708" text-anchor="end" class="rl">sterile neutrino ν_s</text>
+      <rect x="647" y="702" width="214" height="4" rx="2" fill="#ca8a04"/>
+      <circle cx="647" cy="704" r="3" fill="#fff" stroke="#ca8a04" stroke-width="2"/>
+      <polygon points="861,700 870,704 861,708" fill="#ca8a04"/>
+
+      <!-- right-handed ν 1980→now -->
+      <text x="170" y="726" text-anchor="end" class="rl">right-handed ν N_R</text>
+      <rect x="647" y="720" width="214" height="4" rx="2" fill="#ca8a04"/>
+      <circle cx="647" cy="722" r="3" fill="#fff" stroke="#ca8a04" stroke-width="2"/>
+      <polygon points="861,718 870,722 861,726" fill="#ca8a04"/>
+
+      <!-- ═══ Frayed ═══ -->
+      <text x="0" y="752" class="ch" fill="#94795a">◌ Frayed — predicted, evidence not appearing</text>
+
+      <!-- extra dimensions 1921→now -->
+      <text x="170" y="776" text-anchor="end" class="rl">extra dimensions</text>
+      <rect x="371" y="770" width="490" height="4" rx="2" fill="#94795a" opacity="0.55"/>
+      <circle cx="371" cy="772" r="3" fill="#fff" stroke="#94795a" stroke-width="2"/>
+
+      <!-- SUSY 1973→now -->
+      <text x="170" y="794" text-anchor="end" class="rl">supersymmetry</text>
+      <rect x="614" y="788" width="247" height="4" rx="2" fill="#94795a" opacity="0.55"/>
+      <circle cx="614" cy="790" r="3" fill="#fff" stroke="#94795a" stroke-width="2"/>
+      <line x1="615" y1="785" x2="860" y2="795" stroke="#94795a" stroke-width="1" stroke-dasharray="3,3" opacity="0.7"/>
+
+      <!-- M_GUT 1974→now -->
+      <text x="170" y="812" text-anchor="end" class="rl">grand unification</text>
+      <rect x="619" y="806" width="242" height="4" rx="2" fill="#94795a" opacity="0.55"/>
+      <circle cx="619" cy="808" r="3" fill="#fff" stroke="#94795a" stroke-width="2"/>
+
+      <!-- proton decay 1974→now -->
+      <text x="170" y="830" text-anchor="end" class="rl">proton decay</text>
+      <rect x="619" y="824" width="242" height="4" rx="2" fill="#94795a" opacity="0.55"/>
+      <circle cx="619" cy="826" r="3" fill="#fff" stroke="#94795a" stroke-width="2"/>
+
+      <!-- preons 1974→now -->
+      <text x="170" y="848" text-anchor="end" class="rl">preons</text>
+      <rect x="619" y="842" width="242" height="4" rx="2" fill="#94795a" opacity="0.55"/>
+      <circle cx="619" cy="844" r="3" fill="#fff" stroke="#94795a" stroke-width="2"/>
+
+      <!-- WIMP 1985→now -->
+      <text x="170" y="866" text-anchor="end" class="rl">WIMP dark matter</text>
+      <rect x="670" y="860" width="191" height="4" rx="2" fill="#94795a" opacity="0.55"/>
+      <circle cx="670" cy="862" r="3" fill="#fff" stroke="#94795a" stroke-width="2"/>
+
+      <!-- ═══ Speculative frameworks ═══ -->
+      <text x="0" y="892" class="ch" fill="#7c3aed">○ Speculative frameworks</text>
+
+      <!-- dS / AdS 1917→now -->
+      <text x="170" y="916" text-anchor="end" class="rl">dS / AdS spacetimes</text>
+      <rect x="353" y="910" width="508" height="4" rx="2" fill="#7c3aed" opacity="0.55"/>
+      <circle cx="353" cy="912" r="3" fill="#fff" stroke="#7c3aed" stroke-width="2"/>
+
+      <!-- string theory 1968→now -->
+      <text x="170" y="934" text-anchor="end" class="rl">string theory</text>
+      <rect x="591" y="928" width="270" height="4" rx="2" fill="#7c3aed" opacity="0.55"/>
+      <circle cx="591" cy="930" r="3" fill="#fff" stroke="#7c3aed" stroke-width="2"/>
+      <polygon points="861,926 870,930 861,934" fill="#7c3aed" opacity="0.85"/>
+
+      <!-- multiverse 1980→now -->
+      <text x="170" y="952" text-anchor="end" class="rl">multiverse</text>
+      <rect x="647" y="946" width="214" height="4" rx="2" fill="#7c3aed" opacity="0.55"/>
+      <circle cx="647" cy="948" r="3" fill="#fff" stroke="#7c3aed" stroke-width="2"/>
+      <polygon points="861,944 870,948 861,952" fill="#7c3aed" opacity="0.85"/>
+
+      <!-- LQG 1986→now -->
+      <text x="170" y="970" text-anchor="end" class="rl">loop quantum gravity</text>
+      <rect x="675" y="964" width="186" height="4" rx="2" fill="#7c3aed" opacity="0.55"/>
+      <circle cx="675" cy="966" r="3" fill="#fff" stroke="#7c3aed" stroke-width="2"/>
+      <polygon points="861,962 870,966 861,970" fill="#7c3aed" opacity="0.85"/>
+
+      <!-- holographic 1993→now -->
+      <text x="170" y="988" text-anchor="end" class="rl">holographic principle</text>
+      <rect x="708" y="982" width="153" height="4" rx="2" fill="#7c3aed" opacity="0.55"/>
+      <circle cx="708" cy="984" r="3" fill="#fff" stroke="#7c3aed" stroke-width="2"/>
+      <polygon points="861,980 870,984 861,988" fill="#7c3aed" opacity="0.85"/>
+
+      <!-- branes 1995→now -->
+      <text x="170" y="1006" text-anchor="end" class="rl">branes</text>
+      <rect x="717" y="1000" width="144" height="4" rx="2" fill="#7c3aed" opacity="0.55"/>
+      <circle cx="717" cy="1002" r="3" fill="#fff" stroke="#7c3aed" stroke-width="2"/>
+      <polygon points="861,998 870,1002 861,1006" fill="#7c3aed" opacity="0.85"/>
+
+      <!-- M-theory 1995→now -->
+      <text x="170" y="1024" text-anchor="end" class="rl">M-theory</text>
+      <rect x="717" y="1018" width="144" height="4" rx="2" fill="#7c3aed" opacity="0.55"/>
+      <circle cx="717" cy="1020" r="3" fill="#fff" stroke="#7c3aed" stroke-width="2"/>
+      <polygon points="861,1016 870,1020 861,1024" fill="#7c3aed" opacity="0.85"/>
+
+      <!-- AdS/CFT 1997→now -->
+      <text x="170" y="1042" text-anchor="end" class="rl">AdS/CFT (Maldacena)</text>
+      <rect x="726" y="1036" width="135" height="4" rx="2" fill="#7c3aed" opacity="0.55"/>
+      <circle cx="726" cy="1038" r="3" fill="#fff" stroke="#7c3aed" stroke-width="2"/>
+      <polygon points="861,1034 870,1038 861,1042" fill="#7c3aed" opacity="0.85"/>
+
+      <!-- dark sector 2000→now -->
+      <text x="170" y="1060" text-anchor="end" class="rl">dark sector</text>
+      <rect x="740" y="1054" width="121" height="4" rx="2" fill="#7c3aed" opacity="0.55"/>
+      <circle cx="740" cy="1056" r="3" fill="#fff" stroke="#7c3aed" stroke-width="2"/>
+      <polygon points="861,1052 870,1056 861,1060" fill="#7c3aed" opacity="0.85"/>
+
+      <!-- ER=EPR 2013→now -->
+      <text x="170" y="1078" text-anchor="end" class="rl">ER = EPR</text>
+      <rect x="800" y="1072" width="61" height="4" rx="2" fill="#7c3aed" opacity="0.55"/>
+      <circle cx="800" cy="1074" r="3" fill="#fff" stroke="#7c3aed" stroke-width="2"/>
+      <polygon points="861,1070 870,1074 861,1078" fill="#7c3aed" opacity="0.85"/>
+
+      <!-- ═══ Open puzzles ═══ -->
+      <text x="0" y="1104" class="ch" fill="#b91c1c">? Open puzzles — questions without an entity</text>
+
+      <!-- vacuum 1916→now -->
+      <text x="170" y="1128" text-anchor="end" class="rl">what is the vacuum?</text>
+      <rect x="348" y="1122" width="513" height="4" rx="2" fill="#b91c1c" opacity="0.45"/>
+      <circle cx="348" cy="1124" r="3" fill="#fff" stroke="#b91c1c" stroke-width="2"/>
+
+      <!-- measurement 1925→now -->
+      <text x="170" y="1146" text-anchor="end" class="rl">measurement problem</text>
+      <rect x="390" y="1140" width="471" height="4" rx="2" fill="#b91c1c" opacity="0.45"/>
+      <circle cx="390" cy="1142" r="3" fill="#fff" stroke="#b91c1c" stroke-width="2"/>
+
+      <!-- quantum gravity 1930→now -->
+      <text x="170" y="1164" text-anchor="end" class="rl">quantum gravity</text>
+      <rect x="413" y="1158" width="448" height="4" rx="2" fill="#b91c1c" opacity="0.45"/>
+      <circle cx="413" cy="1160" r="3" fill="#fff" stroke="#b91c1c" stroke-width="2"/>
+
+      <!-- info paradox 1975→now -->
+      <text x="170" y="1182" text-anchor="end" class="rl">information paradox</text>
+      <rect x="623" y="1176" width="238" height="4" rx="2" fill="#b91c1c" opacity="0.45"/>
+      <circle cx="623" cy="1178" r="3" fill="#fff" stroke="#b91c1c" stroke-width="2"/>
+
+      <!-- why 3 families 1975→now -->
+      <text x="170" y="1200" text-anchor="end" class="rl">why 3 families?</text>
+      <rect x="623" y="1194" width="238" height="4" rx="2" fill="#b91c1c" opacity="0.45"/>
+      <circle cx="623" cy="1196" r="3" fill="#fff" stroke="#b91c1c" stroke-width="2"/>
+
+      <!-- hierarchy 1976→now -->
+      <text x="170" y="1218" text-anchor="end" class="rl">hierarchy problem</text>
+      <rect x="628" y="1212" width="233" height="4" rx="2" fill="#b91c1c" opacity="0.45"/>
+      <circle cx="628" cy="1214" r="3" fill="#fff" stroke="#b91c1c" stroke-width="2"/>
+
+      <!-- naturalness 1976→now -->
+      <text x="170" y="1236" text-anchor="end" class="rl">naturalness</text>
+      <rect x="628" y="1230" width="233" height="4" rx="2" fill="#b91c1c" opacity="0.45"/>
+      <circle cx="628" cy="1232" r="3" fill="#fff" stroke="#b91c1c" stroke-width="2"/>
+
+      <!-- inflation start 1980→now -->
+      <text x="170" y="1254" text-anchor="end" class="rl">inflation start conditions</text>
+      <rect x="647" y="1248" width="214" height="4" rx="2" fill="#b91c1c" opacity="0.45"/>
+      <circle cx="647" cy="1250" r="3" fill="#fff" stroke="#b91c1c" stroke-width="2"/>
+
+      <!-- μ g-2 2001→now -->
+      <text x="170" y="1272" text-anchor="end" class="rl">μ g−2 anomaly</text>
+      <rect x="745" y="1266" width="116" height="4" rx="2" fill="#b91c1c" opacity="0.45"/>
+      <circle cx="745" cy="1268" r="3" fill="#fff" stroke="#b91c1c" stroke-width="2"/>
+
+      <!-- ═══ Falsified ═══ -->
+      <text x="0" y="1298" class="ch" fill="#888">✕ Falsified</text>
+
+      <!-- aether ←1880 → 1887 -->
+      <text x="170" y="1322" text-anchor="end" class="rl">aether</text>
+      <rect x="180" y="1316" width="33" height="4" rx="2" fill="#888"/>
+      <line x1="180" y1="1316" x2="180" y2="1322" stroke="#888" stroke-width="2"/>
+      <line x1="209" y1="1314" x2="217" y2="1322" stroke="#888" stroke-width="2"/>
+      <line x1="209" y1="1322" x2="217" y2="1314" stroke="#888" stroke-width="2"/>
+
+      <!-- UV catastrophe ~1880→1900 -->
+      <text x="170" y="1340" text-anchor="end" class="rl">UV catastrophe</text>
+      <rect x="180" y="1334" width="93" height="4" rx="2" fill="#888"/>
+      <line x1="180" y1="1334" x2="180" y2="1340" stroke="#888" stroke-width="2"/>
+      <line x1="269" y1="1332" x2="277" y2="1340" stroke="#888" stroke-width="2"/>
+      <line x1="269" y1="1340" x2="277" y2="1332" stroke="#888" stroke-width="2"/>
+
+      <!-- Bohr atom 1913→1925 -->
+      <text x="170" y="1358" text-anchor="end" class="rl">Bohr atom</text>
+      <rect x="334" y="1352" width="56" height="4" rx="2" fill="#888"/>
+      <circle cx="334" cy="1354" r="3" fill="#fff" stroke="#888" stroke-width="2"/>
+      <line x1="386" y1="1350" x2="394" y2="1358" stroke="#888" stroke-width="2"/>
+      <line x1="386" y1="1358" x2="394" y2="1350" stroke="#888" stroke-width="2"/>
+
+      <!-- hidden vars 1932→1972 -->
+      <text x="170" y="1376" text-anchor="end" class="rl">local hidden vars</text>
+      <rect x="423" y="1370" width="186" height="4" rx="2" fill="#888"/>
+      <circle cx="423" cy="1372" r="3" fill="#fff" stroke="#888" stroke-width="2"/>
+      <line x1="605" y1="1368" x2="613" y2="1376" stroke="#888" stroke-width="2"/>
+      <line x1="605" y1="1376" x2="613" y2="1368" stroke="#888" stroke-width="2"/>
+
+      <!-- steady state 1948→1965 -->
+      <text x="170" y="1394" text-anchor="end" class="rl">steady-state universe</text>
+      <rect x="497" y="1388" width="80" height="4" rx="2" fill="#888"/>
+      <circle cx="497" cy="1390" r="3" fill="#fff" stroke="#888" stroke-width="2"/>
+      <line x1="573" y1="1386" x2="581" y2="1394" stroke="#888" stroke-width="2"/>
+      <line x1="573" y1="1394" x2="581" y2="1386" stroke="#888" stroke-width="2"/>
+
+      <!-- MOND-only 1983→2006 -->
+      <text x="170" y="1412" text-anchor="end" class="rl">MOND-only (no DM)</text>
+      <rect x="661" y="1406" width="107" height="4" rx="2" fill="#888"/>
+      <circle cx="661" cy="1408" r="3" fill="#fff" stroke="#888" stroke-width="2"/>
+      <line x1="764" y1="1404" x2="772" y2="1412" stroke="#888" stroke-width="2"/>
+      <line x1="764" y1="1412" x2="772" y2="1404" stroke="#888" stroke-width="2"/>
+
+    </svg>
+  </div>
+
+  <p style="font-size:12px;color:#888;line-height:1.55;margin-top:12px;max-width:720px;">
+    Reading the chart: hollow circle (○) = idea first proposed. Filled circle (●) = experimentally confirmed. Arrow (→) = still extends to today. ✕ = falsified at that date. Bars in the lower tiers fade because the longer they wait without confirmation, the less promising they look.
+  </p>
+</section>
+
+
+<!-- ──────────────── TIER 1: KNOWN ──────────────── -->
+<section class="tier tier-known">
+  <div class="tier-head">
+    <div class="tier-label">● Known — the clean part</div>
+    <div class="tier-sub">Standard Model + general relativity · confirmed to high precision</div>
+  </div>
+  <div class="grid">
+
+    <!-- gauge bosons -->
+    <div class="entity known"><span class="sym">γ</span><span class="name">photon</span><span class="role">electromagnetism, massless, U(1)</span></div>
+    <div class="entity known"><span class="sym">g</span><span class="name">gluon (×8)</span><span class="role">strong force, massless, SU(3) colour</span></div>
+    <div class="entity known"><span class="sym">W±</span><span class="name">W boson</span><span class="role">weak charged current, ~80 GeV</span></div>
+    <div class="entity known"><span class="sym">Z</span><span class="name">Z boson</span><span class="role">weak neutral current, ~91 GeV</span></div>
+    <div class="entity known"><span class="sym">H</span><span class="name">Higgs boson</span><span class="role">scalar, gives mass, ~125 GeV (2012)</span></div>
+
+    <!-- quarks -->
+    <div class="entity known"><span class="sym">u</span><span class="name">up quark</span><span class="role">charge +⅔, family 1</span></div>
+    <div class="entity known"><span class="sym">d</span><span class="name">down quark</span><span class="role">charge −⅓, family 1</span></div>
+    <div class="entity known"><span class="sym">c</span><span class="name">charm</span><span class="role">+⅔, family 2</span></div>
+    <div class="entity known"><span class="sym">s</span><span class="name">strange</span><span class="role">−⅓, family 2</span></div>
+    <div class="entity known"><span class="sym">t</span><span class="name">top</span><span class="role">+⅔, family 3, ~173 GeV</span></div>
+    <div class="entity known"><span class="sym">b</span><span class="name">bottom</span><span class="role">−⅓, family 3</span></div>
+
+    <!-- leptons -->
+    <div class="entity known"><span class="sym">e⁻</span><span class="name">electron</span><span class="role">charge −1, family 1</span></div>
+    <div class="entity known"><span class="sym">μ⁻</span><span class="name">muon</span><span class="role">−1, family 2, ~207× electron mass</span></div>
+    <div class="entity known"><span class="sym">τ⁻</span><span class="name">tau</span><span class="role">−1, family 3, ~3500× electron mass</span></div>
+    <div class="entity known"><span class="sym">νₑ</span><span class="name">electron ν</span><span class="role">tiny mass, neutral, oscillates</span></div>
+    <div class="entity known"><span class="sym">νμ</span><span class="name">muon ν</span><span class="role">mass eigenstates mix via PMNS</span></div>
+    <div class="entity known"><span class="sym">ντ</span><span class="name">tau ν</span><span class="role">third flavour</span></div>
+
+    <!-- mixing -->
+    <div class="entity known"><span class="sym">V_CKM</span><span class="name">CKM matrix</span><span class="role">quark family mixing, source of CP violation</span></div>
+    <div class="entity known"><span class="sym">U_PMNS</span><span class="name">PMNS matrix</span><span class="role">neutrino family mixing, oscillation engine</span></div>
+
+    <!-- spacetime + cosmological -->
+    <div class="entity known"><span class="sym">gμν</span><span class="name">spacetime metric</span><span class="role">general relativity, curved 4-manifold</span></div>
+    <div class="entity known"><span class="sym">Λ</span><span class="name">cosmological constant</span><span class="role">small positive, ~10⁻¹²² in Planck units</span></div>
+
+    <!-- symmetries -->
+    <div class="entity known"><span class="sym">SO(1,3)</span><span class="name">Lorentz</span><span class="role">spacetime symmetry, special relativity</span></div>
+    <div class="entity known"><span class="sym">SU(3)</span><span class="name">colour</span><span class="role">strong gauge group</span></div>
+    <div class="entity known"><span class="sym">SU(2)×U(1)</span><span class="name">electroweak</span><span class="role">unifies above the Higgs scale</span></div>
+    <div class="entity known"><span class="sym">CPT</span><span class="name">discrete sym</span><span class="role">required by any local QFT</span></div>
+    <div class="entity known"><span class="sym">∂_μj^μ</span><span class="name">Noether currents</span><span class="role">one conserved current per continuous symmetry</span></div>
+  </div>
+</section>
+
+
+<!-- ──────────────── TIER 2: UNEXPLAINED ──────────────── -->
+<section class="tier tier-candidate">
+  <div class="tier-head">
+    <div class="tier-label">◐ Unexplained — phenomena without an entity</div>
+    <div class="tier-sub">Something is there. We see it. We do not yet have a name for what it is.</div>
+  </div>
+  <div class="grid">
+    <div class="entity candidate"><span class="sym">dark matter</span><span class="name">unexplained</span><span class="role">~5× more than ordinary matter, holds galaxies together. No identification. Not a "candidate" — a hole in the table.</span></div>
+    <div class="entity candidate"><span class="sym">dark energy</span><span class="name">unexplained</span><span class="role">~70% of cosmic energy budget. Cosmological constant? Quintessence? Something else? Open.</span></div>
+    <div class="entity candidate"><span class="sym">inflation</span><span class="name">unexplained mechanism</span><span class="role">Early-universe expansion. Needs a field, but which? No detection of the inflaton.</span></div>
+    <div class="entity candidate"><span class="sym">matter &gt; antimatter</span><span class="name">unexplained asymmetry</span><span class="role">The universe is matter-rich. The mechanism that broke the symmetry is unknown.</span></div>
+    <div class="entity candidate"><span class="sym">ν mass</span><span class="name">unexplained mechanism</span><span class="role">Neutrinos have mass. Dirac? Majorana? Seesaw with a heavy right-handed partner? Unclear.</span></div>
+    <div class="entity candidate"><span class="sym">strong CP</span><span class="name">unexplained suppression</span><span class="role">A CP-violating term is allowed in QCD. It is observed to be near zero. Why?</span></div>
+    <div class="entity candidate"><span class="sym">Λ value</span><span class="name">unexplained smallness</span><span class="role">The cosmological constant is small but non-zero. QFT predicts a value 120 orders of magnitude too big.</span></div>
+    <div class="entity candidate"><span class="sym">singularities</span><span class="name">unexplained physics</span><span class="role">GR predicts infinities — at the centre of every black hole, and at the Big Bang. Curvature diverges, the theory breaks. Quantum gravity should fix it. We don't have quantum gravity.</span></div>
+  </div>
+</section>
+
+
+<!-- ──────────────── TIER 3: PROMISING UNDISCOVERED ──────────────── -->
+<section class="tier tier-spec">
+  <div class="tier-head">
+    <div class="tier-label">○ Promising undiscovered — predicted, still plausible</div>
+    <div class="tier-sub">Particles that would slot into the table cleanly and have good theoretical motivation. Searched. Not yet found.</div>
+  </div>
+  <div class="grid">
+    <div class="entity spec"><span class="sym">a</span><span class="name">axion</span><span class="role">Proposed 1977 (Peccei-Quinn) to fix strong CP. Light boson. Doubles as dark-matter candidate. Tightening searches at ADMX, IAXO, haloscopes.</span></div>
+    <div class="entity spec"><span class="sym">G</span><span class="name">graviton</span><span class="role">Quantum of gravity. Required by any unification of GR + QM. Almost certainly exists; direct detection probably impossible.</span></div>
+    <div class="entity spec"><span class="sym">M</span><span class="name">magnetic monopole</span><span class="role">Dirac 1931. Would explain why electric charge is quantised. Searched in cosmic rays, ice, monopole-catalysed proton decay. Open.</span></div>
+    <div class="entity spec"><span class="sym">ν_s</span><span class="name">sterile neutrino</span><span class="role">A neutrino with no weak interaction. Natural extension of the SM. Possible dark-matter component. Hints from short-baseline experiments.</span></div>
+    <div class="entity spec"><span class="sym">N_R</span><span class="name">right-handed ν</span><span class="role">Required if neutrinos are Dirac. Drives the seesaw mechanism for tiny ν masses. Heavy versions might exist at high scales.</span></div>
+    <div class="entity spec"><span class="sym">PBH</span><span class="name">primordial black holes</span><span class="role">BHs formed in the early universe. Could account for some or all of dark matter in certain mass windows. Constrained but alive.</span></div>
+    <div class="entity spec"><span class="sym">φ_inf</span><span class="name">inflaton field</span><span class="role">Something drove cosmic inflation. Many candidate fields. Distinguished by spectral tilt and tensor-to-scalar ratio (still unmeasured).</span></div>
+  </div>
+</section>
+
+
+<!-- ──────────────── TIER 4: FRAYED PREDICTIONS ──────────────── -->
+<section class="tier tier-fray">
+  <div class="tier-head">
+    <div class="tier-label">◌ Frayed — predicted, but evidence is not appearing</div>
+    <div class="tier-sub">Theories with elegant motivation that have not delivered. Still discussed, increasingly disfavoured.</div>
+  </div>
+  <div class="grid">
+    <div class="entity fray"><span class="sym">χ̃</span><span class="name">neutralino</span><span class="role">Lightest SUSY particle, the canonical WIMP. LHC has not seen it. Natural mass windows mostly excluded.</span></div>
+    <div class="entity fray"><span class="sym">q̃, ẽ</span><span class="name">squarks, sleptons</span><span class="role">SUSY partners of matter. LHC pushed bounds past 1–2 TeV with no signal. Fine-tuning getting worse.</span></div>
+    <div class="entity fray"><span class="sym">g̃</span><span class="name">gluino</span><span class="role">SUSY partner of the gluon. Same story — excluded below ~2 TeV.</span></div>
+    <div class="entity fray"><span class="sym">SUSY</span><span class="name">supersymmetry, generally</span><span class="role">The grand prediction. Was supposed to solve hierarchy + give dark matter + unify couplings. None of it has shown up. Not very promising any more.</span></div>
+    <div class="entity fray"><span class="sym">WIMP</span><span class="name">weakly-interacting massive particle</span><span class="role">Specifically the GeV–TeV thermal-relic class. Direct detection (XENON, LUX-ZEPLIN, PandaX) keeps lowering limits with no signal.</span></div>
+    <div class="entity fray"><span class="sym">M_GUT</span><span class="name">grand unification</span><span class="role">SU(3)×SU(2)×U(1) couplings nearly meet at ~10¹⁶ GeV. They meet better with SUSY. Without it, they miss.</span></div>
+    <div class="entity fray"><span class="sym">p →</span><span class="name">proton decay</span><span class="role">Predicted by most GUTs. Super-Kamiokande pushed τ_p past 10³⁴ years with no event. Many GUT variants ruled out.</span></div>
+    <div class="entity fray"><span class="sym">+ED</span><span class="name">extra dimensions</span><span class="role">Curled-up (Kaluza-Klein) or large (ADD/RS). Would address hierarchy. None detected at LHC or in gravity tests.</span></div>
+    <div class="entity fray"><span class="sym">Π</span><span class="name">preon</span><span class="role">Substructure inside quarks and leptons. Precision tests give compositeness scale &gt; 10 TeV. Out of fashion since the 1990s.</span></div>
+  </div>
+</section>
+
+
+<!-- ──────────────── TIER 5: SPECULATIVE FRAMEWORKS ──────────────── -->
+<section class="tier tier-spec">
+  <div class="tier-head">
+    <div class="tier-label">○ Speculative frameworks — mathematical, not particle-level</div>
+    <div class="tier-sub">Whole structures of physics, not specific particles. Mostly mathematical at present.</div>
+  </div>
+  <div class="grid">
+    <div class="entity spec"><span class="sym">∞D</span><span class="name">string theory</span><span class="role">1D vibrating objects in 10D. All particles as harmonics. Mathematically rich, no test at accessible energies.</span></div>
+    <div class="entity spec"><span class="sym">D-brane</span><span class="name">branes</span><span class="role">Higher-dimensional objects strings can end on. Whole zoo of solutions.</span></div>
+    <div class="entity spec"><span class="sym">M-theory</span><span class="name">11D framework</span><span class="role">Conjectured unification of the five string theories. Mostly a name for what we don't yet have.</span></div>
+    <div class="entity spec"><span class="sym">LQG</span><span class="name">loop quantum gravity</span><span class="role">Quantum gravity built from quantised spacetime networks (spin foams, Penrose). Background-independent. No accessible-scale predictions.</span></div>
+    <div class="entity spec"><span class="sym">holography</span><span class="name">holographic principle</span><span class="role">All information in a volume of space is encoded on its boundary. 't Hooft &amp; Susskind, 1990s. The general claim.</span></div>
+    <div class="entity spec"><span class="sym">AdS/CFT</span><span class="name">Maldacena duality</span><span class="role">Concrete realisation of holography. Quantum gravity in anti-de Sitter space = a conformal gauge theory on its boundary. Works in toy universes.</span></div>
+    <div class="entity spec"><span class="sym">ER=EPR</span><span class="name">wormhole = entanglement</span><span class="role">Entangled pairs connected by tiny wormholes? Maldacena &amp; Susskind, 2013. Suggestive math, no experimental hook.</span></div>
+    <div class="entity spec"><span class="sym">dS / AdS</span><span class="name">de Sitter / anti-de Sitter</span><span class="role">Maximally symmetric spacetimes with positive (dS, our universe) or negative (AdS, theoretical) cosmological constant. Playgrounds for quantum-gravity dualities.</span></div>
+    <div class="entity spec"><span class="sym">DSec</span><span class="name">dark sector</span><span class="role">A whole hidden world with its own forces and particles. Anything could be in here.</span></div>
+    <div class="entity spec"><span class="sym">∞U</span><span class="name">multiverse</span><span class="role">Other universes with different constants. Unfalsifiable in principle. Anthropic explanations live here.</span></div>
+  </div>
+</section>
+
+
+<!-- ──────────────── TIER 4: PUZZLES ──────────────── -->
+<section class="tier tier-puzzle">
+  <div class="tier-head">
+    <div class="tier-label">? Open puzzles — questions with no entity</div>
+    <div class="tier-sub">Things that bug the field even when nothing is obviously "missing"</div>
+  </div>
+  <div class="grid">
+    <div class="entity puzzle"><span class="sym">why 3 families?</span><span class="role">Three copies of fermions. One copy is enough for atoms. There are three. Nobody knows why.</span></div>
+    <div class="entity puzzle"><span class="sym">why these masses?</span><span class="role">Mass ratios span 12 orders of magnitude (electron to top). No pattern explains them.</span></div>
+    <div class="entity puzzle"><span class="sym">hierarchy</span><span class="role">Higgs mass should be Planck-scale. It is electroweak-scale. Fine tuning of 1 part in 10³⁴.</span></div>
+    <div class="entity puzzle"><span class="sym">cosmological Λ</span><span class="role">QFT predicts Λ ~120 orders of magnitude too big. Worst prediction in physics.</span></div>
+    <div class="entity puzzle"><span class="sym">strong CP</span><span class="role">A CP-violating θ-term is allowed in QCD. It is observed to be zero. Why?</span></div>
+    <div class="entity puzzle"><span class="sym">quantum gravity</span><span class="role">GR + QM do not combine. No controlled theory at the Planck scale.</span></div>
+    <div class="entity puzzle"><span class="sym">measurement</span><span class="role">Quantum collapse, many-worlds, decoherence, Bohmian — still no consensus.</span></div>
+    <div class="entity puzzle"><span class="sym">info paradox</span><span class="role">What happens to information that falls into a black hole?</span></div>
+    <div class="entity puzzle"><span class="sym">arrow of time</span><span class="role">Microphysics is time-symmetric. Macrophysics is not. Why?</span></div>
+    <div class="entity puzzle"><span class="sym">what is the vacuum?</span><span class="role">QFT vacuum is full of structure. We cannot calculate its energy correctly.</span></div>
+    <div class="entity puzzle"><span class="sym">naturalness</span><span class="role">Dimensionless ratios should be O(1). Several are not, and there is no story for that.</span></div>
+    <div class="entity puzzle"><span class="sym">inflation start</span><span class="role">Inflation explains a lot. What started it? What set the initial conditions?</span></div>
+    <div class="entity puzzle"><span class="sym">μ g−2 anomaly</span><span class="role">Muon magnetic moment deviates from prediction. New physics or theory error?</span></div>
+    <div class="entity puzzle"><span class="sym">why locality?</span><span class="role">QFT is local. But entanglement, holography, and ER=EPR all hint locality is emergent.</span></div>
+    <div class="entity puzzle"><span class="sym">why one universe?</span><span class="role">Or are there many? The multiverse is unfalsifiable but the parameters look fine-tuned.</span></div>
+    <div class="entity puzzle"><span class="sym">classical limit</span><span class="role">When and how does quantum branch into classical? Decoherence is part of the story but not all.</span></div>
+  </div>
+</section>
+
+
+<!-- ──────────────── TIER 5: DEAD ──────────────── -->
+<section class="tier tier-dead">
+  <div class="tier-head">
+    <div class="tier-label">✕ Falsified — physics's phlogiston pile</div>
+    <div class="tier-sub">Ideas that looked promising and were ruled out. Listed for historical company.</div>
+  </div>
+  <div class="grid">
+    <div class="entity dead"><span class="sym">aether</span><span class="role">Medium for light. Killed by Michelson-Morley (1887).</span></div>
+    <div class="entity dead"><span class="sym">caloric</span><span class="role">Heat as a substance. Replaced by kinetic theory (~1850).</span></div>
+    <div class="entity dead"><span class="sym">phlogiston</span><span class="role">Substance released during combustion. Replaced by oxygen (Lavoisier, 1770s).</span></div>
+    <div class="entity dead"><span class="sym">steady state</span><span class="role">Universe without a beginning. Killed by the CMB (1965).</span></div>
+    <div class="entity dead"><span class="sym">hidden vars</span><span class="role">Local hidden-variable theories. Killed by Bell tests (1972 onward).</span></div>
+    <div class="entity dead"><span class="sym">MOND-only</span><span class="role">Modified gravity without dark matter. Disfavoured by cluster lensing and CMB peaks.</span></div>
+    <div class="entity dead"><span class="sym">ultraviolet catastrophe</span><span class="role">Classical blackbody prediction. Killed by Planck (1900).</span></div>
+    <div class="entity dead"><span class="sym">Bohr atom</span><span class="role">Orbital electrons in fixed shells. Replaced by quantum mechanics (1925).</span></div>
+  </div>
+</section>
+
+
+<!-- ──────────────── CLOSING ──────────────── -->
+<div class="closing">
+  <h3>Waiting for Mendeleev</h3>
+  <p>What did Mendeleev actually do in 1869? He sorted the known elements by a single property (atomic weight) and noticed periodic regularity. The regularity became a pattern, the pattern became a law, the law became a prediction — germanium, gallium, scandium, all found in the decade after, exactly where the table said they should be. Once the periodic table existed, chemistry stopped being a list of accidents and became a deductive science.</p>
+  <p>Physics has not yet had its Mendeleev. We have the entities and the puzzles, but no organising principle that turns "why three families?" into "of course, look at the column." The <a href="next-generation-physicists.html">geometric turn in quantum field theory</a> is one candidate for where the cleanup starts. So is the cobordism hypothesis. So is geometric Langlands. So is whatever new symmetry someone notices next year.</p>
+  <p>Until then, the table above is the honest snapshot — what we know, what we suspect, what we have ruled out, and the questions still floating around the edges. <em>Mostly a mess.</em></p>
+</div>
+
+
+<footer>First Principles · The periodic table of physics · 2026 · living draft</footer>
+
+</body>
+</html>
