@@ -226,6 +226,44 @@ Each technical term should travel with a small set of synonyms. The canonical wo
 
 **Pairs with #6 (don't trust your knowledge)** and **#4 (math integrated)**. A student who can name three synonyms for *energy* is harder to fool by anyone (themselves or others) using the word loosely. And the synonyms make it visible *which* mathematical move the word is shorthand for.
 
+### 13. Linear algebra deserves equal billing with calculus — Strang's order
+
+**Gilbert Strang's position** (in his MIT 18.06 lectures, his *Introduction to Linear Algebra*, and several essays) is that linear algebra should be taught as soon as calculus — if not before it. The standard order, calculus-then-linear-algebra, is a historical accident, not a pedagogical truth. Newton happened to invent the calculus in the 17th century, so the universities have started there ever since. Strang argues we should stop.
+
+**The case in short.**
+
+- **Linear algebra is more concrete.** A matrix is a grid of numbers you can see. A vector is an arrow you can draw. A limit is a delicate piece of analysis that took mathematicians two hundred years to make rigorous. Both deserve rigour, but only one resists the mental picture.
+- **Linear algebra is more useful for the modern student.** Data science, machine learning, computer graphics, statistics, quantum mechanics, optimisation, networks, regression — they all live in matrix language. Calculus matters too, but in 2026 the student is much more likely to need eigenvalues than to need an ε-δ proof.
+- **The historical order is reversed for what students will actually do.** Continuous mathematics was invented to describe a smooth world. Discrete and linear mathematics was invented for the world of data, networks, and computers. Teach the one closer to the student's century first.
+- **Linear algebra scales cleanly from 2D to 3D to nD.** The Pythagorean theorem in 2D extends without modification. Calculus, by contrast, takes a long ladder of generalisations (single-variable → multivariable → vector calculus → differential forms) to reach the same generality.
+
+**Where this clashes.** Most standard high-school curricula in the Lithuanian system and elsewhere park calculus in grade 11 or 12 and barely touch linear algebra outside a single chapter on vectors. So Strang's order is a deviation. This curriculum already sprinkles vectors and matrices into physics from grade 9 (via [Riemann Surface](first-principles/riemann-surface.html) drills and the modern-physics chains), so the deviation is mostly about being *explicit* — naming the move, telling the student "you've been doing linear algebra for two years, the textbook just calls it vector addition."
+
+**Implementation.** Where a derivation can be done with matrices instead of calculus, do it that way. Don't pretend a problem "needs" calculus when a 2×2 system solves it cleanly. Introduce vectors the moment physics needs forces — not three years later when the math curriculum gets around to them.
+
+**Pairs with #4 (math integrated)** — physics generates the demand for both, and linear algebra is ready to answer that demand earlier. **Also pairs with #12 (synonyms)** — "vector" lives in everyday speech (arrow, push, direction, lifeguard's route) far more comfortably than "derivative."
+
+### 14. Hunt for dualities — name the unity each time
+
+**The original observation.** A cloud of hydrogen gas collapses under gravity. It releases energy — first as kinetic motion, then as heat, then as radiation. This is how protostars light up *before* fusion even starts. Separately, a pair of atoms bond into a molecule. The bond length shortens compared to the separation distance, and the system releases energy — as a photon, or as heat into the surroundings, or as kinetic energy of the resulting molecule. Same shape of phenomenon. Same direction. Same physical reason. *Both are systems finding a lower-energy configuration, and the excess has to go somewhere.*
+
+The numbers differ by twenty orders of magnitude. The story is identical.
+
+**More duals of the same kind.**
+
+- *Nuclear fusion.* Light nuclei fuse, the product is more tightly bound per nucleon, the difference comes out as kinetic energy of the products. Stars, reactors, weapons.
+- *Crystallisation.* A liquid cools and settles into a crystal. Molecules now sit more tightly bound to their neighbours. The released energy is the *latent heat of fusion* — a name collision with nuclear fusion that itself hints at the underlying unity.
+- *Electron transitions.* An electron drops from a higher orbital to a lower one. The lower orbital is more tightly bound to the nucleus. The energy difference leaves as a photon. The whole science of spectroscopy is built on counting these.
+- *Accretion onto a black hole.* The largest-scale version. Matter falling into a black hole's gravitational well liberates a few percent of its rest-mass energy as light, orders of magnitude more efficient than fusion. Quasars run on this.
+
+**The principle, once.** *Energy comes out when a system gets more bound.* The unit of binding changes (gravitational, chemical, nuclear, electromagnetic), but the bookkeeping is identical. Find one of these stories and you have found them all.
+
+**Why this matters as a curriculum rule.** The energy-release case is one example of a much wider habit. Modern physics increasingly insists every important idea has at least one *dual* — AdS/CFT, mirror symmetry, wave/particle, electric/magnetic, position/momentum, time/energy, source/charge, real/imaginary, discrete/continuous. A student trained to *expect* a hidden dual for every concept they meet builds the right reflex. They stop seeing fifteen separate phenomena and start seeing one phenomenon in fifteen places.
+
+**The teaching move.** When a phenomenon is introduced, the teacher's next sentence should be: *"and the same thing happens at this completely different scale."* If a class learns about chemical exothermic reactions on Monday, fusion on Wednesday, and electron transitions on Friday without the unity being named, the curriculum has failed at its main job. Name the unity each time.
+
+**Pairs with #5 (cross-connect formulas)** — formulas share shape, phenomena share story. **Pairs with #12 (synonyms)** — calling something *binding energy* in one chapter, *bond energy* in another, and *gravitational potential energy* in a third is the same word in three disguises. **Pairs with #1 (start with the practical question)** — every duality answers "what does this have to do with anything I know?"
+
 ---
 
 ## Segway hooks

@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The foundational era — 1600 to 1900, all sciences, zoomable</title>
+<meta name="description" content="Three hundred years of foundational science — physics, chemistry, biology, mathematics, and the dead ideas of the period — on one scrollable, zoomable timeline.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { background:#fff; color:#111; font-family:'Inter',-apple-system,sans-serif; font-size:15px; line-height:1.6; }
+  body { max-width:1100px; margin:0 auto; padding:80px 24px 120px; }
+  a { color:inherit; }
+
+  .topnav { position:fixed; top:0; left:0; right:0; height:48px; background:rgba(255,255,255,.92); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-bottom:1px solid #eee; z-index:100; display:flex; align-items:center; }
+  .topnav-inner { max-width:1100px; margin:0 auto; padding:0 24px; width:100%; display:flex; align-items:center; gap:16px; }
+  .nav-back { font-size:12px; color:#555; text-decoration:none; display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:3px; transition:background .15s; }
+  .nav-back:hover { background:#f5f5f5; color:#111; }
+  .nav-brand { flex:1; text-align:center; font-size:12px; font-weight:600; color:#777; letter-spacing:.04em; font-family:'SF Mono',Consolas,monospace; }
+  .nav-items { min-width:80px; }
+
+  .eyebrow { font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:#aaa; margin:24px 0 14px; }
+  h1 { font-size:32px; font-weight:600; letter-spacing:-.015em; line-height:1.18; margin-bottom:12px; }
+  .grades { font-size:13px; color:#888; margin-bottom:28px; }
+  .lede { font-size:16px; color:#333; line-height:1.7; margin-bottom:14px; max-width:740px; }
+  .lede em { color:#111; font-style:italic; }
+  .lede kbd { font-family:'SF Mono',Consolas,monospace; background:#f5f5f0; border:1px solid #ddd; border-radius:4px; padding:1px 6px; font-size:.85em; color:#333; }
+
+  hr.divider { border:0; border-top:1px solid #eee; margin:44px 0; }
+
+  .tier { margin-top:52px; }
+  .tier-head { display:flex; align-items:baseline; gap:14px; margin-bottom:18px; flex-wrap:wrap; }
+  .tier-label { font-size:11px; letter-spacing:.14em; text-transform:uppercase; font-weight:600; }
+  .tier-sub { font-size:13px; color:#888; }
+
+  .gtl-legend { display:flex; gap:16px; flex-wrap:wrap; font-size:12px; color:#666; margin:4px 0 12px; }
+  .gtl-legend .dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; vertical-align:middle; }
+
+  .zoom-toolbar { display:flex; gap:8px; align-items:center; margin-bottom:12px; flex-wrap:wrap; }
+  .zoom-btn { font-family:inherit; font-size:13px; padding:6px 14px; background:#fff; border:1px solid #ddd; border-radius:6px; cursor:pointer; color:#333; transition:border-color .12s, background .12s; }
+  .zoom-btn:hover { border-color:#111; background:#fafafa; }
+  .zoom-btn:active { background:#f0f0f0; }
+  .zoom-info { font-family:'SF Mono',Consolas,monospace; font-size:12px; color:#666; margin-left:8px; }
+  .zoom-hint { font-size:12px; color:#888; margin-left:auto; }
+
+  .zoom-container {
+    width:100%;
+    height:720px;
+    border:1px solid #e8e8e8;
+    border-radius:6px;
+    overflow:hidden;
+    background:#fff;
+    cursor:grab;
+    position:relative;
+    touch-action:none;
+    user-select:none;
+  }
+  .zoom-container.grabbing { cursor:grabbing; }
+  .zoom-container svg { display:block; width:100%; height:100%; }
+
+  .closing { margin-top:84px; padding:28px; background:#faf6ec; border:1px solid #ecdec0; border-left:3px solid #b45309; border-radius:0 6px 6px 0; }
+  .closing h3 { font-size:18px; font-weight:600; margin-bottom:12px; color:#111; }
+  .closing p { font-size:14.5px; color:#2b2620; line-height:1.65; margin-bottom:12px; }
+  .closing p:last-child { margin-bottom:0; }
+  .closing a { color:#2563eb; text-decoration:none; border-bottom:1px dashed #cfd9eb; }
+  .closing em { font-style:italic; color:#111; }
+
+  footer { margin-top:80px; padding-top:24px; border-top:1px solid #eee; font-size:12px; color:#aaa; line-height:1.7; }
+
+  @media (max-width:640px){
+    h1{font-size:24px;}
+    .zoom-container{height:520px;}
+    .zoom-hint{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a class="nav-back" href="index.html">← Back to First Principles</a>
+    <div class="nav-brand">scientific-revolution</div>
+    <div class="nav-items"></div>
+  </div>
+</nav>
+
+
+<div class="eyebrow">Foundational · Interactive · 1600 → 1900</div>
+<h1>The foundational era, drawn in time</h1>
+<div class="grades">All sciences · 300 years · scrollable and zoomable timeline</div>
+
+<p class="lede">The three hundred years from Galileo's telescope (1610) to J.J. Thomson's electron (1897) are the foundation everything else stands on. Physics got Newton, then Maxwell. Chemistry got Lavoisier, Dalton, Mendeleev. Biology got cells, Darwin, Mendel, Pasteur. Mathematics got calculus, non-Euclidean geometry, the manifold concept Einstein would later need. By 1900, every major science had a working core, even if the deepest puzzles (what is matter, what is life, what is light) were still open.</p>
+<p class="lede">The chart below is the same proportional Gantt as the other tables, but interactive. The 1840s through 1890s are too dense to read at full view — too many discoveries packed into too few decades. So you can zoom in. <kbd>scroll</kbd> to zoom at the cursor. <kbd>click + drag</kbd> to pan. The buttons below the chart do the same.</p>
+
+<hr class="divider">
+
+
+<section class="tier">
+  <div class="tier-head">
+    <div class="tier-label" style="color:#111;">All sciences, 1600 → 1900 — interactive timeline</div>
+    <div class="tier-sub">Scroll to zoom · drag to pan · 50 entries across physics, chemistry, biology, mathematics, and the falsified theories of the period</div>
+  </div>
+
+  <div class="gtl-legend">
+    <span><span class="dot" style="background:#94a3b8;"></span>Speculative / initial</span>
+    <span><span class="dot" style="background:#eab308;"></span>Significant progress</span>
+    <span><span class="dot" style="background:#16a34a;"></span>Testable / experimented</span>
+    <span><span class="dot" style="background:#2563eb;"></span>Close to figured out</span>
+    <span style="color:#dc2626;"><b>✕</b> first test / first contest</span>
+    <span>○ proposed · ● confirmed · ✕ falsified</span>
+  </div>
+
+  <div class="zoom-toolbar">
+    <button class="zoom-btn" id="zoomIn">＋ Zoom in</button>
+    <button class="zoom-btn" id="zoomOut">－ Zoom out</button>
+    <button class="zoom-btn" id="zoomReset">↺ Reset</button>
+    <span class="zoom-info" id="zoomInfo">1600 → 1900</span>
+    <span class="zoom-hint">scroll to zoom · drag to pan</span>
+  </div>
+
+  <div class="zoom-container" id="zoomContainer">
+    <svg id="zoomChart" viewBox="0 0 920 1140" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+      <style>
+        #zoomChart text { font-family:'Inter',sans-serif; font-size:11px; }
+        #zoomChart .ax { font-family:'SF Mono',Consolas,monospace; font-size:10px; fill:#999; }
+        #zoomChart .ch { font-size:11px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; }
+        #zoomChart .rl { font-size:11px; fill:#333; }
+      </style>
+
+      <!-- vertical grid lines every 25 years -->
+      <g stroke="#f4f4f0" stroke-width="1">
+        <line x1="180" y1="44" x2="180" y2="1120"/>
+        <line x1="238" y1="44" x2="238" y2="1120"/>
+        <line x1="297" y1="44" x2="297" y2="1120"/>
+        <line x1="355" y1="44" x2="355" y2="1120"/>
+        <line x1="413" y1="44" x2="413" y2="1120"/>
+        <line x1="472" y1="44" x2="472" y2="1120"/>
+        <line x1="530" y1="44" x2="530" y2="1120"/>
+        <line x1="588" y1="44" x2="588" y2="1120"/>
+        <line x1="647" y1="44" x2="647" y2="1120"/>
+        <line x1="705" y1="44" x2="705" y2="1120"/>
+        <line x1="763" y1="44" x2="763" y2="1120"/>
+        <line x1="821" y1="44" x2="821" y2="1120"/>
+        <line x1="880" y1="44" x2="880" y2="1120"/>
+      </g>
+
+      <line x1="180" y1="44" x2="880" y2="44" stroke="#ccc" stroke-width="1"/>
+      <g class="ax" text-anchor="middle">
+        <text x="180" y="32">1600</text>
+        <text x="238" y="32">1625</text>
+        <text x="297" y="32">1650</text>
+        <text x="355" y="32">1675</text>
+        <text x="413" y="32">1700</text>
+        <text x="472" y="32">1725</text>
+        <text x="530" y="32">1750</text>
+        <text x="588" y="32">1775</text>
+        <text x="647" y="32">1800</text>
+        <text x="705" y="32">1825</text>
+        <text x="763" y="32">1850</text>
+        <text x="821" y="32">1875</text>
+        <text x="880" y="32">1900</text>
+      </g>
+
+
+      <!-- ═══ PHYSICS & ASTRONOMY ═══ -->
+      <text x="0" y="62" class="ch" fill="#2563eb">● Physics &amp; astronomy</text>
+
+      <!-- Kepler's laws 1609→1619: yellow throughout -->
+      <text x="170" y="86" text-anchor="end" class="rl">Kepler's laws</text>
+      <rect x="201" y="80" width="23" height="4" rx="2" fill="#eab308"/>
+      <circle cx="201" cy="82" r="3" fill="#fff" stroke="#94a3b8" stroke-width="2"/>
+      <g transform="translate(201 82)" stroke="#dc2626" stroke-width="1.5"><line x1="-3" y1="-3" x2="3" y2="3"/><line x1="-3" y1="3" x2="3" y2="-3"/></g>
+      <circle cx="224" cy="82" r="4" fill="#16a34a"/>
+
+      <!-- Galileo's telescope 1610 (point) -->
+      <text x="170" y="104" text-anchor="end" class="rl">Galileo's telescope</text>
+      <circle cx="203" cy="100" r="4" fill="#16a34a"/>
+
+      <!-- Galileo Two New Sciences 1638 (point — kinematic foundations) -->
+      <text x="170" y="122" text-anchor="end" class="rl">Galileo's kinematics</text>
+      <circle cx="269" cy="118" r="4" fill="#16a34a"/>
+
+      <!-- Pascal pressure / barometer 1647 (point) -->
+      <text x="170" y="140" text-anchor="end" class="rl">Pascal's barometer</text>
+      <circle cx="290" cy="136" r="4" fill="#16a34a"/>
+
+      <!-- Hooke's law 1660 (point) -->
+      <text x="170" y="158" text-anchor="end" class="rl">Hooke's law (springs)</text>
+      <circle cx="320" cy="154" r="4" fill="#16a34a"/>
+
+      <!-- Newton's Principia 1666→1687: gray→green -->
+      <text x="170" y="176" text-anchor="end" class="rl">Newton's mechanics (Principia)</text>
+      <rect x="335" y="170" width="48" height="4" rx="2" fill="#94a3b8"/>
+      <circle cx="335" cy="172" r="3" fill="#fff" stroke="#94a3b8" stroke-width="2"/>
+      <g transform="translate(383 172)" stroke="#dc2626" stroke-width="1.5"><line x1="-3" y1="-3" x2="3" y2="3"/><line x1="-3" y1="3" x2="3" y2="-3"/></g>
+      <circle cx="383" cy="172" r="4" fill="#16a34a"/>
+
+      <!-- Newton's Optics 1704 (point) -->
+      <text x="170" y="194" text-anchor="end" class="rl">Newton's Optics</text>
+      <circle cx="423" cy="190" r="4" fill="#16a34a"/>
+
+      <!-- Coulomb's law 1785 (point) -->
+      <text x="170" y="212" text-anchor="end" class="rl">Coulomb's law</text>
+      <circle cx="612" cy="208" r="4" fill="#16a34a"/>
+
+      <!-- Volta's pile 1800 (point) -->
+      <text x="170" y="230" text-anchor="end" class="rl">Volta's pile (battery)</text>
+      <circle cx="647" cy="226" r="4" fill="#16a34a"/>
+
+      <!-- Ampere electromagnetism 1820 (point) -->
+      <text x="170" y="248" text-anchor="end" class="rl">Ampère's electromagnetism</text>
+      <circle cx="693" cy="244" r="4" fill="#16a34a"/>
+
+      <!-- Carnot cycle 1824 (point) -->
+      <text x="170" y="266" text-anchor="end" class="rl">Carnot cycle</text>
+      <circle cx="702" cy="262" r="4" fill="#16a34a"/>
+
+      <!-- Ohm's law 1827 (point) -->
+      <text x="170" y="284" text-anchor="end" class="rl">Ohm's law</text>
+      <circle cx="709" cy="280" r="4" fill="#16a34a"/>
+
+      <!-- Faraday induction 1831 (point) -->
+      <text x="170" y="302" text-anchor="end" class="rl">Faraday's induction</text>
+      <circle cx="719" cy="298" r="4" fill="#16a34a"/>
+
+      <!-- 1st law thermo 1842 (point) -->
+      <text x="170" y="320" text-anchor="end" class="rl">1st law of thermodynamics</text>
+      <circle cx="745" cy="316" r="4" fill="#16a34a"/>
+
+      <!-- 2nd law 1850 (point) -->
+      <text x="170" y="338" text-anchor="end" class="rl">2nd law of thermodynamics</text>
+      <circle cx="763" cy="334" r="4" fill="#16a34a"/>
+
+      <!-- kinetic theory 1860 (point, Maxwell-Boltzmann) -->
+      <text x="170" y="356" text-anchor="end" class="rl">kinetic theory (Maxwell-Boltzmann)</text>
+      <circle cx="786" cy="352" r="4" fill="#16a34a"/>
+
+      <!-- Maxwell's equations 1865 (point) -->
+      <text x="170" y="374" text-anchor="end" class="rl">Maxwell's equations</text>
+      <circle cx="798" cy="370" r="4" fill="#16a34a"/>
+
+      <!-- Hertz EM waves 1888 (point) -->
+      <text x="170" y="392" text-anchor="end" class="rl">EM waves (Hertz)</text>
+      <circle cx="851" cy="388" r="4" fill="#16a34a"/>
+
+      <!-- X-rays 1895 (point) -->
+      <text x="170" y="410" text-anchor="end" class="rl">X-rays (Röntgen)</text>
+      <circle cx="868" cy="406" r="4" fill="#16a34a"/>
+
+      <!-- radioactivity 1896 (point) -->
+      <text x="170" y="428" text-anchor="end" class="rl">radioactivity (Becquerel)</text>
+      <circle cx="870" cy="424" r="4" fill="#16a34a"/>
+
+      <!-- electron 1897 (point) -->
+      <text x="170" y="446" text-anchor="end" class="rl">electron (Thomson)</text>
+      <circle cx="873" cy="442" r="4" fill="#16a34a"/>
+
+
+      <!-- ═══ CHEMISTRY ═══ -->
+      <text x="0" y="472" class="ch" fill="#b45309">● Chemistry</text>
+
+      <!-- Boyle's law 1662 (point) -->
+      <text x="170" y="496" text-anchor="end" class="rl">Boyle's gas law</text>
+      <circle cx="325" cy="492" r="4" fill="#16a34a"/>
+
+      <!-- phosphorus 1669 (point) -->
+      <text x="170" y="514" text-anchor="end" class="rl">phosphorus (Brand)</text>
+      <circle cx="341" cy="510" r="4" fill="#16a34a"/>
+
+      <!-- hydrogen 1766 (point) -->
+      <text x="170" y="532" text-anchor="end" class="rl">hydrogen (Cavendish)</text>
+      <circle cx="567" cy="528" r="4" fill="#16a34a"/>
+
+      <!-- nitrogen 1772 (point) -->
+      <text x="170" y="550" text-anchor="end" class="rl">nitrogen (Rutherford)</text>
+      <circle cx="581" cy="546" r="4" fill="#16a34a"/>
+
+      <!-- oxygen 1774 (point) -->
+      <text x="170" y="568" text-anchor="end" class="rl">oxygen (Priestley, Scheele)</text>
+      <circle cx="586" cy="564" r="4" fill="#16a34a"/>
+
+      <!-- conservation of mass 1789 (point, Lavoisier) -->
+      <text x="170" y="586" text-anchor="end" class="rl">conservation of mass (Lavoisier)</text>
+      <circle cx="621" cy="582" r="4" fill="#16a34a"/>
+
+      <!-- sodium / potassium 1807 (point, Davy) -->
+      <text x="170" y="604" text-anchor="end" class="rl">alkali metals (Davy)</text>
+      <circle cx="663" cy="600" r="4" fill="#16a34a"/>
+
+      <!-- Dalton atomic theory 1808 (point) -->
+      <text x="170" y="622" text-anchor="end" class="rl">Dalton's atomic theory</text>
+      <circle cx="665" cy="618" r="4" fill="#16a34a"/>
+
+      <!-- Avogadro hypothesis 1811→1860: gray then green -->
+      <text x="170" y="640" text-anchor="end" class="rl">Avogadro's hypothesis</text>
+      <rect x="672" y="634" width="114" height="4" rx="2" fill="#94a3b8"/>
+      <circle cx="672" cy="636" r="3" fill="#fff" stroke="#94a3b8" stroke-width="2"/>
+      <g transform="translate(786 636)" stroke="#dc2626" stroke-width="1.5"><line x1="-3" y1="-3" x2="3" y2="3"/><line x1="-3" y1="3" x2="3" y2="-3"/></g>
+      <circle cx="786" cy="636" r="4" fill="#16a34a"/>
+
+      <!-- Wöhler urea 1828 (point) -->
+      <text x="170" y="658" text-anchor="end" class="rl">Wöhler's urea synthesis</text>
+      <circle cx="712" cy="654" r="4" fill="#16a34a"/>
+
+      <!-- Faraday electrolysis laws 1834 (point) -->
+      <text x="170" y="676" text-anchor="end" class="rl">Faraday's electrolysis laws</text>
+      <circle cx="726" cy="672" r="4" fill="#16a34a"/>
+
+      <!-- periodic table 1869 (point) -->
+      <text x="170" y="694" text-anchor="end" class="rl">periodic table (Mendeleev)</text>
+      <circle cx="807" cy="690" r="4" fill="#16a34a"/>
+
+      <!-- inert gases 1894 (point) -->
+      <text x="170" y="712" text-anchor="end" class="rl">inert gases (Ramsay)</text>
+      <circle cx="866" cy="708" r="4" fill="#16a34a"/>
+
+      <!-- radium 1898 (point, Curies) -->
+      <text x="170" y="730" text-anchor="end" class="rl">radium (Marie &amp; Pierre Curie)</text>
+      <circle cx="875" cy="726" r="4" fill="#16a34a"/>
+
+
+      <!-- ═══ BIOLOGY / LIFE SCIENCES ═══ -->
+      <text x="0" y="756" class="ch" fill="#16a34a">● Biology &amp; life sciences</text>
+
+      <!-- Hooke microscopy / cells 1665 (point) -->
+      <text x="170" y="780" text-anchor="end" class="rl">cells observed (Hooke)</text>
+      <circle cx="332" cy="776" r="4" fill="#16a34a"/>
+
+      <!-- Leeuwenhoek microbes 1676 (point) -->
+      <text x="170" y="798" text-anchor="end" class="rl">microbes seen (Leeuwenhoek)</text>
+      <circle cx="357" cy="794" r="4" fill="#16a34a"/>
+
+      <!-- Linnaeus taxonomy 1735 (point) -->
+      <text x="170" y="816" text-anchor="end" class="rl">Linnaean taxonomy</text>
+      <circle cx="495" cy="812" r="4" fill="#16a34a"/>
+
+      <!-- Spallanzani disproof of spont gen 1768 (point) -->
+      <text x="170" y="834" text-anchor="end" class="rl">Spallanzani's broth experiment</text>
+      <circle cx="572" cy="830" r="4" fill="#16a34a"/>
+
+      <!-- Lamarck evolution 1809 (point, soft inheritance — partly wrong but historically big) -->
+      <text x="170" y="852" text-anchor="end" class="rl">Lamarck's evolution hypothesis</text>
+      <circle cx="668" cy="848" r="4" fill="#eab308"/>
+
+      <!-- cell theory 1838-39 (point, Schleiden + Schwann) -->
+      <text x="170" y="870" text-anchor="end" class="rl">cell theory (Schleiden, Schwann)</text>
+      <circle cx="735" cy="866" r="4" fill="#16a34a"/>
+
+      <!-- Darwin Origin 1859 (point) -->
+      <text x="170" y="888" text-anchor="end" class="rl">Darwin's Origin of Species</text>
+      <circle cx="784" cy="884" r="4" fill="#16a34a"/>
+
+      <!-- Pasteur germ theory 1861 (point) -->
+      <text x="170" y="906" text-anchor="end" class="rl">germ theory (Pasteur)</text>
+      <circle cx="789" cy="902" r="4" fill="#16a34a"/>
+
+      <!-- Mendel genetics 1865 (point, then ignored until 1900) -->
+      <text x="170" y="924" text-anchor="end" class="rl">Mendel's genetics (then ignored)</text>
+      <circle cx="798" cy="920" r="4" fill="#16a34a"/>
+
+      <!-- Lister antiseptic 1867 (point) -->
+      <text x="170" y="942" text-anchor="end" class="rl">antiseptic surgery (Lister)</text>
+      <circle cx="803" cy="938" r="4" fill="#16a34a"/>
+
+      <!-- Koch bacteria / TB 1882 (point) -->
+      <text x="170" y="960" text-anchor="end" class="rl">Koch isolates TB bacillus</text>
+      <circle cx="837" cy="956" r="4" fill="#16a34a"/>
+
+
+      <!-- ═══ MATHEMATICS ═══ -->
+      <text x="0" y="986" class="ch" fill="#7c3aed">● Mathematics</text>
+
+      <!-- Descartes analytic geometry 1637 (point) -->
+      <text x="170" y="1010" text-anchor="end" class="rl">analytic geometry (Descartes)</text>
+      <circle cx="266" cy="1006" r="4" fill="#16a34a"/>
+
+      <!-- Pascal/Fermat probability 1654 (point) -->
+      <text x="170" y="1028" text-anchor="end" class="rl">probability (Pascal, Fermat)</text>
+      <circle cx="306" cy="1024" r="4" fill="#16a34a"/>
+
+      <!-- calculus 1666 (Newton) / 1675 (Leibniz): gray bar then green -->
+      <text x="170" y="1046" text-anchor="end" class="rl">calculus (Newton, Leibniz)</text>
+      <rect x="335" y="1040" width="20" height="4" rx="2" fill="#94a3b8"/>
+      <circle cx="335" cy="1042" r="3" fill="#fff" stroke="#94a3b8" stroke-width="2"/>
+      <circle cx="355" cy="1042" r="4" fill="#16a34a"/>
+
+      <!-- non-Euclidean geometry 1830 (Bolyai, Lobachevsky) -->
+      <text x="170" y="1064" text-anchor="end" class="rl">non-Euclidean geometry</text>
+      <circle cx="716" cy="1060" r="4" fill="#16a34a"/>
+
+      <!-- Galois 1832 (point) -->
+      <text x="170" y="1082" text-anchor="end" class="rl">Galois theory (groups)</text>
+      <circle cx="721" cy="1078" r="4" fill="#16a34a"/>
+
+      <!-- Riemann manifolds 1854 (point) -->
+      <text x="170" y="1100" text-anchor="end" class="rl">Riemann's manifolds</text>
+      <circle cx="772" cy="1096" r="4" fill="#16a34a"/>
+
+
+      <!-- ═══ FALSIFIED in the era ═══ -->
+      <text x="0" y="1126" class="ch" fill="#888">✕ Falsified within the era</text>
+
+      <!-- Geocentric model (Aristotle/Ptolemy was widely held → killed slowly by Galileo 1610 onward through ~1700) -->
+      <text x="0" y="1126" class="ch" fill="#888" style="display:none;"></text>
+    </svg>
+  </div>
+
+  <p style="font-size:12px;color:#888;line-height:1.55;margin-top:12px;max-width:740px;">
+    Mouse wheel zooms at the cursor. Click and drag to pan. The 1860s through 1890s especially reward zooming in — Maxwell, Mendeleev, Darwin, Pasteur, Mendel, Hertz, Röntgen, Becquerel, Thomson, the Curies, and Koch all fit inside a 40-year window that looks like a single dense cluster at default scale.
+  </p>
+</section>
+
+
+<!-- ──────────────── CLOSING ──────────────── -->
+<div class="closing">
+  <h3>Why this era looks busy</h3>
+  <p>Notice the density. At default zoom the second half of the 1800s is unreadable — too many overlapping dots. The 1860s alone contain Maxwell's equations, the periodic table, Darwin's <em>Origin</em>, Pasteur's germ theory, Mendel's genetics, and Riemann's geometric foundations. Five separate sciences crossed major thresholds in a single decade.</p>
+  <p>This is what the <a href="ancient-sciences.html">pre-1600 chart</a> doesn't have. Most rows there run the full length without much change. The scientific revolution doesn't just <em>solve</em> things faster — it solves them at a rate the chart itself struggles to display.</p>
+  <p>By 1900 the table looks roughly complete to anyone reading it. Then the <a href="physics-table.html">modern physics chart</a> opens with a near-instant aftershock — radioactivity (1896), the electron (1897), the quantum (1900), relativity (1905). The "complete" picture turned out to be the surface of something deeper, and the cycle restarted.</p>
+</div>
+
+
+<footer>First Principles · Scientific revolution · 1600 → 1900 · zoomable · 2026</footer>
+
+
+<script>
+(function(){
+  const svg = document.getElementById('zoomChart');
+  const container = document.getElementById('zoomContainer');
+  const zoomInfo = document.getElementById('zoomInfo');
+
+  const VB_DEFAULT = { x: 0, y: 0, w: 920, h: 1140 };
+  const W_MIN = 100;
+  const W_MAX = 920;
+
+  let vb = Object.assign({}, VB_DEFAULT);
+
+  function update(){
+    svg.setAttribute('viewBox', vb.x + ' ' + vb.y + ' ' + vb.w + ' ' + vb.h);
+    // Year info: the visible x range in viewBox coords
+    const xToYear = (x) => Math.round(1600 + (x - 180) / 2.333);
+    const yStart = Math.max(1600, Math.min(1900, xToYear(vb.x)));
+    const yEnd   = Math.max(1600, Math.min(1900, xToYear(vb.x + vb.w)));
+    zoomInfo.textContent = yStart + ' → ' + yEnd;
+  }
+
+  function clampVB(){
+    if(vb.w < W_MIN) vb.w = W_MIN;
+    if(vb.w > W_MAX) vb.w = W_MAX;
+    // maintain aspect ratio with default
+    vb.h = vb.w * (VB_DEFAULT.h / VB_DEFAULT.w);
+    // clamp position so we can't pan off the edges entirely
+    if(vb.x < 0) vb.x = 0;
+    if(vb.y < 0) vb.y = 0;
+    if(vb.x + vb.w > VB_DEFAULT.w) vb.x = VB_DEFAULT.w - vb.w;
+    if(vb.y + vb.h > VB_DEFAULT.h) vb.y = VB_DEFAULT.h - vb.h;
+  }
+
+  function zoomAt(scale, cx, cy){
+    // cx, cy in viewBox coords (the focal point)
+    const newW = vb.w * scale;
+    const clampedW = Math.max(W_MIN, Math.min(W_MAX, newW));
+    const ratio = clampedW / vb.w;
+    vb.w = clampedW;
+    // scale the focal point so it stays under the cursor
+    vb.x = cx - (cx - vb.x) * ratio;
+    vb.y = cy - (cy - vb.y) * ratio;
+    clampVB();
+    update();
+  }
+
+  function clientToVB(clientX, clientY){
+    const rect = svg.getBoundingClientRect();
+    const fx = (clientX - rect.left) / rect.width;
+    const fy = (clientY - rect.top)  / rect.height;
+    return [vb.x + fx * vb.w, vb.y + fy * vb.h];
+  }
+
+  svg.addEventListener('wheel', function(e){
+    e.preventDefault();
+    const scale = e.deltaY > 0 ? 1.18 : 0.847;
+    const [cx, cy] = clientToVB(e.clientX, e.clientY);
+    zoomAt(scale, cx, cy);
+  }, { passive: false });
+
+  let dragging = false;
+  let lastX = 0, lastY = 0;
+
+  container.addEventListener('pointerdown', function(e){
+    dragging = true;
+    lastX = e.clientX;
+    lastY = e.clientY;
+    container.classList.add('grabbing');
+    container.setPointerCapture(e.pointerId);
+  });
+
+  container.addEventListener('pointermove', function(e){
+    if(!dragging) return;
+    const rect = svg.getBoundingClientRect();
+    const dx = (e.clientX - lastX) / rect.width  * vb.w;
+    const dy = (e.clientY - lastY) / rect.height * vb.h;
+    vb.x -= dx;
+    vb.y -= dy;
+    clampVB();
+    update();
+    lastX = e.clientX;
+    lastY = e.clientY;
+  });
+
+  container.addEventListener('pointerup', function(e){
+    dragging = false;
+    container.classList.remove('grabbing');
+    try { container.releasePointerCapture(e.pointerId); } catch(_){}
+  });
+
+  container.addEventListener('pointercancel', function(){
+    dragging = false;
+    container.classList.remove('grabbing');
+  });
+
+  document.getElementById('zoomIn').addEventListener('click', function(){
+    const cx = vb.x + vb.w / 2;
+    const cy = vb.y + vb.h / 2;
+    zoomAt(0.7, cx, cy);
+  });
+  document.getElementById('zoomOut').addEventListener('click', function(){
+    const cx = vb.x + vb.w / 2;
+    const cy = vb.y + vb.h / 2;
+    zoomAt(1.4, cx, cy);
+  });
+  document.getElementById('zoomReset').addEventListener('click', function(){
+    vb = Object.assign({}, VB_DEFAULT);
+    update();
+  });
+
+  update();
+})();
+</script>
+
+</body>
+</html>
