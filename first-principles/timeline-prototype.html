@@ -34,6 +34,13 @@
 
   :root { --ax-h: 40px; }
 
+  /* Two panes stacked vertically */
+  .tl-pair { display:flex; flex-direction:column; gap:10px; }
+  .tl-pane { display:flex; flex-direction:column; gap:4px; }
+  .tl-pane-toolbar { display:flex; gap:4px; align-items:center; flex-wrap:wrap; }
+  .tl-pane-toolbar .tb-btn { font-size:11px; padding:3px 7px; border-radius:4px; }
+  .tl-pane-toolbar .tb-info { font-size:11px; margin-left:4px; }
+
   .tl-frame { position:relative; border:1px solid #e8e8e8; border-radius:6px; background:#fff; overflow:hidden; }
   .tl-scroll {
     overflow:auto;
@@ -41,9 +48,16 @@
     user-select:none;
     -webkit-user-select:none;
     touch-action:pan-x pan-y;
-    height:88vh;
-    min-height:600px;
+    scrollbar-width:thin;
   }
+  /* Slim scrollbars (WebKit) */
+  .tl-scroll::-webkit-scrollbar { width:6px; height:6px; }
+  .tl-scroll::-webkit-scrollbar-thumb { background:rgba(0,0,0,.18); border-radius:3px; }
+  .tl-scroll::-webkit-scrollbar-thumb:hover { background:rgba(0,0,0,.32); }
+  .tl-scroll::-webkit-scrollbar-track { background:transparent; }
+  /* 70/30 vertical split */
+  .tl-pair > .tl-pane:nth-child(1) .tl-scroll { height:62vh; min-height:380px; }
+  .tl-pair > .tl-pane:nth-child(2) .tl-scroll { height:26vh; min-height:160px; }
   .tl-scroll.grabbing { cursor:grabbing; }
   .tl-inner { position:relative; min-width:100%; }
 
@@ -52,6 +66,26 @@
   .tl-tick { position:absolute; top:8px; transform:translateX(-50%); font-family:'SF Mono',Consolas,monospace; font-size:11px; color:#888; pointer-events:none; white-space:nowrap; }
   .tl-tick::after { content:''; position:absolute; left:50%; top:18px; width:1px; height:6px; background:#ccc; }
   .tl-gridline { position:absolute; top:var(--ax-h); bottom:0; width:1px; background:#f6f6f0; pointer-events:none; z-index:0; }
+
+  /* Era bands — sit behind everything, alternating very-light gray fills */
+  .tl-era-band {
+    position:absolute;
+    top:var(--ax-h); bottom:0;
+    pointer-events:none;
+    z-index:0;
+  }
+  .tl-era-label {
+    position:absolute;
+    bottom:3px;
+    font-family:'SF Mono',Consolas,monospace;
+    font-size:9.5px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:#b8b8b8;
+    white-space:nowrap;
+    pointer-events:none;
+    padding-left:6px;
+  }
 
   .tl-section-header {
     position:sticky; left:0; z-index:6;
@@ -165,6 +199,57 @@
   .tl-firsttest::before { transform:translate(-50%,-50%) rotate(45deg); }
   .tl-firsttest::after  { transform:translate(-50%,-50%) rotate(-45deg); }
 
+  /* Contribution markers — small dots on a person's bar */
+  .tl-contrib {
+    position:absolute; top:50%;
+    width:6px; height:6px; border-radius:50%;
+    background:#4338ca; border:1.5px solid #fff;
+    transform:translate(-50%,-50%);
+    z-index:4; cursor:help;
+    box-shadow:0 0 0 0.5px rgba(67,56,202,.35);
+  }
+  .tl-contrib:hover { background:#312e81; }
+  .tl-contrib:hover::after {
+    content: attr(data-tip);
+    position:absolute;
+    bottom:11px; left:50%;
+    transform:translateX(-50%);
+    background:#1f2937; color:#fff;
+    padding:4px 9px; border-radius:4px;
+    font-size:11.5px; font-weight:500;
+    white-space:nowrap;
+    pointer-events:none;
+    z-index:30;
+    box-shadow:0 2px 6px rgba(0,0,0,.18);
+  }
+  .tl-contrib:hover::before {
+    content:'';
+    position:absolute;
+    bottom:7px; left:50%;
+    transform:translateX(-50%);
+    border:4px solid transparent;
+    border-top-color:#1f2937;
+    pointer-events:none;
+    z-index:30;
+  }
+  /* In the expanded detail — chronological contribution list */
+  .tl-contrib-list {
+    margin-top:10px; padding-top:8px;
+    border-top:1px dashed #ddd;
+    display:flex; flex-direction:column; gap:3px;
+  }
+  .tl-contrib-row {
+    display:grid;
+    grid-template-columns:60px 1fr;
+    gap:10px; align-items:baseline;
+    font-size:12px;
+  }
+  .tl-contrib-year {
+    font-family:'SF Mono',Consolas,monospace;
+    font-size:11px; color:#666;
+  }
+  .tl-contrib-label { color:#222; }
+
   /* Legend */
   .tl-legend {
     display:flex; flex-wrap:wrap; gap:14px;
@@ -223,6 +308,20 @@
   }
   .tl-marker-end.killed::before { transform:translate(-50%,-50%) rotate(45deg); }
   .tl-marker-end.killed::after  { transform:translate(-50%,-50%) rotate(-45deg); }
+
+  /* Person name — always visible, anchored to end of lifespan bar */
+  .tl-row-name {
+    position:absolute; top:50%;
+    transform:translateY(-50%);
+    margin-left:10px;
+    font-size:11px; color:#4338ca;
+    white-space:nowrap;
+    pointer-events:none;
+    z-index:2;
+    font-weight:500;
+    letter-spacing:.01em;
+  }
+  .tl-row-main:hover .tl-row-name { color:#312e81; }
 
   /* Year label — hidden by default, shows on row hover */
   .tl-row-year {
@@ -337,31 +436,48 @@
 <h1>The Timeline of Foundations</h1>
 
 
-<div class="toolbar">
-  <button class="tb-btn" id="tlGoAncient">⇤ Antiquity → 1600</button>
-  <button class="tb-btn" id="tlGoFound">1600 → 1900</button>
-  <button class="tb-btn" id="tlGoModern">1900 → 2100 ⇥</button>
-  <button class="tb-btn" id="tlLog">📈 Log (→ 2100)</button>
-  <span class="tb-info" id="tlInfo">…</span>
-  <span class="tb-hint">click a row to expand · scroll = down · shift+scroll = stretch · drag = pan</span>
-</div>
-
 <div class="tl-legend">
   <span><span class="swatch" style="background:#94a3b8;"></span>Speculative / initial</span>
   <span><span class="swatch" style="background:#eab308;"></span>Significant progress</span>
   <span><span class="swatch" style="background:#16a34a;"></span>Testable / experimented</span>
   <span><span class="swatch" style="background:#2563eb;"></span>Close to figured out</span>
   <span><span class="x">✕</span>first test / first theoretical contest</span>
+  <span><span class="swatch" style="background:#4338ca; border:1.5px solid #fff; box-shadow:0 0 0 0.5px rgba(67,56,202,.5); width:8px; height:8px;"></span>major contribution (hover for year)</span>
+  <span class="tb-hint">click row · shift+scroll = zoom · drag = pan</span>
 </div>
 
 
-<div class="tl-frame">
-  <div class="tl-scroll" id="tlScroll">
-    <div class="tl-inner" id="tlInner">
-      <div class="tl-axis-row">
-        <div class="tl-axis" id="tlAxis"></div>
+<div class="tl-pair">
+  <div class="tl-pane">
+    <div class="tl-pane-toolbar">
+      <button class="tb-btn" data-pane="A" data-action="ancient">⇤ Ant.</button>
+      <button class="tb-btn" data-pane="A" data-action="found">1600–1900</button>
+      <button class="tb-btn" data-pane="A" data-action="modern">1900–2100 ⇥</button>
+      <button class="tb-btn" data-pane="A" data-action="log">📈 Log</button>
+      <span class="tb-info" id="tlInfoA">…</span>
+    </div>
+    <div class="tl-frame">
+      <div class="tl-scroll" id="tlScrollA">
+        <div class="tl-inner" id="tlInnerA">
+          <div class="tl-axis-row">
+            <div class="tl-axis" id="tlAxisA"></div>
+          </div>
+          <div id="tlRowsA"></div>
+        </div>
       </div>
-      <div id="tlRows"></div>
+    </div>
+  </div>
+  <div class="tl-pane">
+    <span class="tb-info" id="tlInfoB" style="display:none;"></span>
+    <div class="tl-frame">
+      <div class="tl-scroll" id="tlScrollB">
+        <div class="tl-inner" id="tlInnerB">
+          <div class="tl-axis-row">
+            <div class="tl-axis" id="tlAxisB"></div>
+          </div>
+          <div id="tlRowsB"></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -419,10 +535,17 @@
       detail:"The bridge between analysis (kernels of differential operators) and topology (characteristic classes). The foundation of the geometric reformulation of quantum field theory." },
 
     // ============ PHYSICS & ASTRONOMY ============
-    { cat:'physics', year:-450, title:"Atomism (Democritus)", who:"Democritus, Leucippus",
-      detail:"Matter is made of indivisible atoms moving in empty space. The foundational claim about what stuff IS. Sidelined by Aristotle for two thousand years, revived by Dalton in 1808." },
-    { cat:'physics', start:-450, end:1897, year:1897, status:'killed', title:"Atom (truly indivisible)", who:"Democritus → Thomson",
-      detail:"The 'a-tomos' = uncuttable assumption that an atom is the smallest possible unit of matter. Held philosophically since the Greeks, scientifically since Dalton 1808. Killed by Thomson's discovery of the electron (1897) — atoms have insides." },
+    { cat:'physics', year:-450, title:"Atomism (Democritus) — philosophical", who:"Democritus, Leucippus",
+      detail:"Matter is made of indivisible atoms moving in empty space. A purely PHILOSOPHICAL claim about what stuff IS — no chemistry, no combination rules, no testable predictions. Sidelined by Aristotle for two thousand years. The modern scientific atom (atoms as chemical building blocks that combine into molecules) is a separate development that begins with Gassendi (1649) and Boyle (1661), not with Dalton." },
+    { cat:'physics', start:-450, end:1897, year:1897, status:'killed', title:"Atom (atomos → chemical unit → divisible)", who:"Democritus → Gassendi → Boyle → Dalton → Thomson",
+      stages:[
+        { from:-450, to:1649, stage:'speculative', who:"Democritus, Epicurus, Lucretius — philosophical 'atomos', no chemistry attached" },
+        { from:1649, to:1808, stage:'progress',    who:"Gassendi revives atomism &amp; coins 'molecule'; Boyle (Sceptical Chymist, 1661) corpuscularianism; Newton's Opticks Query 31 (1704); W. Higgins (1789)" },
+        { from:1808, to:1869, stage:'testable',    who:"Dalton — atomic weights + law of multiple proportions (quantitative); Avogadro (1811) distinguishes atoms from molecules" },
+        { from:1869, to:1897, stage:'figured',     who:"Mendeleev orders elements by atomic weight; chemistry is unambiguously atomic" },
+      ],
+      firstTest:1808,
+      detail:"Differentiate atomos from atom. The Greek 'atomos' (Democritus, ~−450) was a PHILOSOPHICAL claim — there must exist a smallest indivisible thing — with nothing chemical attached. The MODERN atom (a particle that combines with others in fixed ratios to form compounds) is a separate, later development. Pierre Gassendi (Syntagma, posthumous 1658) revived Epicurean atomism in a Christian-compatible form and used 'molecule' for clusters of atoms. Robert Boyle's Sceptical Chymist (1661) introduced corpuscularianism — chemical change as rearrangement of small particles. Newton's Opticks Query 31 (1704) hypothesised atoms held by short-range forces. William Higgins (1789) sketched specific atomic combinations. Dalton (1808) made it quantitative for the first time — every element has a characteristic atomic weight, compounds form in integer ratios — that is the testability threshold, not the invention of the atom. Avogadro (1811) cleanly separated atoms from molecules. Mendeleev (1869) ordered the elements by atomic weight. The 'truly indivisible' claim was killed by Thomson's electron (1897), but the atom-as-chemical-unit survives untouched." },
     { cat:'physics', year:-330, title:"Aristotle's natural philosophy", who:"Aristotle",
       detail:"The foundational framework — four elements, natural place, teleology. Wrong about almost everything physical, but defined the questions for two millennia. Every later foundation is in conversation with Aristotle." },
     { cat:'physics', year:1687, title:"Heliocentric model", who:"Aristarchus → Copernicus → Galileo → Newton",
@@ -597,8 +720,15 @@
       detail:"Pressure and volume of a gas are inversely proportional. The first quantitative gas law. Boyle insisted on numerical data — an early rejection of the Aristotelian style." },
     { cat:'chemistry', year:1669, title:"Phosphorus", who:"Hennig Brand",
       detail:"Trying to make gold from urine, the alchemist Brand instead distilled a new glowing element. The first element discovered scientifically." },
-    { cat:'chemistry', year:1766, title:"Hydrogen", who:"Henry Cavendish",
-      detail:"Cavendish isolated \"inflammable air\" and showed it produces water on combustion. Hydrogen as an element." },
+    { cat:'chemistry', year:1913, title:"Hydrogen (inflammable air → simplest atom)", who:"Paracelsus → Cavendish → Lavoisier → Bohr",
+      stages:[
+        { from:1520, to:1671, stage:'speculative', who:"Paracelsus &amp; alchemists — 'inflammable air' from acid + metal, unnamed" },
+        { from:1671, to:1766, stage:'progress',    who:"Boyle (iron + vitriol gas), Hales — gas collected and burned" },
+        { from:1766, to:1783, stage:'testable',    who:"Cavendish isolates &amp; weighs 'inflammable air'; combustion → water" },
+        { from:1783, to:1913, stage:'figured',     who:"Lavoisier names it 'hydrogen' (water-former); Dalton atomic weight 1; Bohr solves H atom" },
+      ],
+      firstTest:1766,
+      detail:"Alchemists from Paracelsus onward noted that acid on iron evolves an inflammable gas, but couldn't name it. Boyle (1671) collected and burned it. Cavendish (1766) isolated it as a distinct 'inflammable air' and showed it produces water on combustion. Lavoisier (1783) named it hydrogen — 'water-former.' Dalton gave it atomic weight 1. Bohr (1913) solved the hydrogen atom quantum mechanically — the simplest atom in the universe, one proton + one electron, exactly explained." },
     { cat:'chemistry', year:1774, title:"Oxygen", who:"Priestley, Scheele",
       detail:"Independently isolated by Priestley and Scheele. Lavoisier named it and understood it. The reactive component of air that makes combustion possible." },
     { cat:'chemistry', start:1667, end:1774, year:1774, status:'killed', title:"Phlogiston", who:"Becher → Lavoisier",
@@ -622,77 +752,434 @@
       detail:"A new column of the periodic table no one had anticipated — the noble gases. The atmosphere contains 1 % argon and nobody had noticed." },
 
     // ============ PEOPLE — main players ============
+    { cat:'people', start:-624, end:-546, year:-546, title:"Thales of Miletus", who:"first natural philosopher (~624–546 BCE)",
+      contributions:[{ year:-585, label:"Predicted solar eclipse (May 28, 585 BCE)" }],
+      detail:"The first to seek natural (non-mythological) explanations. Said all is water. The opening move of Greek science." },
+    { cat:'people', start:-570, end:-495, year:-495, title:"Pythagoras", who:"mathematician / mystic (~570–495 BCE)",
+      contributions:[{ year:-530, label:"Founded the Pythagorean school in Croton" }],
+      detail:"Number-mysticism school. Pythagorean theorem (formal proof in the tradition), irrationals discovered (and reportedly suppressed)." },
+    { cat:'people', start:-460, end:-370, year:-370, title:"Democritus", who:"philosopher (~460–370 BCE)",
+      contributions:[{ year:-430, label:"Atomism — matter is atoms in the void" }],
+      detail:"The foundational hypothesis about what matter IS — 2300 years before Dalton revived it scientifically." },
+    { cat:'people', start:-428, end:-348, year:-348, title:"Plato", who:"philosopher (428–348 BCE)",
+      contributions:[{ year:-387, label:"Founded the Academy in Athens" }],
+      detail:"Theory of Forms. 'Let no one ignorant of geometry enter here.' Mathematics as the language of the eternal." },
+    { cat:'people', start:-384, end:-322, year:-322, title:"Aristotle", who:"natural philosopher (384–322 BCE)",
+      contributions:[
+        { year:-350, label:"Physics, Metaphysics, On the Heavens" },
+        { year:-335, label:"Founded the Lyceum" },
+      ],
+      detail:"Four elements, natural place, teleology. Defined the questions for two millennia, even when wrong about the answers." },
+    { cat:'people', start:-325, end:-265, year:-265, title:"Euclid", who:"mathematician (~325–265 BCE)",
+      contributions:[{ year:-300, label:"Elements — axiomatic geometry" }],
+      detail:"23 definitions, 5 postulates. The template for axiomatic mathematics for 2300 years." },
+    { cat:'people', start:-310, end:-230, year:-230, title:"Aristarchus of Samos", who:"astronomer (~310–230 BCE)",
+      contributions:[{ year:-280, label:"Heliocentric proposal — 1800 years before Copernicus" }],
+      detail:"Estimated relative sizes of Sun, Moon, Earth by geometry. Ignored." },
+    { cat:'people', start:-287, end:-212, year:-212, title:"Archimedes of Syracuse", who:"mathematician / physicist (287–212 BCE)",
+      contributions:[{ year:-250, label:"Lever law, buoyancy, π bounded, integration in spirit" }],
+      detail:"Mechanics from first principles. Killed by a Roman soldier during the sack of Syracuse." },
+    { cat:'people', start:-276, end:-194, year:-194, title:"Eratosthenes", who:"polymath (~276–194 BCE)",
+      contributions:[{ year:-240, label:"Measured Earth's circumference (~2% off)" }],
+      detail:"Director of the Library of Alexandria. Computed Earth's size from shadow lengths at Syene vs Alexandria." },
+    { cat:'people', start:-190, end:-120, year:-120, title:"Hipparchus", who:"astronomer (~190–120 BCE)",
+      contributions:[{ year:-150, label:"Star catalogue + precession of the equinoxes" }],
+      detail:"Trigonometric tables. The most influential astronomer before Ptolemy." },
+    { cat:'people', start:100, end:170, year:170, title:"Claudius Ptolemy", who:"astronomer / geographer (~100–170)",
+      contributions:[{ year:150, label:"Almagest — geocentric epicycles, ruled for 1400 years" }],
+      detail:"Predicted planetary positions accurately. Geographia mapped the known world." },
+    { cat:'people', start:360, end:415, year:415, title:"Hypatia of Alexandria", who:"mathematician / philosopher (~360–415)",
+      contributions:[{ year:400, label:"Commentaries on Diophantus and Apollonius" }],
+      detail:"Neoplatonist scholar. Murdered by a Christian mob — a symbolic end of classical scholarship in Alexandria." },
+    { cat:'people', start:476, end:550, year:550, title:"Aryabhata", who:"mathematician / astronomer (476–550)",
+      contributions:[{ year:499, label:"Āryabhaṭīya — decimal place value, π, Earth's rotation" }],
+      detail:"Proposed Earth rotates on its axis. Computed planetary periods." },
+    { cat:'people', start:598, end:668, year:668, title:"Brahmagupta", who:"mathematician (598–668)",
+      contributions:[{ year:628, label:"Brāhmasphuṭasiddhānta — arithmetic of zero and negatives" }],
+      detail:"Formal arithmetic of zero and negative numbers as first-class numbers with sign rules." },
+    { cat:'people', start:780, end:850, year:850, title:"al-Khwarizmi", who:"mathematician (~780–850)",
+      contributions:[
+        { year:820, label:"Kitāb al-Jabr — founded algebra" },
+        { year:825, label:"On Calculation with Hindu Numerals" },
+      ],
+      detail:"His name became 'algorithm'. Brought the Hindu decimal system west via Arabic translation." },
+    { cat:'people', start:965, end:1040, year:1040, title:"Ibn al-Haytham (Alhazen)", who:"polymath (~965–1040)",
+      contributions:[{ year:1020, label:"Book of Optics — vision is light entering the eye" }],
+      detail:"Insisted on experimental verification — arguably the first explicit use of the scientific method." },
+    { cat:'people', start:1170, end:1250, year:1250, title:"Fibonacci (Leonardo of Pisa)", who:"mathematician (~1170–1250)",
+      contributions:[{ year:1202, label:"Liber Abaci — Hindu-Arabic numerals to Europe" }],
+      detail:"Displaced Roman numerals across Europe. The famous sequence appears in a rabbit-breeding problem." },
+    { cat:'people', start:1473, end:1543, year:1543, title:"Nicolaus Copernicus", who:"astronomer (1473–1543)",
+      contributions:[{ year:1543, label:"De Revolutionibus — heliocentric model" }],
+      detail:"Revived heliocentrism. Published the year he died, dodging Inquisition by timing." },
+    { cat:'people', start:1546, end:1601, year:1601, title:"Tycho Brahe", who:"astronomer (1546–1601)",
+      contributions:[
+        { year:1576, label:"Uraniborg observatory built" },
+        { year:1577, label:"Great comet observed above the Moon — broke celestial spheres" },
+      ],
+      detail:"Twenty years of naked-eye Mars observations at arc-minute precision. Lost his nose in a duel; wore a brass one." },
+    { cat:'people', start:1564, end:1642, year:1642, title:"Galileo Galilei", who:"physicist / astronomer (1564–1642)",
+      contributions:[
+        { year:1609, label:"Telescope to the heavens" },
+        { year:1610, label:"Moons of Jupiter, phases of Venus, Sun spots" },
+        { year:1632, label:"Dialogue Concerning Two Chief World Systems" },
+        { year:1638, label:"Discourses on Two New Sciences — uniform acceleration" },
+      ],
+      detail:"Tried by the Inquisition, abjured, lived out his days under house arrest." },
+    { cat:'people', start:1571, end:1630, year:1630, title:"Johannes Kepler", who:"astronomer / mathematician (1571–1630)",
+      contributions:[
+        { year:1609, label:"Astronomia Nova — 1st & 2nd laws" },
+        { year:1619, label:"Harmonices Mundi — 3rd law (T² ∝ a³)" },
+      ],
+      detail:"Three laws of planetary motion, distilled from Tycho's Mars data. Mystic by inclination, empiricist by necessity." },
+    { cat:'people', start:1596, end:1650, year:1650, title:"René Descartes", who:"philosopher / mathematician (1596–1650)",
+      contributions:[{ year:1637, label:"La Géométrie — Cartesian coordinates" }],
+      detail:"'Cogito ergo sum.' Died after Queen Christina of Sweden made him lecture at 5 AM in winter." },
+    { cat:'people', start:1607, end:1665, year:1665, title:"Pierre de Fermat", who:"mathematician (1607–1665)",
+      contributions:[
+        { year:1637, label:"Last Theorem scribbled in a margin" },
+        { year:1654, label:"Probability foundations with Pascal" },
+      ],
+      detail:"Number theory, analytic geometry, principle of least time. 'This margin is too narrow to contain it.'" },
+    { cat:'people', start:1623, end:1662, year:1662, title:"Blaise Pascal", who:"mathematician / physicist (1623–1662)",
+      contributions:[
+        { year:1642, label:"Mechanical calculator (Pascaline)" },
+        { year:1654, label:"Probability foundations + Pascal's triangle" },
+      ],
+      detail:"Religious crisis in his mid-30s, abandoned math. The Pensées followed." },
+    { cat:'people', start:1627, end:1691, year:1691, title:"Robert Boyle", who:"chemist (1627–1691)",
+      contributions:[
+        { year:1661, label:"The Sceptical Chymist — modern element concept" },
+        { year:1662, label:"Boyle's law (PV = const)" },
+      ],
+      detail:"Rejected Aristotelian elements, insisted on quantitative experiment. Opened modern chemistry." },
+    { cat:'people', start:1629, end:1695, year:1695, title:"Christiaan Huygens", who:"physicist (1629–1695)",
+      contributions:[
+        { year:1656, label:"Pendulum clock + Saturn's rings" },
+        { year:1690, label:"Traité de la Lumière — wave theory of light" },
+      ],
+      detail:"The most sophisticated physicist between Galileo and Newton." },
+    { cat:'people', start:1635, end:1703, year:1703, title:"Robert Hooke", who:"polymath (1635–1703)",
+      contributions:[
+        { year:1660, label:"Hooke's law of elasticity" },
+        { year:1665, label:"Micrographia — coined 'cell'" },
+      ],
+      detail:"Inverse-square gravity hint Newton refused to credit. Bitter rivalry that lasted past Hooke's death." },
+    { cat:'people', start:1643, end:1727, year:1727, title:"Isaac Newton", who:"physicist / mathematician (1643–1727)",
+      contributions:[
+        { year:1666, label:"Annus mirabilis — calculus, prism, gravity" },
+        { year:1687, label:"Principia — laws of motion + universal gravitation" },
+        { year:1704, label:"Opticks" },
+      ],
+      detail:"Defined what 'physics' meant for 220 years. Alchemy in secret." },
+    { cat:'people', start:1646, end:1716, year:1716, title:"Gottfried Wilhelm Leibniz", who:"mathematician / philosopher (1646–1716)",
+      contributions:[
+        { year:1684, label:"Nova Methodus — calculus (notation we still use)" },
+        { year:1703, label:"Binary arithmetic explained" },
+      ],
+      detail:"Monadology. Diplomat, librarian, polymath. Bitter priority dispute with Newton." },
+    { cat:'people', start:1707, end:1783, year:1783, title:"Leonhard Euler", who:"mathematician (1707–1783)",
+      contributions:[
+        { year:1748, label:"Introductio — e^(iπ) + 1 = 0" },
+        { year:1755, label:"Foundations of fluid mechanics" },
+      ],
+      detail:"Touched every branch of mathematics. Worked through his last 17 years totally blind, output undiminished." },
+    { cat:'people', start:1731, end:1810, year:1810, title:"Henry Cavendish", who:"chemist / physicist (1731–1810)",
+      contributions:[
+        { year:1766, label:"Isolated hydrogen ('inflammable air')" },
+        { year:1798, label:"Measured G with torsion balance" },
+      ],
+      detail:"Pathologically shy — many results published posthumously by Maxwell." },
+    { cat:'people', start:1736, end:1813, year:1813, title:"Joseph-Louis Lagrange", who:"mathematician (1736–1813)",
+      contributions:[{ year:1788, label:"Mécanique Analytique — Lagrangian mechanics" }],
+      detail:"Variational principles, number theory, celestial mechanics. Survived the Terror; Napoleon made him a count." },
+    { cat:'people', start:1736, end:1806, year:1806, title:"Charles-Augustin de Coulomb", who:"physicist (1736–1806)",
+      contributions:[{ year:1785, label:"Coulomb's law — F ∝ q₁q₂/r²" }],
+      detail:"Same mathematical shape as Newton's gravity — first hint of EM unification." },
+    { cat:'people', start:1743, end:1794, year:1794, title:"Antoine Lavoisier", who:"chemist (1743–1794)",
+      contributions:[
+        { year:1772, label:"Combustion experiments — mass conservation" },
+        { year:1789, label:"Traité élémentaire de chimie — oxygen theory" },
+      ],
+      detail:"Killed phlogiston. Guillotined in the French Revolution. Lagrange: 'a hundred years may not produce another like it.'" },
+    { cat:'people', start:1745, end:1827, year:1827, title:"Alessandro Volta", who:"physicist (1745–1827)",
+      contributions:[{ year:1800, label:"Voltaic pile — first chemical battery" }],
+      detail:"The volt is named after him. Triggered a century of electromagnetic discovery." },
+    { cat:'people', start:1749, end:1827, year:1827, title:"Pierre-Simon Laplace", who:"mathematician / astronomer (1749–1827)",
+      contributions:[
+        { year:1799, label:"Mécanique Céleste — solar system as clockwork" },
+        { year:1812, label:"Théorie analytique des probabilités" },
+      ],
+      detail:"Laplacian determinism. 'I had no need of that hypothesis' (when Napoleon asked about God in his system)." },
+    { cat:'people', start:1766, end:1844, year:1844, title:"John Dalton", who:"chemist (1766–1844)",
+      contributions:[{ year:1808, label:"A New System of Chemical Philosophy — atomic theory" }],
+      detail:"Elements made of identical atoms, compounds in fixed integer ratios. Democritus given quantitative bite." },
+    { cat:'people', start:1777, end:1855, year:1855, title:"Carl Friedrich Gauss", who:"mathematician (1777–1855)",
+      contributions:[
+        { year:1801, label:"Disquisitiones Arithmeticae" },
+        { year:1809, label:"Method of least squares" },
+        { year:1827, label:"Theorema Egregium — intrinsic curvature" },
+      ],
+      detail:"The 'prince of mathematicians' — and a famously slow, perfectionist publisher." },
     { cat:'people', start:1791, end:1867, year:1867, title:"Michael Faraday", who:"experimental physicist (1791–1867)",
+      contributions:[
+        { year:1821, label:"First electric motor — rotation from a current" },
+        { year:1831, label:"Electromagnetic induction" },
+        { year:1833, label:"Laws of electrolysis" },
+        { year:1845, label:"Faraday effect — light rotated by magnetism" },
+      ],
       detail:"Electromagnetic induction, electrolysis, field concept. The bridge between Volta and Maxwell." },
     { cat:'people', start:1809, end:1877, year:1877, title:"Hermann Grassmann", who:"mathematician (1809–1877)",
+      contributions:[
+        { year:1844, label:"Ausdehnungslehre — exterior algebra (largely ignored)" },
+        { year:1862, label:"Revised Ausdehnungslehre — clearer second edition" },
+      ],
       detail:"Exterior algebra (Ausdehnungslehre). Foundation of modern linear algebra and vector spaces." },
     { cat:'people', start:1826, end:1866, year:1866, title:"Bernhard Riemann", who:"mathematician (1826–1866)",
+      contributions:[
+        { year:1851, label:"Riemann surfaces (doctoral thesis)" },
+        { year:1854, label:"Habilitation lecture — intrinsic curvature on n-dim manifolds" },
+        { year:1857, label:"Riemann mapping theorem" },
+        { year:1859, label:"Riemann hypothesis (zeta zeros)" },
+      ],
       detail:"Riemann surfaces, manifolds, Riemann hypothesis. The geometric scaffolding for general relativity." },
     { cat:'people', start:1831, end:1879, year:1879, title:"James Clerk Maxwell", who:"physicist (1831–1879)",
+      contributions:[
+        { year:1855, label:"On Faraday's Lines of Force — first mathematical field theory" },
+        { year:1860, label:"Maxwell-Boltzmann distribution (kinetic theory)" },
+        { year:1861, label:"On Physical Lines of Force — mechanical EM model" },
+        { year:1865, label:"A Dynamical Theory of the Electromagnetic Field — full equations" },
+        { year:1873, label:"Treatise on Electricity and Magnetism" },
+      ],
       detail:"Unified electricity, magnetism, and light in four equations. Predicted electromagnetic waves." },
     { cat:'people', start:1834, end:1907, year:1907, title:"Dmitri Mendeleev", who:"chemist (1834–1907)",
+      contributions:[
+        { year:1869, label:"Periodic table — left holes for unknown elements" },
+        { year:1871, label:"Predicted properties of gallium, scandium, germanium" },
+      ],
       detail:"Periodic table. Predicted gallium, scandium, germanium with their properties before they were found." },
     { cat:'people', start:1838, end:1916, year:1916, title:"Ernst Mach", who:"physicist / philosopher (1838–1916)",
+      contributions:[
+        { year:1883, label:"Science of Mechanics — Mach's principle, critique of Newton" },
+        { year:1887, label:"Mach number — shock-wave photography" },
+      ],
       detail:"Mach number, Mach's principle (inertia tied to distant masses). Influential on the young Einstein." },
     { cat:'people', start:1853, end:1928, year:1928, title:"Hendrik Lorentz", who:"physicist (1853–1928)",
+      contributions:[
+        { year:1892, label:"Electron theory of matter" },
+        { year:1895, label:"First Lorentz transformations (length contraction)" },
+        { year:1902, label:"Nobel Prize (with Zeeman)" },
+        { year:1904, label:"Full Lorentz transformations" },
+      ],
       detail:"Lorentz transformations — the kinematic core of special relativity. Electron theory of matter. Nobel 1902." },
     { cat:'people', start:1854, end:1912, year:1912, title:"Henri Poincaré", who:"mathematician / physicist (1854–1912)",
+      contributions:[
+        { year:1887, label:"Three-body problem — seed of chaos theory" },
+        { year:1895, label:"Analysis Situs — founding paper of topology" },
+        { year:1904, label:"Poincaré conjecture posed" },
+        { year:1905, label:"Sur la dynamique de l'électron — relativity foundations" },
+      ],
       detail:"Topology, three-body problem, foundations of special relativity. The last universalist." },
     { cat:'people', start:1857, end:1942, year:1942, title:"Joseph Larmor", who:"physicist (1857–1942)",
+      contributions:[
+        { year:1897, label:"Larmor formula — radiation from accelerating charges" },
+        { year:1900, label:"Aether and Matter — electronic theory of matter" },
+      ],
       detail:"Larmor precession, Larmor formula for radiation from accelerating charges." },
     { cat:'people', start:1858, end:1947, year:1947, title:"Max Planck", who:"physicist (1858–1947)",
+      contributions:[
+        { year:1900, label:"E = hν quantum hypothesis — black-body law" },
+        { year:1918, label:"Nobel Prize for quantum theory" },
+      ],
       detail:"E = hν quantum hypothesis (1900). Started the quantum revolution as a 'desperate act'." },
     { cat:'people', start:1862, end:1943, year:1943, title:"David Hilbert", who:"mathematician (1862–1943)",
+      contributions:[
+        { year:1900, label:"23 problems address (Paris ICM)" },
+        { year:1909, label:"Spectral theory — basis of Hilbert spaces" },
+        { year:1915, label:"GR field equations (essentially simultaneous with Einstein)" },
+        { year:1928, label:"Hilbert programme — formalisation manifesto" },
+      ],
       detail:"Hilbert space, the formalist programme, 23 problems. Closed in on general relativity at the same time as Einstein." },
     { cat:'people', start:1864, end:1909, year:1909, title:"Hermann Minkowski", who:"mathematician / physicist (1864–1909)",
+      contributions:[
+        { year:1907, label:"4D spacetime formulation of special relativity" },
+        { year:1908, label:"\"Space and Time\" Cologne lecture" },
+      ],
       detail:"Spacetime as a 4D geometric object. Gave special relativity its modern formulation." },
     { cat:'people', start:1872, end:1934, year:1934, title:"Willem de Sitter", who:"astronomer (1872–1934)",
+      contributions:[
+        { year:1916, label:"Relativistic orbit predictions (de Sitter precession)" },
+        { year:1917, label:"de Sitter universe — vacuum cosmological solution" },
+        { year:1932, label:"Einstein–de Sitter model" },
+      ],
       detail:"de Sitter space, expanding-universe cosmologies. Predicted relativistic orbit effects." },
     { cat:'people', start:1872, end:1970, year:1970, title:"Bertrand Russell", who:"philosopher / logician (1872–1970)",
+      contributions:[
+        { year:1901, label:"Russell's paradox — the set of all sets that don't contain themselves" },
+        { year:1910, label:"Principia Mathematica vol. 1 (with Whitehead)" },
+        { year:1950, label:"Nobel Prize in Literature" },
+      ],
       detail:"Principia Mathematica with Whitehead. Russell's paradox. Foundational logic and set theory." },
     { cat:'people', start:1879, end:1955, year:1955, title:"Albert Einstein", who:"physicist (1879–1955)",
+      contributions:[
+        { year:1905, label:"Annus mirabilis — SR, photoelectric effect, Brownian motion, E=mc²" },
+        { year:1915, label:"General relativity field equations" },
+        { year:1917, label:"Cosmological constant + stimulated emission" },
+        { year:1921, label:"Nobel Prize (for photoelectric effect)" },
+        { year:1935, label:"EPR paradox (with Podolsky, Rosen)" },
+      ],
       detail:"Special + general relativity, photoelectric effect, Brownian motion, mass-energy equivalence." },
     { cat:'people', start:1882, end:1935, year:1935, title:"Emmy Noether", who:"mathematician (1882–1935)",
+      contributions:[
+        { year:1918, label:"Noether's theorem — symmetry ↔ conservation law" },
+        { year:1921, label:"Ring theory foundations (Idealtheorie in Ringbereichen)" },
+      ],
       detail:"Noether's theorem: every continuous symmetry yields a conservation law. The deepest fact in modern theoretical physics." },
     { cat:'people', start:1885, end:1962, year:1962, title:"Niels Bohr", who:"physicist (1885–1962)",
+      contributions:[
+        { year:1913, label:"Bohr atomic model — quantised electron orbits" },
+        { year:1922, label:"Nobel Prize for atomic structure" },
+        { year:1927, label:"Complementarity (Como lecture)" },
+        { year:1935, label:"Reply to EPR — Copenhagen interpretation" },
+      ],
       detail:"Bohr atomic model. Complementarity, Copenhagen interpretation. Father figure to a generation of physicists." },
     { cat:'people', start:1887, end:1961, year:1961, title:"Erwin Schrödinger", who:"physicist (1887–1961)",
+      contributions:[
+        { year:1926, label:"Schrödinger equation — wave mechanics" },
+        { year:1933, label:"Nobel Prize (shared with Dirac)" },
+        { year:1935, label:"Cat paradox + 'entanglement' coined" },
+        { year:1944, label:"What is Life? — physics of the gene" },
+      ],
       detail:"Schrödinger equation — wave-mechanics formulation of QM. Cat paradox." },
     { cat:'people', start:1893, end:1939, year:1939, title:"Walter Gordon", who:"physicist (1893–1939)",
+      contributions:[
+        { year:1926, label:"Klein-Gordon equation — relativistic spin-0 wave equation" },
+        { year:1928, label:"Gordon decomposition of the Dirac current" },
+      ],
       detail:"Klein-Gordon equation: relativistic wave equation for spin-0 particles." },
     { cat:'people', start:1894, end:1977, year:1977, title:"Oskar Klein", who:"physicist (1894–1977)",
+      contributions:[
+        { year:1926, label:"Klein-Gordon equation + Kaluza-Klein 5D unification" },
+        { year:1929, label:"Klein paradox (relativistic barrier reflection)" },
+        { year:1938, label:"Non-abelian gauge proposal (Klein 1938 conference)" },
+      ],
       detail:"Kaluza-Klein extra-dimensional unification, Klein-Gordon equation, Klein paradox." },
     { cat:'people', start:1900, end:1958, year:1958, title:"Wolfgang Pauli", who:"physicist (1900–1958)",
+      contributions:[
+        { year:1925, label:"Exclusion principle" },
+        { year:1927, label:"Pauli matrices — spin formalism" },
+        { year:1930, label:"Predicted the neutrino (open letter to 'radioactive ladies and gentlemen')" },
+        { year:1945, label:"Nobel Prize for the exclusion principle" },
+      ],
       detail:"Exclusion principle. Predicted the neutrino. Sharp-tongued ('not even wrong')." },
     { cat:'people', start:1901, end:1976, year:1976, title:"Werner Heisenberg", who:"physicist (1901–1976)",
+      contributions:[
+        { year:1925, label:"Matrix mechanics formulation of QM" },
+        { year:1927, label:"Uncertainty principle" },
+        { year:1932, label:"Nobel Prize for the creation of QM" },
+      ],
       detail:"Matrix mechanics formulation of QM (1925). Uncertainty principle. Nobel 1932." },
     { cat:'people', start:1901, end:1954, year:1954, title:"Enrico Fermi", who:"physicist (1901–1954)",
+      contributions:[
+        { year:1926, label:"Fermi-Dirac statistics" },
+        { year:1934, label:"Weak-interaction theory of beta decay" },
+        { year:1938, label:"Nobel Prize (neutron-induced radioactivity)" },
+        { year:1942, label:"Chicago Pile-1 — first nuclear reactor" },
+      ],
       detail:"Fermi-Dirac statistics, weak interaction theory, first nuclear reactor. Theorist and experimenter both." },
     { cat:'people', start:1902, end:1984, year:1984, title:"Paul Dirac", who:"physicist (1902–1984)",
+      contributions:[
+        { year:1928, label:"Dirac equation — relativistic electron" },
+        { year:1930, label:"Predicted antimatter (hole theory)" },
+        { year:1931, label:"Magnetic monopole — charge quantisation" },
+        { year:1933, label:"Nobel Prize (with Schrödinger)" },
+      ],
       detail:"Dirac equation, prediction of antimatter, foundational figure in QFT. Famously taciturn." },
     { cat:'people', start:1918, end:1988, year:1988, title:"Richard Feynman", who:"physicist (1918–1988)",
+      contributions:[
+        { year:1948, label:"Path integral formulation + Feynman diagrams (QED)" },
+        { year:1959, label:"\"Plenty of Room at the Bottom\" — seed of nanotech" },
+        { year:1965, label:"Nobel Prize for QED (with Schwinger, Tomonaga)" },
+        { year:1969, label:"Parton model — partons inside protons" },
+      ],
       detail:"Path integral formulation, QED Feynman diagrams, parton model. Nobel 1965." },
     { cat:'people', start:1923, end:2004, year:2004, title:"Bryce DeWitt", who:"physicist (1923–2004)",
+      contributions:[
+        { year:1957, label:"Coined 'many-worlds' (championing Everett)" },
+        { year:1967, label:"Wheeler-DeWitt equation — canonical quantum gravity" },
+      ],
       detail:"Wheeler-DeWitt equation, canonical quantum gravity. Coined 'many-worlds.'" },
     { cat:'people', start:1929, end:2019, year:2019, title:"Murray Gell-Mann", who:"physicist (1929–2019)",
+      contributions:[
+        { year:1953, label:"Strangeness quantum number" },
+        { year:1961, label:"Eightfold Way — SU(3) classification" },
+        { year:1964, label:"Quark model (parallel with Zweig)" },
+        { year:1969, label:"Nobel Prize for the classification of particles" },
+      ],
       detail:"Quark model, SU(3) Eightfold Way, strangeness. Nobel 1969." },
     { cat:'people', start:1930, end:1982, year:1982, title:"Hugh Everett III", who:"physicist (1930–1982)",
+      contributions:[
+        { year:1957, label:"Relative-state (many-worlds) PhD thesis" },
+      ],
       detail:"Many-worlds interpretation of QM (1957). Left academia after the cold reception, worked in operations research." },
     { cat:'people', start:1931, end:2026, year:2026, status:'ongoing', title:"Roger Penrose", who:"physicist / mathematician (b.1931)",
+      contributions:[
+        { year:1965, label:"Singularity theorem — gravitational collapse forces a singularity" },
+        { year:1967, label:"Twistor theory" },
+        { year:1974, label:"Penrose tilings — aperiodic five-fold symmetry" },
+        { year:1989, label:"The Emperor's New Mind — consciousness ↔ QM" },
+        { year:2020, label:"Nobel Prize for the singularity theorem" },
+      ],
       detail:"Penrose tilings, singularity theorems (with Hawking), twistor theory. Nobel 2020." },
     { cat:'people', start:1940, end:2026, year:2026, status:'ongoing', title:"Leonard Susskind", who:"physicist (b.1940)",
+      contributions:[
+        { year:1969, label:"Independent co-founder of string theory" },
+        { year:1993, label:"Black-hole complementarity (with 't Hooft)" },
+        { year:1995, label:"Matrix theory (BFSS, with Banks/Fischler/Shenker)" },
+        { year:2013, label:"ER=EPR (with Maldacena)" },
+      ],
       detail:"Co-founder of string theory, black-hole complementarity, holography, ER=EPR." },
     { cat:'people', start:1942, end:2018, year:2018, title:"Stephen Hawking", who:"physicist (1942–2018)",
+      contributions:[
+        { year:1970, label:"Singularity theorems (with Penrose)" },
+        { year:1974, label:"Hawking radiation — black holes evaporate" },
+        { year:1983, label:"No-boundary proposal (with Hartle)" },
+        { year:1988, label:"A Brief History of Time" },
+      ],
       detail:"Hawking radiation, black-hole thermodynamics, no-boundary proposal." },
     { cat:'people', start:1946, end:2026, year:2026, status:'ongoing', title:"Gerard 't Hooft", who:"physicist (b.1946)",
+      contributions:[
+        { year:1971, label:"Renormalised non-abelian gauge theories — made the Standard Model possible" },
+        { year:1974, label:"Large-N expansion of gauge theory" },
+        { year:1993, label:"Holographic principle" },
+        { year:1999, label:"Nobel Prize (with Veltman)" },
+      ],
       detail:"Renormalization of non-abelian gauge theories. Nobel 1999 (with Veltman). Early proponent of holography." },
     { cat:'people', start:1956, end:2026, year:2026, status:'ongoing', title:"Carlo Rovelli", who:"physicist (b.1956)",
+      contributions:[
+        { year:1988, label:"Loop quantum gravity (with Smolin)" },
+        { year:1996, label:"Relational interpretation of QM" },
+        { year:2014, label:"Seven Brief Lessons on Physics" },
+        { year:2018, label:"The Order of Time" },
+      ],
       detail:"Loop quantum gravity, relational interpretation of QM, popular-science author." },
     { cat:'people', start:1966, end:2026, year:2026, status:'ongoing', title:"Sean Carroll", who:"physicist / philosopher (b.1966)",
+      contributions:[
+        { year:2010, label:"From Eternity to Here — arrow of time" },
+        { year:2018, label:"Mindscape podcast launched" },
+        { year:2019, label:"Something Deeply Hidden — many-worlds book" },
+      ],
       detail:"Many-worlds advocate, foundations of QM, Mindscape podcast." },
     { cat:'people', start:1968, end:2026, year:2026, status:'ongoing', title:"Juan Maldacena", who:"physicist (b.1968)",
+      contributions:[
+        { year:1997, label:"AdS/CFT correspondence" },
+        { year:2013, label:"ER=EPR (with Susskind)" },
+      ],
       detail:"AdS/CFT correspondence (1997), ER=EPR (with Susskind)." },
     { cat:'people', start:1975, end:2026, year:2026, status:'ongoing', title:"Jacob Barandes", who:"physicist / philosopher (b. ~1975)",
+      contributions:[
+        { year:2023, label:"Indivisible stochastic processes — reformulation of QM" },
+      ],
       detail:"Foundations of QM, indivisible stochastic processes, Harvard physicist and philosopher of physics." },
   ];
 
@@ -703,8 +1190,7 @@
     people:      'People — main players',
   };
 
-  // ─── state ───
-  let pxPerYear = 2;
+  // ─── shared constants ───
   const PX_MIN = 0.08;
   const PX_MAX = 30;
 
@@ -714,37 +1200,31 @@
   const LBL_W = 0;
   const AX_H  = 40;
 
-  // Log mode — axis becomes log10(SINGULARITY - year).
-  // Idea: scientific progress accelerates; on a log scale where T_s is the
-  // asymptote, foundational events become roughly evenly spaced. The chosen
-  // T_s is the date the rate of progress goes to infinity. 2100 ≈ Kurzweil.
-  let logMode = false;
+  // Log mode — axis becomes log10(SINGULARITY - year). 2100 ≈ Kurzweil asymptote.
   const SINGULARITY = 2100;
-  let pxPerLogUnit = 800;
   const LOG_PX_MIN = 80;
   const LOG_PX_MAX = 4000;
-  // LOG_REF: log distance from AXIS_MIN to SINGULARITY — defines our x=0 anchor.
   const LOG_REF = Math.log10(SINGULARITY - AXIS_MIN);
-  // Tick years chosen by hand to look reasonable on the log axis.
   const LOG_TICK_YEARS = [
     -2500, -2000, -1500, -1000, -500, 0, 500, 1000, 1300, 1500, 1700, 1800,
     1850, 1900, 1950, 1980, 2000, 2020, 2040, 2060, 2080, 2090, 2095, 2098
   ];
-
-  const scroll = document.getElementById('tlScroll');
-  const inner  = document.getElementById('tlInner');
-  const axis   = document.getElementById('tlAxis');
-  const rowsEl = document.getElementById('tlRows');
-  const info   = document.getElementById('tlInfo');
 
   function formatYear(y){
     if(y < 0) return Math.abs(y) + ' BCE';
     if(y === 0) return '0';
     return String(Math.round(y));
   }
+
+  // ─── shared horizontal axis state — synced across panes ───
+  let pxPerYear = 2;
+  let pxPerLogUnit = 800;
+  let logMode = false;
+  const panes = [];
+
   function yearToTrackX(year){
     if(logMode){
-      if(year >= SINGULARITY) return 1e7; // past the asymptote → off-chart
+      if(year >= SINGULARITY) return 1e7;
       const dist = SINGULARITY - year;
       return (LOG_REF - Math.log10(dist)) * pxPerLogUnit;
     }
@@ -761,7 +1241,34 @@
     return AXIS_MIN + trackX / pxPerYear;
   }
 
-  function buildRow(ev, idx, parentCat){
+  function relayoutAll(){ panes.forEach(p => p.relayout()); }
+  function refreshAll(){ panes.forEach(p => { p.layoutAxis(); p.updateInfo(); }); }
+  function syncScrollLeftFrom(fromPane){
+    const x = fromPane.scroll.scrollLeft;
+    panes.forEach(p => {
+      if(p !== fromPane && p.scroll.scrollLeft !== x){
+        p.scroll.scrollLeft = x;
+      }
+    });
+  }
+  function broadcastLogButtonState(){
+    document.querySelectorAll('[data-action="log"]').forEach(b => {
+      b.classList.toggle('on', logMode);
+      b.textContent = logMode ? '📉 Lin' : '📈 Log';
+    });
+  }
+
+  // ─── factory: one pane per call (panes share the horizontal axis state) ───
+  function makeTimeline(suffix){
+    let suppressClick = false;
+
+    const scroll = document.getElementById('tlScroll' + suffix);
+    const inner  = document.getElementById('tlInner'  + suffix);
+    const axis   = document.getElementById('tlAxis'   + suffix);
+    const rowsEl = document.getElementById('tlRows'   + suffix);
+    const info   = document.getElementById('tlInfo'   + suffix);
+
+    function buildRow(ev, idx, parentCat){
     const cat = ev.cat || parentCat;
     const isChild = !!parentCat;
     const hasKids = Array.isArray(ev.children) && ev.children.length > 0;
@@ -787,20 +1294,23 @@
     const track = document.createElement('div');
     track.className = 'tl-row-track';
 
-    // Sticky-left overlay: chevron always visible, title shows on hover
-    const overlay = document.createElement('div');
-    overlay.className = 'tl-row-overlay';
-    if(hasKids){
-      const chev = document.createElement('span');
-      chev.className = 'tl-chev';
-      chev.textContent = '▸';
-      overlay.appendChild(chev);
+    // Sticky-left overlay: chevron always visible, title shows on hover.
+    // People rows skip this — their name is rendered always-visible next to the bar instead.
+    if(cat !== 'people'){
+      const overlay = document.createElement('div');
+      overlay.className = 'tl-row-overlay';
+      if(hasKids){
+        const chev = document.createElement('span');
+        chev.className = 'tl-chev';
+        chev.textContent = '▸';
+        overlay.appendChild(chev);
+      }
+      const title = document.createElement('span');
+      title.className = 'tl-row-title';
+      title.textContent = ev.title;
+      overlay.appendChild(title);
+      track.appendChild(overlay);
     }
-    const title = document.createElement('span');
-    title.className = 'tl-row-title';
-    title.textContent = ev.title;
-    overlay.appendChild(title);
-    track.appendChild(overlay);
 
     // Bar(s) — staged segments OR single bar (people split into pre-20 + active)
     if(hasStages){
@@ -809,6 +1319,10 @@
         bar.className = 'tl-bar stage-' + seg.stage;
         bar.dataset.start = seg.from;
         bar.dataset.end = seg.to;
+        if(seg.who){
+          bar.dataset.who = seg.who;
+          bar.dataset.tip = formatYear(seg.from) + '–' + formatYear(seg.to) + ' · ' + seg.who;
+        }
         track.appendChild(bar);
       });
     } else if(hasRange){
@@ -851,6 +1365,17 @@
       track.appendChild(ft);
     }
 
+    // Contribution dots — small markers on a person's bar at major-work years
+    if(Array.isArray(ev.contributions)){
+      ev.contributions.forEach(c => {
+        const dot = document.createElement('div');
+        dot.className = 'tl-contrib';
+        dot.dataset.year = c.year;
+        dot.dataset.tip = formatYear(c.year) + ' · ' + c.label;
+        track.appendChild(dot);
+      });
+    }
+
     const me = document.createElement('div');
     let endCls = 'tl-marker tl-marker-end cat-' + cat;
     if(ev.status === 'killed')   endCls += ' killed';
@@ -859,11 +1384,22 @@
     me.dataset.year = ev.year;
     track.appendChild(me);
 
-    const yr = document.createElement('div');
-    yr.className = 'tl-row-year';
-    yr.dataset.year = ev.year;
-    yr.textContent = hasRange ? (formatYear(barStart) + ' → ' + formatYear(barEnd)) : formatYear(ev.year);
-    track.appendChild(yr);
+    if(cat !== 'people'){
+      const yr = document.createElement('div');
+      yr.className = 'tl-row-year';
+      yr.dataset.year = ev.year;
+      yr.textContent = hasRange ? (formatYear(barStart) + ' → ' + formatYear(barEnd)) : formatYear(ev.year);
+      track.appendChild(yr);
+    }
+
+    // Always-visible name for people — sits just past the death marker
+    if(cat === 'people' && hasRange){
+      const nm = document.createElement('div');
+      nm.className = 'tl-row-name';
+      nm.dataset.year = barEnd;
+      nm.textContent = ev.title;
+      track.appendChild(nm);
+    }
 
     main.appendChild(track);
 
@@ -888,6 +1424,17 @@
             '<span class="tl-stage-dot stage-' + seg.stage + '"></span>' +
             '<span class="tl-stage-name">' + (stageLabel[seg.stage] || seg.stage) + '</span>' +
             '<span class="tl-stage-who">' + who + '</span>' +
+          '</div>';
+      });
+      detailHtml += '</div>';
+    }
+    if(Array.isArray(ev.contributions) && ev.contributions.length){
+      detailHtml += '<div class="tl-contrib-list">';
+      ev.contributions.slice().sort((a,b) => a.year - b.year).forEach(c => {
+        detailHtml +=
+          '<div class="tl-contrib-row">' +
+            '<span class="tl-contrib-year">' + formatYear(c.year) + '</span>' +
+            '<span class="tl-contrib-label">' + c.label + '</span>' +
           '</div>';
       });
       detailHtml += '</div>';
@@ -930,7 +1477,7 @@
   }
 
   function clearGridlines(){
-    document.querySelectorAll('.tl-gridline').forEach(g => g.remove());
+    inner.querySelectorAll('.tl-gridline').forEach(g => g.remove());
   }
   function addTick(y){
     const tick = document.createElement('div');
@@ -981,7 +1528,7 @@
   function layoutEvents(){
     // Single source of truth: every horizontal position derives from yearToTrackX.
     // Widths are differences between two yearToTrackX values, so linear/log Just Works.
-    document.querySelectorAll('.tl-bar').forEach(el => {
+    inner.querySelectorAll('.tl-bar').forEach(el => {
       const s = parseFloat(el.dataset.start);
       const e = parseFloat(el.dataset.end);
       const x1 = yearToTrackX(s);
@@ -989,7 +1536,7 @@
       el.style.left  = x1 + 'px';
       el.style.width = Math.max(0, x2 - x1) + 'px';
     });
-    document.querySelectorAll('.tl-marker, .tl-firsttest, .tl-row-year').forEach(el => {
+    inner.querySelectorAll('.tl-marker, .tl-firsttest, .tl-row-year, .tl-contrib, .tl-row-name').forEach(el => {
       el.style.left = yearToTrackX(parseFloat(el.dataset.year)) + 'px';
     });
   }
@@ -1017,11 +1564,11 @@
     } else {
       pxPerYear = Math.max(PX_MIN, Math.min(PX_MAX, pxPerYear * factor));
     }
-    relayout();
+    relayoutAll();
 
     scroll.scrollLeft = yearToTrackX(yearAtAnchor) + LBL_W - anchorOffset;
-    layoutAxis();
-    updateInfo();
+    syncScrollLeftFrom(thisPane);
+    refreshAll();
   }
 
   scroll.addEventListener('wheel', function(e){
@@ -1038,7 +1585,6 @@
   let dragStartX = 0, dragStartY = 0;
   let dragStartScrollX = 0, dragStartScrollY = 0;
   let dragMoved = 0;
-  let suppressClick = false;
 
   // We deliberately avoid setPointerCapture here — it interferes with the
   // click event firing on individual rows. Instead we listen on `window`
@@ -1090,41 +1636,43 @@
     } else {
       pxPerYear = Math.max(PX_MIN, Math.min(PX_MAX, visibleWidth / (endYear - startYear)));
     }
-    relayout();
+    relayoutAll();
     scroll.scrollLeft = yearToTrackX(startYear);
-    scroll.scrollTop = 0;
-    layoutAxis();
-    updateInfo();
+    syncScrollLeftFrom(thisPane);
+    refreshAll();
   }
-  document.getElementById('tlGoAncient').addEventListener('click', () => scrollToRange(-2000, 1600));
-  document.getElementById('tlGoFound'  ).addEventListener('click', () => scrollToRange(1600, 1900));
-  document.getElementById('tlGoModern' ).addEventListener('click', () => scrollToRange(1900, 2099));
-
-  // Log toggle — switches the time axis to log(distance to singularity).
-  // Recent events spread out, ancient events compress, asymptote at 2100.
-  document.getElementById('tlLog').addEventListener('click', (e) => {
-    // preserve the year currently at the viewport center
-    const centerOffset = scroll.clientWidth / 2;
-    const centerYear = xToYear(scroll.scrollLeft + centerOffset);
-
-    logMode = !logMode;
-    e.currentTarget.classList.toggle('on', logMode);
-    e.currentTarget.textContent = logMode ? '📉 Linear' : '📈 Log (→ 2100)';
-
-    relayout();
-    const newTrackX = yearToTrackX(centerYear);
-    scroll.scrollLeft = Math.max(0, newTrackX - centerOffset);
-    layoutAxis();
-    updateInfo();
+  // Per-pane toolbar wiring — buttons carry data-pane="<suffix>" data-action="..."
+  document.querySelectorAll('[data-pane="' + suffix + '"]').forEach(btn => {
+    const action = btn.dataset.action;
+    btn.addEventListener('click', (e) => {
+      if(action === 'ancient')      scrollToRange(-2000, 1600);
+      else if(action === 'found')   scrollToRange(1600, 1900);
+      else if(action === 'modern')  scrollToRange(1900, 2099);
+      else if(action === 'log'){
+        const centerOffset = scroll.clientWidth / 2;
+        const centerYear = xToYear(scroll.scrollLeft + centerOffset);
+        logMode = !logMode;
+        broadcastLogButtonState();
+        relayoutAll();
+        const newTrackX = yearToTrackX(centerYear);
+        scroll.scrollLeft = Math.max(0, newTrackX - centerOffset);
+        syncScrollLeftFrom(thisPane);
+        refreshAll();
+      }
+    });
   });
 
+  // Horizontal scroll is synced across panes; vertical stays per-pane.
   let scrollRaf = 0;
+  let lastScrollLeft = 0;
   scroll.addEventListener('scroll', () => {
     if(scrollRaf) return;
     scrollRaf = requestAnimationFrame(() => {
       scrollRaf = 0;
-      layoutAxis();
-      updateInfo();
+      if(scroll.scrollLeft === lastScrollLeft) return; // only vertical changed
+      lastScrollLeft = scroll.scrollLeft;
+      syncScrollLeftFrom(thisPane);
+      refreshAll();
     });
   });
   function updateInfo(){
@@ -1136,12 +1684,20 @@
       + (logMode ? '  ·  log → ' + SINGULARITY : '');
   }
 
-  // ─── boot ───
-  buildRows();
-  relayout();
-  scroll.scrollLeft = (1500 - AXIS_MIN) * pxPerYear;
-  layoutAxis();
-  updateInfo();
+    // Register this pane for cross-pane sync (referenced by zoomAt/log/scroll handlers)
+    const thisPane = { scroll, inner, axis, info, relayout, layoutAxis, updateInfo };
+    panes.push(thisPane);
+
+    // ─── boot this pane ───
+    buildRows();
+    relayout();
+    scroll.scrollLeft = (1500 - AXIS_MIN) * pxPerYear;
+    layoutAxis();
+    updateInfo();
+  } // end makeTimeline
+
+  makeTimeline('A');
+  makeTimeline('B');
 })();
 </script>
 
