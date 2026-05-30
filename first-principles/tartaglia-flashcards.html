@@ -64,6 +64,8 @@
   .spk:hover{background:var(--ink);color:var(--parch);}
   .spk:active{transform:scale(.9);}
   .spk.playing{background:var(--accent2);color:#fff;border-color:var(--accent2);}
+  .listen{display:flex;flex-direction:column;align-items:center;gap:9px;font-size:42px;color:var(--accent2);}
+  .listen span{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);}
   /* example / usage reveal on the back of word cards */
   .back{overflow-y:auto;}
   .usage{margin-top:15px;}
@@ -167,6 +169,7 @@
             <span class="tierbadge hidden" id="ftier"></span>
             <span class="ref" id="fref"></span>
             <div class="it" id="fit">—</div>
+            <div class="listen hidden" id="flisten">🔊<span>listen &amp; guess</span></div>
             <button class="spk" id="spkF" type="button" title="Play pronunciation" aria-label="Play pronunciation">🔊</button>
             <div class="fliphint">Show answer to flip · swipe ← → to move</div>
           </div>
@@ -196,6 +199,7 @@
       <div class="util">
         <button id="shuffle">Shuffle</button>
         <button id="autoplayBtn" title="Auto-play the reading when a card appears">🔊 Auto: on</button>
+        <button id="hideItBtn" title="Hide all Italian text and learn by ear (audio-only)">🙈 Italian: shown</button>
         <button id="seeLearned" title="Review cards you've already learned, ignoring their schedule">See learned</button>
         <button id="cram">Cram all</button>
         <button id="exportP" title="Copy a portable backup of your progress">Export</button>
@@ -246,7 +250,7 @@
 <script>
 /* App version — bump on each change: 0.1.0 → 0.1.1 for normal updates,
    and add a 4th segment (e.g. 0.1.0.1) for minor tweaks. */
-const VERSION="0.2.0";
+const VERSION="0.2.1";
 
 /* ---------------- data ---------------- */
 const LINES = [
@@ -466,7 +470,10 @@ const LINE_AUDIO={
   L6:[14.20,16.40], L7:[16.66,19.23], L8:[19.59,21.97], L9:[22.15,24.93]
 };
 const poemAudio=document.getElementById('poemAudio'),spkF=document.getElementById('spkF'),spkB=document.getElementById('spkB');
-let curSeg=null,stopT=null,autoPlay=true;
+const flisten=document.getElementById('flisten');
+const HIDE_KEY="tartaglia_hideit";
+let curSeg=null,stopT=null,autoPlay=true,hideItalian=false;
+try{hideItalian=localStorage.getItem(HIDE_KEY)==="1";}catch(e){}
 function playSeg(seg){
   if(!seg||!poemAudio)return;
   clearTimeout(stopT);
@@ -488,27 +495,29 @@ function showCurrent(){
   const c=CARDS[session[ptr]];card.classList.remove('flipped');
   setTimeout(()=>{
     const w=c.type==="word";
-    fit.textContent=c.front;fit.className="it"+(w?" word":"");
-    bit.textContent=c.front;                         // show the original Italian on the back too
+    // audio: line card → its own clip; word card → the line it comes from
+    curSeg=LINE_AUDIO[c.type==="line"?c.id:c.lineNo]||null;
+    const hasAudio=!!curSeg;
+    const hide=hideItalian&&hasAudio;               // audio-only mode: conceal all Italian text
+    fit.textContent=c.front;fit.className="it"+(w?" word":"")+(hide?" hidden":"");
+    flisten.classList.toggle('hidden',!hide);       // front shows a "listen" prompt instead
+    bit.textContent=c.front;bit.classList.toggle('hidden',hide);
     ben.textContent=c.back;ben.className="en"+(w?" word":"");
     fref.textContent=w?"":c.ref;bref.textContent=w?"":c.ref;
     ftag.textContent=w?"Word":"Line";ftag.className="tag"+(w?" word":"");
     if(w){ftier.classList.remove('hidden');ftier.textContent=TIER_LABEL[c.tier];ftier.style.background=TIER_COLOR[c.tier];}
     else ftier.classList.add('hidden');
-    bgloss.textContent=c.gloss||"";
+    bgloss.textContent=c.gloss||"";bgloss.classList.toggle('hidden',hide);
     if(c.math){bmath.classList.remove('hidden');bmath.textContent=c.math;}else bmath.classList.add('hidden');
-    // usage / example reveal — word cards only (lines already are full sentences)
+    // usage / example reveal — word cards only (lines already are full sentences); hidden in audio-only mode
     exbody.classList.add('hidden');exbtn.textContent="Show example ↓";bhint.classList.remove('hidden');
-    if(w&&(c.lineIt||c.ex)){
+    if(w&&(c.lineIt||c.ex)&&!hide){
       busage.classList.remove('hidden');
       let html="";
       if(c.lineIt)html+=`<div><span class="exlabel">In the poem · ${c.lineNo}</span><div class="exit">${highlightWord(c.lineIt,c.front)}</div><div class="exen">${c.lineEn}</div></div>`;
       if(c.ex)html+=`<div><span class="exlabel">In use</span><div class="exit">${c.ex.it}</div><div class="exen">${c.ex.en}</div></div>`;
       exbody.innerHTML=html;
     }else busage.classList.add('hidden');
-    // audio: line card → its own clip; word card → the line it comes from
-    curSeg=LINE_AUDIO[c.type==="line"?c.id:c.lineNo]||null;
-    const hasAudio=!!curSeg;
     spkF.style.display=spkB.style.display=hasAudio?"flex":"none";
     if(hasAudio&&autoPlay)playSeg(curSeg);  // best-effort autoplay (browsers may block until first tap)
   },card.classList.contains('flipped')?240:0);
@@ -608,6 +617,9 @@ exbtn.addEventListener('click',e=>{
 document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');deck=b.dataset.deck;cram=false;buildSession();});
 document.getElementById('shuffle').onclick=()=>{for(let i=session.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[session[i],session[j]]=[session[j],session[i]];}ptr=0;showCurrent();};
 document.getElementById('autoplayBtn').onclick=function(){autoPlay=!autoPlay;this.textContent="🔊 Auto: "+(autoPlay?"on":"off");if(autoPlay)playSeg(curSeg);};
+const hideItBtn=document.getElementById('hideItBtn');
+hideItBtn.textContent="🙈 Italian: "+(hideItalian?"hidden":"shown");
+hideItBtn.onclick=function(){hideItalian=!hideItalian;this.textContent="🙈 Italian: "+(hideItalian?"hidden":"shown");try{localStorage.setItem(HIDE_KEY,hideItalian?"1":"0");}catch(e){}showCurrent();};
 document.getElementById('cram').onclick=()=>{cram=true;buildSession();};
 document.getElementById('seeLearned').onclick=()=>{
   // show already-learned cards on demand, ignoring their schedule
