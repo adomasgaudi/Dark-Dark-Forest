@@ -138,6 +138,11 @@
   .dbrow .word{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:20px;color:var(--ink);min-width:88px;}
   .dbrow .mean{flex:1;font-size:15px;color:var(--ink-soft);min-width:0;}
   .dbrow .meta{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:0 0 auto;}
+  /* line rows: stack the full Italian line and its translation instead of squishing side-by-side */
+  .dbrow.lineRow{flex-direction:column;align-items:stretch;gap:5px;}
+  .dbrow.lineRow .word{min-width:0;font-size:17px;line-height:1.3;}
+  .dbrow.lineRow .mean{font-size:14px;line-height:1.4;}
+  .dbrow.lineRow .meta{flex-direction:row;align-items:center;align-self:flex-start;gap:8px;}
   .badge{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:10px;color:#fff;white-space:nowrap;}
   .b-untouched{background:var(--untouched);} .b-learning{background:var(--learning);} .b-learned{background:var(--learned);} .b-forgotten{background:var(--forgotten);}
   .b-tier{background:transparent;border:1px solid var(--rule);color:var(--ink-soft);}
@@ -274,19 +279,19 @@
 <script>
 /* App version — bump on each change: 0.1.0 → 0.1.1 for normal updates,
    and add a 4th segment (e.g. 0.1.0.1) for minor tweaks. */
-const VERSION="0.4.1";
+const VERSION="0.4.2";
 
 /* ---------------- data ---------------- */
 const LINES = [
-  {id:"L1",no:"L1",it:"Quando chel cubo con le cose appresso",en:"When the cube and its x-terms stand together",gloss:"Quando=when · cubo=cube · cose=things · appresso=alongside",lit:"When the cube, with the things set beside it,",exp:"When x³ plus some multiple of x"},
-  {id:"L2",no:"L2",it:"Se agguaglia à qualche numero discreto",en:"set equal to some definite number,",gloss:"agguaglia=equals · qualche=some · numero=number · discreto=definite",lit:"is made equal to some distinct number,",exp:"equals a known number — that is, x³ + px = q —"},
-  {id:"L3",no:"L3",it:"Trovan dui altri differenti in esso",en:"find two numbers whose difference is that number.",gloss:"trovan=find · dui=two · differenti=differing · in esso=by it",math:"u − v = q",lit:"find two others that differ by that number;",exp:"find two numbers u and v with u − v = q."},
-  {id:"L4",no:"L4",it:"Dapoi terrai questo per consueto",en:"Then keep to this as your rule:",gloss:"dapoi=then · terrai=you'll hold · per consueto=as custom",lit:"thereafter hold to this as your custom:",exp:"Then follow this fixed rule:"},
-  {id:"L5",no:"L5",it:"Ch'el lor produtto sempre sia eguale",en:"let their product always equal",gloss:"lor=their · produtto=product · sempre=always · eguale=equal",lit:"that their product should always be equal",exp:"make their product u·v equal to"},
-  {id:"L6",no:"L6",it:"Al terzo cubo delle cose neto",en:"the cube of exactly one-third of the x-coefficient.",gloss:"terzo=third · cubo=cube · delle cose=of the things · neto=exactly",math:"u · v = (p/3)³",lit:"to the cube of exactly a third of the things;",exp:"the cube of one-third the x-coefficient: (p/3)³."},
-  {id:"L7",no:"L7",it:"El residuo poi suo generale",en:"Then, as a general result,",gloss:"residuo=remainder · poi=then · generale=general",lit:"then the remainder, taken in general,",exp:"Then, in general,"},
-  {id:"L8",no:"L8",it:"Delli lor lati cubi ben sottratti",en:"the cube roots of those two, subtracted,",gloss:"lati cubi=cube roots · ben=well · sottratti=subtracted",lit:"the cube roots of those two, duly subtracted,",exp:"subtract the cube root of v from the cube root of u,"},
-  {id:"L9",no:"L9",it:"Varrà la tua cosa principale",en:"give the value of your unknown x.",gloss:"varrà=will be worth · cosa=the unknown · principale=principal",math:"x = ∛u − ∛v",lit:"will be the worth of your principal thing.",exp:"and that difference is x:  x = ∛u − ∛v."}
+  {id:"L1",no:"L1",it:"Quando chel cubo con le cose appresso",en:"When the cube and its x-terms stand together",gloss:"Quando=when · cubo=cube · cose=things · appresso=alongside",lit:"When the cube, with the things alongside,",exp:"When the cube and the terms next to it"},
+  {id:"L2",no:"L2",it:"Se agguaglia à qualche numero discreto",en:"set equal to some definite number,",gloss:"agguaglia=equals · qualche=some · numero=number · discreto=definite",lit:"if it equals some distinct number,",exp:"are set equal to some definite number,"},
+  {id:"L3",no:"L3",it:"Trovan dui altri differenti in esso",en:"find two numbers whose difference is that number.",gloss:"trovan=find · dui=two · differenti=differing · in esso=by it",math:"u − v = q",lit:"find two others differing in it;",exp:"find two other numbers that differ by that number;"},
+  {id:"L4",no:"L4",it:"Dapoi terrai questo per consueto",en:"Then keep to this as your rule:",gloss:"dapoi=then · terrai=you'll hold · per consueto=as custom",lit:"then you will keep this as customary;",exp:"then, as your standard practice, make sure"},
+  {id:"L5",no:"L5",it:"Ch'el lor produtto sempre sia eguale",en:"let their product always equal",gloss:"lor=their · produtto=product · sempre=always · eguale=equal",lit:"that their product always be equal",exp:"that their product is always equal"},
+  {id:"L6",no:"L6",it:"Al terzo cubo delle cose neto",en:"the cube of exactly one-third of the x-coefficient.",gloss:"terzo=third · cubo=cube · delle cose=of the things · neto=exactly",math:"u · v = (p/3)³",lit:"to the third, the cube of the things, exact;",exp:"to the cube of exactly a third of the terms."},
+  {id:"L7",no:"L7",it:"El residuo poi suo generale",en:"Then, as a general result,",gloss:"residuo=remainder · poi=then · generale=general",lit:"the remainder, then, its general [sum],",exp:"Then, as a general rule,"},
+  {id:"L8",no:"L8",it:"Delli lor lati cubi ben sottratti",en:"the cube roots of those two, subtracted,",gloss:"lati cubi=cube roots · ben=well · sottratti=subtracted",lit:"of their cube roots, well subtracted,",exp:"subtract one of their cube roots from the other,"},
+  {id:"L9",no:"L9",it:"Varrà la tua cosa principale",en:"give the value of your unknown x.",gloss:"varrà=will be worth · cosa=the unknown · principale=principal",math:"x = ∛u − ∛v",lit:"will be worth your principal thing.",exp:"and that will be the value you are seeking."}
 ];
 
 // [italian, english, tier]
@@ -563,7 +568,7 @@ function showCurrent(){
     if(w){ftier.classList.remove('hidden');ftier.textContent=TIER_LABEL[c.tier];ftier.style.background=TIER_COLOR[c.tier];}
     else ftier.classList.add('hidden');
     bgloss.textContent=c.gloss||"";bgloss.classList.toggle('hidden',hide);
-    // reveal block: word card → example (Italian, hidden in audio-only); line card → formula (math, always available)
+    // reveal block: word card → example sentence (Italian, hidden in audio-only mode)
     exbody.classList.add('hidden');bhint.classList.remove('hidden');
     if(w&&(c.lineIt||c.ex)&&!hide){
       revealNoun="example";exbtn.textContent="Show example ↓";busage.classList.remove('hidden');
@@ -571,9 +576,6 @@ function showCurrent(){
       if(c.lineIt)html+=`<div><span class="exlabel">In the poem · ${c.lineNo}</span><div class="exit">${highlightWord(c.lineIt,c.front)}</div><div class="exen">${c.lineEn}</div></div>`;
       if(c.ex)html+=`<div><span class="exlabel">In use</span><div class="exit">${c.ex.it}</div><div class="exen">${c.ex.en}</div></div>`;
       exbody.innerHTML=html;
-    }else if(!w&&c.math){
-      revealNoun="formula";exbtn.textContent="Show formula ↓";busage.classList.remove('hidden');
-      exbody.innerHTML=`<div class="math">${c.math}</div>`;
     }else busage.classList.add('hidden');
     // word cards: "whole line" button (plays the line; reveals line text when Italian is shown)
     flineBtn.classList.toggle('hidden',!w);
@@ -747,7 +749,7 @@ function renderDB(){
   let lastTier=null;
   rows.forEach(r=>{
     if(r.c.tier!==lastTier){const lab=document.createElement('div');lab.className='seclabel';lab.textContent=TIER_LABEL[r.c.tier]+(r.c.tier==="line"?"":" words");tbl.appendChild(lab);lastTier=r.c.tier;}
-    const row=document.createElement('div');row.className='dbrow';
+    const row=document.createElement('div');row.className='dbrow'+(r.c.type==="line"?" lineRow":"");
     const lap=r.s.lapses>0?` · lapsed×${r.s.lapses}`:"";
     row.innerHTML=`<div class="word">${r.c.front}</div>
       <div class="mean">${r.c.back}</div>
