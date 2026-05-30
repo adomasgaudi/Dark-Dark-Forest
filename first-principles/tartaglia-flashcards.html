@@ -90,7 +90,7 @@
   .listen{display:flex;flex-direction:column;align-items:center;gap:9px;font-size:42px;color:var(--accent2);}
   .listen span{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);}
   .dots{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;max-width:440px;margin:14px auto 2px;min-height:14px;}
-  .dot{border-radius:50%;cursor:pointer;flex:0 0 auto;transition:transform .12s;}
+  .dot{border-radius:50%;cursor:pointer;flex:0 0 auto;transition:transform .12s,background 1s linear,box-shadow 1s linear,border-color 1s linear;}
   .dot.cur{outline:2px solid var(--ink);outline-offset:2px;}
   /* example / usage reveal on the back of word cards */
   .back{overflow-y:auto;}
@@ -316,7 +316,7 @@
 <script>
 /* App version — bump on each change: 0.1.0 → 0.1.1 for normal updates,
    and add a 4th segment (e.g. 0.1.0.1) for minor tweaks. */
-const VERSION="0.7.0";
+const VERSION="0.7.1";
 
 /* ---------------- data ---------------- */
 const LINES = [
@@ -565,6 +565,14 @@ dots.onclick=e=>{const d=e.target.closest('.dot');if(!d)return;const id=d.datase
   const idx=session.indexOf(id);
   if(idx>=0)ptr=idx; else session.splice(ptr,0,id);   // jump to it, or pull a scheduled card in to review now
   showCurrent();};
+// keep the freshness colours live (memories cool in real time, not only on refresh)
+function tickDots(){
+  if(!dots.children.length)return;
+  const now=Date.now();
+  for(const el of dots.children){const id=el.dataset.id;if(!id)continue;const t=dotStyle(srs(id),now);
+    el.style.background=t.bg;el.style.border=t.bd;el.style.boxShadow=t.sh;}
+}
+setInterval(tickDots,1000);
 // toggle the "in plain terms" translation on line cards (preference persists)
 btrans.onclick=e=>{if(e.target.closest('#plainToggle')){hidePlain=!hidePlain;try{localStorage.setItem(PLAIN_KEY,hidePlain?"1":"0");}catch(e){}showCurrent();}};
 const sNew=document.getElementById('sNew'),sLearn=document.getElementById('sLearn'),sDue=document.getElementById('sDue'),sLearned=document.getElementById('sLearned');
