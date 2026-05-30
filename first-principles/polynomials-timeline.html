@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Polynomial equations — a timeline</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { background:#fff; color:#111; font-family:'Inter',-apple-system,sans-serif; font-size:15px; line-height:1.6; }
+  body { max-width:1100px; margin:0 auto; padding:52px 24px 16px; }
+  a { color:inherit; }
+
+  .topnav { position:fixed; top:0; left:0; right:0; height:48px; background:rgba(255,255,255,.92); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-bottom:1px solid #eee; z-index:100; display:flex; align-items:center; }
+  .topnav-inner { max-width:1100px; margin:0 auto; padding:0 24px; width:100%; display:flex; align-items:center; gap:16px; }
+  .nav-back { font-size:12px; color:#555; text-decoration:none; display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:3px; }
+  .nav-back:hover { background:#f5f5f5; color:#111; }
+  .nav-brand { flex:1; text-align:center; font-size:12px; font-weight:600; color:#777; letter-spacing:.04em; font-family:'SF Mono',Consolas,monospace; }
+
+  .eyebrow { font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:#aaa; margin:8px 0 4px; }
+  h1 { font-size:22px; font-weight:600; letter-spacing:-.015em; line-height:1.18; margin-bottom:4px; }
+  .grades { font-size:12px; color:#888; margin-bottom:6px; }
+  .lede { font-size:13px; color:#333; line-height:1.55; margin-bottom:4px; max-width:900px; }
+  .lede kbd { font-family:'SF Mono',Consolas,monospace; background:#f5f5f0; border:1px solid #ddd; border-radius:4px; padding:1px 6px; font-size:.85em; color:#333; }
+
+  .toolbar { display:flex; gap:8px; align-items:center; margin:8px 0 4px; flex-wrap:wrap; }
+  .tb-btn { font-family:inherit; font-size:13px; padding:6px 14px; background:#fff; border:1px solid #ddd; border-radius:6px; cursor:pointer; color:#333; transition:border-color .12s, background .12s; }
+  .tb-btn:hover { border-color:#111; background:#fafafa; }
+  .tb-btn:active { background:#f0f0f0; }
+  .tb-btn.on { background:#1e40af; color:#fff; border-color:#1e40af; }
+  .tb-btn.on:hover { background:#1d4ed8; }
+  .tb-info { font-family:'SF Mono',Consolas,monospace; font-size:12px; color:#666; margin-left:8px; }
+  .tb-hint { font-size:12px; color:#888; margin-left:auto; }
+
+  :root {
+    --ax-h: 40px;
+
+    /* ─── BATLOW COLOR RAMP — "working theory, improving" ───
+       Perceptually uniform (Crameri batlow). Used once an idea is actually working.
+       bt0 = just-working, bt5 = most-advanced. Adjacent steps = magnitude of advancement.
+       Aliased to tier0–tier5 so tool entries share the ramp. */
+    --bt0: #011959;
+    --bt1: #1f4665;
+    --bt2: #266964;
+    --bt3: #6a8845;
+    --bt4: #d2a754;
+    --bt5: #faccc6;
+
+    /* ─── IN-PROGRESS RAMP — "speculative idea, maturing but not yet working" ───
+       Grayscale, dashed — visually distinct from the colorful "working" ramp.
+       ip0 = first wild guess, ip3 = mature speculation on the verge of testing. */
+    --ip0: #c8c8c8;
+    --ip1: #909090;
+    --ip2: #565656;
+    --ip3: #1a1a1a;
+
+    /* ─── Other tunable accents ─── */
+    --col-speculative: #94a3b8;   /* dashed pre-working line (legacy 'speculative' alias of ip0) */
+    --col-dormant:     #cbd5e1;   /* dashed settled-no-change line */
+    --col-problem:     #ef4444;   /* unresolved-problem dot + red overlay if used */
+    --col-fix:         #10b981;   /* fix-marker dot */
+    --col-firsttest:   #dc2626;   /* ✕ first-test marker */
+  }
+
+  /* Two panes stacked vertically */
+  .tl-pair { display:flex; flex-direction:column; gap:0; }
+  .tl-pane { display:flex; flex-direction:column; gap:4px; }
+  .tl-pair > .tl-pane:nth-child(1) .tl-frame { border-bottom:none; border-radius:6px 6px 0 0; }
+  .tl-pair > .tl-pane:nth-child(2) .tl-frame { border-radius:0 0 6px 6px; }
+  .tl-pane-toolbar { display:flex; gap:4px; align-items:center; flex-wrap:wrap; }
+  .tl-pane-toolbar .tb-btn { font-size:11px; padding:3px 7px; border-radius:4px; }
+  .tl-pane-toolbar .tb-info { font-size:11px; margin-left:4px; }
+
+  .tl-frame { position:relative; border:1px solid #e8e8e8; border-radius:6px; background:#fff; overflow:hidden; }
+  .tl-scroll {
+    overflow:auto;
+    cursor:grab;
+    user-select:none;
+    -webkit-user-select:none;
+    touch-action:pan-x pan-y;
+    scrollbar-width:thin;
+  }
+  /* Slim scrollbars (WebKit) */
+  .tl-scroll::-webkit-scrollbar { width:6px; height:6px; }
+  .tl-scroll::-webkit-scrollbar-thumb { background:rgba(0,0,0,.18); border-radius:3px; }
+  .tl-scroll::-webkit-scrollbar-thumb:hover { background:rgba(0,0,0,.32); }
+  .tl-scroll::-webkit-scrollbar-track { background:transparent; }
+  /* Upper pane taller (~80vh); lower stays at 36vh — page scrolls a bit */
+  .tl-pair > .tl-pane:nth-child(1) .tl-scroll { height:80vh; min-height:480px; }
+  .tl-pair > .tl-pane:nth-child(2) .tl-scroll { height:36vh; min-height:220px; }
+
+  /* Bottom pane: axis pinned to the bottom edge instead of the top */
+  .tl-pane.bottom-axis .tl-axis-row {
+    top:auto; bottom:0;
+    border-bottom:none;
+    border-top:1px solid #eee;
+  }
+  .tl-pane.bottom-axis .tl-tick { top:auto; bottom:8px; }
+  .tl-pane.bottom-axis .tl-tick::after { top:auto; bottom:18px; }
+  .tl-pane.bottom-axis .tl-gridline { top:0; bottom:var(--ax-h); }
+  .tl-pane.bottom-axis .tl-era-band { top:0; bottom:var(--ax-h); }
+  .tl-pane.bottom-axis .tl-era-label { bottom:auto; top:3px; }
+  .tl-scroll.grabbing { cursor:grabbing; }
+  .tl-inner { position:relative; min-width:100%; }
+
+  .tl-axis-row { position:sticky; top:0; z-index:10; height:var(--ax-h); background:#fff; border-bottom:1px solid #eee; }
+  .tl-axis { position:relative; height:100%; }
+  .tl-tick { position:absolute; top:8px; transform:translateX(-50%); font-family:'SF Mono',Consolas,monospace; font-size:11px; color:#888; pointer-events:none; white-space:nowrap; }
+  .tl-tick::after { content:''; position:absolute; left:50%; top:18px; width:1px; height:6px; background:#ccc; }
+  .tl-gridline { position:absolute; top:var(--ax-h); bottom:0; width:1px; background:#f6f6f0; pointer-events:none; z-index:0; }
+
+  /* Era bands — sit behind everything, alternating very-light gray fills */
+  .tl-era-band {
+    position:absolute;
+    top:var(--ax-h); bottom:0;
+    pointer-events:none;
+    z-index:0;
+  }
+  .tl-era-label {
+    position:absolute;
+    bottom:3px;
+    font-family:'SF Mono',Consolas,monospace;
+    font-size:9.5px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:#b8b8b8;
+    white-space:nowrap;
+    pointer-events:none;
+    padding-left:6px;
+  }
+
+  .tl-section-header {
+    position:sticky; left:0; z-index:6;
+    display:inline-block; width:max-content;
+    padding:8px 14px 4px 8px;
+    margin-top:6px;
+    font-size:10px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+    background:#fff;
+  }
+  .tl-section-header.cat-math        { color:#7c3aed; }
+  .tl-section-header.cat-physics     { color:#1e40af; }
+  .tl-section-header.cat-chemistry   { color:#92400e; }
+  .tl-section-header.cat-speculative { color:#b91c1c; }
+  .tl-section-header.cat-falsified   { color:#52525b; }
+  .tl-section-header.cat-people      { color:#4338ca; }
+  .tl-section-header.cat-tools       { color:#0f766e; }
+  .tl-section-header.cat-detectors   { color:#a21caf; }
+  .tl-section-header.cat-paradigms   { color:#a16207; }
+
+  .tl-row { position:relative; border-bottom:1px solid #f5f5f5; }
+  /* TOP/OTHER split — buildRows renders all TOP rows from every category first, then all OTHER rows */
+  .tl-tier-marker {
+    position:sticky; left:0; z-index:7;
+    background:#fff;
+    font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+    color:#444;
+    padding:14px 8px 6px 8px;
+    margin-top:10px;
+    border-top:2px solid #d4d4d4;
+    width:max-content;
+  }
+  .tl-tier-block.tl-tier-top .tl-tier-marker { color:#92400e; border-top-color:#fbbf24; }
+  .tl-tier-block.tl-tier-other .tl-tier-marker { color:#666; }
+  /* TOP-only mode: hide the entire OTHER block. Nested children of TOP rows still show. */
+  body.top-only .tl-tier-other { display:none; }
+  /* Tint the people lineage layer — selectors match any cat starting with "people" (topic sub-cats inherit) */
+  .tl-row[class*="cat-people"] { background:rgba(67,56,202,0.04); }
+  .tl-row[class*="cat-people"]:hover { background:rgba(67,56,202,0.07); }
+  .tl-section-header[class*="cat-people"] { background:rgba(67,56,202,0.04); width:100%; padding-left:8px; color:#4338ca; }
+  .tl-bar[class*="cat-people"] { background:#a5b4fc; }
+  .tl-marker-start[class*="cat-people"] { border:2px solid #818cf8; }
+  .tl-marker-end[class*="cat-people"] { background:#4338ca; border:2px solid #4338ca; }
+  .tl-row-name[class*="cat-people"] { color:#4338ca; }
+  .tl-row-main { display:block; min-height:20px; cursor:pointer; transition:background .12s; }
+  .tl-row-main:hover { background:rgba(0,0,0,.03); }
+  .tl-row-track { position:relative; min-height:20px; width:100%; }
+  /* People rows stay compact — the lineage layer is a many-row stack */
+  .tl-row.cat-people .tl-row-main,
+  .tl-row.cat-people .tl-row-track,
+  .tl-row.cat-people-math .tl-row-main,
+  .tl-row.cat-people-math .tl-row-track,
+  .tl-row.cat-people-physics .tl-row-main,
+  .tl-row.cat-people-physics .tl-row-track { min-height:11px; }
+
+  /* Sticky-left overlay: chevron always visible, title appears on hover */
+  .tl-row-overlay {
+    position:sticky; left:4px;
+    display:inline-flex; align-items:center; gap:4px;
+    z-index:5; pointer-events:none;
+    white-space:nowrap;
+    width:max-content;
+  }
+  .tl-row-title {
+    font-size:11px; color:#222;
+    background:rgba(255,255,255,0.96);
+    padding:1px 7px; border-radius:3px;
+    box-shadow:0 1px 3px rgba(0,0,0,.1);
+    border:1px solid #eee;
+    opacity:0; transition:opacity .12s;
+    max-width:280px; overflow:hidden; text-overflow:ellipsis;
+  }
+  .tl-row-main:hover .tl-row-title { opacity:1; }
+  .tl-row.expanded > .tl-row-main .tl-row-title { opacity:1; }
+
+  /* Bars */
+  .tl-bar { position:absolute; top:50%; height:2px; transform:translateY(-50%); border-radius:1px; z-index:1; }
+  .tl-bar.cat-math        { background:#c4b5fd; }
+  .tl-bar.cat-physics     { background:#93c5fd; }
+  .tl-bar.cat-chemistry   { background:#fcd34d; }
+  .tl-bar.cat-biology     { background:#86efac; }
+  .tl-bar.cat-speculative { background:#fca5a5; }
+  .tl-bar.cat-falsified   { background:#d4d4d8; }
+  .tl-bar.cat-people      { background:#a5b4fc; }
+  /* Pre-20 segment of a person's lifespan — dashed + faded */
+  .tl-bar-prelife {
+    background:repeating-linear-gradient(
+      to right,
+      #a5b4fc 0 2px,
+      transparent 2px 4px
+    );
+    opacity:0.85;
+  }
+  /* People lifespan rendered as decade bands — each decade a step darker, so age reads visually.
+     A faint white seam between decades makes the 10-year boundaries pop. */
+  .tl-bar.tl-bar-decade {
+    height:7px;
+    border-radius:0;
+    box-shadow:inset -1px 0 0 rgba(255,255,255,0.85);
+  }
+
+  /* Legacy stage names → mapped onto batlow positions for a consistent colour story.
+     speculative stays gray-dashed (means "not yet working"). */
+  .tl-bar.stage-speculative {
+    background:repeating-linear-gradient(to right, var(--col-speculative) 0 4px, transparent 4px 8px);
+    opacity:0.75;
+  }
+  .tl-bar.stage-progress    { background:var(--bt1); }
+  .tl-bar.stage-testable    { background:var(--bt2); }
+  .tl-bar.stage-figured     { background:var(--bt3); }
+  /* Batlow ramp (Crameri, perceptually uniform). One ramp for everything that's "working" —
+     distance between adjacent stages encodes magnitude of advancement.
+     Small step (bt0→bt1) = minor refinement. Big step (bt0→bt4) = paradigm shift.
+     Tier aliases let tool entries inherit the same ramp without data changes. */
+  /* In-progress dashed grayscale — for ideas that haven't reached working status yet. */
+  .tl-bar.stage-ip0 { background:repeating-linear-gradient(to right, var(--ip0) 0 4px, transparent 4px 8px); opacity:0.75; }
+  .tl-bar.stage-ip1 { background:repeating-linear-gradient(to right, var(--ip1) 0 4px, transparent 4px 8px); opacity:0.8;  }
+  .tl-bar.stage-ip2 { background:repeating-linear-gradient(to right, var(--ip2) 0 4px, transparent 4px 8px); opacity:0.85; }
+  .tl-bar.stage-ip3 { background:repeating-linear-gradient(to right, var(--ip3) 0 4px, transparent 4px 8px); opacity:0.9;  }
+  .tl-stage-dot.stage-ip0 { background:var(--ip0); }
+  .tl-stage-dot.stage-ip1 { background:var(--ip1); }
+  .tl-stage-dot.stage-ip2 { background:var(--ip2); }
+  .tl-stage-dot.stage-ip3 { background:var(--ip3); }
+  .tl-bar.stage-bt0, .tl-bar.stage-tier0 { background:var(--bt0); }
+  .tl-bar.stage-bt1, .tl-bar.stage-tier1 { background:var(--bt1); }
+  .tl-bar.stage-bt2, .tl-bar.stage-tier2 { background:var(--bt2); }
+  .tl-bar.stage-bt3, .tl-bar.stage-tier3 { background:var(--bt3); }
+  .tl-bar.stage-bt4, .tl-bar.stage-tier4 { background:var(--bt4); }
+  .tl-bar.stage-bt5, .tl-bar.stage-tier5 { background:var(--bt5); }
+  /* Settled period — light grey dashed signals "no change, no new tension" */
+  .tl-bar.stage-dormant {
+    background:repeating-linear-gradient(to right, var(--col-dormant) 0 4px, transparent 4px 8px);
+    opacity:0.85;
+  }
+  /* Active unresolved problem — solid red segment leading to a resolution (often by a successor theory) */
+  .tl-bar.stage-problem-active { background:var(--col-problem); }
+  .tl-stage-dot.stage-dormant { background:var(--col-dormant); }
+  .tl-stage-dot.stage-problem-active { background:var(--col-problem); }
+  .tl-stage-dot.stage-bt0, .tl-stage-dot.stage-tier0 { background:var(--bt0); }
+  .tl-stage-dot.stage-bt1, .tl-stage-dot.stage-tier1 { background:var(--bt1); }
+  .tl-stage-dot.stage-bt2, .tl-stage-dot.stage-tier2 { background:var(--bt2); }
+  .tl-stage-dot.stage-bt3, .tl-stage-dot.stage-tier3 { background:var(--bt3); }
+  .tl-stage-dot.stage-bt4, .tl-stage-dot.stage-tier4 { background:var(--bt4); }
+  .tl-stage-dot.stage-bt5, .tl-stage-dot.stage-tier5 { background:var(--bt5); }
+  /* Staged segments match regular bars in height */
+  .tl-bar[class*="stage-"] { cursor:help; }
+  .tl-bar[class*="stage-"]:hover { filter:brightness(1.15); }
+
+  /* Custom hover tooltip on each stage segment — shows the player */
+  .tl-bar[data-who] { position:absolute; }
+  .tl-bar[data-who]:hover::after {
+    content: attr(data-tip);
+    position:absolute;
+    bottom:10px; left:50%;
+    transform:translateX(-50%);
+    background:#1f2937; color:#fff;
+    padding:4px 9px; border-radius:4px;
+    font-size:11.5px; font-weight:500;
+    white-space:nowrap;
+    pointer-events:none;
+    z-index:30;
+    box-shadow:0 2px 6px rgba(0,0,0,.18);
+  }
+  .tl-bar[data-who]:hover::before {
+    content:'';
+    position:absolute;
+    bottom:6px; left:50%;
+    transform:translateX(-50%);
+    border:4px solid transparent;
+    border-top-color:#1f2937;
+    pointer-events:none;
+    z-index:30;
+  }
+
+  /* ✕ first-test / first-contest marker (red) */
+  .tl-firsttest {
+    position:absolute; top:50%;
+    width:9px; height:9px;
+    transform:translate(-50%,-50%);
+    z-index:3;
+  }
+  .tl-firsttest::before,
+  .tl-firsttest::after {
+    content:''; position:absolute;
+    top:50%; left:50%;
+    width:9px; height:1.5px;
+    background:var(--col-firsttest);
+    transform-origin:center;
+  }
+  .tl-firsttest::before { transform:translate(-50%,-50%) rotate(45deg); }
+  .tl-firsttest::after  { transform:translate(-50%,-50%) rotate(-45deg); }
+
+  /* Problem markers — open questions / tensions in a theory */
+  .tl-problem-dot {
+    position:absolute; top:50%;
+    width:8px; height:8px; border-radius:50%;
+    background:var(--col-problem); border:1.5px solid #fff;
+    transform:translate(-50%,-50%);
+    z-index:5; cursor:help;
+    box-shadow:0 0 0 0.5px rgba(220,38,38,0.6);
+  }
+  .tl-fix-dot {
+    position:absolute; top:50%;
+    width:7px; height:7px; border-radius:50%;
+    background:var(--col-fix); border:1.5px solid #fff;
+    transform:translate(-50%,-50%);
+    z-index:5; cursor:help;
+    box-shadow:0 0 0 0.5px rgba(16,185,129,0.5);
+  }
+  .tl-problem-dot:hover::after, .tl-fix-dot:hover::after {
+    content: attr(data-tip);
+    position:absolute;
+    bottom:11px; left:50%;
+    transform:translateX(-50%);
+    background:#1f2937; color:#fff;
+    padding:4px 9px; border-radius:4px;
+    font-size:11.5px; font-weight:500;
+    white-space:nowrap;
+    pointer-events:none;
+    z-index:30;
+    box-shadow:0 2px 6px rgba(0,0,0,.18);
+  }
+  /* Thicker overlay segment marking the period a problem remained unresolved */
+  .tl-problem-bar {
+    position:absolute; top:50%;
+    height:7px;
+    transform:translateY(-50%);
+    background:rgba(239,68,68,0.22);
+    border-radius:3px;
+    z-index:1;
+    pointer-events:none;
+  }
+
+  /* Contribution markers — small dots on a person's bar */
+  .tl-contrib {
+    position:absolute; top:50%;
+    width:6px; height:6px; border-radius:50%;
+    background:#4338ca; border:1.5px solid #fff;
+    transform:translate(-50%,-50%);
+    z-index:4; cursor:help;
+    box-shadow:0 0 0 0.5px rgba(67,56,202,.35);
+  }
+  .tl-contrib:hover { background:#312e81; }
+  .tl-contrib:hover::after {
+    content: attr(data-tip);
+    position:absolute;
+    bottom:11px; left:50%;
+    transform:translateX(-50%);
+    background:#1f2937; color:#fff;
+    padding:4px 9px; border-radius:4px;
+    font-size:11.5px; font-weight:500;
+    white-space:nowrap;
+    pointer-events:none;
+    z-index:30;
+    box-shadow:0 2px 6px rgba(0,0,0,.18);
+  }
+  .tl-contrib:hover::before {
+    content:'';
+    position:absolute;
+    bottom:7px; left:50%;
+    transform:translateX(-50%);
+    border:4px solid transparent;
+    border-top-color:#1f2937;
+    pointer-events:none;
+    z-index:30;
+  }
+  /* In the expanded detail — chronological contribution list */
+  .tl-contrib-list {
+    margin-top:10px; padding-top:8px;
+    border-top:1px dashed #ddd;
+    display:flex; flex-direction:column; gap:3px;
+  }
+  .tl-contrib-row {
+    display:grid;
+    grid-template-columns:60px 1fr;
+    gap:10px; align-items:baseline;
+    font-size:12px;
+  }
+  .tl-contrib-year {
+    font-family:'SF Mono',Consolas,monospace;
+    font-size:11px; color:#666;
+  }
+  .tl-contrib-label { color:#222; }
+
+  /* Legend */
+  .tl-legend {
+    display:flex; flex-wrap:wrap; gap:14px;
+    margin:4px 0 6px;
+    font-size:11.5px; color:#666;
+    align-items:center;
+  }
+  .tl-legend .swatch {
+    display:inline-block; width:10px; height:10px;
+    border-radius:50%; margin-right:5px;
+    vertical-align:middle;
+  }
+  .tl-legend .x {
+    display:inline-block; color:#dc2626; font-weight:700;
+    margin-right:5px;
+  }
+
+  /* Markers */
+  .tl-marker {
+    position:absolute; top:50%;
+    width:7px; height:7px; border-radius:50%;
+    transform:translate(-50%,-50%);
+    background:#fff; box-sizing:border-box; z-index:2;
+  }
+  .tl-marker-start.cat-math        { border:2px solid #a78bfa; }
+  .tl-marker-start.cat-physics     { border:2px solid #60a5fa; }
+  .tl-marker-start.cat-chemistry   { border:2px solid #d97706; }
+  .tl-marker-start.cat-speculative { border:2px solid #f87171; }
+  .tl-marker-start.cat-falsified   { border:2px solid #a1a1aa; }
+  .tl-marker-start.cat-people      { border:2px solid #818cf8; }
+
+  .tl-marker-end.cat-math        { background:#7c3aed; border:2px solid #7c3aed; }
+  .tl-marker-end.cat-physics     { background:#2563eb; border:2px solid #2563eb; }
+  .tl-marker-end.cat-chemistry   { background:#b45309; border:2px solid #b45309; }
+  .tl-marker-end.cat-people      { background:#4338ca; border:2px solid #4338ca; }
+
+  /* Ongoing — dashed open circle */
+  .tl-marker-end.ongoing {
+    background:transparent;
+    border:2px dashed #b91c1c;
+  }
+  /* Evolved-into — triangular arrow pointing forward, signals theory was subsumed by a successor */
+  .tl-marker-end.evolved {
+    background:transparent;
+    border:none;
+    width:0; height:0;
+    border-left:10px solid #2563eb;
+    border-top:6px solid transparent;
+    border-bottom:6px solid transparent;
+    border-radius:0;
+    box-sizing:content-box;
+  }
+
+  /* Falsified — X */
+  .tl-marker-end.killed {
+    background:transparent;
+    border:none;
+    width:9px; height:9px;
+  }
+  .tl-marker-end.killed::before,
+  .tl-marker-end.killed::after {
+    content:''; position:absolute;
+    top:50%; left:50%;
+    width:9px; height:1.5px;
+    background:#52525b;
+    transform-origin:center;
+  }
+  .tl-marker-end.killed::before { transform:translate(-50%,-50%) rotate(45deg); }
+  .tl-marker-end.killed::after  { transform:translate(-50%,-50%) rotate(-45deg); }
+
+  /* Row name — always visible, anchored to end of bar (or to the marker for point events) */
+  .tl-row-name {
+    position:absolute; top:50%;
+    transform:translateY(-50%);
+    margin-left:10px;
+    font-size:11px; color:#444;
+    white-space:nowrap;
+    pointer-events:none;
+    z-index:2;
+    font-weight:500;
+    letter-spacing:.01em;
+  }
+  .tl-row-name.cat-math        { color:#7c3aed; }
+  .tl-row-name.cat-physics     { color:#1e40af; }
+  .tl-row-name.cat-chemistry   { color:#92400e; }
+  .tl-row-name.cat-speculative { color:#b91c1c; }
+  .tl-row-name.cat-falsified   { color:#52525b; }
+  .tl-row-name.cat-people      { color:#4338ca; }
+  .tl-row-name.cat-tools       { color:#0f766e; }
+  .tl-row-name.cat-detectors   { color:#a21caf; }
+  .tl-row-name.cat-paradigms   { color:#a16207; }
+  .tl-bar.cat-paradigms        { background:#fcd34d; }
+  .tl-marker-start.cat-paradigms { border:2px solid #d97706; }
+  .tl-marker-end.cat-paradigms   { background:#a16207; border:2px solid #a16207; }
+  .tl-row-main:hover .tl-row-name { filter:brightness(0.7); }
+
+  /* Year label — hidden by default, shows on row hover */
+  .tl-row-year {
+    position:absolute; top:50%;
+    transform:translateY(-50%);
+    margin-left:14px;
+    font-family:'SF Mono',Consolas,monospace;
+    font-size:11px; color:#666;
+    white-space:nowrap;
+    pointer-events:none;
+    z-index:2;
+    opacity:0;
+    transition:opacity .12s;
+    background:#fff;
+    padding:2px 6px;
+    border-radius:3px;
+    box-shadow:0 1px 3px rgba(0,0,0,.08);
+    border:1px solid #eee;
+  }
+  .tl-row-main:hover .tl-row-year { opacity:1; }
+  .tl-row.expanded .tl-row-year { opacity:1; }
+
+  /* Expanded detail */
+  .tl-row-detail {
+    display:none; position:sticky; left:0; z-index:4;
+    margin:2px 0 10px;
+    padding:12px 16px 14px 16px;
+    background:#fafafa; border-top:1px solid #eee; border-bottom:1px solid #eee;
+    font-size:13px; line-height:1.6; color:#444;
+    width:880px; max-width:100%;
+    /* Re-enable text selection inside detail panels — the parent .tl-scroll
+       sets user-select:none so drag-to-pan doesn't highlight text. */
+    user-select:text;
+    -webkit-user-select:text;
+    cursor:text;
+  }
+  .tl-row-detail .tl-detail-meta {
+    font-family:'SF Mono',Consolas,monospace;
+    font-size:11px; color:#888;
+    margin-bottom:8px; letter-spacing:.02em;
+  }
+  .tl-detail-stages {
+    margin-top:10px; padding-top:8px;
+    border-top:1px dashed #ddd;
+    display:flex; flex-direction:column; gap:4px;
+  }
+  .tl-stage-row {
+    display:grid;
+    grid-template-columns:108px 14px 120px 1fr;
+    gap:10px; align-items:center;
+    font-size:12px;
+  }
+  .tl-stage-dates {
+    font-family:'SF Mono',Consolas,monospace;
+    font-size:11px; color:#666;
+  }
+  .tl-stage-dot {
+    display:inline-block; width:12px; height:4px; border-radius:1px;
+  }
+  .tl-stage-dot.stage-speculative { background:var(--col-speculative); }
+  .tl-stage-dot.stage-progress    { background:var(--bt1); }
+  .tl-stage-dot.stage-testable    { background:var(--bt2); }
+  .tl-stage-dot.stage-figured     { background:var(--bt3); }
+  .tl-stage-name { color:#666; font-size:11px; }
+  .tl-stage-who  { color:#222; }
+  .tl-row.expanded { background:rgba(0,0,0,.012); }
+  .tl-row.expanded > .tl-row-detail { display:block; }
+  .tl-row.expanded > .tl-row-main { background:rgba(0,0,0,.02); }
+
+  /* Nested children — disclosure chevron on parent, indented child rows */
+  .tl-chev {
+    display:inline-block; margin-right:6px;
+    font-size:9px; color:#888;
+    transition:transform .12s ease;
+    transform-origin:center;
+  }
+  .tl-row.expanded > .tl-row-main .tl-chev { transform:rotate(90deg); color:#333; }
+
+  .tl-children { display:none; background:#fafaf7; border-top:1px solid #f0f0f0; }
+  .tl-row.expanded > .tl-children { display:block; }
+
+  /* Nested children of expanded rows — match main event style, with a small left offset for hierarchy */
+  .tl-row.nested .tl-row-main { min-height:18px; }
+  .tl-row.nested .tl-row-track { min-height:18px; padding-left:18px; }
+  .tl-row.nested .tl-row-name { font-size:10.5px; }
+  .tl-row.nested .tl-row-name::before {
+    content:'· ';
+    color:#bbb;
+    font-weight:700;
+  }
+  /* Doubly-nested (grandchildren) get more indent so the depth reads */
+  .tl-row.nested .tl-row.nested .tl-row-track { padding-left:36px; }
+  .tl-row.nested .tl-row.nested .tl-row-name { font-size:10px; color:#666; }
+
+  footer { display:none; }
+  @media (max-width:640px){
+    h1{font-size:18px;}
+    .tb-hint{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a class="nav-back" href="index.html">← Back to First Principles</a>
+    <div class="nav-brand">polynomials-timeline · v.1</div>
+    <div style="min-width:80px;"></div>
+  </div>
+</nav>
+
+
+
+<h1>Polynomial Equations — quadratics to the quintic</h1>
+<div class="lede">From Babylonian clay tablets to Galois. The long hunt for a formula — quadratic, cubic, quartic — the Renaissance duel between del Ferro, Fior, Tartaglia, Cardano and Ferrari, the imaginary numbers it forced into being, and the wall the quintic hit. Nothing past the 19th century.</div>
+
+
+<div class="tl-legend">
+  <span><span class="swatch" style="background:#94a3b8;"></span>Speculative / groping</span>
+  <span><span class="swatch" style="background:#eab308;"></span>Method working</span>
+  <span><span class="swatch" style="background:#16a34a;"></span>Solid / general</span>
+  <span><span class="swatch" style="background:#2563eb;"></span>Fully understood</span>
+  <span><span class="x">✕</span>public contest / first test</span>
+  <span><span class="swatch" style="background:#4338ca; border:1.5px solid #fff; box-shadow:0 0 0 0.5px rgba(67,56,202,.5); width:8px; height:8px;"></span>milestone (hover for year)</span>
+  <button id="tlTopOnly" class="tb-btn" style="margin-left:auto;">⭐ TOP only</button>
+  <span class="tb-hint" style="margin-left:8px;">click row · shift+scroll = zoom · drag = pan</span>
+</div>
+
+
+<div class="tl-pair">
+  <div class="tl-pane">
+    <div class="tl-pane-toolbar">
+      <button class="tb-btn" data-pane="A" data-action="ancient">⇤ Antiquity</button>
+      <button class="tb-btn" data-pane="A" data-action="found">Renaissance</button>
+      <button class="tb-btn" data-pane="A" data-action="modern">Full view ⇥</button>
+      <button class="tb-btn" data-pane="A" data-action="log">📈 Log</button>
+      <span class="tb-info" id="tlInfoA">…</span>
+    </div>
+    <div class="tl-frame">
+      <div class="tl-scroll" id="tlScrollA">
+        <div class="tl-inner" id="tlInnerA">
+          <div class="tl-axis-row">
+            <div class="tl-axis" id="tlAxisA"></div>
+          </div>
+          <div id="tlRowsA"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tl-pane bottom-axis">
+    <span class="tb-info" id="tlInfoB" style="display:none;"></span>
+    <div class="tl-frame">
+      <div class="tl-scroll" id="tlScrollB">
+        <div class="tl-inner" id="tlInnerB">
+          <div id="tlRowsB"></div>
+          <div class="tl-axis-row">
+            <div class="tl-axis" id="tlAxisB"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<footer>First Principles · Polynomial equations · Babylon to Galois</footer>
+
+
+<script>
+(function(){
+  // ─── data ───
+  const EVENTS = [
+    // ============ THE EQUATIONS ============
+    { cat:'math', tier:'top', start:-2000, end:1637, year:1637, status:'evolved', title:"Quadratic equations", who:"Babylonians → Brahmagupta → al-Khwarizmi → Viète",
+      stages:[
+        { from:-2000, to:-300, stage:'ip1', who:"Babylonian scribes solve quadratics by 'completing the square', worked geometrically on clay tablets in base-60. No symbols, no negatives, only the one positive answer a problem needed" },
+        { from:-300, to:628,  stage:'ip2', who:"Euclid's geometric algebra (Elements, Book II). Diophantus (~250) solves them in a cramped shorthand, accepting only positive rational roots" },
+        { from:628,  to:820,  stage:'bt0', who:"Brahmagupta (628) writes an explicit general rule — the first to treat zero and negative numbers as legitimate" },
+        { from:820,  to:1591, stage:'bt2', who:"al-Khwarizmi (820) sorts every linear and quadratic case into six canonical types, each with a geometric proof. Algebra becomes a named subject" },
+        { from:1591, to:1637, stage:'bt4', who:"Viète (1591) and Descartes (1637) put letters on the coefficients, collapsing the six types into one formula" },
+      ],
+      detail:"The oldest equation we still teach. Babylonian scribes were completing the square almost 4000 years ago, entirely in words and base-60 numerals, and only ever looking for the single positive answer a land or money problem required. The Greeks kept it geometric — a quadratic was an area. Brahmagupta (628) was the real turn, because he let zero and negatives into the rule, so one statement could cover cases the Greeks had to draw separately. al-Khwarizmi (820) organised the whole landscape into six types and handed 'algebra' its name (from al-jabr, 'restoring'). Only with Viète and Descartes did letters-for-numbers turn those six types into the one formula every student now meets: x = (−b ± √(b²−4ac)) / 2a." },
+
+    { cat:'math', tier:'top', start:-1800, end:1545, year:1545, title:"Cubic equations", who:"Babylonians → Omar Khayyám → del Ferro → Tartaglia → Cardano",
+      stages:[
+        { from:-1800, to:1070, stage:'ip0', who:"Babylonians tabulate n³+n² for rough answers. Archimedes reduces a sphere-slicing problem to a cubic — but nobody has a general method" },
+        { from:1070,  to:1515, stage:'ip2', who:"Omar Khayyám (~1070) solves cubics geometrically with intersecting conic sections, and concludes that a solution by radicals is impossible" },
+        { from:1515,  to:1535, stage:'ip3', who:"Scipione del Ferro solves the depressed cubic x³+px=q by radicals (~1515). He tells no one, willing the secret only to his student Antonio Fior" },
+        { from:1535,  to:1545, stage:'bt2', who:"Tartaglia rediscovers the method independently (1535) and crushes Fior in a public problem-duel. Cardano coaxes the formula out of him under an oath of secrecy" },
+        { from:1545,  to:1572, stage:'bt4', who:"Cardano's Ars Magna (1545) prints the full solution, with Ferrari's reduction of the general cubic to del Ferro's depressed form" },
+      ],
+      firstTest:1535,
+      problems:[
+        { year:1545, label:"Casus irreducibilis — when all three roots are real, the formula still demands square roots of negative numbers", fixedYear:1572, fixLabel:"Bombelli's L'Algebra gives formal rules for √−1, and the real roots fall out correctly" },
+      ],
+      detail:"This is the dramatic heart of the story. For 2500 years the cubic resisted — Khayyám could draw the answer with conics but declared no formula could exist. Then, in Bologna around 1515, Scipione del Ferro found one for x³+px=q and simply kept it secret, an ordinary move in an age when mathematicians defended their university posts through public 'duels'. He willed the secret to his student Fior. In 1535 Fior challenged Tartaglia, not knowing Tartaglia had cracked the same problem himself just before the contest — Tartaglia swept it 30 to 0. Cardano then talked Tartaglia into revealing the method under a solemn oath never to publish. When Cardano later saw del Ferro's own notebook and realised del Ferro had it first, he judged the oath void and printed it in the Ars Magna (1545), crediting both men but never earning Tartaglia's forgiveness. The ✕ marks the 1535 duel. The red dot marks the strange surprise hiding inside the formula." },
+
+    { cat:'math', tier:'top', start:1540, end:1545, year:1545, title:"Quartic equations", who:"Ferrari → Cardano",
+      stages:[
+        { from:1540, to:1545, stage:'bt3', who:"Ferrari (1540) reduces the quartic to an auxiliary 'resolvent' cubic, then solves that. Cardano prints it in the Ars Magna (1545)" },
+      ],
+      detail:"The fourth-degree equation fell almost the moment the third did. Cardano's brilliant servant-turned-student Lodovico Ferrari found (1540) that a clever rearrangement turns any quartic into a cubic in a new variable — and the cubic was, by then, solvable. So the Ars Magna (1545) appeared with both the cubic and the quartic cracked in a single book. It looked like every equation would surrender to one more clever substitution. The fifth degree had other ideas." },
+
+    { cat:'math', tier:'top', start:1545, end:1831, year:1831, status:'evolved', title:"Imaginary & complex numbers", who:"Cardano → Bombelli → Descartes → Euler → Gauss",
+      stages:[
+        { from:1545, to:1572, stage:'ip0', who:"Cardano (1545) notices 5+√−15 times 5−√−15 equals 40, and calls the manoeuvre 'as subtle as it is useless'" },
+        { from:1572, to:1637, stage:'ip1', who:"Bombelli (1572) writes down consistent arithmetic for √−1, the only route that makes the cubic's casus irreducibilis return its real answers" },
+        { from:1637, to:1748, stage:'ip2', who:"Descartes (1637) coins 'imaginary' as an insult. Wallis (1685) gropes toward a geometric picture" },
+        { from:1748, to:1831, stage:'ip3', who:"Euler ties them to e^iθ and writes i (1777). Wessel (1799) and Argand (1806) draw the plane. Gauss (1831) makes 'complex number' respectable" },
+      ],
+      detail:"Imaginary numbers were not invented to be daring — they were forced. Cardano bumped into √−15 while trying to split 10 into two parts whose product is 40, wrote it down, and backed away calling it useless. Bombelli (1572) was the one who took them seriously, because the cubic formula left him no choice. For a cubic with three perfectly ordinary real roots, the only path through the formula runs straight through the square root of a negative number. Bombelli invented rules for what he called 'plus of minus' and 'minus of minus', pushed them through the algebra, and watched the honest real answers reappear at the end. The dismissive name 'imaginary' is Descartes' (1637). It took until Wessel, Argand and Gauss (1799–1831) for the plane picture to make them feel like real numbers at last. This is as far as the imaginary story goes here — the 19th century hands it on to complex analysis." },
+
+    { cat:'math', tier:'top', start:1545, end:1832, year:1832, title:"The quintic & the limits of solvability", who:"Lagrange → Ruffini → Abel → Galois",
+      stages:[
+        { from:1545, to:1683, stage:'ip0', who:"With the cubic and quartic done, the obvious next prize is a radical formula for the fifth degree. Many hunt for it" },
+        { from:1683, to:1770, stage:'ip1', who:"Tschirnhaus (1683), then Euler and Bézout, attack the quintic with ingenious substitutions. Every attempt collapses back on itself" },
+        { from:1770, to:1799, stage:'ip2', who:"Lagrange (1770–71) studies the existing methods by permuting the roots, and sees exactly why they stall at degree five — the seed of group theory" },
+        { from:1799, to:1824, stage:'ip3', who:"Ruffini (1799) gives a long, nearly-complete impossibility proof. Abel (1824) closes the gap: no general quintic formula in radicals can exist" },
+        { from:1824, to:1832, stage:'bt3', who:"Galois (1829–32) explains the whole pattern — an equation is solvable by radicals exactly when its symmetry group is 'solvable'" },
+      ],
+      detail:"The cubic and quartic made it look inevitable that the quintic would fall next. It never did, and the reason turned out to be far deeper than any missing trick. Lagrange (1770) was the first to ask the right question. Instead of hunting for a formula, he studied what happens to the working expressions when you permute the roots among themselves. The cubic and quartic reduce because their permutation structure breaks apart neatly. The quintic's does not. Ruffini (1799) and then, decisively, Abel (1824) proved there is no general solution in radicals at all. Galois (1832), killed in a duel at twenty with his theory sketched in a final overnight letter, gave the last word: attach a group of symmetries to any equation, and it is solvable by radicals precisely when that group is. This is where the polynomial story opens into modern algebra — and where this timeline deliberately stops." },
+
+    // ============ THE PEOPLE ============
+    { cat:'people-math', start:-325, end:-265, year:-300, title:"Euclid", who:"geometer (~325–265 BCE)",
+      contributions:[{ year:-300, label:"Elements Book II — quadratic problems solved as areas (geometric algebra)" }],
+      detail:"Before symbols, a quadratic was a statement about rectangles and squares. Euclid's Elements (Book II) is the rigorous backbone of that geometric algebra — the toolkit every later solver inherited and eventually outgrew." },
+    { cat:'people-math', start:201, end:285, year:250, title:"Diophantus of Alexandria", who:"algebraist (~201–285, dates uncertain)",
+      contributions:[{ year:250, label:"Arithmetica — syncopated notation, rational solutions to equations" }],
+      detail:"The Arithmetica introduced a shorthand partway between words and symbols, and treated equations as objects to be solved for numbers rather than figures to be drawn. He accepted only positive rational answers — negatives and irrationals were simply 'impossible'." },
+    { cat:'people-math', start:598, end:668, year:628, title:"Brahmagupta", who:"mathematician (598–668)",
+      contributions:[{ year:628, label:"Brāhmasphuṭasiddhānta — explicit quadratic rule using zero and negatives" }],
+      detail:"The first general quadratic rule that looks modern, precisely because he let zero and negative numbers be numbers. One statement now covered cases the Greeks had to separate, which is what made a true formula possible at all." },
+    { cat:'people-math', tier:'top', start:780, end:850, year:820, title:"al-Khwarizmi", who:"mathematician (~780–850)",
+      contributions:[
+        { year:820, label:"Kitāb al-Jabr — six canonical types of linear/quadratic equations, with proofs" },
+        { year:825, label:"On Calculation with Hindu Numerals — spreads the decimal system" },
+      ],
+      detail:"His book gave algebra its name (al-jabr, 'restoring' a subtracted term to the other side) and turned scattered tricks into a system: every linear or quadratic equation sorted into six standard forms, each solved and justified geometrically. His own name, latinised, became 'algorithm'." },
+    { cat:'people-math', tier:'top', start:1048, end:1131, year:1070, title:"Omar Khayyám", who:"mathematician / poet (1048–1131)",
+      contributions:[{ year:1070, label:"Treatise on cubics — geometric solutions via intersecting conic sections" }],
+      detail:"Best known in the West as a poet, Khayyám gave the most complete pre-Renaissance treatment of the cubic: a classification of its types and geometric constructions of the roots using intersecting conics. He suspected, wrongly but reasonably, that no solution by arithmetic and radicals existed." },
+    { cat:'people-math', start:1170, end:1250, year:1225, title:"Fibonacci (Leonardo of Pisa)", who:"mathematician (~1170–1250)",
+      contributions:[
+        { year:1202, label:"Liber Abaci — brings Hindu-Arabic numerals and algebra to Europe" },
+        { year:1225, label:"Flos — approximates a cubic root, showing it is no simple radical" },
+      ],
+      detail:"Fibonacci carried Arabic algebra into Latin Europe. In Flos (1225) he tackled a specific cubic and computed its root to remarkable precision — and, crucially, showed the answer could not be expressed with the radicals known at the time. A quiet warning of the trouble waiting three centuries later." },
+    { cat:'people-math', tier:'top', start:1465, end:1526, year:1515, title:"Scipione del Ferro", who:"mathematician, Bologna (1465–1526)",
+      contributions:[{ year:1515, label:"First algebraic solution of the depressed cubic x³+px=q (kept secret)" }],
+      detail:"The man who actually broke the cubic first. Around 1515, as a professor at Bologna, del Ferro found how to solve x³+px=q by radicals — and never published. He recorded it in a private notebook and, on his deathbed, passed it to his student Antonio Fior and his son-in-law Annibale della Nave. Secrecy was rational: posts were defended in public problem-contests, and a private method was a weapon." },
+    { cat:'people-math', start:1506, end:1560, year:1535, title:"Antonio Maria Fior", who:"mathematician (~1506–1560, dates uncertain)",
+      contributions:[{ year:1535, label:"Challenges Tartaglia with cubics — and loses 0 to 30" }],
+      detail:"Fior inherited del Ferro's secret and, believing himself the only person alive who could solve cubics, challenged Tartaglia to a public contest in 1535. He had wagered on a monopoly that no longer existed: Tartaglia had found the method on his own days earlier and answered all thirty problems, while Fior solved none. The loss is what set the rest of the drama in motion." },
+    { cat:'people-math', tier:'top', start:1500, end:1557, year:1535, title:"Niccolò Tartaglia", who:"mathematician (1500–1557)",
+      contributions:[
+        { year:1535, label:"Independently solves the depressed cubic; wins the contest against Fior" },
+        { year:1539, label:"Reveals the method to Cardano under an oath of secrecy" },
+      ],
+      detail:"'Tartaglia' — the Stammerer — was a nickname from a childhood sabre wound suffered in the sack of Brescia. Self-taught and combative, he rediscovered the cubic solution and beat Fior decisively in 1535. In 1539 Cardano persuaded him to hand over the method, encoded in a poem, swearing never to publish it. When Cardano broke that oath in 1545 (on the grounds that del Ferro had priority), Tartaglia spent his remaining years in furious, losing pamphlet warfare against Cardano and Ferrari." },
+    { cat:'people-math', tier:'top', start:1501, end:1576, year:1545, title:"Gerolamo Cardano", who:"physician / mathematician / gambler (1501–1576)",
+      contributions:[
+        { year:1545, label:"Ars Magna — prints the general cubic and quartic solutions" },
+        { year:1545, label:"First written encounter with the square root of a negative number" },
+      ],
+      detail:"Physician, astrologer, compulsive gambler and one of the most prolific authors of his age, Cardano made the cubic public. The Ars Magna (1545) is the founding text of higher algebra: it lays out the cubic (from del Ferro and Tartaglia) and the quartic (from Ferrari), credits its sources, and — almost in passing — performs the first calculation with √ of a negative, which he found unsettling enough to call 'as subtle as it is useless'. His Liber de Ludo Aleae also began the mathematics of probability." },
+    { cat:'people-math', tier:'top', start:1522, end:1565, year:1540, title:"Lodovico Ferrari", who:"mathematician (1522–1565)",
+      contributions:[
+        { year:1540, label:"Solves the general quartic via a resolvent cubic" },
+        { year:1548, label:"Defeats Tartaglia in their public debate in Milan" },
+      ],
+      detail:"Cardano took Ferrari on as a teenage servant, discovered his gift, and made him a pupil. Ferrari repaid it by cracking the quartic (1540) — reducing it to a 'resolvent' cubic that Cardano's circle could already solve. He later defended his master against Tartaglia in the 1548 Milan debate and won, sealing Tartaglia's decline. He reportedly died young of poisoning, possibly by his own sister." },
+    { cat:'people-math', tier:'top', start:1526, end:1572, year:1572, title:"Rafael Bombelli", who:"engineer / mathematician (1526–1572)",
+      contributions:[{ year:1572, label:"L'Algebra — a working arithmetic for imaginary numbers" }],
+      detail:"An engineer who drained marshes, Bombelli wrote the book that made imaginary numbers usable. Faced with the cubic's casus irreducibilis — real roots reachable only through √ of negatives — he refused to flinch and instead laid down consistent rules for manipulating them. His L'Algebra (1572) is where complex arithmetic genuinely begins, two and a half centuries before anyone drew the plane." },
+    { cat:'people-math', start:1540, end:1603, year:1591, title:"François Viète", who:"mathematician (1540–1603)",
+      contributions:[{ year:1591, label:"In artem analyticem isagoge — letters for both unknowns and coefficients" }],
+      detail:"Viète made algebra symbolic. By using letters not just for the unknown but for the known coefficients too, he could state and manipulate a whole family of equations at once — which is exactly what turns 'six types of quadratic' into one general formula. The move looks small and is foundational." },
+    { cat:'people-math', start:1596, end:1650, year:1637, title:"René Descartes", who:"philosopher / mathematician (1596–1650)",
+      contributions:[{ year:1637, label:"La Géométrie — modern notation, the word 'imaginary', the rule of signs" }],
+      detail:"Descartes' La Géométrie fixed the notation we still use (exponents, x for the unknown), tied algebra to geometry through coordinates, and — coining 'imaginary' as a put-down — gave the new numbers the dismissive name that stuck for centuries." },
+    { cat:'people-math', start:1651, end:1708, year:1683, title:"Ehrenfried von Tschirnhaus", who:"mathematician (1651–1708)",
+      contributions:[{ year:1683, label:"Tschirnhaus transformation — substitutions that strip terms from a polynomial" }],
+      detail:"Tschirnhaus introduced substitutions that systematically remove chosen terms from an equation, the natural tool for trying to reduce a quintic to something solvable. The transformations were genuinely useful for lower degrees and, for the quintic, genuinely not enough — which itself became a clue." },
+    { cat:'people-math', tier:'top', start:1736, end:1813, year:1771, title:"Joseph-Louis Lagrange", who:"mathematician (1736–1813)",
+      contributions:[{ year:1771, label:"Réflexions sur la résolution algébrique — why the methods stall at degree five" }],
+      detail:"Lagrange unified every known solution method by asking what happens to the auxiliary 'resolvent' expressions when the roots are permuted. He showed the cubic and quartic work because their permutation behaviour is benign, and that the same approach refuses to reduce the quintic. He did not prove impossibility, but he located the obstruction — and planted the idea of studying permutations themselves." },
+    { cat:'people-math', start:1765, end:1822, year:1799, title:"Paolo Ruffini", who:"mathematician / physician (1765–1822)",
+      contributions:[{ year:1799, label:"Teoria generale delle equazioni — first impossibility proof for the quintic" }],
+      detail:"Ruffini published a several-hundred-page argument that the general quintic cannot be solved by radicals. It was nearly right, contained a real gap, and was largely ignored by contemporaries who found it impenetrable. He had, however, effectively invented key pieces of group theory along the way." },
+    { cat:'people-math', tier:'top', start:1802, end:1829, year:1824, title:"Niels Henrik Abel", who:"mathematician (1802–1829)",
+      contributions:[{ year:1824, label:"Proves the general quintic is unsolvable by radicals" }],
+      detail:"Working in poverty in Norway, Abel gave the first complete, accepted proof (1824) that no formula in radicals can solve the general equation of degree five or higher. He printed it at his own expense in a pamphlet so compressed almost no one read it at first. He died of tuberculosis at twenty-six, days before a letter arrived offering him a professorship in Berlin." },
+    { cat:'people-math', tier:'top', start:1811, end:1832, year:1830, title:"Évariste Galois", who:"mathematician (1811–1832)",
+      contributions:[
+        { year:1829, label:"A group attached to each equation governs its solvability by radicals" },
+        { year:1832, label:"Killed in a duel at 20; theory preserved in a final overnight letter" },
+      ],
+      detail:"Galois gave the deepest answer of all. To each polynomial he attached a group of symmetries among its roots, and proved the equation is solvable by radicals exactly when that group is 'solvable'. Twice rejected by examiners, briefly imprisoned, he was shot in a duel at twenty and spent his last night writing out the theory in a letter to a friend. It took decades for the world to understand that he had founded group theory — and closed the polynomial question for good. This timeline ends here." },
+  ];
+
+  const CAT_NAMES = {
+    math:          'The equations',
+    'people-math': 'The people',
+  };
+
+  // Historical eras — render as alternating very-light gray bands behind the rows
+  const ERAS = [
+    { from: -3000, to: -800,  name: 'Pre-antiquity' },
+    { from: -800,  to: 500,   name: 'Antiquity' },
+    { from: 500,   to: 1000,  name: 'Early Middle Ages' },
+    { from: 1000,  to: 1450,  name: 'Middle Ages' },
+    { from: 1450,  to: 1600,  name: 'Renaissance' },
+    { from: 1600,  to: 1800,  name: 'Enlightenment' },
+    { from: 1800,  to: 1900,  name: '19th century' },
+    { from: 1900,  to: 2000,  name: '20th century' },
+    { from: 2000,  to: 2100,  name: '21st century' },
+  ];
+
+  // ─── shared constants ───
+  const PX_MIN = 0.08;
+  const PX_MAX = 30;
+
+  const AXIS_MIN = -2100;
+  const AXIS_MAX = 2100;
+
+  const LBL_W = 0;
+  const AX_H  = 40;
+
+  // Log mode — axis becomes log10(SINGULARITY - year). Here it just compresses antiquity.
+  const SINGULARITY = 2150;
+  const LOG_PX_MIN = 80;
+  const LOG_PX_MAX = 4000;
+  const LOG_REF = Math.log10(SINGULARITY - AXIS_MIN);
+  const LOG_TICK_YEARS = [
+    -2000, -1500, -1000, -500, 0, 500, 1000, 1200, 1400, 1500,
+    1550, 1600, 1650, 1700, 1750, 1800, 1830, 1850, 1900, 1950, 2000, 2050, 2100
+  ];
+
+  function formatYear(y){
+    if(y < 0) return Math.abs(y) + ' BCE';
+    if(y === 0) return '0';
+    return String(Math.round(y));
+  }
+
+  // ─── shared horizontal axis state — synced across panes ───
+  let pxPerYear = 2;
+  let pxPerLogUnit = 800;
+  let logMode = false;
+  const panes = [];
+
+  function yearToTrackX(year){
+    if(logMode){
+      if(year >= SINGULARITY) return 1e7;
+      const dist = SINGULARITY - year;
+      return (LOG_REF - Math.log10(dist)) * pxPerLogUnit;
+    }
+    return (year - AXIS_MIN) * pxPerYear;
+  }
+  function yearToInnerX(year){ return LBL_W + yearToTrackX(year); }
+  function xToYear(xInner){
+    const trackX = xInner - LBL_W;
+    if(logMode){
+      const logDist = LOG_REF - trackX / pxPerLogUnit;
+      const dist = Math.pow(10, logDist);
+      return SINGULARITY - dist;
+    }
+    return AXIS_MIN + trackX / pxPerYear;
+  }
+
+  function relayoutAll(){ panes.forEach(p => p.relayout()); }
+  function refreshAll(){ panes.forEach(p => { p.layoutAxis(); p.updateInfo(); }); }
+  function syncScrollLeftFrom(fromPane){
+    const x = fromPane.scroll.scrollLeft;
+    panes.forEach(p => {
+      if(p !== fromPane && p.scroll.scrollLeft !== x){
+        p.scroll.scrollLeft = x;
+      }
+    });
+  }
+  function broadcastLogButtonState(){
+    document.querySelectorAll('[data-action="log"]').forEach(b => {
+      b.classList.toggle('on', logMode);
+      b.textContent = logMode ? '📉 Lin' : '📈 Log';
+    });
+  }
+
+  // ─── factory: one pane per call (panes share the horizontal axis state) ───
+  function makeTimeline(suffix){
+    let suppressClick = false;
+
+    const scroll = document.getElementById('tlScroll' + suffix);
+    const inner  = document.getElementById('tlInner'  + suffix);
+    const axis   = document.getElementById('tlAxis'   + suffix);
+    const rowsEl = document.getElementById('tlRows'   + suffix);
+    const info   = document.getElementById('tlInfo'   + suffix);
+
+    function buildRow(ev, idx, parentCat){
+    const cat = ev.cat || parentCat;
+    const isChild = !!parentCat;
+    const hasKids = Array.isArray(ev.children) && ev.children.length > 0;
+    const hasStages = Array.isArray(ev.stages) && ev.stages.length > 0;
+
+    // Derive the bar's start/end from stages OR explicit start/end. Single source.
+    const barStart = hasStages ? ev.stages[0].from
+      : (typeof ev.start === 'number' ? ev.start : null);
+    const barEnd = hasStages ? ev.stages[ev.stages.length - 1].to
+      : (typeof ev.end === 'number' ? ev.end : null);
+    const hasRange = barStart != null && barEnd != null && barEnd > barStart;
+
+    const row = document.createElement('div');
+    let rowCls = 'tl-row cat-' + cat;
+    if(isChild)  rowCls += ' nested';
+    if(hasKids)  rowCls += ' has-children';
+    if(ev.tier === 'top') rowCls += ' tier-top';
+    row.className = rowCls;
+    row.dataset.idx = idx;
+
+    const main = document.createElement('div');
+    main.className = 'tl-row-main';
+
+    const track = document.createElement('div');
+    track.className = 'tl-row-track';
+
+    // Chevron indicator for expandable rows (title is now always-visible next to the bar)
+    if(hasKids){
+      const overlay = document.createElement('div');
+      overlay.className = 'tl-row-overlay';
+      const chev = document.createElement('span');
+      chev.className = 'tl-chev';
+      chev.textContent = '▸';
+      overlay.appendChild(chev);
+      track.appendChild(overlay);
+    }
+
+    // Bar(s) — staged segments OR single bar (people split into pre-20 + active)
+    if(hasStages){
+      ev.stages.forEach(seg => {
+        const bar = document.createElement('div');
+        bar.className = 'tl-bar stage-' + seg.stage;
+        bar.dataset.start = seg.from;
+        bar.dataset.end = seg.to;
+        if(seg.who){
+          bar.dataset.who = seg.who;
+          bar.dataset.tip = formatYear(seg.from) + '–' + formatYear(seg.to) + ' · ' + seg.who;
+        }
+        track.appendChild(bar);
+      });
+    } else if(hasRange){
+      if(cat === 'people' || cat === 'people-math' || cat === 'people-physics'){
+        // Lifespan drawn as decade bands — each 10 years of age a step darker (indigo 200→950),
+        // so a person's age at any point reads straight off the colour.
+        const DECADE_COLORS = ['#c7d2fe','#a5b4fc','#818cf8','#6366f1','#4f46e5','#4338ca','#3730a3','#312e81','#241d57','#1e1b4b'];
+        let segStart = barStart;
+        while(segStart < barEnd){
+          const age = segStart - barStart;
+          const decadeIdx = Math.min(DECADE_COLORS.length - 1, Math.floor(age / 10));
+          const segEnd = Math.min(barEnd, barStart + (Math.floor(age / 10) + 1) * 10);
+          const seg = document.createElement('div');
+          seg.className = 'tl-bar tl-bar-decade';
+          seg.dataset.start = segStart;
+          seg.dataset.end = segEnd;
+          seg.style.background = DECADE_COLORS[decadeIdx];
+          seg.dataset.who = ev.title;
+          seg.dataset.tip = ev.title + ' · age ' + (decadeIdx * 10) + 's (' + formatYear(segStart) + '–' + formatYear(segEnd) + ')';
+          track.appendChild(seg);
+          segStart = segEnd;
+        }
+      } else {
+        const bar = document.createElement('div');
+        bar.className = 'tl-bar cat-' + cat;
+        bar.dataset.start = barStart;
+        bar.dataset.end = barEnd;
+        track.appendChild(bar);
+      }
+    }
+
+    if(hasRange){
+      const ms = document.createElement('div');
+      ms.className = 'tl-marker tl-marker-start cat-' + cat;
+      ms.dataset.year = barStart;
+      track.appendChild(ms);
+    }
+
+    // ✕ first-test marker
+    if(typeof ev.firstTest === 'number'){
+      const ft = document.createElement('div');
+      ft.className = 'tl-firsttest';
+      ft.dataset.year = ev.firstTest;
+      track.appendChild(ft);
+    }
+
+    // Contribution dots — small markers on a person's bar at major-work years
+    if(Array.isArray(ev.contributions)){
+      ev.contributions.forEach(c => {
+        const dot = document.createElement('div');
+        dot.className = 'tl-contrib';
+        dot.dataset.year = c.year;
+        dot.dataset.tip = formatYear(c.year) + ' · ' + c.label;
+        track.appendChild(dot);
+      });
+    }
+
+    // Problem markers — red dot at anomaly year, optional green dot when later resolved.
+    // (No thick overlay segment; the underlying theory line just continues.)
+    if(Array.isArray(ev.problems)){
+      ev.problems.forEach(p => {
+        const pdot = document.createElement('div');
+        pdot.className = 'tl-problem-dot';
+        pdot.dataset.year = p.year;
+        pdot.dataset.tip = formatYear(p.year) + ' · problem: ' + p.label;
+        track.appendChild(pdot);
+
+        if(typeof p.fixedYear === 'number'){
+          const fdot = document.createElement('div');
+          fdot.className = 'tl-fix-dot';
+          fdot.dataset.year = p.fixedYear;
+          fdot.dataset.tip = formatYear(p.fixedYear) + ' · fix: ' + (p.fixLabel || 'resolved');
+          track.appendChild(fdot);
+        }
+      });
+    }
+
+    const me = document.createElement('div');
+    let endCls = 'tl-marker tl-marker-end cat-' + cat;
+    if(ev.status === 'killed')   endCls += ' killed';
+    if(ev.status === 'ongoing')  endCls += ' ongoing';
+    if(ev.status === 'evolved')  endCls += ' evolved';
+    me.className = endCls;
+    me.dataset.year = ev.year;
+    track.appendChild(me);
+
+    // Always-visible name — anchored to end of bar (or to the event marker for point events)
+    const nm = document.createElement('div');
+    nm.className = 'tl-row-name cat-' + cat;
+    nm.dataset.year = hasRange ? barEnd : ev.year;
+    nm.textContent = ev.title;
+    track.appendChild(nm);
+
+    main.appendChild(track);
+
+    const detail = document.createElement('div');
+    detail.className = 'tl-row-detail';
+    const dateStr = hasRange ? (formatYear(barStart) + ' → ' + formatYear(barEnd)) : formatYear(ev.year);
+    let detailHtml = '<div class="tl-detail-meta">' + dateStr + ' · ' + ev.who + '</div>' + ev.detail;
+    if(hasStages){
+      const stageLabel = {
+        speculative:      'speculative',
+        progress:         'significant progress',
+        testable:         'testable / experimented',
+        figured:          'close to figured out',
+        dormant:          'no change (settled)',
+        'problem-active': 'unresolved problem',
+      };
+      detailHtml += '<div class="tl-detail-stages">';
+      ev.stages.forEach(seg => {
+        const dates = formatYear(seg.from) + '–' + formatYear(seg.to);
+        const who = seg.who || '—';
+        detailHtml +=
+          '<div class="tl-stage-row">' +
+            '<span class="tl-stage-dates">' + dates + '</span>' +
+            '<span class="tl-stage-dot stage-' + seg.stage + '"></span>' +
+            '<span class="tl-stage-name">' + (stageLabel[seg.stage] || seg.stage) + '</span>' +
+            '<span class="tl-stage-who">' + who + '</span>' +
+          '</div>';
+      });
+      detailHtml += '</div>';
+    }
+    if(Array.isArray(ev.contributions) && ev.contributions.length){
+      detailHtml += '<div class="tl-contrib-list">';
+      ev.contributions.slice().sort((a,b) => a.year - b.year).forEach(c => {
+        detailHtml +=
+          '<div class="tl-contrib-row">' +
+            '<span class="tl-contrib-year">' + formatYear(c.year) + '</span>' +
+            '<span class="tl-contrib-label">' + c.label + '</span>' +
+          '</div>';
+      });
+      detailHtml += '</div>';
+    }
+    if(Array.isArray(ev.problems) && ev.problems.length){
+      detailHtml += '<div class="tl-contrib-list">';
+      ev.problems.slice().sort((a,b) => a.year - b.year).forEach(p => {
+        const fixStr = (typeof p.fixedYear === 'number')
+          ? ' <span style="color:#10b981;">● ' + formatYear(p.fixedYear) + ' — ' + (p.fixLabel || 'resolved') + '</span>'
+          : ' <span style="color:#888;">(open)</span>';
+        detailHtml +=
+          '<div class="tl-contrib-row">' +
+            '<span class="tl-contrib-year" style="color:#dc2626;">● ' + formatYear(p.year) + '</span>' +
+            '<span class="tl-contrib-label">' + p.label + fixStr + '</span>' +
+          '</div>';
+      });
+      detailHtml += '</div>';
+    }
+    detail.innerHTML = detailHtml;
+
+    row.appendChild(main);
+    row.appendChild(detail);
+
+    if(hasKids){
+      const kids = document.createElement('div');
+      kids.className = 'tl-children';
+      ev.children.forEach((c, j) => {
+        kids.appendChild(buildRow(c, idx + '.' + j, cat));
+      });
+      row.appendChild(kids);
+    }
+
+    main.addEventListener('click', (e) => {
+      if(suppressClick){ return; }
+      e.stopPropagation();
+      row.classList.toggle('expanded');
+    });
+
+    return row;
+  }
+
+  function buildRows(){
+    // Group entries by cat, preserving original cat order
+    const byCat = new Map();
+    const catOrder = [];
+    EVENTS.forEach((ev, i) => {
+      if(!byCat.has(ev.cat)){ byCat.set(ev.cat, []); catOrder.push(ev.cat); }
+      byCat.get(ev.cat).push([ev, i]);
+    });
+
+    function renderBlock(blockClass, markerText, isTopPredicate){
+      const block = document.createElement('div');
+      block.className = 'tl-tier-block ' + blockClass;
+      const marker = document.createElement('div');
+      marker.className = 'tl-tier-marker';
+      marker.textContent = markerText;
+      block.appendChild(marker);
+      catOrder.forEach(cat => {
+        const entries = byCat.get(cat).filter(([ev]) => isTopPredicate(ev));
+        if(entries.length === 0) return;
+        const h = document.createElement('div');
+        h.className = 'tl-section-header cat-' + cat;
+        h.textContent = CAT_NAMES[cat] || cat;
+        block.appendChild(h);
+        entries.forEach(([ev, i]) => block.appendChild(buildRow(ev, String(i), null)));
+      });
+      rowsEl.appendChild(block);
+    }
+
+    renderBlock('tl-tier-top',   '⭐ TOP — essentials',         ev => ev.tier === 'top');
+    renderBlock('tl-tier-other', '— Other',                     ev => ev.tier !== 'top');
+  }
+
+  function clearGridlines(){
+    inner.querySelectorAll('.tl-gridline').forEach(g => g.remove());
+  }
+  function addTick(y){
+    const tick = document.createElement('div');
+    tick.className = 'tl-tick';
+    tick.style.left = yearToTrackX(y) + 'px';
+    tick.textContent = formatYear(y);
+    axis.appendChild(tick);
+    const line = document.createElement('div');
+    line.className = 'tl-gridline';
+    line.style.left = yearToInnerX(y) + 'px';
+    inner.appendChild(line);
+  }
+
+  function layoutEras(){
+    inner.querySelectorAll('.tl-era-band').forEach(el => el.remove());
+    // axis labels are wiped by layoutAxis's innerHTML reset; we re-add below
+    ERAS.forEach((era, i) => {
+      const x1 = yearToTrackX(era.from);
+      const x2 = yearToTrackX(era.to);
+      if(i % 2 === 1){
+        const band = document.createElement('div');
+        band.className = 'tl-era-band';
+        band.style.left = x1 + 'px';
+        band.style.width = Math.max(0, x2 - x1) + 'px';
+        band.style.background = 'rgba(0,0,0,0.028)';
+        inner.appendChild(band);
+      }
+      const label = document.createElement('div');
+      label.className = 'tl-era-label';
+      label.style.left = x1 + 'px';
+      label.textContent = era.name;
+      axis.appendChild(label);
+    });
+  }
+
+  function layoutAxis(){
+    axis.innerHTML = '';
+    clearGridlines();
+    layoutEras();
+
+    const visLeft  = scroll.scrollLeft;
+    const visRight = visLeft + scroll.clientWidth;
+    const buf = 600;
+
+    if(logMode){
+      // Use a fixed tick set; show only those whose x falls in the buffered window.
+      LOG_TICK_YEARS.forEach(y => {
+        const x = yearToInnerX(y);
+        if(x < visLeft - buf || x > visRight + buf) return;
+        addTick(y);
+      });
+      return;
+    }
+
+    // Linear mode — adaptive tick interval.
+    let step;
+    if(pxPerYear >= 25)        step = 5;
+    else if(pxPerYear >= 10)   step = 10;
+    else if(pxPerYear >= 5)    step = 25;
+    else if(pxPerYear >= 2)    step = 50;
+    else if(pxPerYear >= 0.8)  step = 100;
+    else if(pxPerYear >= 0.3)  step = 250;
+    else                       step = 500;
+
+    const yStart = Math.max(AXIS_MIN, xToYear(visLeft  - buf));
+    const yEnd   = Math.min(AXIS_MAX, xToYear(visRight + buf));
+    const first = Math.ceil(yStart / step) * step;
+    for(let y = first; y <= yEnd; y += step) addTick(y);
+  }
+
+  function layoutEvents(){
+    // Single source of truth: every horizontal position derives from yearToTrackX.
+    // Widths are differences between two yearToTrackX values, so linear/log Just Works.
+    inner.querySelectorAll('.tl-bar, .tl-problem-bar').forEach(el => {
+      const s = parseFloat(el.dataset.start);
+      const e = parseFloat(el.dataset.end);
+      const x1 = yearToTrackX(s);
+      const x2 = yearToTrackX(e);
+      el.style.left  = x1 + 'px';
+      el.style.width = Math.max(0, x2 - x1) + 'px';
+    });
+    inner.querySelectorAll('.tl-marker, .tl-firsttest, .tl-row-year, .tl-contrib, .tl-row-name, .tl-problem-dot, .tl-fix-dot').forEach(el => {
+      el.style.left = yearToTrackX(parseFloat(el.dataset.year)) + 'px';
+    });
+  }
+
+  function relayout(){
+    let trackWidth;
+    if(logMode){
+      // Cap at one year before the singularity so the asymptote stays off-screen.
+      trackWidth = yearToTrackX(SINGULARITY - 1);
+    } else {
+      trackWidth = (AXIS_MAX - AXIS_MIN) * pxPerYear;
+    }
+    inner.style.width = (LBL_W + trackWidth + 60) + 'px';
+    layoutAxis();
+    layoutEvents();
+  }
+
+  function zoomAt(factor, anchorClientX){
+    const rect = scroll.getBoundingClientRect();
+    const anchorOffset = anchorClientX - rect.left;
+    const yearAtAnchor = xToYear(scroll.scrollLeft + anchorOffset);
+
+    if(logMode){
+      pxPerLogUnit = Math.max(LOG_PX_MIN, Math.min(LOG_PX_MAX, pxPerLogUnit * factor));
+    } else {
+      pxPerYear = Math.max(PX_MIN, Math.min(PX_MAX, pxPerYear * factor));
+    }
+    relayoutAll();
+
+    scroll.scrollLeft = yearToTrackX(yearAtAnchor) + LBL_W - anchorOffset;
+    syncScrollLeftFrom(thisPane);
+    refreshAll();
+  }
+
+  scroll.addEventListener('wheel', function(e){
+    // Shift + wheel = stretch the time axis. Plain wheel scrolls naturally
+    // (vertical for through the rows, horizontal trackpad swipes pan).
+    if(!e.shiftKey) return;
+    if(Math.abs(e.deltaY) < 0.5) return;
+    e.preventDefault();
+    const factor = e.deltaY > 0 ? 0.88 : 1.135;
+    zoomAt(factor, e.clientX);
+  }, { passive: false });
+
+  let dragging = false;
+  let dragStartX = 0, dragStartY = 0;
+  let dragStartScrollX = 0, dragStartScrollY = 0;
+  let dragMoved = 0;
+
+  // We deliberately avoid setPointerCapture here — it interferes with the
+  // click event firing on individual rows. Instead we listen on `window`
+  // for the duration of the drag, so the drag tracks even if the cursor
+  // leaves the scroll area.
+  function onDragMove(e){
+    if(!dragging) return;
+    const dx = e.clientX - dragStartX;
+    const dy = e.clientY - dragStartY;
+    dragMoved = Math.max(dragMoved, Math.hypot(dx, dy));
+    scroll.scrollLeft = dragStartScrollX - dx;
+    scroll.scrollTop  = dragStartScrollY - dy;
+  }
+  function onDragEnd(){
+    if(!dragging) return;
+    dragging = false;
+    scroll.classList.remove('grabbing');
+    window.removeEventListener('pointermove', onDragMove);
+    window.removeEventListener('pointerup', onDragEnd);
+    window.removeEventListener('pointercancel', onDragEnd);
+    if(dragMoved > 10){
+      suppressClick = true;
+      setTimeout(() => { suppressClick = false; }, 60);
+    }
+  }
+  scroll.addEventListener('pointerdown', function(e){
+    if(e.target.closest('.tl-row-detail')) return;
+    if(e.button !== 0 && e.pointerType === 'mouse') return; // left button / touch only
+    dragging = true;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    dragStartScrollX = scroll.scrollLeft;
+    dragStartScrollY = scroll.scrollTop;
+    dragMoved = 0;
+    scroll.classList.add('grabbing');
+    window.addEventListener('pointermove', onDragMove);
+    window.addEventListener('pointerup', onDragEnd);
+    window.addEventListener('pointercancel', onDragEnd);
+  });
+
+  // Jump-to-era: fit the chosen year range to the visible chart width.
+  function scrollToRange(startYear, endYear){
+    const visibleWidth = Math.max(200, scroll.clientWidth - LBL_W);
+    if(logMode){
+      const logStart = Math.log10(SINGULARITY - startYear);
+      const logEnd   = Math.log10(SINGULARITY - endYear);
+      const logRange = Math.max(0.1, logStart - logEnd);
+      pxPerLogUnit = Math.max(LOG_PX_MIN, Math.min(LOG_PX_MAX, visibleWidth / logRange));
+    } else {
+      pxPerYear = Math.max(PX_MIN, Math.min(PX_MAX, visibleWidth / (endYear - startYear)));
+    }
+    relayoutAll();
+    scroll.scrollLeft = yearToTrackX(startYear);
+    syncScrollLeftFrom(thisPane);
+    refreshAll();
+  }
+  // Per-pane toolbar wiring — buttons carry data-pane="<suffix>" data-action="..."
+  document.querySelectorAll('[data-pane="' + suffix + '"]').forEach(btn => {
+    const action = btn.dataset.action;
+    btn.addEventListener('click', (e) => {
+      if(action === 'ancient')      scrollToRange(-2000, 900);
+      else if(action === 'found')   scrollToRange(1450, 1620);
+      else if(action === 'modern')  scrollToRange(-2000, 2100);
+      else if(action === 'log'){
+        const centerOffset = scroll.clientWidth / 2;
+        const centerYear = xToYear(scroll.scrollLeft + centerOffset);
+        logMode = !logMode;
+        broadcastLogButtonState();
+        relayoutAll();
+        const newTrackX = yearToTrackX(centerYear);
+        scroll.scrollLeft = Math.max(0, newTrackX - centerOffset);
+        syncScrollLeftFrom(thisPane);
+        refreshAll();
+      }
+    });
+  });
+
+  // Horizontal scroll is synced across panes; vertical stays per-pane.
+  let scrollRaf = 0;
+  let lastScrollLeft = 0;
+  scroll.addEventListener('scroll', () => {
+    if(scrollRaf) return;
+    scrollRaf = requestAnimationFrame(() => {
+      scrollRaf = 0;
+      if(scroll.scrollLeft === lastScrollLeft) return; // only vertical changed
+      lastScrollLeft = scroll.scrollLeft;
+      syncScrollLeftFrom(thisPane);
+      refreshAll();
+    });
+  });
+  function updateInfo(){
+    const left = scroll.scrollLeft;
+    const right = left + scroll.clientWidth;
+    const y1 = Math.round(xToYear(left));
+    const y2 = Math.round(xToYear(right));
+    info.textContent = formatYear(y1) + ' → ' + formatYear(y2)
+      + (logMode ? '  ·  log → ' + SINGULARITY : '');
+  }
+
+    // Register this pane for cross-pane sync (referenced by zoomAt/log/scroll handlers)
+    const thisPane = { scroll, inner, axis, info, relayout, layoutAxis, updateInfo };
+    panes.push(thisPane);
+
+    // ─── boot this pane ───
+    buildRows();
+    relayout();
+    // Default view spans antiquity to 2100 — the post-1832 years are intentionally empty.
+    scrollToRange(-2000, 2100);
+    layoutAxis();
+    updateInfo();
+  } // end makeTimeline
+
+  makeTimeline('A');
+  makeTimeline('B');
+
+  // Defaults: show both TOP and OTHER; linear mode; full-view scroll
+  broadcastLogButtonState();
+  const topBtn = document.getElementById('tlTopOnly');
+  if(topBtn){
+    topBtn.textContent = '⭐ TOP only';
+    topBtn.addEventListener('click', () => {
+      const on = document.body.classList.toggle('top-only');
+      topBtn.classList.toggle('on', on);
+      topBtn.textContent = on ? '✕ Show all' : '⭐ TOP only';
+    });
+  }
+})();
+</script>
+
+</body>
+</html>

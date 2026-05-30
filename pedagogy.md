@@ -222,6 +222,8 @@ Each technical term should travel with a small set of synonyms. The canonical wo
 
 **Style.** Synonyms belong alongside the canonical text, not buried in footnotes. Inline parentheses work — *(also called X, or in everyday terms, Y)*. For longer pieces a parallel margin column, a hover-reveal, or a small "alt-term" pill near the heading makes the swap effortless without breaking the reading flow.
 
+**The rule — always label hard words on hover.** Every hard or misleading term gets marked in the text (a dotted underline, a faint pill, some visible cue) and reveals its extra synonyms on hover. The reader should never hit a wall word with no way out. Default to *more* labelling, not less. If a word might trip a student, tag it, and let the hover carry two or three synonyms plus a one-line plain-language gloss. The canonical word stays in the running text. The hover does the explaining.
+
 **Edge case — when the technical term is honest, name it.** *Acceleration* really does mean the second derivative of position. Inventing a folksy synonym ("speed-changing-ness") buys nothing. The synonym pass is for words that are *misleading* (spin, force, particle, field) or *abstract* (energy, entropy, action). Where the literal word already paints the right picture, leave it alone.
 
 **Pairs with #6 (don't trust your knowledge)** and **#4 (math integrated)**. A student who can name three synonyms for *energy* is harder to fool by anyone (themselves or others) using the word loosely. And the synonyms make it visible *which* mathematical move the word is shorthand for.
