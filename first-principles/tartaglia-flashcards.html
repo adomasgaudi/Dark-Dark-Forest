@@ -84,6 +84,8 @@
   .slidetrack{position:relative;flex:1 1 auto;height:50px;border-radius:25px;border:1px solid var(--rule);background:linear-gradient(180deg,#efe1c2,#e3d0aa);overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;box-shadow:0 1px 3px rgba(43,33,24,.18) inset;}
   .rangebtn{flex:0 0 auto;height:50px;min-width:54px;padding:0 6px;border-radius:25px;border:1px solid var(--ink);background:var(--parch);color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.02em;cursor:pointer;transition:all .15s;}
   .rangebtn:hover{background:var(--ink);color:var(--parch);}
+  .flipback{display:block;margin:11px auto 0;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;background:transparent;color:var(--ink-soft);border:1px solid var(--rule);padding:6px 13px;border-radius:14px;cursor:pointer;transition:all .15s;}
+  .flipback:hover{background:var(--ink);color:var(--parch);border-color:var(--ink);}
   .slidefill{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,var(--good),var(--easy));opacity:.3;}
   .slidehint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);pointer-events:none;transition:opacity .15s;}
   .slidethumb{position:absolute;top:3px;left:3px;width:44px;height:44px;border-radius:50%;background:var(--ink);color:var(--parch);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:600;cursor:grab;box-shadow:0 3px 8px -2px rgba(43,33,24,.7);touch-action:none;}
@@ -157,7 +159,7 @@
             <span class="tierbadge hidden" id="ftier"></span>
             <span class="ref" id="fref"></span>
             <div class="it" id="fit">—</div>
-            <div class="fliphint">tap / swipe up to flip · swipe ← → to move</div>
+            <div class="fliphint">Show answer to flip · swipe ← → to move</div>
           </div>
           <div class="face back">
             <span class="tag">Meaning</span>
@@ -230,7 +232,7 @@
 <script>
 /* App version — bump on each change: 0.1.0 → 0.1.1 for normal updates,
    and add a 4th segment (e.g. 0.1.0.1) for minor tweaks. */
-const VERSION="0.1.0";
+const VERSION="0.1.1";
 
 /* ---------------- data ---------------- */
 const LINES = [
@@ -480,11 +482,13 @@ function renderSlider(){
       </div>
       <button class="rangebtn" id="rangebtn" type="button" title="Toggle the slider range">${rangeMode==="long"?"≥ 1d":"≤ 1d"}</button>
     </div>
+    <button class="flipback" id="flipback" type="button">↩ back to question</button>
   </div>`;
   const track=document.getElementById('sltrack'),thumb=document.getElementById('slthumb'),
         fill=document.getElementById('slfill'),val=document.getElementById('slval'),hint=document.getElementById('slhint');
   const rangebtn=document.getElementById('rangebtn');
   rangebtn.onclick=e=>{e.stopPropagation();rangeMode=rangeMode==="long"?"short":"long";renderSlider();};
+  document.getElementById('flipback').onclick=e=>{e.stopPropagation();flip(false);};
   const margin=3,tw=44,N=STOPS.length;let idx=0,dragging=false;
   const travel=()=>Math.max(1,track.clientWidth-tw-margin*2);
   function setP(np){            // np is a raw 0..1 fraction; snap to the nearest step
@@ -532,10 +536,9 @@ let sx=0,sy=0,moved=false;
 scene.addEventListener('touchstart',e=>{const t=e.changedTouches[0];sx=t.clientX;sy=t.clientY;moved=false;},{passive:true});
 scene.addEventListener('touchmove',e=>{const t=e.changedTouches[0];if(Math.abs(t.clientX-sx)>8||Math.abs(t.clientY-sy)>8)moved=true;},{passive:true});
 scene.addEventListener('touchend',e=>{const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;
-  if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)){e.preventDefault();nav(dx<0?1:-1);}
-  else if(Math.abs(dy)>45&&Math.abs(dy)>Math.abs(dx)){e.preventDefault();flip();}
-  else if(!moved){flip();}},{passive:false});
-scene.addEventListener('click',()=>{if(!('ontouchstart' in window))flip();});
+  // horizontal swipe = navigate. Flipping is now button-only (no tap / swipe flip),
+  // so the back face stays put while you read the example or scroll it.
+  if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)){e.preventDefault();nav(dx<0?1:-1);}},{passive:false});
 document.addEventListener('keydown',e=>{
   if(document.getElementById('dbview').classList.contains('hidden')===false)return;
   if(e.key==='ArrowLeft')nav(-1);else if(e.key==='ArrowRight')nav(1);
