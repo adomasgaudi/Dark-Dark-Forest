@@ -333,7 +333,7 @@
 <script>
 /* App version — bump on each change: 0.1.0 → 0.1.1 for normal updates,
    and add a 4th segment (e.g. 0.1.0.1) for minor tweaks. */
-const VERSION="0.8.2";
+const VERSION="0.8.3";
 
 /* ---------------- data ---------------- */
 const LINES = [
@@ -566,41 +566,46 @@ function metaText(c){
   const due=new Date(s.due).toLocaleString(undefined,{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"});
   return "interval "+fmtDur(s.due-s.last)+" · due "+due;
 }
-/* dot visual = memory map.
-   COLOUR = freshness (blackbody cooling): just-reviewed = bright blue (hottest, with glow),
-            cooling through white → yellow → orange → red → coal as it ages toward due.
-            At/after due the coal goes transparent with a black outline.
-   SIZE   = interval length: diameter (px) = cube-root of the interval in minutes
-            (1 min ≈ 1px, 1000 min ≈ 10px), so memory strength and span read at a glance. */
+/* ===================== dot visual = memory map (all values derived from the params below) =====================
+   SIZE  : diameter(min) = SIZE_BASE * min^SIZE_EXP  (cube-root growth). Circles use it clamped to a small
+           range; crystals use SIZE per-tier (CRY_BASE × mult). Tune SIZE_BASE to spread the low end.
+   COLOUR: freshness = 1 − (now−lastReview)/interval, mapped through the HEAT ramp (bright blue hot → coal).  */
+const SIZE_BASE=4, SIZE_EXP=1/3;                 // diameter px = SIZE_BASE * minutes^SIZE_EXP
+const CIRCLE_MINPX=3, CIRCLE_MAXPX=18;           // circle clamp (interval < CRYSTAL_AT)
+const CRYSTAL_AT=240;                            // minutes (4h): at/above → gem crystals
+const CRY_BASE=12;                               // px size of a ×1.0 crystal
+const GLOW_AT=0.5;                               // strength above which a circle glows
+function sizeOf(min){return SIZE_BASE*Math.pow(min,SIZE_EXP);}     // the source size formula
+function strengthOf(s,now){return Math.max(0,Math.min(1,1-(now-s.last)/Math.max(60000,s.due-s.last)));}
 const HEAT=[[0,[26,20,16]],[0.12,[122,18,8]],[0.28,[230,40,20]],[0.46,[255,120,30]],[0.66,[255,220,70]],[0.84,[245,245,255]],[1,[70,170,255]]];
 function tempColor(t){t=Math.max(0,Math.min(1,t));for(let i=1;i<HEAT.length;i++){if(t<=HEAT[i][0]){const a=HEAT[i-1],b=HEAT[i],f=(t-a[0])/(b[0]-a[0]||1),c=a[1].map((v,j)=>Math.round(v+(b[1][j]-v)*f));return `rgb(${c[0]},${c[1]},${c[2]})`;}}return "rgb(70,170,255)";}
-// crystal tiers for intervals ≥ 4h: pick the highest threshold reached. {min in minutes}
+// crystal tiers for intervals ≥ 4h: material by threshold, size = CRY_BASE × mult (relative steps)
 const CRYSTAL=[
-  {min:240,  mat:"silver", size:11},   // 4h
-  {min:480,  mat:"silver", size:14},   // 8h  (≈1.3×)
-  {min:1440, mat:"gold",   size:14},   // 1d
-  {min:2880, mat:"gold",   size:18},   // 2d  (1.3×)
-  {min:4320, mat:"gold",   size:22},   // 3d  (1.6×)
-  {min:7200, mat:"gold",   size:28},   // 5d  (2×)
-  {min:10080,mat:"red",    size:26},   // 1w
-  {min:20160,mat:"red",    size:30},   // 2w
-  {min:30240,mat:"red",    size:33},   // 3w
-  {min:43200,mat:"diamond",size:12}    // 1mo+ (small brilliant)
+  {min:240,  mat:"silver", mult:1.0},  // 4h
+  {min:480,  mat:"silver", mult:1.3},  // 8h  (+30%)
+  {min:1440, mat:"gold",   mult:1.3},  // 1d
+  {min:2880, mat:"gold",   mult:1.6},  // 2d  (+30%)
+  {min:4320, mat:"gold",   mult:2.0},  // 3d  (+60%)
+  {min:7200, mat:"gold",   mult:2.5},  // 5d  (×2)
+  {min:10080,mat:"red",    mult:2.3},  // 1w
+  {min:20160,mat:"red",    mult:2.7},  // 2w
+  {min:30240,mat:"red",    mult:3.0},  // 3w
+  {min:43200,mat:"diamond",mult:1.0}   // 1mo+ (small brilliant ≈ 3× smaller than 3w)
 ];
 function crystalTier(min){let t=CRYSTAL[0];for(const e of CRYSTAL){if(min>=e.min)t=e;}return t;}
-// classify a card's dot: 'new' | circle (freshness colour, <4h) | crystal (≥4h, cracks when due)
+// classify a card's dot: 'new' | circle (freshness colour, < CRYSTAL_AT) | crystal (≥ CRYSTAL_AT, cracks when due)
 function dotInfo(s,now){
-  if(s.status==="new"||!s.last||!s.due) return {kind:"new",d:5,bg:"transparent",bd:"1px dashed var(--ink-soft)",sh:"none"};
+  if(s.status==="new"||!s.last||!s.due) return {kind:"new",d:CIRCLE_MINPX+2,bg:"transparent",bd:"1px dashed var(--ink-soft)",sh:"none"};
   const span=Math.max(60000,s.due-s.last),min=span/60000,due=now>=s.due;
-  if(min<240){
-    const d=Math.max(4,Math.min(34,Math.cbrt(min)));
+  if(min<CRYSTAL_AT){
+    const d=Math.max(CIRCLE_MINPX,Math.min(CIRCLE_MAXPX,sizeOf(min)));
     if(due) return {kind:"circle",d,bg:"transparent",bd:"1.5px solid #1a1410",sh:"none"};
-    const strength=Math.max(0,Math.min(1,1-(now-s.last)/span)),bg=tempColor(strength);
-    const sh=strength>0.5?`0 0 ${Math.round(2+strength*9)}px ${bg}`:"none";
+    const strength=strengthOf(s,now),bg=tempColor(strength);
+    const sh=strength>GLOW_AT?`0 0 ${Math.round(2+strength*9)}px ${bg}`:"none";
     return {kind:"circle",d,bg,bd:"1px solid rgba(43,33,24,.35)",sh};
   }
   const tier=crystalTier(min);
-  return {kind:"crystal",d:tier.size,mat:tier.mat,due};
+  return {kind:"crystal",d:CRY_BASE*tier.mult,mat:tier.mat,due};
 }
 function dotSpan(id,now,cur){
   const t=dotInfo(srs(id),now),ring=cur?" cur":"";
