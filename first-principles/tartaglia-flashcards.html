@@ -69,7 +69,7 @@
   .dots{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;align-items:center;max-width:440px;margin:14px auto 2px;}
   .dot{width:7px;height:7px;border-radius:50%;background:var(--rule);cursor:pointer;transition:transform .15s,background .15s;}
   .dot.on{background:var(--accent);transform:scale(1.4);}
-  .dot.done{background:var(--good);}
+  .dot.seen{background:var(--good);}
   .dot:hover{background:var(--ink-soft);}
   .dotcount{flex-basis:100%;text-align:center;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.06em;color:var(--ink-soft);margin-top:5px;}
   /* example / usage reveal on the back of word cards */
@@ -221,6 +221,7 @@
       <div class="util">
         <button id="shuffle">Shuffle</button>
         <button id="autoplayBtn" title="Auto-play the reading when a card appears">🔊 Auto: on</button>
+        <button id="repeatBtn" title="Repeat the audio this many times on each play">🔁 Repeat: ×1</button>
         <button id="hideItBtn" title="Hide all Italian text and learn by ear (audio-only)">🙈 Italian: shown</button>
         <button id="wordWholeBtn" title="Play just the word, or the whole line it's in">▶ Word audio</button>
         <button id="seeLearned" title="Review cards you've already learned, ignoring their schedule">See learned</button>
@@ -273,7 +274,7 @@
 <script>
 /* App version — bump on each change: 0.1.0 → 0.1.1 for normal updates,
    and add a 4th segment (e.g. 0.1.0.1) for minor tweaks. */
-const VERSION="0.4.0";
+const VERSION="0.4.1";
 
 /* ---------------- data ---------------- */
 const LINES = [
@@ -487,7 +488,7 @@ function renderDots(){
   const n=session.length;
   if(!n){dots.innerHTML="";return;}
   let h="";
-  for(let i=0;i<n;i++)h+=`<span class="dot${i===ptr?' on':i<ptr?' done':''}" data-i="${i}"></span>`;
+  for(let i=0;i<n;i++)h+=`<span class="dot${i===ptr?' on':i<ptr?' seen':''}" data-i="${i}"></span>`;
   h+=`<span class="dotcount">card ${Math.min(ptr+1,n)} of ${n} in this stack</span>`;
   dots.innerHTML=h;
 }
@@ -505,21 +506,28 @@ const LINE_AUDIO={
 const WORD_AUDIO={"W-quando":[0.0,0.72], "W-chel":[0.72,1.12], "W-cubo":[1.12,1.36], "W-con":[1.36,1.72], "W-le":[1.72,1.88], "W-cose":[1.88,2.28], "W-appresso":[2.28,2.8], "W-agguaglia":[3.44,4.08], "W-qualche":[4.2,4.56], "W-numero":[4.56,4.96], "W-discreto":[4.96,5.64], "W-trovan":[5.83,6.23], "W-dui":[6.23,6.55], "W-altri":[6.55,6.95], "W-differenti":[6.95,7.55], "W-in":[7.55,7.71], "W-esso":[7.71,8.07], "W-dapoi":[8.57,9.21], "W-terrai":[9.21,9.57], "W-questo":[9.57,10.01], "W-per":[10.01,10.21], "W-consueto":[10.21,10.97], "W-lor":[11.67,11.99], "W-produtto":[11.99,12.63], "W-sempre":[12.63,13.07], "W-sia":[13.07,13.39], "W-eguale":[13.39,13.83], "W-terzo":[14.36,14.8], "W-delle":[15.4,15.6], "W-neto":[15.96,16.4], "W-residuo":[16.94,17.54], "W-poi":[17.54,17.9], "W-suo":[17.9,18.14], "W-generale":[18.14,19.22], "W-lati":[20.03,20.39], "W-cubi":[20.39,20.95], "W-ben":[20.95,21.15], "W-sottratti":[21.15,21.95], "W-varr":[22.15,22.75], "W-tua":[22.87,23.47], "W-principale":[24.35,24.91]};
 const poemAudio=document.getElementById('poemAudio'),spkF=document.getElementById('spkF'),spkB=document.getElementById('spkB');
 const flisten=document.getElementById('flisten'),flineBtn=document.getElementById('flineBtn'),flineText=document.getElementById('flineText');
-const HIDE_KEY="tartaglia_hideit",WHOLE_KEY="tartaglia_wordwhole";
-let curSeg=null,stopT=null,autoPlay=true,hideItalian=false,wordWhole=false,curCard=null,revealNoun="example";
+const HIDE_KEY="tartaglia_hideit",WHOLE_KEY="tartaglia_wordwhole",REPEAT_KEY="tartaglia_repeat";
+const REPEATS=[1,2,3,5,10];
+let curSeg=null,stopT=null,autoPlay=true,hideItalian=false,wordWhole=false,curCard=null,revealNoun="example",repeatN=1;
 try{hideItalian=localStorage.getItem(HIDE_KEY)==="1";}catch(e){}
 try{wordWhole=localStorage.getItem(WHOLE_KEY)==="1";}catch(e){}
-function playSeg(seg){
+try{repeatN=parseInt(localStorage.getItem(REPEAT_KEY))||1;}catch(e){}
+function playSeg(seg,times){
   if(!seg||!poemAudio)return;
   clearTimeout(stopT);
-  const go=()=>{
+  times=times||repeatN;
+  const dur=Math.max(120,(seg[1]-seg[0])*1000+80),gap=200;let count=0;
+  const once=()=>{
     try{poemAudio.pause();poemAudio.currentTime=seg[0];}catch(e){}
-    const p=poemAudio.play();
+    const p=poemAudio.play();if(p&&p.catch)p.catch(()=>{});
     spkF.classList.add('playing');spkB.classList.add('playing');
-    stopT=setTimeout(()=>{poemAudio.pause();spkF.classList.remove('playing');spkB.classList.remove('playing');},Math.max(120,(seg[1]-seg[0])*1000+80));
-    if(p&&p.catch)p.catch(()=>{});
+    stopT=setTimeout(()=>{
+      poemAudio.pause();count++;
+      if(count<times)stopT=setTimeout(once,gap);
+      else{spkF.classList.remove('playing');spkB.classList.remove('playing');}
+    },dur);
   };
-  if(poemAudio.readyState>=1)go(); else poemAudio.addEventListener('loadedmetadata',go,{once:true});
+  if(poemAudio.readyState>=1)once(); else poemAudio.addEventListener('loadedmetadata',once,{once:true});
 }
 spkF.onclick=e=>{e.stopPropagation();playSeg(curSeg);};
 spkB.onclick=e=>{e.stopPropagation();playSeg(curSeg);};
@@ -670,6 +678,9 @@ exbtn.addEventListener('click',e=>{
 document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');deck=b.dataset.deck;cram=false;buildSession();});
 document.getElementById('shuffle').onclick=()=>{for(let i=session.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[session[i],session[j]]=[session[j],session[i]];}ptr=0;showCurrent();};
 document.getElementById('autoplayBtn').onclick=function(){autoPlay=!autoPlay;this.textContent="🔊 Auto: "+(autoPlay?"on":"off");if(autoPlay)playSeg(curSeg);};
+const repeatBtn=document.getElementById('repeatBtn');
+repeatBtn.textContent="🔁 Repeat: ×"+repeatN;
+repeatBtn.onclick=function(){let i=REPEATS.indexOf(repeatN);repeatN=REPEATS[(i+1)%REPEATS.length];this.textContent="🔁 Repeat: ×"+repeatN;try{localStorage.setItem(REPEAT_KEY,repeatN);}catch(e){}playSeg(curSeg);};
 const hideItBtn=document.getElementById('hideItBtn');
 hideItBtn.textContent="🙈 Italian: "+(hideItalian?"hidden":"shown");
 hideItBtn.onclick=function(){hideItalian=!hideItalian;this.textContent="🙈 Italian: "+(hideItalian?"hidden":"shown");try{localStorage.setItem(HIDE_KEY,hideItalian?"1":"0");}catch(e){}showCurrent();};
