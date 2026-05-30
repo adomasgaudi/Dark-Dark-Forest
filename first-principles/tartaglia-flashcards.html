@@ -66,6 +66,12 @@
   .spk.playing{background:var(--accent2);color:#fff;border-color:var(--accent2);}
   .listen{display:flex;flex-direction:column;align-items:center;gap:9px;font-size:42px;color:var(--accent2);}
   .listen span{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);}
+  .dots{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;align-items:center;max-width:440px;margin:14px auto 2px;}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--rule);cursor:pointer;transition:transform .15s,background .15s;}
+  .dot.on{background:var(--accent);transform:scale(1.4);}
+  .dot.done{background:var(--good);}
+  .dot:hover{background:var(--ink-soft);}
+  .dotcount{flex-basis:100%;text-align:center;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.06em;color:var(--ink-soft);margin-top:5px;}
   /* example / usage reveal on the back of word cards */
   .back{overflow-y:auto;}
   .usage{margin-top:15px;}
@@ -76,6 +82,18 @@
   .exit{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;line-height:1.32;color:var(--ink);}
   .exit mark{background:rgba(166,124,46,.3);color:inherit;padding:0 2px;border-radius:2px;}
   .exen{font-size:13px;line-height:1.35;color:var(--accent2);}
+  /* two translations on line cards */
+  .trans{display:flex;flex-direction:column;gap:8px;}
+  .tline{}
+  .tlabel{display:block;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:2px;}
+  .ten{font-size:clamp(15px,4vw,18px);line-height:1.32;color:var(--accent2);font-weight:500;}
+  .ten.exp{font-weight:400;color:var(--ink-soft);font-size:clamp(13px,3.6vw,15px);}
+  /* whole-line button + revealed line text on word cards */
+  .linebtn{position:absolute;bottom:9px;right:12px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.55);color:var(--ink);border:1px solid var(--rule);border-radius:15px;padding:6px 11px;cursor:pointer;transition:all .15s;z-index:2;}
+  .linebtn:hover{background:var(--ink);color:var(--parch);}
+  .linetext{margin-top:12px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(15px,4vw,19px);line-height:1.3;color:var(--ink-soft);}
+  .linetext mark{background:rgba(166,124,46,.3);color:var(--ink);padding:0 2px;border-radius:2px;}
+  .linetext .exlabel{display:inline;font-family:'JetBrains Mono',monospace;font-style:normal;font-size:9px;letter-spacing:.1em;color:var(--gold);margin-right:4px;}
 
   .answer{width:100%;max-width:440px;margin-top:16px;min-height:54px;display:flex;justify-content:center;}
   .showbtn{width:100%;height:50px;border-radius:8px;border:1px solid var(--ink);background:var(--ink);color:var(--parch);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .15s;}
@@ -170,7 +188,9 @@
             <span class="ref" id="fref"></span>
             <div class="it" id="fit">—</div>
             <div class="listen hidden" id="flisten">🔊<span>listen &amp; guess</span></div>
+            <div class="linetext hidden" id="flineText"></div>
             <button class="spk" id="spkF" type="button" title="Play pronunciation" aria-label="Play pronunciation">🔊</button>
+            <button class="linebtn hidden" id="flineBtn" type="button" title="Hear &amp; show the whole line">▶ line</button>
             <div class="fliphint">Show answer to flip · swipe ← → to move</div>
           </div>
           <div class="face back">
@@ -180,8 +200,8 @@
             <div>
               <div class="bit" id="bit"></div>
               <div class="en" id="ben">—</div>
+              <div class="trans hidden" id="btrans"></div>
               <div class="gloss" id="bgloss"></div>
-              <div class="math hidden" id="bmath"></div>
               <div class="usage hidden" id="busage">
                 <button class="exbtn" id="exbtn" type="button">Show example ↓</button>
                 <div class="exbody hidden" id="exbody"></div>
@@ -191,6 +211,8 @@
           </div>
         </div>
       </div>
+
+      <div class="dots" id="dots"></div>
 
       <div class="answer" id="answer">
         <button class="showbtn" id="showbtn">Show answer</button>
@@ -251,19 +273,19 @@
 <script>
 /* App version — bump on each change: 0.1.0 → 0.1.1 for normal updates,
    and add a 4th segment (e.g. 0.1.0.1) for minor tweaks. */
-const VERSION="0.3.0";
+const VERSION="0.4.0";
 
 /* ---------------- data ---------------- */
 const LINES = [
-  {id:"L1",no:"L1",it:"Quando chel cubo con le cose appresso",en:"When the cube and its x-terms stand together",gloss:"Quando=when · cubo=cube · cose=things · appresso=alongside"},
-  {id:"L2",no:"L2",it:"Se agguaglia à qualche numero discreto",en:"set equal to some definite number,",gloss:"agguaglia=equals · qualche=some · numero=number · discreto=definite"},
-  {id:"L3",no:"L3",it:"Trovan dui altri differenti in esso",en:"find two numbers whose difference is that number.",gloss:"trovan=find · dui=two · differenti=differing · in esso=by it",math:"u − v = q"},
-  {id:"L4",no:"L4",it:"Dapoi terrai questo per consueto",en:"Then keep to this as your rule:",gloss:"dapoi=then · terrai=you'll hold · per consueto=as custom"},
-  {id:"L5",no:"L5",it:"Ch'el lor produtto sempre sia eguale",en:"let their product always equal",gloss:"lor=their · produtto=product · sempre=always · eguale=equal"},
-  {id:"L6",no:"L6",it:"Al terzo cubo delle cose neto",en:"the cube of exactly one-third of the x-coefficient.",gloss:"terzo=third · cubo=cube · delle cose=of the things · neto=exactly",math:"u · v = (p/3)³"},
-  {id:"L7",no:"L7",it:"El residuo poi suo generale",en:"Then, as a general result,",gloss:"residuo=remainder · poi=then · generale=general"},
-  {id:"L8",no:"L8",it:"Delli lor lati cubi ben sottratti",en:"the cube roots of those two, subtracted,",gloss:"lati cubi=cube roots · ben=well · sottratti=subtracted"},
-  {id:"L9",no:"L9",it:"Varrà la tua cosa principale",en:"give the value of your unknown x.",gloss:"varrà=will be worth · cosa=the unknown · principale=principal",math:"x = ∛u − ∛v"}
+  {id:"L1",no:"L1",it:"Quando chel cubo con le cose appresso",en:"When the cube and its x-terms stand together",gloss:"Quando=when · cubo=cube · cose=things · appresso=alongside",lit:"When the cube, with the things set beside it,",exp:"When x³ plus some multiple of x"},
+  {id:"L2",no:"L2",it:"Se agguaglia à qualche numero discreto",en:"set equal to some definite number,",gloss:"agguaglia=equals · qualche=some · numero=number · discreto=definite",lit:"is made equal to some distinct number,",exp:"equals a known number — that is, x³ + px = q —"},
+  {id:"L3",no:"L3",it:"Trovan dui altri differenti in esso",en:"find two numbers whose difference is that number.",gloss:"trovan=find · dui=two · differenti=differing · in esso=by it",math:"u − v = q",lit:"find two others that differ by that number;",exp:"find two numbers u and v with u − v = q."},
+  {id:"L4",no:"L4",it:"Dapoi terrai questo per consueto",en:"Then keep to this as your rule:",gloss:"dapoi=then · terrai=you'll hold · per consueto=as custom",lit:"thereafter hold to this as your custom:",exp:"Then follow this fixed rule:"},
+  {id:"L5",no:"L5",it:"Ch'el lor produtto sempre sia eguale",en:"let their product always equal",gloss:"lor=their · produtto=product · sempre=always · eguale=equal",lit:"that their product should always be equal",exp:"make their product u·v equal to"},
+  {id:"L6",no:"L6",it:"Al terzo cubo delle cose neto",en:"the cube of exactly one-third of the x-coefficient.",gloss:"terzo=third · cubo=cube · delle cose=of the things · neto=exactly",math:"u · v = (p/3)³",lit:"to the cube of exactly a third of the things;",exp:"the cube of one-third the x-coefficient: (p/3)³."},
+  {id:"L7",no:"L7",it:"El residuo poi suo generale",en:"Then, as a general result,",gloss:"residuo=remainder · poi=then · generale=general",lit:"then the remainder, taken in general,",exp:"Then, in general,"},
+  {id:"L8",no:"L8",it:"Delli lor lati cubi ben sottratti",en:"the cube roots of those two, subtracted,",gloss:"lati cubi=cube roots · ben=well · sottratti=subtracted",lit:"the cube roots of those two, duly subtracted,",exp:"subtract the cube root of v from the cube root of u,"},
+  {id:"L9",no:"L9",it:"Varrà la tua cosa principale",en:"give the value of your unknown x.",gloss:"varrà=will be worth · cosa=the unknown · principale=principal",math:"x = ∛u − ∛v",lit:"will be the worth of your principal thing.",exp:"and that difference is x:  x = ∛u − ∛v."}
 ];
 
 // [italian, english, tier]
@@ -455,12 +477,21 @@ function refreshStatus(){
 /* ---------------- elements ---------------- */
 const card=document.getElementById('card'),scene=document.getElementById('scene');
 const fit=document.getElementById('fit'),ben=document.getElementById('ben');
-const bgloss=document.getElementById('bgloss'),bmath=document.getElementById('bmath');
+const bgloss=document.getElementById('bgloss'),btrans=document.getElementById('btrans');
 const fref=document.getElementById('fref'),bref=document.getElementById('bref');
 const ftag=document.getElementById('ftag'),ftier=document.getElementById('ftier');
 const busage=document.getElementById('busage'),exbtn=document.getElementById('exbtn'),exbody=document.getElementById('exbody'),bhint=document.getElementById('bhint'),bit=document.getElementById('bit');
 const answer=document.getElementById('answer');
-const studyEl=document.getElementById('study'),finishedEl=document.getElementById('finished');
+const studyEl=document.getElementById('study'),finishedEl=document.getElementById('finished'),dots=document.getElementById('dots');
+function renderDots(){
+  const n=session.length;
+  if(!n){dots.innerHTML="";return;}
+  let h="";
+  for(let i=0;i<n;i++)h+=`<span class="dot${i===ptr?' on':i<ptr?' done':''}" data-i="${i}"></span>`;
+  h+=`<span class="dotcount">card ${Math.min(ptr+1,n)} of ${n} in this stack</span>`;
+  dots.innerHTML=h;
+}
+dots.onclick=e=>{const d=e.target.closest('.dot');if(!d)return;const i=+d.dataset.i;if(i>=0&&i<session.length){ptr=i;showCurrent();}};
 const sNew=document.getElementById('sNew'),sLearn=document.getElementById('sLearn'),sDue=document.getElementById('sDue'),sLearned=document.getElementById('sLearned');
 
 /* ---------------- audio: ElevenLabs reading of the poem, sliced per line ----------------
@@ -473,9 +504,9 @@ const LINE_AUDIO={
 // per-word clips (forced-aligned within each line), keyed by card id
 const WORD_AUDIO={"W-quando":[0.0,0.72], "W-chel":[0.72,1.12], "W-cubo":[1.12,1.36], "W-con":[1.36,1.72], "W-le":[1.72,1.88], "W-cose":[1.88,2.28], "W-appresso":[2.28,2.8], "W-agguaglia":[3.44,4.08], "W-qualche":[4.2,4.56], "W-numero":[4.56,4.96], "W-discreto":[4.96,5.64], "W-trovan":[5.83,6.23], "W-dui":[6.23,6.55], "W-altri":[6.55,6.95], "W-differenti":[6.95,7.55], "W-in":[7.55,7.71], "W-esso":[7.71,8.07], "W-dapoi":[8.57,9.21], "W-terrai":[9.21,9.57], "W-questo":[9.57,10.01], "W-per":[10.01,10.21], "W-consueto":[10.21,10.97], "W-lor":[11.67,11.99], "W-produtto":[11.99,12.63], "W-sempre":[12.63,13.07], "W-sia":[13.07,13.39], "W-eguale":[13.39,13.83], "W-terzo":[14.36,14.8], "W-delle":[15.4,15.6], "W-neto":[15.96,16.4], "W-residuo":[16.94,17.54], "W-poi":[17.54,17.9], "W-suo":[17.9,18.14], "W-generale":[18.14,19.22], "W-lati":[20.03,20.39], "W-cubi":[20.39,20.95], "W-ben":[20.95,21.15], "W-sottratti":[21.15,21.95], "W-varr":[22.15,22.75], "W-tua":[22.87,23.47], "W-principale":[24.35,24.91]};
 const poemAudio=document.getElementById('poemAudio'),spkF=document.getElementById('spkF'),spkB=document.getElementById('spkB');
-const flisten=document.getElementById('flisten');
+const flisten=document.getElementById('flisten'),flineBtn=document.getElementById('flineBtn'),flineText=document.getElementById('flineText');
 const HIDE_KEY="tartaglia_hideit",WHOLE_KEY="tartaglia_wordwhole";
-let curSeg=null,stopT=null,autoPlay=true,hideItalian=false,wordWhole=false;
+let curSeg=null,stopT=null,autoPlay=true,hideItalian=false,wordWhole=false,curCard=null,revealNoun="example";
 try{hideItalian=localStorage.getItem(HIDE_KEY)==="1";}catch(e){}
 try{wordWhole=localStorage.getItem(WHOLE_KEY)==="1";}catch(e){}
 function playSeg(seg){
@@ -492,10 +523,13 @@ function playSeg(seg){
 }
 spkF.onclick=e=>{e.stopPropagation();playSeg(curSeg);};
 spkB.onclick=e=>{e.stopPropagation();playSeg(curSeg);};
+// word card: play the whole line, and reveal the line text (only when Italian is shown)
+flineBtn.onclick=e=>{e.stopPropagation();if(!curCard)return;playSeg(LINE_AUDIO[curCard.lineNo]||null);if(!hideItalian)flineText.classList.toggle('hidden');};
 
 function showCurrent(){
   if(ptr>=session.length||session.length===0){finish();return;}
   studyEl.classList.remove('hidden');finishedEl.classList.add('hidden');
+  renderDots();
   const c=CARDS[session[ptr]];card.classList.remove('flipped');
   setTimeout(()=>{
     const w=c.type==="word";
@@ -508,22 +542,35 @@ function showCurrent(){
     fit.textContent=c.front;fit.className="it"+(w?" word":"")+(hide?" hidden":"");
     flisten.classList.toggle('hidden',!hide);       // front shows a "listen" prompt instead
     bit.textContent=c.front;bit.classList.toggle('hidden',hide);
+    curCard=c;
     ben.textContent=c.back;ben.className="en"+(w?" word":"");
+    ben.classList.toggle('hidden',!w);             // line cards use the two-translation block instead
+    if(!w){                                         // line card: literal + explanatory (English → visible even in audio-only)
+      btrans.classList.remove('hidden');
+      btrans.innerHTML=`<div class="tline"><span class="tlabel">Literal</span><div class="ten">${c.lit||c.back}</div></div>`+
+        (c.exp?`<div class="tline"><span class="tlabel">In plain terms</span><div class="ten exp">${c.exp}</div></div>`:"");
+    }else btrans.classList.add('hidden');
     fref.textContent=w?"":c.ref;bref.textContent=w?"":c.ref;
     ftag.textContent=w?"Word":"Line";ftag.className="tag"+(w?" word":"");
     if(w){ftier.classList.remove('hidden');ftier.textContent=TIER_LABEL[c.tier];ftier.style.background=TIER_COLOR[c.tier];}
     else ftier.classList.add('hidden');
     bgloss.textContent=c.gloss||"";bgloss.classList.toggle('hidden',hide);
-    if(c.math){bmath.classList.remove('hidden');bmath.textContent=c.math;}else bmath.classList.add('hidden');
-    // usage / example reveal — word cards only (lines already are full sentences); hidden in audio-only mode
-    exbody.classList.add('hidden');exbtn.textContent="Show example ↓";bhint.classList.remove('hidden');
+    // reveal block: word card → example (Italian, hidden in audio-only); line card → formula (math, always available)
+    exbody.classList.add('hidden');bhint.classList.remove('hidden');
     if(w&&(c.lineIt||c.ex)&&!hide){
-      busage.classList.remove('hidden');
+      revealNoun="example";exbtn.textContent="Show example ↓";busage.classList.remove('hidden');
       let html="";
       if(c.lineIt)html+=`<div><span class="exlabel">In the poem · ${c.lineNo}</span><div class="exit">${highlightWord(c.lineIt,c.front)}</div><div class="exen">${c.lineEn}</div></div>`;
       if(c.ex)html+=`<div><span class="exlabel">In use</span><div class="exit">${c.ex.it}</div><div class="exen">${c.ex.en}</div></div>`;
       exbody.innerHTML=html;
+    }else if(!w&&c.math){
+      revealNoun="formula";exbtn.textContent="Show formula ↓";busage.classList.remove('hidden');
+      exbody.innerHTML=`<div class="math">${c.math}</div>`;
     }else busage.classList.add('hidden');
+    // word cards: "whole line" button (plays the line; reveals line text when Italian is shown)
+    flineBtn.classList.toggle('hidden',!w);
+    flineText.classList.add('hidden');
+    if(w)flineText.innerHTML=`<span class="exlabel">${c.lineNo}</span> ${highlightWord(c.lineIt,c.front)}`;
     spkF.style.display=spkB.style.display=hasAudio?"flex":"none";
     if(hasAudio&&autoPlay)playSeg(curSeg);  // best-effort autoplay (browsers may block until first tap)
   },card.classList.contains('flipped')?240:0);
@@ -588,7 +635,7 @@ function nav(d){
   setTimeout(()=>{ptr=n;showCurrent();scene.style.transition='none';scene.style.transform=`translateX(${d<0?'-40px':'40px'})`;requestAnimationFrame(()=>{scene.style.transition='transform .15s ease, opacity .15s';scene.style.transform='translateX(0)';scene.style.opacity='1';});},150);
 }
 function finish(){
-  studyEl.classList.add('hidden');finishedEl.classList.remove('hidden');
+  studyEl.classList.add('hidden');finishedEl.classList.remove('hidden');dots.innerHTML="";
   const now=Date.now(),ids=deckIds();
   const ahead=ids.filter(id=>{const s=srs(id);return s.status!=="new"&&s.due>now;}).length;
   document.getElementById('doneMsg').textContent=ahead>0?`${ahead} card(s) scheduled for later. Cram to keep going now.`:`Nothing due in this stack. Try another tier or Cram.`;
@@ -617,7 +664,7 @@ exbtn.addEventListener('click',e=>{
   e.stopPropagation();
   const willOpen=exbody.classList.contains('hidden');
   exbody.classList.toggle('hidden',!willOpen);
-  exbtn.textContent=willOpen?"Hide example ↑":"Show example ↓";
+  exbtn.textContent=(willOpen?"Hide ":"Show ")+revealNoun+(willOpen?" ↑":" ↓");
   bhint.classList.toggle('hidden',willOpen);
 });
 document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');deck=b.dataset.deck;cram=false;buildSession();});
