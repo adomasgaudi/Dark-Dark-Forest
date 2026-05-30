@@ -200,6 +200,7 @@
         <button id="shuffle">Shuffle</button>
         <button id="autoplayBtn" title="Auto-play the reading when a card appears">🔊 Auto: on</button>
         <button id="hideItBtn" title="Hide all Italian text and learn by ear (audio-only)">🙈 Italian: shown</button>
+        <button id="wordWholeBtn" title="Play just the word, or the whole line it's in">▶ Word audio</button>
         <button id="seeLearned" title="Review cards you've already learned, ignoring their schedule">See learned</button>
         <button id="cram">Cram all</button>
         <button id="exportP" title="Copy a portable backup of your progress">Export</button>
@@ -250,7 +251,7 @@
 <script>
 /* App version — bump on each change: 0.1.0 → 0.1.1 for normal updates,
    and add a 4th segment (e.g. 0.1.0.1) for minor tweaks. */
-const VERSION="0.2.1";
+const VERSION="0.3.0";
 
 /* ---------------- data ---------------- */
 const LINES = [
@@ -469,11 +470,14 @@ const LINE_AUDIO={
   L1:[0.00,2.83], L2:[3.20,5.64], L3:[5.83,8.09], L4:[8.57,10.98], L5:[11.23,13.84],
   L6:[14.20,16.40], L7:[16.66,19.23], L8:[19.59,21.97], L9:[22.15,24.93]
 };
+// per-word clips (forced-aligned within each line), keyed by card id
+const WORD_AUDIO={"W-quando":[0.0,0.72], "W-chel":[0.72,1.12], "W-cubo":[1.12,1.36], "W-con":[1.36,1.72], "W-le":[1.72,1.88], "W-cose":[1.88,2.28], "W-appresso":[2.28,2.8], "W-agguaglia":[3.44,4.08], "W-qualche":[4.2,4.56], "W-numero":[4.56,4.96], "W-discreto":[4.96,5.64], "W-trovan":[5.83,6.23], "W-dui":[6.23,6.55], "W-altri":[6.55,6.95], "W-differenti":[6.95,7.55], "W-in":[7.55,7.71], "W-esso":[7.71,8.07], "W-dapoi":[8.57,9.21], "W-terrai":[9.21,9.57], "W-questo":[9.57,10.01], "W-per":[10.01,10.21], "W-consueto":[10.21,10.97], "W-lor":[11.67,11.99], "W-produtto":[11.99,12.63], "W-sempre":[12.63,13.07], "W-sia":[13.07,13.39], "W-eguale":[13.39,13.83], "W-terzo":[14.36,14.8], "W-delle":[15.4,15.6], "W-neto":[15.96,16.4], "W-residuo":[16.94,17.54], "W-poi":[17.54,17.9], "W-suo":[17.9,18.14], "W-generale":[18.14,19.22], "W-lati":[20.03,20.39], "W-cubi":[20.39,20.95], "W-ben":[20.95,21.15], "W-sottratti":[21.15,21.95], "W-varr":[22.15,22.75], "W-tua":[22.87,23.47], "W-principale":[24.35,24.91]};
 const poemAudio=document.getElementById('poemAudio'),spkF=document.getElementById('spkF'),spkB=document.getElementById('spkB');
 const flisten=document.getElementById('flisten');
-const HIDE_KEY="tartaglia_hideit";
-let curSeg=null,stopT=null,autoPlay=true,hideItalian=false;
+const HIDE_KEY="tartaglia_hideit",WHOLE_KEY="tartaglia_wordwhole";
+let curSeg=null,stopT=null,autoPlay=true,hideItalian=false,wordWhole=false;
 try{hideItalian=localStorage.getItem(HIDE_KEY)==="1";}catch(e){}
+try{wordWhole=localStorage.getItem(WHOLE_KEY)==="1";}catch(e){}
 function playSeg(seg){
   if(!seg||!poemAudio)return;
   clearTimeout(stopT);
@@ -495,8 +499,10 @@ function showCurrent(){
   const c=CARDS[session[ptr]];card.classList.remove('flipped');
   setTimeout(()=>{
     const w=c.type==="word";
-    // audio: line card → its own clip; word card → the line it comes from
-    curSeg=LINE_AUDIO[c.type==="line"?c.id:c.lineNo]||null;
+    // audio: line card → its line clip; word card → its own word clip (forced-aligned),
+    // unless "play whole line" is on, then the word plays inside its full line.
+    curSeg = c.type==="line" ? (LINE_AUDIO[c.id]||null)
+           : (wordWhole ? (LINE_AUDIO[c.lineNo]||null) : (WORD_AUDIO[c.id]||LINE_AUDIO[c.lineNo]||null));
     const hasAudio=!!curSeg;
     const hide=hideItalian&&hasAudio;               // audio-only mode: conceal all Italian text
     fit.textContent=c.front;fit.className="it"+(w?" word":"")+(hide?" hidden":"");
@@ -620,6 +626,9 @@ document.getElementById('autoplayBtn').onclick=function(){autoPlay=!autoPlay;thi
 const hideItBtn=document.getElementById('hideItBtn');
 hideItBtn.textContent="🙈 Italian: "+(hideItalian?"hidden":"shown");
 hideItBtn.onclick=function(){hideItalian=!hideItalian;this.textContent="🙈 Italian: "+(hideItalian?"hidden":"shown");try{localStorage.setItem(HIDE_KEY,hideItalian?"1":"0");}catch(e){}showCurrent();};
+const wordWholeBtn=document.getElementById('wordWholeBtn');
+wordWholeBtn.textContent=wordWhole?"▶ Whole line":"▶ Word audio";
+wordWholeBtn.onclick=function(){wordWhole=!wordWhole;this.textContent=wordWhole?"▶ Whole line":"▶ Word audio";try{localStorage.setItem(WHOLE_KEY,wordWhole?"1":"0");}catch(e){}showCurrent();};
 document.getElementById('cram').onclick=()=>{cram=true;buildSession();};
 document.getElementById('seeLearned').onclick=()=>{
   // show already-learned cards on demand, ignoring their schedule
