@@ -237,7 +237,7 @@
 <script>
 /* App version — bump on each change: 0.1.0 → 0.1.1 for normal updates,
    and add a 4th segment (e.g. 0.1.0.1) for minor tweaks. */
-const VERSION="0.1.4";
+const VERSION="0.1.4.1";
 
 /* ---------------- data ---------------- */
 const LINES = [
@@ -396,10 +396,13 @@ function commitInterval(minutes){
   if(minutes<1440){s.status="learning";s.interval=0;}
   else{s.status="review";s.interval=Math.round(minutes/1440);}
   s.reps++;SRS[c.id]=s;save();
-  session.splice(ptr,1);
-  if(minutes<10){let ins=ptr+3;if(ins>session.length)ins=session.length;session.splice(ins,0,c.id);}
-  if(ptr>=session.length)ptr=session.length;
-  refreshStatus();showCurrent();
+  session.splice(ptr,1);          // card leaves the session — it only returns once it's actually due
+  refreshStatus();
+  if(ptr<session.length){showCurrent();return;}
+  // session exhausted: pull in anything that has since become due (unless craming a fixed set)
+  if(!cram){const due=deckIds().filter(id=>{const k=srs(id);return k.status==="new"||k.due<=Date.now();});
+    if(due.length){session=due;ptr=0;showCurrent();return;}}
+  finish();
 }
 
 function bucket(s){
