@@ -33,8 +33,8 @@
   .tabs button{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;background:transparent;color:var(--ink-soft);border:1px solid var(--rule);padding:6px 11px;border-radius:2px;cursor:pointer;transition:all .15s;}
   .tabs button.on{background:var(--ink);color:var(--parch);border-color:var(--ink);}
 
-  .status{display:flex;gap:13px;font-family:'JetBrains Mono',monospace;font-size:11px;margin-bottom:12px;}
-  .status .new{color:var(--easy);} .status .learn{color:var(--learning);} .status .due{color:var(--good);}
+  .status{display:flex;gap:13px;font-family:'JetBrains Mono',monospace;font-size:11px;margin-bottom:12px;flex-wrap:wrap;justify-content:center;}
+  .status .new{color:var(--easy);} .status .learn{color:var(--learning);} .status .due{color:var(--good);} .status .learned{color:var(--learned);}
 
   .scene{width:100%;max-width:440px;height:290px;perspective:1400px;touch-action:pan-y;}
   .card{position:relative;width:100%;height:100%;transition:transform .5s cubic-bezier(.4,.1,.2,1);transform-style:preserve-3d;cursor:pointer;}
@@ -80,7 +80,10 @@
   .slider-wrap{width:100%;}
   .sliderlabel{text-align:center;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:9px;}
   .sliderlabel b{font-family:'Cormorant Garamond',serif;font-style:normal;font-size:18px;letter-spacing:0;color:var(--accent);text-transform:none;}
-  .slidetrack{position:relative;width:100%;height:50px;border-radius:25px;border:1px solid var(--rule);background:linear-gradient(180deg,#efe1c2,#e3d0aa);overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;box-shadow:0 1px 3px rgba(43,33,24,.18) inset;}
+  .sliderrow{display:flex;gap:8px;align-items:center;width:100%;}
+  .slidetrack{position:relative;flex:1 1 auto;height:50px;border-radius:25px;border:1px solid var(--rule);background:linear-gradient(180deg,#efe1c2,#e3d0aa);overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;box-shadow:0 1px 3px rgba(43,33,24,.18) inset;}
+  .rangebtn{flex:0 0 auto;height:50px;min-width:54px;padding:0 6px;border-radius:25px;border:1px solid var(--ink);background:var(--parch);color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.02em;cursor:pointer;transition:all .15s;}
+  .rangebtn:hover{background:var(--ink);color:var(--parch);}
   .slidefill{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,var(--good),var(--easy));opacity:.3;}
   .slidehint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);pointer-events:none;transition:opacity .15s;}
   .slidethumb{position:absolute;top:3px;left:3px;width:44px;height:44px;border-radius:50%;background:var(--ink);color:var(--parch);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:600;cursor:grab;box-shadow:0 3px 8px -2px rgba(43,33,24,.7);touch-action:none;}
@@ -143,6 +146,7 @@
       <span class="new">New <b id="sNew">0</b></span>
       <span class="learn">Learn <b id="sLearn">0</b></span>
       <span class="due">Due <b id="sDue">0</b></span>
+      <span class="learned">Learned <b id="sLearned">0</b></span>
     </div>
 
     <div id="study">
@@ -178,6 +182,7 @@
 
       <div class="util">
         <button id="shuffle">Shuffle</button>
+        <button id="seeLearned" title="Review cards you've already learned, ignoring their schedule">See learned</button>
         <button id="cram">Cram all</button>
         <button id="exportP" title="Copy a portable backup of your progress">Export</button>
         <button id="importP" title="Paste a backup from another version/device">Import</button>
@@ -218,10 +223,15 @@
 
   <div class="foot">
     Italian: PUBLIC DOMAIN · meanings, glosses &amp; difficulty tiers: MINE (subjective)<br>
-    Keys: ← → move · Space flip · drag slider to schedule (snaps 1m → 2mo) · 1·2·3·4 quick presets (10m · 1d · 4d · 2w) · progress persists when storage allows
+    Keys: ← → move · Space flip · drag slider to schedule · ≤1d/≥1d button switches range · 1·2·3·4 quick presets (10m · 1d · 4d · 2w) · progress persists when storage allows<br>
+    <span id="appVersion"></span>
   </div>
 
 <script>
+/* App version — bump on each change: 0.1.0 → 0.1.1 for normal updates,
+   and add a 4th segment (e.g. 0.1.0.1) for minor tweaks. */
+const VERSION="0.1.0";
+
 /* ---------------- data ---------------- */
 const LINES = [
   {id:"L1",no:"L1",it:"Quando chel cubo con le cose appresso",en:"When the cube and its x-terms stand together",gloss:"Quando=when · cubo=cube · cose=things · appresso=alongside"},
@@ -357,8 +367,10 @@ function srs(id){SRS[id]=SRS[id]?{...SRS_DEFAULT,...SRS[id]}:{...SRS_DEFAULT};re
 loadMemory();
 const DAY=86400000,MIN=60000,STEPS=[1,10];
 
-/* discrete, log/Fibonacci-spaced slider steps — evenly spaced along the track */
-const STOPS=[
+/* discrete, log/Fibonacci-spaced slider steps — evenly spaced along the track.
+   The range button splits these into a fine "short" range (1m…1d) and a "long"
+   range (1d…2mo) so each gets the full width of the track for finer control. */
+const STOPS_ALL=[
   {m:1,l:"1m"},{m:2,l:"2m"},{m:3,l:"3m"},{m:5,l:"5m"},
   {m:10,l:"10m"},{m:20,l:"20m"},{m:30,l:"30m"},{m:60,l:"60m"},
   {m:120,l:"2h"},{m:180,l:"3h"},{m:300,l:"5h"},{m:480,l:"8h"},
@@ -366,6 +378,9 @@ const STOPS=[
   {m:10080,l:"1w"},{m:20160,l:"2w"},{m:30240,l:"3w"},
   {m:43200,l:"1mo"},{m:86400,l:"2mo"}
 ];
+const STOPS_SHORT=STOPS_ALL.filter(s=>s.m<=1440); // 1m … 1d
+const STOPS_LONG =STOPS_ALL.filter(s=>s.m>=1440); // 1d … 2mo
+let rangeMode="short";
 /* commit a manually chosen interval (in minutes) for the current card */
 function commitInterval(minutes){
   const c=CARDS[session[ptr]],s=srs(c.id),now=Date.now();
@@ -407,9 +422,9 @@ function buildSession(){
   session=ids;ptr=0;refreshStatus();showCurrent();
 }
 function refreshStatus(){
-  const now=Date.now(),ids=deckIds();let nw=0,ln=0,du=0;
-  ids.forEach(id=>{const s=srs(id);if(s.status==="new")nw++;else if(s.status==="learning"&&s.due<=now)ln++;else if(s.status==="review"&&s.due<=now)du++;});
-  sNew.textContent=nw;sLearn.textContent=ln;sDue.textContent=du;
+  const now=Date.now(),ids=deckIds();let nw=0,ln=0,du=0,le=0;
+  ids.forEach(id=>{const s=srs(id);if(s.status==="new")nw++;else if(s.status==="learning"&&s.due<=now)ln++;else if(s.status==="review"&&s.due<=now)du++;if(bucket(s)==="learned")le++;});
+  sNew.textContent=nw;sLearn.textContent=ln;sDue.textContent=du;sLearned.textContent=le;
 }
 
 /* ---------------- elements ---------------- */
@@ -421,7 +436,7 @@ const ftag=document.getElementById('ftag'),ftier=document.getElementById('ftier'
 const busage=document.getElementById('busage'),exbtn=document.getElementById('exbtn'),exbody=document.getElementById('exbody'),bhint=document.getElementById('bhint');
 const answer=document.getElementById('answer');
 const studyEl=document.getElementById('study'),finishedEl=document.getElementById('finished');
-const sNew=document.getElementById('sNew'),sLearn=document.getElementById('sLearn'),sDue=document.getElementById('sDue');
+const sNew=document.getElementById('sNew'),sLearn=document.getElementById('sLearn'),sDue=document.getElementById('sDue'),sLearned=document.getElementById('sLearned');
 
 function showCurrent(){
   if(ptr>=session.length||session.length===0){finish();return;}
@@ -454,16 +469,22 @@ function renderAnswer(show){
   renderSlider();
 }
 function renderSlider(){
+  const STOPS=rangeMode==="long"?STOPS_LONG:STOPS_SHORT;
   answer.innerHTML=`<div class="slider-wrap">
-    <div class="sliderlabel">review in <b id="slval">1m</b></div>
-    <div class="slidetrack" id="sltrack">
-      <div class="slidefill" id="slfill"></div>
-      <div class="slidehint" id="slhint">slide to schedule&nbsp;›</div>
-      <div class="slidethumb" id="slthumb">›</div>
+    <div class="sliderlabel">review in <b id="slval">${STOPS[0].l}</b></div>
+    <div class="sliderrow">
+      <div class="slidetrack" id="sltrack">
+        <div class="slidefill" id="slfill"></div>
+        <div class="slidehint" id="slhint">slide to schedule&nbsp;›</div>
+        <div class="slidethumb" id="slthumb">›</div>
+      </div>
+      <button class="rangebtn" id="rangebtn" type="button" title="Toggle the slider range">${rangeMode==="long"?"≥ 1d":"≤ 1d"}</button>
     </div>
   </div>`;
   const track=document.getElementById('sltrack'),thumb=document.getElementById('slthumb'),
         fill=document.getElementById('slfill'),val=document.getElementById('slval'),hint=document.getElementById('slhint');
+  const rangebtn=document.getElementById('rangebtn');
+  rangebtn.onclick=e=>{e.stopPropagation();rangeMode=rangeMode==="long"?"short":"long";renderSlider();};
   const margin=3,tw=44,N=STOPS.length;let idx=0,dragging=false;
   const travel=()=>Math.max(1,track.clientWidth-tw-margin*2);
   function setP(np){            // np is a raw 0..1 fraction; snap to the nearest step
@@ -536,6 +557,12 @@ exbtn.addEventListener('click',e=>{
 document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');deck=b.dataset.deck;cram=false;buildSession();});
 document.getElementById('shuffle').onclick=()=>{for(let i=session.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[session[i],session[j]]=[session[j],session[i]];}ptr=0;showCurrent();};
 document.getElementById('cram').onclick=()=>{cram=true;buildSession();};
+document.getElementById('seeLearned').onclick=()=>{
+  // show already-learned cards on demand, ignoring their schedule
+  cram=true;session=deckIds().filter(id=>bucket(srs(id))==="learned");ptr=0;refreshStatus();
+  if(session.length===0){finish();document.getElementById('doneMsg').textContent="Nothing learned in this stack yet — grade some cards first.";}
+  else showCurrent();
+};
 document.getElementById('cram2').onclick=()=>{cram=true;buildSession();};
 document.getElementById('again2').onclick=()=>{cram=false;buildSession();};
 document.getElementById('resetSrs').onclick=()=>{if(confirm('Reset scheduling for this stack?')){deckIds().forEach(id=>delete SRS[id]);save();cram=false;buildSession();}};
@@ -608,6 +635,8 @@ if(MEMORY_REJECTED){
   n.innerHTML="⚠ Saved progress from an <b>incompatible older version</b> was found and can't be used. It has been cleared — you're starting over from scratch.";
   save(); // overwrite the unusable blob with a clean, current-schema one
 }
+
+document.getElementById('appVersion').textContent="Tartaglia flashcards · v"+VERSION;
 
 buildSession();
 </script>
