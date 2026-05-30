@@ -199,7 +199,7 @@
 
   <div class="foot">
     Italian: PUBLIC DOMAIN · meanings, glosses &amp; difficulty tiers: MINE (subjective)<br>
-    Keys: ← → move · Space flip · drag slider to schedule (1m – 1mo) · 1·2·3·4 quick presets (10m · 1d · 4d · 2w) · progress persists when storage allows
+    Keys: ← → move · Space flip · drag slider to schedule (snaps 1m → 2mo) · 1·2·3·4 quick presets (10m · 1d · 4d · 2w) · progress persists when storage allows
   </div>
 
 <script>
@@ -250,15 +250,15 @@ function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(SRS));}catch(e
 function srs(id){if(!SRS[id])SRS[id]={status:"new",step:0,ease:2.5,interval:0,due:0,reps:0,lapses:0};return SRS[id];}
 const DAY=86400000,MIN=60000,STEPS=[1,10];
 
-/* logarithmic slider: position p∈[0,1] → minutes, 1 minute … 30 days */
-const MINMIN=1,MAXMIN=43200;
-function pToMin(p){return MINMIN*Math.pow(MAXMIN/MINMIN,Math.min(1,Math.max(0,p)));}
-function fmtMin(m){
-  if(m<60)return Math.max(1,Math.round(m))+"m";
-  if(m<1440){const h=m/60;return (h<10?Math.round(h*10)/10:Math.round(h))+"h";}
-  if(m<MAXMIN){const d=m/1440;return (d<10?Math.round(d*10)/10:Math.round(d))+"d";}
-  return Math.round(m/MAXMIN)+"mo";
-}
+/* discrete, log/Fibonacci-spaced slider steps — evenly spaced along the track */
+const STOPS=[
+  {m:1,l:"1m"},{m:2,l:"2m"},{m:3,l:"3m"},{m:5,l:"5m"},
+  {m:10,l:"10m"},{m:20,l:"20m"},{m:30,l:"30m"},{m:60,l:"60m"},
+  {m:120,l:"2h"},{m:180,l:"3h"},{m:300,l:"5h"},{m:480,l:"8h"},
+  {m:1440,l:"1d"},{m:2880,l:"2d"},{m:4320,l:"3d"},{m:7200,l:"5d"},
+  {m:10080,l:"1w"},{m:20160,l:"2w"},{m:30240,l:"3w"},
+  {m:43200,l:"1mo"},{m:86400,l:"2mo"}
+];
 /* commit a manually chosen interval (in minutes) for the current card */
 function commitInterval(minutes){
   const c=CARDS[session[ptr]],s=srs(c.id),now=Date.now();
@@ -347,15 +347,15 @@ function renderSlider(){
   </div>`;
   const track=document.getElementById('sltrack'),thumb=document.getElementById('slthumb'),
         fill=document.getElementById('slfill'),val=document.getElementById('slval'),hint=document.getElementById('slhint');
-  const margin=3,tw=44;let p=0,dragging=false;
+  const margin=3,tw=44,N=STOPS.length;let idx=0,dragging=false;
   const travel=()=>Math.max(1,track.clientWidth-tw-margin*2);
-  function setP(np){
-    p=Math.min(1,Math.max(0,np));
-    const x=margin+p*travel();
+  function setP(np){            // np is a raw 0..1 fraction; snap to the nearest step
+    idx=Math.round(Math.min(1,Math.max(0,np))*(N-1));
+    const x=margin+(idx/(N-1))*travel();
     thumb.style.left=x+'px';
     fill.style.width=(x+tw)+'px';
-    val.textContent=fmtMin(pToMin(p));
-    hint.style.opacity=p>0.015?'0':'.7';
+    val.textContent=STOPS[idx].l;
+    hint.style.opacity=idx>0?'0':'.7';
   }
   const xToP=cx=>{const r=track.getBoundingClientRect();return (cx-r.left-margin-tw/2)/travel();};
   // Touch (Android/iOS): preventDefault on every move so the page can't scroll/steal the gesture.
@@ -363,13 +363,13 @@ function renderSlider(){
   // slider — and only the slider moves — until release.
   track.addEventListener('touchstart',e=>{dragging=true;thumb.style.cursor='grabbing';setP(xToP(e.touches[0].clientX));e.preventDefault();},{passive:false});
   track.addEventListener('touchmove',e=>{if(!dragging)return;setP(xToP(e.touches[0].clientX));e.preventDefault();},{passive:false});
-  track.addEventListener('touchend',e=>{if(!dragging)return;dragging=false;thumb.style.cursor='grab';commitInterval(pToMin(p));e.preventDefault();},{passive:false});
+  track.addEventListener('touchend',e=>{if(!dragging)return;dragging=false;thumb.style.cursor='grab';commitInterval(STOPS[idx].m);e.preventDefault();},{passive:false});
   track.addEventListener('touchcancel',()=>{dragging=false;thumb.style.cursor='grab';});
   // Mouse (desktop): track outside the element via window listeners until mouseup.
   track.addEventListener('mousedown',e=>{
     dragging=true;thumb.style.cursor='grabbing';setP(xToP(e.clientX));e.preventDefault();
     const mv=ev=>{if(dragging)setP(xToP(ev.clientX));};
-    const up=()=>{if(dragging){dragging=false;thumb.style.cursor='grab';commitInterval(pToMin(p));}window.removeEventListener('mousemove',mv);window.removeEventListener('mouseup',up);};
+    const up=()=>{if(dragging){dragging=false;thumb.style.cursor='grab';commitInterval(STOPS[idx].m);}window.removeEventListener('mousemove',mv);window.removeEventListener('mouseup',up);};
     window.addEventListener('mousemove',mv);window.addEventListener('mouseup',up);
   });
   setP(0);
