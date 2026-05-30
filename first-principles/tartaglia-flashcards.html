@@ -56,6 +56,16 @@
   .gloss{margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);line-height:1.6;}
   .math{margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--parch);background:var(--ink);padding:6px 12px;border-radius:4px;display:inline-block;}
   .fliphint{position:absolute;bottom:12px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);opacity:.75;}
+  /* example / usage reveal on the back of word cards */
+  .back{overflow-y:auto;}
+  .usage{margin-top:15px;}
+  .exbtn{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;background:transparent;color:var(--accent2);border:1px solid var(--accent2);padding:6px 13px;border-radius:14px;cursor:pointer;transition:all .15s;}
+  .exbtn:hover{background:var(--accent2);color:#fff;}
+  .exbody{margin-top:11px;display:flex;flex-direction:column;gap:10px;text-align:center;}
+  .exlabel{display:block;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:3px;}
+  .exit{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;line-height:1.32;color:var(--ink);}
+  .exit mark{background:rgba(166,124,46,.3);color:inherit;padding:0 2px;border-radius:2px;}
+  .exen{font-size:13px;line-height:1.35;color:var(--accent2);}
 
   .answer{width:100%;max-width:440px;margin-top:16px;min-height:54px;display:flex;justify-content:center;}
   .showbtn{width:100%;height:50px;border-radius:8px;border:1px solid var(--ink);background:var(--ink);color:var(--parch);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .15s;}
@@ -102,10 +112,13 @@
   .seclabel{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:16px 0 8px;}
 
   .foot{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--ink-soft);margin-top:22px;text-align:center;line-height:1.8;letter-spacing:.03em;}
+  .memnote{max-width:440px;width:100%;background:var(--accent);color:#fff;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.55;padding:10px 13px;border-radius:6px;margin-bottom:14px;text-align:center;}
+  .memnote b{font-weight:600;}
   .hidden{display:none!important;}
 </style>
 </head>
 <body>
+  <div id="memoryNote" class="memnote hidden"></div>
   <div class="eyebrow">Tartaglia · 1539</div>
   <h1>The cube and the <em>things</em></h1>
   <div class="case">PART 1 · CASE 1 — x³ + px = q</div>
@@ -149,8 +162,12 @@
               <div class="en" id="ben">—</div>
               <div class="gloss" id="bgloss"></div>
               <div class="math hidden" id="bmath"></div>
+              <div class="usage hidden" id="busage">
+                <button class="exbtn" id="exbtn" type="button">Show example ↓</button>
+                <div class="exbody hidden" id="exbody"></div>
+              </div>
             </div>
-            <div class="fliphint">how well did you know it?</div>
+            <div class="fliphint" id="bhint">how well did you know it?</div>
           </div>
         </div>
       </div>
@@ -162,6 +179,8 @@
       <div class="util">
         <button id="shuffle">Shuffle</button>
         <button id="cram">Cram all</button>
+        <button id="exportP" title="Copy a portable backup of your progress">Export</button>
+        <button id="importP" title="Paste a backup from another version/device">Import</button>
         <button id="resetSrs">Reset progress</button>
       </div>
     </div>
@@ -234,20 +253,108 @@ const WORDS = [
 const TIER_LABEL={obvious:"Obvious",easy:"Easy",mid:"Mid",hard:"Hard",line:"Line"};
 const TIER_COLOR={obvious:"var(--t-obvious)",easy:"var(--t-easy)",mid:"var(--t-mid)",hard:"var(--t-hard)"};
 
+// Modern, plain-Italian example sentences — given mainly for the grammar-ish
+// / function words (and a few archaic verb forms) so usage is clearer than the
+// 1539 verse alone. Words not listed here still get their source poem line.
+const EX={
+  quando:{it:"Quando piove, resto a casa.",en:"When it rains, I stay home."},
+  chel:{it:"Dico ch'el vero conta.",en:"I say that the truth matters. (ch'el = che il, “that the”)"},
+  con:{it:"Vado a scuola con lei.",en:"I go to school with her."},
+  le:{it:"Le stelle sono lucenti.",en:"The stars are bright. (feminine plural “the”)"},
+  cose:{it:"Ho molte cose da fare.",en:"I have many things to do."},
+  appresso:{it:"Vieni appresso a me.",en:"Come along after me."},
+  agguaglia:{it:"Il suo tempo agguaglia il record.",en:"His time equals the record. (modern: uguaglia)"},
+  qualche:{it:"Resto qualche giorno.",en:"I’m staying a few days."},
+  trovan:{it:"I cani trovan la strada.",en:"The dogs find the way. (poetic for trovano)"},
+  dui:{it:"Ho dui fratelli.",en:"I have two brothers. (archaic for due)"},
+  altri:{it:"Gli altri sono già arrivati.",en:"The others have already arrived."},
+  in:{it:"Vivo in Italia.",en:"I live in Italy."},
+  esso:{it:"Il libro? Esso è qui.",en:"The book? It is here."},
+  dapoi:{it:"Mangiammo, dapoi partimmo.",en:"We ate, then we left. (archaic for poi/dopo)"},
+  terrai:{it:"Terrai tu la chiave.",en:"You will keep the key. (future of tenere)"},
+  questo:{it:"Questo libro è mio.",en:"This book is mine."},
+  per:{it:"Questo regalo è per te.",en:"This gift is for you."},
+  consueto:{it:"Il consueto saluto del mattino.",en:"The customary morning greeting."},
+  lor:{it:"La lor casa è grande.",en:"Their house is big. (poetic for loro)"},
+  produtto:{it:"Il produtto di 3 e 4 è 12.",en:"The product of 3 and 4 is 12. (modern: prodotto)"},
+  sempre:{it:"Ti penso sempre.",en:"I always think of you."},
+  sia:{it:"Voglio che sia felice.",en:"I want him to be happy. (subjunctive of essere)"},
+  eguale:{it:"Due più due è eguale a quattro.",en:"Two plus two equals four. (modern: uguale)"},
+  terzo:{it:"Abito al terzo piano.",en:"I live on the third floor."},
+  delle:{it:"Il colore delle case.",en:"The colour of the houses. (di + le)"},
+  neto:{it:"Un taglio neto e preciso.",en:"A clean, precise cut. (modern: netto)"},
+  residuo:{it:"Resta un residuo di cibo.",en:"A residue of food is left over."},
+  poi:{it:"Prima studio, poi mangio.",en:"First I study, then I eat."},
+  suo:{it:"Il suo nome è Marco.",en:"His name is Marco."},
+  generale:{it:"È una regola generale.",en:"It’s a general rule."},
+  lati:{it:"I lati del triangolo.",en:"The sides of the triangle."},
+  ben:{it:"Sta ben così.",en:"It’s fine like this. (poetic for bene)"},
+  sottratti:{it:"Tre sottratti da dieci fa sette.",en:"Three subtracted from ten makes seven."},
+  varra:{it:"Questo quadro varrà molto.",en:"This painting will be worth a lot. (future of valere)"},
+  tua:{it:"La tua idea è ottima.",en:"Your idea is excellent."},
+  principale:{it:"L’attore principale del film.",en:"The lead actor of the film."}
+};
+// normalise an Italian token: drop apostrophes/accents, lowercase (for lookup/match)
+const norm=s=>s.toLowerCase().replace(/['’`]/g,"").normalize("NFD").replace(/[̀-ͯ]/g,"");
+// find the poem line a word comes from, and wrap that word in <mark> for display
+function sourceLine(word){
+  const w=norm(word);
+  return LINES.find(l=>(norm(l.it).match(/[a-z]+/g)||[]).includes(w))||null;
+}
+function highlightWord(lineIt,word){
+  if(!lineIt)return"";
+  const w=word.replace(/['’`]/g,"").replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+  try{const re=new RegExp("(^|[^\\p{L}])("+w+")(?=[^\\p{L}]|$)","iu");
+    if(re.test(lineIt))return lineIt.replace(re,"$1<mark>$2</mark>");}catch(e){}
+  return lineIt;
+}
+
 const CARDS={};
 LINES.forEach(l=>CARDS[l.id]={...l,type:"line",tier:"line",ref:l.no,front:l.it,back:l.en});
 WORDS.forEach(([it,en,tier])=>{
   const id="W-"+it.replace(/[^a-zA-Z]/g,"").toLowerCase();
-  CARDS[id]={id,type:"word",tier,ref:"WORD",front:it,back:en};
+  const line=sourceLine(it);
+  CARDS[id]={id,type:"word",tier,ref:"WORD",front:it,back:en,
+    lineIt:line?line.it:"",lineEn:line?line.en:"",lineNo:line?line.no:"",ex:EX[norm(it)]||null};
 });
 const ALL_IDS=Object.keys(CARDS);
 
-/* ---------------- SRS ---------------- */
-const STORE_KEY="tartaglia_srs_v2";
-let SRS={};
-try{const raw=localStorage.getItem(STORE_KEY);if(raw)SRS=JSON.parse(raw);}catch(e){}
-function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(SRS));}catch(e){}}
-function srs(id){if(!SRS[id])SRS[id]={status:"new",step:0,ease:2.5,interval:0,due:0,reps:0,lapses:0};return SRS[id];}
+/* ---------------- SRS + persistent memory ----------------
+   Progress survives across versions of this file as long as SCHEMA is unchanged.
+   • Cards are keyed by a content id derived from the Italian text, so ADDING or
+     REMOVING words in a future version is safe — new words start fresh and stale
+     entries for removed words are simply ignored.
+   • SCHEMA is bumped ONLY when the saved record shape changes incompatibly. On a
+     mismatch the old save is refused (not silently used) and the user is told to
+     start over — see the memory banner near the bottom of this script.
+   • localStorage can be per-file on some browsers, so a freshly downloaded copy
+     may not see the old store. Use Export → Import (a portable backup string) to
+     carry memory between versions or devices; Import re-checks SCHEMA too.        */
+const SCHEMA=3;                          // bump only on incompatible format changes
+const STORE_KEY="tartaglia_srs_v3";      // schema-tagged store for this version line
+const LEGACY_KEYS=["tartaglia_srs_v2"];  // older stores whose record shape is compatible
+let SRS={}, MEMORY_REJECTED=false;
+
+function isRecord(v){return v&&typeof v==="object"&&"status"in v&&"due"in v&&"reps"in v;}
+function allRecords(map){return map&&typeof map==="object"&&Object.values(map).every(isRecord);}
+function loadMemory(){
+  try{                                   // 1) current, schema-tagged store
+    const raw=localStorage.getItem(STORE_KEY);
+    if(raw){
+      const obj=JSON.parse(raw);
+      if(obj&&obj.schema===SCHEMA&&allRecords(obj.cards)){SRS=obj.cards;return;}
+      MEMORY_REJECTED=true;SRS={};return; // present but wrong/unknown schema → unusable
+    }
+  }catch(e){MEMORY_REJECTED=true;SRS={};return;}
+  for(const k of LEGACY_KEYS){           // 2) migrate a compatible legacy flat store
+    try{const raw=localStorage.getItem(k);if(raw){const flat=JSON.parse(raw);if(allRecords(flat)){SRS=flat;save();return;}}}catch(e){}
+  }
+  SRS={};                                // 3) nothing stored → fresh start
+}
+function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify({schema:SCHEMA,cards:SRS,savedAt:Date.now()}));}catch(e){}}
+const SRS_DEFAULT={status:"new",step:0,ease:2.5,interval:0,due:0,reps:0,lapses:0};
+function srs(id){SRS[id]=SRS[id]?{...SRS_DEFAULT,...SRS[id]}:{...SRS_DEFAULT};return SRS[id];}
+loadMemory();
 const DAY=86400000,MIN=60000,STEPS=[1,10];
 
 /* discrete, log/Fibonacci-spaced slider steps — evenly spaced along the track */
@@ -311,6 +418,7 @@ const fit=document.getElementById('fit'),ben=document.getElementById('ben');
 const bgloss=document.getElementById('bgloss'),bmath=document.getElementById('bmath');
 const fref=document.getElementById('fref'),bref=document.getElementById('bref');
 const ftag=document.getElementById('ftag'),ftier=document.getElementById('ftier');
+const busage=document.getElementById('busage'),exbtn=document.getElementById('exbtn'),exbody=document.getElementById('exbody'),bhint=document.getElementById('bhint');
 const answer=document.getElementById('answer');
 const studyEl=document.getElementById('study'),finishedEl=document.getElementById('finished');
 const sNew=document.getElementById('sNew'),sLearn=document.getElementById('sLearn'),sDue=document.getElementById('sDue');
@@ -329,6 +437,15 @@ function showCurrent(){
     else ftier.classList.add('hidden');
     bgloss.textContent=c.gloss||"";
     if(c.math){bmath.classList.remove('hidden');bmath.textContent=c.math;}else bmath.classList.add('hidden');
+    // usage / example reveal — word cards only (lines already are full sentences)
+    exbody.classList.add('hidden');exbtn.textContent="Show example ↓";bhint.classList.remove('hidden');
+    if(w&&(c.lineIt||c.ex)){
+      busage.classList.remove('hidden');
+      let html="";
+      if(c.lineIt)html+=`<div><span class="exlabel">In the poem · ${c.lineNo}</span><div class="exit">${highlightWord(c.lineIt,c.front)}</div><div class="exen">${c.lineEn}</div></div>`;
+      if(c.ex)html+=`<div><span class="exlabel">In use</span><div class="exit">${c.ex.it}</div><div class="exen">${c.ex.en}</div></div>`;
+      exbody.innerHTML=html;
+    }else busage.classList.add('hidden');
   },card.classList.contains('flipped')?240:0);
   renderAnswer(false);
 }
@@ -406,12 +523,40 @@ document.addEventListener('keydown',e=>{
 });
 
 /* ---------------- controls ---------------- */
+// example reveal toggle — stop the tap from bubbling to the scene (which flips the card)
+exbtn.addEventListener('touchstart',e=>e.stopPropagation(),{passive:true});
+exbtn.addEventListener('touchend',e=>e.stopPropagation(),{passive:true});
+exbtn.addEventListener('click',e=>{
+  e.stopPropagation();
+  const willOpen=exbody.classList.contains('hidden');
+  exbody.classList.toggle('hidden',!willOpen);
+  exbtn.textContent=willOpen?"Hide example ↑":"Show example ↓";
+  bhint.classList.toggle('hidden',willOpen);
+});
 document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');deck=b.dataset.deck;cram=false;buildSession();});
 document.getElementById('shuffle').onclick=()=>{for(let i=session.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[session[i],session[j]]=[session[j],session[i]];}ptr=0;showCurrent();};
 document.getElementById('cram').onclick=()=>{cram=true;buildSession();};
 document.getElementById('cram2').onclick=()=>{cram=true;buildSession();};
 document.getElementById('again2').onclick=()=>{cram=false;buildSession();};
 document.getElementById('resetSrs').onclick=()=>{if(confirm('Reset scheduling for this stack?')){deckIds().forEach(id=>delete SRS[id]);save();cram=false;buildSession();}};
+
+/* ---- portable backup: carry memory across versions / devices ---- */
+function encodeBackup(){return btoa(unescape(encodeURIComponent(JSON.stringify({schema:SCHEMA,cards:SRS,savedAt:Date.now()}))));}
+document.getElementById('exportP').onclick=async()=>{
+  const code=encodeBackup();
+  try{await navigator.clipboard.writeText(code);alert("Progress backup copied to clipboard.\n\nIn the new version, tap Import and paste it to carry your memory across.");}
+  catch(e){prompt("Copy this progress backup, then Import it in the new version:",code);}
+};
+document.getElementById('importP').onclick=()=>{
+  const code=prompt("Paste a progress backup to restore:");
+  if(!code)return;
+  let obj=null;
+  try{obj=JSON.parse(decodeURIComponent(escape(atob(code.trim()))));}catch(e){try{obj=JSON.parse(code);}catch(_){obj=null;}}
+  if(!obj){alert("That backup couldn't be read — check you pasted the whole code.");return;}
+  if(obj.schema!==SCHEMA||!allRecords(obj.cards)){alert("This backup is from an incompatible version and can't be used — you'll have to start over.");return;}
+  SRS=Object.assign({},SRS,obj.cards);save();cram=false;buildSession();
+  alert("Progress restored.");
+};
 
 /* ---------------- view toggle + database ---------------- */
 let dbStatus="all",dbTier="all";
@@ -454,6 +599,14 @@ function renderDB(){
       </div>`;
     tbl.appendChild(row);
   });
+}
+
+/* ---- memory rejection notice ---- */
+if(MEMORY_REJECTED){
+  const n=document.getElementById('memoryNote');
+  n.classList.remove('hidden');
+  n.innerHTML="⚠ Saved progress from an <b>incompatible older version</b> was found and can't be used. It has been cleared — you're starting over from scratch.";
+  save(); // overwrite the unusable blob with a clean, current-schema one
 }
 
 buildSession();
