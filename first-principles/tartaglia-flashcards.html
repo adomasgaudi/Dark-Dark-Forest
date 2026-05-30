@@ -19,7 +19,7 @@
   html,body{height:100%;}
   body{margin:0;display:flex;flex-direction:column;align-items:center;
     background:radial-gradient(120% 90% at 50% -10%, #fbf3df 0%, #f4ead6 45%, #e6d5b2 100%),#f4ead6;
-    color:var(--ink);font-family:'EB Garamond',Georgia,serif;padding:18px 14px 36px;min-height:100%;}
+    color:var(--ink);font-family:'EB Garamond',Georgia,serif;padding:18px 14px 36px;min-height:100%;overscroll-behavior:none;}
   .eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);text-align:center;}
   h1{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(20px,5vw,30px);margin:4px 0 2px;text-align:center;}
   h1 em{font-style:italic;color:var(--accent);}
@@ -358,10 +358,20 @@ function renderSlider(){
     hint.style.opacity=p>0.015?'0':'.7';
   }
   const xToP=cx=>{const r=track.getBoundingClientRect();return (cx-r.left-margin-tw/2)/travel();};
-  track.addEventListener('pointerdown',e=>{dragging=true;track.setPointerCapture(e.pointerId);setP(xToP(e.clientX));thumb.style.cursor='grabbing';e.preventDefault();});
-  track.addEventListener('pointermove',e=>{if(dragging){setP(xToP(e.clientX));e.preventDefault();}});
-  track.addEventListener('pointerup',e=>{if(!dragging)return;dragging=false;thumb.style.cursor='grab';commitInterval(pToMin(p));e.preventDefault();});
-  track.addEventListener('pointercancel',()=>{dragging=false;});
+  // Touch (Android/iOS): preventDefault on every move so the page can't scroll/steal the gesture.
+  // The touch target stays the track for the whole sequence, so the finger stays locked to the
+  // slider — and only the slider moves — until release.
+  track.addEventListener('touchstart',e=>{dragging=true;thumb.style.cursor='grabbing';setP(xToP(e.touches[0].clientX));e.preventDefault();},{passive:false});
+  track.addEventListener('touchmove',e=>{if(!dragging)return;setP(xToP(e.touches[0].clientX));e.preventDefault();},{passive:false});
+  track.addEventListener('touchend',e=>{if(!dragging)return;dragging=false;thumb.style.cursor='grab';commitInterval(pToMin(p));e.preventDefault();},{passive:false});
+  track.addEventListener('touchcancel',()=>{dragging=false;thumb.style.cursor='grab';});
+  // Mouse (desktop): track outside the element via window listeners until mouseup.
+  track.addEventListener('mousedown',e=>{
+    dragging=true;thumb.style.cursor='grabbing';setP(xToP(e.clientX));e.preventDefault();
+    const mv=ev=>{if(dragging)setP(xToP(ev.clientX));};
+    const up=()=>{if(dragging){dragging=false;thumb.style.cursor='grab';commitInterval(pToMin(p));}window.removeEventListener('mousemove',mv);window.removeEventListener('mouseup',up);};
+    window.addEventListener('mousemove',mv);window.addEventListener('mouseup',up);
+  });
   setP(0);
 }
 function flip(toBack){const wb=toBack!==undefined?toBack:!card.classList.contains('flipped');card.classList.toggle('flipped',wb);renderAnswer(wb);}
