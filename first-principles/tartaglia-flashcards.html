@@ -97,8 +97,11 @@
   .mat-silver{background:linear-gradient(135deg,#fbfcff 0%,#c2c6cf 45%,#8a8f99 100%);filter:drop-shadow(0 0 2px rgba(185,190,200,.8));}
   .mat-gold{background:linear-gradient(135deg,#fff3c8 0%,#e6bf6a 45%,#a87e22 100%);filter:drop-shadow(0 0 3px rgba(217,169,78,.85));}
   .mat-red{background:linear-gradient(135deg,#ffb0a0 0%,#df3f2c 45%,#7e1408 100%);filter:drop-shadow(0 0 4px rgba(216,58,42,.9));}
-  .mat-diamond{background:linear-gradient(135deg,#ffffff 0%,#d6f0ff 38%,#8fc4ea 100%);filter:drop-shadow(0 0 6px rgba(150,220,255,.95));}
-  .crystal.cracked{opacity:.5;filter:grayscale(.35) brightness(.8);}
+  .mat-diamond{background:radial-gradient(circle at 35% 28%,#ffffff 0%,#ecfbff 28%,#bfefff 60%,#7cc6ff 100%);filter:drop-shadow(0 0 5px rgba(190,239,255,.95)) drop-shadow(0 0 2px #ffffff);animation:twinkle 1.8s ease-in-out infinite;}
+  .mat-diamond::before{content:"";position:absolute;top:14%;left:26%;width:34%;height:34%;background:radial-gradient(circle,#fff 0%,rgba(255,255,255,0) 70%);}
+  @keyframes twinkle{0%,100%{filter:drop-shadow(0 0 3px rgba(190,239,255,.8)) drop-shadow(0 0 1px #fff);}50%{filter:drop-shadow(0 0 8px rgba(215,247,255,1)) drop-shadow(0 0 3px #fff);}}
+  .crystal.cracked{opacity:.5;filter:grayscale(.35) brightness(.8);animation:none;}
+  .crystal.cracked::before{display:none;}
   .crystal.cracked::after{content:"";position:absolute;inset:0;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);
     background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='none' stroke='%23140f0a' stroke-width='5' stroke-linejoin='round'%3E%3Cpath d='M50 2L46 40L58 58L50 98'/%3E%3Cpath d='M46 40L10 46'/%3E%3Cpath d='M58 58L90 50'/%3E%3Cpath d='M46 40L72 20'/%3E%3Cpath d='M58 58L40 82'/%3E%3C/g%3E%3C/svg%3E") center/100% 100% no-repeat;}
   /* example / usage reveal on the back of word cards */
@@ -327,7 +330,7 @@
 <script>
 /* App version — bump on each change: 0.1.0 → 0.1.1 for normal updates,
    and add a 4th segment (e.g. 0.1.0.1) for minor tweaks. */
-const VERSION="0.8.0";
+const VERSION="0.8.1";
 
 /* ---------------- data ---------------- */
 const LINES = [
@@ -571,7 +574,7 @@ const CRYSTAL=[
   {min:10080,mat:"red",    size:26},   // 1w
   {min:20160,mat:"red",    size:30},   // 2w
   {min:30240,mat:"red",    size:33},   // 3w
-  {min:43200,mat:"diamond",size:36}    // 1mo+
+  {min:43200,mat:"diamond",size:12}    // 1mo+ (small brilliant)
 ];
 function crystalTier(min){let t=CRYSTAL[0];for(const e of CRYSTAL){if(min>=e.min)t=e;}return t;}
 // classify a card's dot: 'new' | circle (freshness colour, <4h) | crystal (≥4h, cracks when due)
