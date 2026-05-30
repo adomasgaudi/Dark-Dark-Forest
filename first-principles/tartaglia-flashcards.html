@@ -92,6 +92,15 @@
   .dots{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;max-width:440px;margin:14px auto 2px;min-height:14px;}
   .dot{border-radius:50%;cursor:pointer;flex:0 0 auto;transition:transform .12s,background 1s linear,box-shadow 1s linear,border-color 1s linear;}
   .dot.cur{outline:2px solid var(--ink);outline-offset:2px;}
+  /* crystals (intervals ≥ 4h): a faceted rhombus; material = interval tier; cracks when due */
+  .crystal{clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);border:none!important;border-radius:0!important;position:relative;transition:transform .12s,filter 1s linear,opacity 1s linear;}
+  .mat-silver{background:linear-gradient(135deg,#fbfcff 0%,#c2c6cf 45%,#8a8f99 100%);filter:drop-shadow(0 0 2px rgba(185,190,200,.8));}
+  .mat-gold{background:linear-gradient(135deg,#fff3c8 0%,#e6bf6a 45%,#a87e22 100%);filter:drop-shadow(0 0 3px rgba(217,169,78,.85));}
+  .mat-red{background:linear-gradient(135deg,#ffb0a0 0%,#df3f2c 45%,#7e1408 100%);filter:drop-shadow(0 0 4px rgba(216,58,42,.9));}
+  .mat-diamond{background:linear-gradient(135deg,#ffffff 0%,#d6f0ff 38%,#8fc4ea 100%);filter:drop-shadow(0 0 6px rgba(150,220,255,.95));}
+  .crystal.cracked{opacity:.5;filter:grayscale(.35) brightness(.8);}
+  .crystal.cracked::after{content:"";position:absolute;inset:0;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg fill='none' stroke='%23140f0a' stroke-width='5' stroke-linejoin='round'%3E%3Cpath d='M50 2L46 40L58 58L50 98'/%3E%3Cpath d='M46 40L10 46'/%3E%3Cpath d='M58 58L90 50'/%3E%3Cpath d='M46 40L72 20'/%3E%3Cpath d='M58 58L40 82'/%3E%3C/g%3E%3C/svg%3E") center/100% 100% no-repeat;}
   /* example / usage reveal on the back of word cards */
   .back{overflow-y:auto;}
   .usage{margin-top:15px;}
@@ -196,6 +205,7 @@
     <div class="setlabel">Progress</div>
     <button id="exportP" title="Copy a portable backup of your progress">⬆ Export progress</button>
     <button id="importP" title="Paste a backup from another version/device">⬇ Import progress</button>
+    <button id="restoreDel">♻ Restore deleted cards</button>
     <button id="resetSrs">↺ Reset progress</button>
   </div>
 
@@ -255,6 +265,7 @@
         <button id="hideItBtn" title="Hide all Italian text and learn by ear (audio-only)">🙈 Italian: shown</button>
         <button id="wordWholeBtn" title="On word cards, play just the word or the whole line">🔈 Audio: word</button>
         <button id="freeScrollBtn" title="Swipe through every card, ignoring schedule (otherwise swipe jumps to the next due card)">🔓 Free scroll: off</button>
+        <button id="deleteBtn" title="Remove this card from your decks">🗑 Delete card</button>
         <button id="seeLearned" title="Jump to your learned cards">See learned</button>
       </div>
     </div>
@@ -316,7 +327,7 @@
 <script>
 /* App version — bump on each change: 0.1.0 → 0.1.1 for normal updates,
    and add a 4th segment (e.g. 0.1.0.1) for minor tweaks. */
-const VERSION="0.7.1";
+const VERSION="0.8.0";
 
 /* ---------------- data ---------------- */
 const LINES = [
@@ -451,6 +462,11 @@ function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify({schema:SCHEMA
 const SRS_DEFAULT={status:"new",step:0,ease:2.5,interval:0,due:0,reps:0,lapses:0,last:0};
 function srs(id){SRS[id]=SRS[id]?{...SRS_DEFAULT,...SRS[id]}:{...SRS_DEFAULT};return SRS[id];}
 loadMemory();
+/* user-deleted ("bad") cards — hidden from every deck and the database, persists on device */
+const DEL_KEY="tartaglia_deleted";
+let DELETED=new Set();
+try{const r=localStorage.getItem(DEL_KEY);if(r)DELETED=new Set(JSON.parse(r));}catch(e){}
+function saveDeleted(){try{localStorage.setItem(DEL_KEY,JSON.stringify([...DELETED]));}catch(e){}}
 const DAY=86400000,MIN=60000,STEPS=[1,10];
 
 /* discrete, log/Fibonacci-spaced slider steps — evenly spaced along the track.
@@ -503,10 +519,12 @@ function fmtNext(s){
    lets you step through every card regardless of schedule. */
 let deck="core",session=[],ptr=0,freeScroll=false;
 function deckIdsOf(d){
-  if(d==="line")return ALL_IDS.filter(id=>CARDS[id].type==="line");
-  if(d==="core")return ALL_IDS.filter(id=>CARDS[id].type==="word"&&CARDS[id].tier!=="obvious");
-  if(/^L[0-9]$/.test(d))return ALL_IDS.filter(id=>CARDS[id].type==="word"&&CARDS[id].lineNo===d);
-  return ALL_IDS.filter(id=>CARDS[id].type==="word"&&CARDS[id].tier===d);
+  let r;
+  if(d==="line")r=ALL_IDS.filter(id=>CARDS[id].type==="line");
+  else if(d==="core")r=ALL_IDS.filter(id=>CARDS[id].type==="word"&&CARDS[id].tier!=="obvious");
+  else if(/^L[0-9]$/.test(d))r=ALL_IDS.filter(id=>CARDS[id].type==="word"&&CARDS[id].lineNo===d);
+  else r=ALL_IDS.filter(id=>CARDS[id].type==="word"&&CARDS[id].tier===d);
+  return r.filter(id=>!DELETED.has(id));
 }
 function deckIds(){return deckIdsOf(deck);}
 function isDue(id){const s=srs(id);return s.status==="new"||s.due<=Date.now();}
@@ -542,21 +560,42 @@ const studyEl=document.getElementById('study'),finishedEl=document.getElementByI
             (1 min ≈ 1px, 1000 min ≈ 10px), so memory strength and span read at a glance. */
 const HEAT=[[0,[26,20,16]],[0.12,[122,18,8]],[0.28,[230,40,20]],[0.46,[255,120,30]],[0.66,[255,220,70]],[0.84,[245,245,255]],[1,[70,170,255]]];
 function tempColor(t){t=Math.max(0,Math.min(1,t));for(let i=1;i<HEAT.length;i++){if(t<=HEAT[i][0]){const a=HEAT[i-1],b=HEAT[i],f=(t-a[0])/(b[0]-a[0]||1),c=a[1].map((v,j)=>Math.round(v+(b[1][j]-v)*f));return `rgb(${c[0]},${c[1]},${c[2]})`;}}return "rgb(70,170,255)";}
-function dotStyle(s,now){
-  if(s.status==="new"||!s.last||!s.due) return {d:5,bg:"transparent",bd:"1px dashed var(--ink-soft)",sh:"none"};
-  const span=Math.max(60000,s.due-s.last);
-  const d=Math.max(4,Math.min(34,Math.cbrt(span/60000)));
-  if(now>=s.due) return {d,bg:"transparent",bd:"1.5px solid #1a1410",sh:"none"};  // due / overdue → outline only
-  const strength=Math.max(0,Math.min(1,1-(now-s.last)/span)),bg=tempColor(strength);
-  const sh=strength>0.5?`0 0 ${Math.round(2+strength*9)}px ${bg}`:"none";
-  return {d,bg,bd:"1px solid rgba(43,33,24,.35)",sh};
+// crystal tiers for intervals ≥ 4h: pick the highest threshold reached. {min in minutes}
+const CRYSTAL=[
+  {min:240,  mat:"silver", size:11},   // 4h
+  {min:480,  mat:"silver", size:14},   // 8h  (≈1.3×)
+  {min:1440, mat:"gold",   size:14},   // 1d
+  {min:2880, mat:"gold",   size:18},   // 2d  (1.3×)
+  {min:4320, mat:"gold",   size:22},   // 3d  (1.6×)
+  {min:7200, mat:"gold",   size:28},   // 5d  (2×)
+  {min:10080,mat:"red",    size:26},   // 1w
+  {min:20160,mat:"red",    size:30},   // 2w
+  {min:30240,mat:"red",    size:33},   // 3w
+  {min:43200,mat:"diamond",size:36}    // 1mo+
+];
+function crystalTier(min){let t=CRYSTAL[0];for(const e of CRYSTAL){if(min>=e.min)t=e;}return t;}
+// classify a card's dot: 'new' | circle (freshness colour, <4h) | crystal (≥4h, cracks when due)
+function dotInfo(s,now){
+  if(s.status==="new"||!s.last||!s.due) return {kind:"new",d:5,bg:"transparent",bd:"1px dashed var(--ink-soft)",sh:"none"};
+  const span=Math.max(60000,s.due-s.last),min=span/60000,due=now>=s.due;
+  if(min<240){
+    const d=Math.max(4,Math.min(34,Math.cbrt(min)));
+    if(due) return {kind:"circle",d,bg:"transparent",bd:"1.5px solid #1a1410",sh:"none"};
+    const strength=Math.max(0,Math.min(1,1-(now-s.last)/span)),bg=tempColor(strength);
+    const sh=strength>0.5?`0 0 ${Math.round(2+strength*9)}px ${bg}`:"none";
+    return {kind:"circle",d,bg,bd:"1px solid rgba(43,33,24,.35)",sh};
+  }
+  const tier=crystalTier(min);
+  return {kind:"crystal",d:tier.size,mat:tier.mat,due};
 }
 function dotSpan(id,now,cur){
-  const t=dotStyle(srs(id),now);
-  return `<span class="dot${cur?' cur':''}" data-id="${id}" style="width:${t.d}px;height:${t.d}px;background:${t.bg};border:${t.bd};box-shadow:${t.sh};"></span>`;
+  const t=dotInfo(srs(id),now),ring=cur?" cur":"";
+  if(t.kind==="crystal")
+    return `<span class="dot crystal mat-${t.mat}${t.due?" cracked":""}${ring}" data-id="${id}" style="width:${t.d}px;height:${t.d}px;"></span>`;
+  return `<span class="dot${ring}" data-id="${id}" style="width:${t.d}px;height:${t.d}px;background:${t.bg};border:${t.bd};box-shadow:${t.sh};"></span>`;
 }
 function renderDots(){
-  // whole-deck memory map: every card in the deck, coloured by freshness, current card ringed.
+  // whole-deck memory map: every card in the deck, current card ringed.
   if(!session.length){dots.innerHTML="";return;}
   const now=Date.now();
   dots.innerHTML=session.map((id,i)=>dotSpan(id,now,i===ptr)).join("");
@@ -565,12 +604,20 @@ dots.onclick=e=>{const d=e.target.closest('.dot');if(!d)return;const id=d.datase
   const idx=session.indexOf(id);
   if(idx>=0)ptr=idx; else session.splice(ptr,0,id);   // jump to it, or pull a scheduled card in to review now
   showCurrent();};
-// keep the freshness colours live (memories cool in real time, not only on refresh)
+// keep dots live: circles cool in real time; crystals crack the moment they fall due. Re-render
+// only if a card's kind/material changed (e.g. interval re-rated), else update in place for smoothness.
 function tickDots(){
-  if(!dots.children.length)return;
+  if(!dots.children.length||dots.children.length!==session.length)return;
   const now=Date.now();
-  for(const el of dots.children){const id=el.dataset.id;if(!id)continue;const t=dotStyle(srs(id),now);
-    el.style.background=t.bg;el.style.border=t.bd;el.style.boxShadow=t.sh;}
+  session.forEach((id,i)=>{
+    const el=dots.children[i];if(!el)return;const t=dotInfo(srs(id),now);
+    const isCrystal=el.classList.contains('crystal');
+    if((t.kind==="crystal")!==isCrystal||(isCrystal&&!el.classList.contains('mat-'+t.mat))){
+      el.outerHTML=dotSpan(id,now,i===ptr);return;                 // kind/material changed → rebuild this one
+    }
+    if(t.kind==="crystal") el.classList.toggle('cracked',!!t.due);
+    else{el.style.background=t.bg;el.style.border=t.bd;el.style.boxShadow=t.sh;}
+  });
 }
 setInterval(tickDots,1000);
 // toggle the "in plain terms" translation on line cards (preference persists)
@@ -789,6 +836,19 @@ deckBtnLabel.textContent=deckLabel(deck);
 document.getElementById('shuffle').onclick=()=>{for(let i=session.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[session[i],session[j]]=[session[j],session[i]];}const f=firstDueIndex();ptr=f>=0?f:0;showCurrent();};
 const freeScrollBtn=document.getElementById('freeScrollBtn');
 freeScrollBtn.onclick=function(){freeScroll=!freeScroll;this.textContent="🔓 Free scroll: "+(freeScroll?"on":"off");};
+document.getElementById('deleteBtn').onclick=()=>{
+  if(!curCard)return;
+  if(!confirm('Remove "'+curCard.front+'" from your decks? (Restore later via ⚙ settings.)'))return;
+  DELETED.add(curCard.id);saveDeleted();
+  const i=session.indexOf(curCard.id);if(i>=0)session.splice(i,1);
+  if(ptr>=session.length)ptr=session.length-1;if(ptr<0)ptr=0;
+  refreshStatus();showCurrent();
+};
+document.getElementById('restoreDel').onclick=()=>{
+  if(!DELETED.size){alert("No deleted cards to restore.");return;}
+  if(!confirm("Restore all "+DELETED.size+" deleted card(s)?"))return;
+  DELETED.clear();saveDeleted();buildSession();
+};
 document.getElementById('autoplayBtn').onclick=function(){autoPlay=!autoPlay;this.textContent="🔊 Auto: "+(autoPlay?"on":"off");if(autoPlay)playSeg(curSeg);};
 const repeatBtn=document.getElementById('repeatBtn');
 repeatBtn.textContent="🔁 Repeat: ×"+repeatN;
@@ -847,7 +907,7 @@ document.querySelectorAll('#tierFilters .chip').forEach(c=>c.onclick=()=>{docume
 document.querySelectorAll('#lineFilters .chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('#lineFilters .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');dbLine=c.dataset.line;renderDB();});
 
 function renderDB(){
-  const all=ALL_IDS.map(id=>({c:CARDS[id],s:srs(id),b:bucket(srs(id))}));
+  const all=ALL_IDS.filter(id=>!DELETED.has(id)).map(id=>({c:CARDS[id],s:srs(id),b:bucket(srs(id))}));
   // summary counts (words + lines)
   const counts={untouched:0,learning:0,learned:0,forgotten:0};
   all.forEach(r=>counts[r.b]++);
