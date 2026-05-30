@@ -75,6 +75,7 @@
   .back .tag{background:var(--accent2);}
   .tierbadge{position:absolute;top:11px;right:13px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:2px;color:#fff;}
   .ref{position:absolute;top:34px;right:13px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-soft);}
+  .cardmeta{position:absolute;top:13px;left:50%;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.02em;color:var(--ink-soft);white-space:nowrap;opacity:.85;}
   .it{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(21px,5vw,29px);line-height:1.3;color:var(--ink);}
   .it.word{font-size:clamp(30px,9vw,46px);}
   .bit{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(18px,4.6vw,25px);line-height:1.25;color:var(--ink);padding-bottom:8px;margin-bottom:9px;border-bottom:1px solid var(--rule);}
@@ -229,6 +230,7 @@
             <span class="tag" id="ftag">Line</span>
             <span class="tierbadge hidden" id="ftier"></span>
             <span class="ref" id="fref"></span>
+            <div class="cardmeta" id="fmeta"></div>
             <div class="it" id="fit">—</div>
             <div class="listen hidden" id="flisten">🔊<span>listen &amp; guess</span></div>
             <div class="linetext hidden" id="flineText"></div>
@@ -239,6 +241,7 @@
           <div class="face back">
             <span class="tag">Meaning</span>
             <span class="ref" id="bref"></span>
+            <div class="cardmeta" id="bmeta"></div>
             <button class="spk" id="spkB" type="button" title="Play pronunciation" aria-label="Play pronunciation">🔊</button>
             <div>
               <div class="bit" id="bit"></div>
@@ -330,7 +333,7 @@
 <script>
 /* App version — bump on each change: 0.1.0 → 0.1.1 for normal updates,
    and add a 4th segment (e.g. 0.1.0.1) for minor tweaks. */
-const VERSION="0.8.1";
+const VERSION="0.8.2";
 
 /* ---------------- data ---------------- */
 const LINES = [
@@ -555,6 +558,14 @@ const ftag=document.getElementById('ftag'),ftier=document.getElementById('ftier'
 const busage=document.getElementById('busage'),exbtn=document.getElementById('exbtn'),exbody=document.getElementById('exbody'),bhint=document.getElementById('bhint'),bit=document.getElementById('bit');
 const answer=document.getElementById('answer');
 const studyEl=document.getElementById('study'),finishedEl=document.getElementById('finished'),dots=document.getElementById('dots');
+const fmeta=document.getElementById('fmeta'),bmeta=document.getElementById('bmeta');
+function fmtDur(ms){const m=ms/60000;if(m<60)return Math.round(m)+"m";const h=m/60;if(h<24)return (h<10?Math.round(h*10)/10:Math.round(h))+"h";const d=h/24;if(d<7)return (d<10?Math.round(d*10)/10:Math.round(d))+"d";const w=d/7;if(d<30)return Math.round(w)+"w";return Math.round(d/30)+"mo";}
+function metaText(c){
+  const s=srs(c.id);
+  if(s.status==="new"||!s.due||!s.last)return "new card · not yet scheduled";
+  const due=new Date(s.due).toLocaleString(undefined,{month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"});
+  return "interval "+fmtDur(s.due-s.last)+" · due "+due;
+}
 /* dot visual = memory map.
    COLOUR = freshness (blackbody cooling): just-reviewed = bright blue (hottest, with glow),
             cooling through white → yellow → orange → red → coal as it ages toward due.
@@ -696,6 +707,8 @@ function showCurrent(){
           `<div class="tline${hidePlain?' hidden':''}"><span class="tlabel">In plain terms</span><div class="ten exp">${c.exp}</div></div>`:"");
     }else btrans.classList.add('hidden');
     fref.textContent=w?"":c.ref;bref.textContent=w?"":c.ref;
+    fmeta.textContent=bmeta.textContent=metaText(c);   // interval + due date, small
+
     ftag.textContent=w?"Word":"Line";ftag.className="tag"+(w?" word":"");
     if(w){ftier.classList.remove('hidden');ftier.textContent=TIER_LABEL[c.tier];ftier.style.background=TIER_COLOR[c.tier];}
     else ftier.classList.add('hidden');
