@@ -254,8 +254,8 @@
         <button id="repeatBtn" title="Repeat the audio this many times on each play">🔁 Repeat: ×1</button>
         <button id="hideItBtn" title="Hide all Italian text and learn by ear (audio-only)">🙈 Italian: shown</button>
         <button id="wordWholeBtn" title="On word cards, play just the word or the whole line">🔈 Audio: word</button>
-        <button id="seeLearned" title="Review cards you've already learned, ignoring their schedule">See learned</button>
-        <button id="cram">Cram all</button>
+        <button id="freeScrollBtn" title="Swipe through every card, ignoring schedule (otherwise swipe jumps to the next due card)">🔓 Free scroll: off</button>
+        <button id="seeLearned" title="Jump to your learned cards">See learned</button>
       </div>
     </div>
 
@@ -316,7 +316,7 @@
 <script>
 /* App version — bump on each change: 0.1.0 → 0.1.1 for normal updates,
    and add a 4th segment (e.g. 0.1.0.1) for minor tweaks. */
-const VERSION="0.6.1";
+const VERSION="0.7.0";
 
 /* ---------------- data ---------------- */
 const LINES = [
@@ -475,13 +475,11 @@ function commitInterval(minutes){
   if(minutes<1440){s.status="learning";s.interval=0;}
   else{s.status="review";s.interval=Math.round(minutes/1440);}
   s.reps++;SRS[c.id]=s;save();
-  session.splice(ptr,1);          // card leaves the session — it only returns once it's actually due
-  refreshStatus();
-  if(ptr<session.length){showCurrent();return;}
-  // session exhausted: pull in anything that has since become due (unless craming a fixed set)
-  if(!cram){const due=deckIds().filter(id=>{const k=srs(id);return k.status==="new"||k.due<=Date.now();});
-    if(due.length){session=due;ptr=0;showCurrent();return;}}
-  finish();
+  refreshStatus();                 // card stays in the deck map (now coloured fresh)
+  // advance: free-scroll steps forward; otherwise jump to the next still-due card
+  if(freeScroll){if(ptr<session.length-1)ptr++;}
+  else{const i=anyDueCycle(ptr);if(i>=0)ptr=i;}
+  showCurrent();
 }
 
 function bucket(s){
@@ -499,8 +497,11 @@ function fmtNext(s){
   return "in "+Math.round(d/DAY)+"d";
 }
 
-/* ---------------- session ---------------- */
-let deck="core",session=[],ptr=0,cram=false;
+/* ---------------- session ----------------
+   The whole deck stays loaded (session = every card in the deck) so the dot map never
+   empties. By default, navigation jumps between DUE cards only; the Free-scroll toggle
+   lets you step through every card regardless of schedule. */
+let deck="core",session=[],ptr=0,freeScroll=false;
 function deckIdsOf(d){
   if(d==="line")return ALL_IDS.filter(id=>CARDS[id].type==="line");
   if(d==="core")return ALL_IDS.filter(id=>CARDS[id].type==="word"&&CARDS[id].tier!=="obvious");
@@ -508,10 +509,15 @@ function deckIdsOf(d){
   return ALL_IDS.filter(id=>CARDS[id].type==="word"&&CARDS[id].tier===d);
 }
 function deckIds(){return deckIdsOf(deck);}
+function isDue(id){const s=srs(id);return s.status==="new"||s.due<=Date.now();}
+function firstDueIndex(){for(let i=0;i<session.length;i++)if(isDue(session[i]))return i;return -1;}
+function nextDueFwd(from){for(let i=from+1;i<session.length;i++)if(isDue(session[i]))return i;return -1;}
+function prevDueBwd(from){for(let i=from-1;i>=0;i--)if(isDue(session[i]))return i;return -1;}
+function anyDueCycle(from){const n=session.length;for(let k=1;k<=n;k++){const i=(from+k)%n;if(isDue(session[i]))return i;}return -1;}
 function buildSession(){
-  const now=Date.now();let ids=deckIds();
-  if(!cram)ids=ids.filter(id=>{const s=srs(id);return s.status==="new"||s.due<=now;});
-  session=ids;ptr=0;refreshStatus();showCurrent();
+  session=deckIds();
+  const f=firstDueIndex();ptr=f>=0?f:0;
+  refreshStatus();showCurrent();
 }
 function refreshStatus(){
   const now=Date.now(),ids=deckIds();let nw=0,ln=0,du=0,le=0;
@@ -551,10 +557,9 @@ function dotSpan(id,now,cur){
 }
 function renderDots(){
   // whole-deck memory map: every card in the deck, coloured by freshness, current card ringed.
-  const ids=deckIds();
-  if(!ids.length){dots.innerHTML="";return;}
-  const now=Date.now(),curId=session[ptr];
-  dots.innerHTML=ids.map(id=>dotSpan(id,now,id===curId)).join("");
+  if(!session.length){dots.innerHTML="";return;}
+  const now=Date.now();
+  dots.innerHTML=session.map((id,i)=>dotSpan(id,now,i===ptr)).join("");
 }
 dots.onclick=e=>{const d=e.target.closest('.dot');if(!d)return;const id=d.dataset.id;
   const idx=session.indexOf(id);
@@ -611,7 +616,8 @@ spkB.onclick=e=>{e.stopPropagation();playSeg(curSeg);};
 flineBtn.onclick=e=>{e.stopPropagation();if(!curCard)return;playSeg(LINE_AUDIO[curCard.lineNo]||null);if(!hideItalian)flineText.classList.toggle('hidden');};
 
 function showCurrent(){
-  if(ptr>=session.length||session.length===0){finish();return;}
+  if(session.length===0){dots.innerHTML="";return;}
+  if(ptr>=session.length)ptr=session.length-1;if(ptr<0)ptr=0;
   studyEl.classList.remove('hidden');finishedEl.classList.add('hidden');
   renderDots();
   const c=CARDS[session[ptr]];card.classList.remove('flipped');curCard=c;curSeg=segFor(c);
@@ -706,7 +712,10 @@ function renderSlider(){
 }
 function flip(toBack){const wb=toBack!==undefined?toBack:!card.classList.contains('flipped');card.classList.toggle('flipped',wb);renderAnswer(wb);}
 function nav(d){
-  if(session.length===0)return;let n=ptr+d;if(n<0)n=0;if(n>=session.length)n=session.length-1;
+  if(session.length===0)return;
+  let n;
+  if(freeScroll){n=ptr+d;if(n<0)n=0;if(n>=session.length)n=session.length-1;}
+  else{n=d<0?prevDueBwd(ptr):nextDueFwd(ptr);if(n<0)n=ptr;}   // jump to next/prev DUE card
   if(n===ptr){scene.animate([{transform:'translateX(0)'},{transform:`translateX(${d<0?8:-8}px)`},{transform:'translateX(0)'}],{duration:180});return;}
   const dir=d<0?'40px':'-40px';
   scene.style.transition='transform .15s ease, opacity .15s';scene.style.transform=`translateX(${dir})`;scene.style.opacity='0';
@@ -766,10 +775,12 @@ function renderDeckMenu(){
   }).join("");
 }
 deckBtn.onclick=e=>{e.stopPropagation();const open=deckMenu.classList.contains('hidden');if(open)renderDeckMenu();deckMenu.classList.toggle('hidden');};
-deckMenu.onclick=e=>{const o=e.target.closest('.deckopt');if(!o)return;deck=o.dataset.deck;deckBtnLabel.textContent=deckLabel(deck);deckMenu.classList.add('hidden');cram=false;buildSession();};
+deckMenu.onclick=e=>{const o=e.target.closest('.deckopt');if(!o)return;deck=o.dataset.deck;deckBtnLabel.textContent=deckLabel(deck);deckMenu.classList.add('hidden');buildSession();};
 document.addEventListener('click',e=>{if(!deckDD.contains(e.target))deckMenu.classList.add('hidden');});
 deckBtnLabel.textContent=deckLabel(deck);
-document.getElementById('shuffle').onclick=()=>{for(let i=session.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[session[i],session[j]]=[session[j],session[i]];}ptr=0;showCurrent();};
+document.getElementById('shuffle').onclick=()=>{for(let i=session.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[session[i],session[j]]=[session[j],session[i]];}const f=firstDueIndex();ptr=f>=0?f:0;showCurrent();};
+const freeScrollBtn=document.getElementById('freeScrollBtn');
+freeScrollBtn.onclick=function(){freeScroll=!freeScroll;this.textContent="🔓 Free scroll: "+(freeScroll?"on":"off");};
 document.getElementById('autoplayBtn').onclick=function(){autoPlay=!autoPlay;this.textContent="🔊 Auto: "+(autoPlay?"on":"off");if(autoPlay)playSeg(curSeg);};
 const repeatBtn=document.getElementById('repeatBtn');
 repeatBtn.textContent="🔁 Repeat: ×"+repeatN;
@@ -781,16 +792,15 @@ const wordWholeBtn=document.getElementById('wordWholeBtn');
 const setWholeLabel=()=>wordWholeBtn.textContent="🔈 Audio: "+(wordWhole?"line":"word");
 setWholeLabel();
 wordWholeBtn.onclick=function(){wordWhole=!wordWhole;setWholeLabel();try{localStorage.setItem(WHOLE_KEY,wordWhole?"line":"word");}catch(e){}curSeg=segFor(curCard);if(curSeg)playSeg(curSeg);};
-document.getElementById('cram').onclick=()=>{cram=true;buildSession();};
 document.getElementById('seeLearned').onclick=()=>{
-  // show already-learned cards on demand, ignoring their schedule
-  cram=true;session=deckIds().filter(id=>bucket(srs(id))==="learned");ptr=0;refreshStatus();
-  if(session.length===0){finish();document.getElementById('doneMsg').textContent="Nothing learned in this stack yet — grade some cards first.";}
-  else showCurrent();
+  // free-scroll and jump to the first learned card in the deck map
+  const i=session.findIndex(id=>bucket(srs(id))==="learned");
+  if(i<0){alert("Nothing learned in this stack yet — grade some cards first.");return;}
+  freeScroll=true;freeScrollBtn.textContent="🔓 Free scroll: on";ptr=i;showCurrent();
 };
-document.getElementById('cram2').onclick=()=>{cram=true;buildSession();};
-document.getElementById('again2').onclick=()=>{cram=false;buildSession();};
-document.getElementById('resetSrs').onclick=()=>{if(confirm('Reset scheduling for this stack?')){deckIds().forEach(id=>delete SRS[id]);save();cram=false;buildSession();}};
+document.getElementById('cram2').onclick=()=>{freeScroll=true;freeScrollBtn.textContent="🔓 Free scroll: on";buildSession();};
+document.getElementById('again2').onclick=()=>{buildSession();};
+document.getElementById('resetSrs').onclick=()=>{if(confirm('Reset scheduling for this stack?')){deckIds().forEach(id=>delete SRS[id]);save();buildSession();}};
 
 /* ---- portable backup: carry memory across versions / devices ---- */
 function encodeBackup(){return btoa(unescape(encodeURIComponent(JSON.stringify({schema:SCHEMA,cards:SRS,savedAt:Date.now()}))));}
@@ -806,7 +816,7 @@ document.getElementById('importP').onclick=()=>{
   try{obj=JSON.parse(decodeURIComponent(escape(atob(code.trim()))));}catch(e){try{obj=JSON.parse(code);}catch(_){obj=null;}}
   if(!obj){alert("That backup couldn't be read — check you pasted the whole code.");return;}
   if(obj.schema!==SCHEMA||!allRecords(obj.cards)){alert("This backup is from an incompatible version and can't be used — you'll have to start over.");return;}
-  SRS=Object.assign({},SRS,obj.cards);save();cram=false;buildSession();
+  SRS=Object.assign({},SRS,obj.cards);save();buildSession();
   alert("Progress restored.");
 };
 
