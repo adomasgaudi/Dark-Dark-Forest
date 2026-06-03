@@ -1,6 +1,9 @@
 # Science Curriculum Project — Context for Claude Code
 
-Read this file at the start of every session. It contains everything needed to continue work without re-explaining.
+> **Status:** the live session handoff is now `state.md` — start there. This file
+> is kept for its **Design rules** (font, colours, layout, tags), which are still
+> canonical. Its file list and curriculum map below are older than `state.md`;
+> where they disagree, trust `state.md`.
 
 ---
 
