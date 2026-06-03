@@ -54,3 +54,29 @@ mappings: `first-principles/data.js` (see `state.md`).
 - **Meta rule (keep habits clean):** one rule lives in one place. If a rule
   already lives in a deep doc, link to it here — don't paste a second copy that
   can drift.
+
+## Memory strategy (global — keep this section identical across the owner's repos)
+
+How to decide where any new piece of info lives, by durability × reach:
+
+| Tier | What it is | Where it lives |
+|------|------------|----------------|
+| Ephemeral | working state, one-off facts | this conversation only — not saved |
+| Project rule | short, always-relevant standing rule | this `CLAUDE.md` (auto-loaded) |
+| Project reference | long / occasional detail | a linked doc (`state.md`, `voice.md`, etc.), read on demand |
+| Global | applies to all the owner's projects | this section, kept identical in each repo |
+| Enforced | mechanical rule that's costly to forget | a hook (use sparingly — heavier than a sentence) |
+
+Decide fast: won't matter next session → ephemeral. Applies beyond this repo →
+global. Short + always relevant → `CLAUDE.md`; long/occasional → a linked doc.
+Must happen automatically, not just be remembered → also a hook.
+
+- **Order rules by bite:** most-often-violated and highest-cost-to-forget go first.
+- **New habits/hooks start on probation.** Log each under *Habits on probation*
+  with its date. After ~2 dozen commits, check whether the owner noticed or
+  reacted: if yes, graduate it (delete the row); if not, tell the owner and
+  **remove the habit.** Kill anything that isn't earning attention.
+
+### Habits on probation
+- 2026-06-03 — this auto-loaded `CLAUDE.md` (new) — review ~24 commits on.
+- 2026-06-03 — commit-message format hook (PreToolUse) — review ~24 commits on.
