@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<!-- Subject Timeline v1.0 -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subject Timeline — where each topic starts and ends</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAFAF7; --ink:#15151B; --muted:#8A8A95; --line:#E6E6E0;
+    --math:#2563EB; --phys:#D97706; --chem:#2F8F5F;
+    --gutter:160px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:'Fredoka',sans-serif;background:var(--bg);color:var(--ink);
+    min-height:100dvh;padding:24px 24px 80px;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;}
+  .mono{font-family:'DM Mono',monospace;}
+
+  .back{
+    display:inline-block;font-family:inherit;font-weight:500;font-size:.92rem;
+    color:var(--muted);text-decoration:none;margin-bottom:26px;transition:color .12s;
+  }
+  .back:hover{color:var(--ink);}
+
+  h1{font-size:2rem;line-height:1.1;font-weight:600;letter-spacing:-.5px;}
+  h1 .accent{color:var(--muted);font-weight:400;}
+  .tag{font-size:1rem;color:var(--muted);margin-top:10px;font-weight:400;max-width:640px;line-height:1.5;}
+
+  .legend{display:flex;gap:20px;flex-wrap:wrap;margin:28px 0 8px;}
+  .legend .item{display:flex;align-items:center;gap:8px;font-size:.9rem;font-weight:500;}
+  .legend .swatch{width:22px;height:8px;border-radius:4px;}
+
+  /* chart */
+  .chart{margin-top:34px;}
+  .axis{
+    display:grid;grid-template-columns:var(--gutter) 1fr;align-items:end;
+    position:sticky;top:0;background:var(--bg);padding-bottom:8px;z-index:3;
+  }
+  .axis .axis-title{
+    font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--muted);align-self:end;padding-bottom:4px;
+  }
+  .axis .ticks{display:grid;}
+  .tick{
+    font-family:'DM Mono',monospace;font-size:.78rem;color:var(--muted);
+    text-align:center;border-left:1px solid var(--line);padding:0 2px 4px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .tick.major{color:var(--ink);font-weight:500;}
+
+  .group-label{
+    font-family:'DM Mono',monospace;font-size:.74rem;letter-spacing:.08em;
+    text-transform:uppercase;font-weight:500;margin:26px 0 6px;
+    padding-left:2px;
+  }
+
+  .row{
+    display:grid;grid-template-columns:var(--gutter) 1fr;align-items:center;
+    min-height:48px;
+  }
+  .row .name{
+    font-weight:500;font-size:.98rem;padding-right:14px;line-height:1.15;
+  }
+  .row .name .sub{display:block;font-size:.76rem;color:var(--muted);font-weight:400;margin-top:1px;}
+  .track{position:relative;height:48px;}
+  .gridcell{position:absolute;top:0;bottom:0;border-left:1px solid var(--line);}
+  .bar{
+    position:absolute;top:50%;transform:translateY(-50%);height:14px;
+    border-radius:7px;display:flex;align-items:center;
+    box-shadow:0 1px 2px rgba(0,0,0,.08);
+  }
+  .bar .cap{position:absolute;width:8px;height:8px;border-radius:50%;background:#fff;
+    top:50%;transform:translateY(-50%);box-shadow:0 0 0 2px currentColor inset;}
+  .bar .cap.start{left:-4px;}
+  .bar.open{border-top-right-radius:0;border-bottom-right-radius:0;}
+  .bar .arrow{
+    position:absolute;right:-15px;top:50%;transform:translateY(-50%);
+    font-size:1rem;color:inherit;font-weight:600;
+  }
+  .bar:hover{filter:brightness(1.06);}
+
+  .note{
+    margin-top:40px;font-size:.86rem;color:var(--muted);line-height:1.55;
+    border-top:1px solid var(--line);padding-top:18px;max-width:680px;
+  }
+  .note .mono{color:var(--ink);}
+
+  @media (max-width:680px){
+    :root{--gutter:104px;}
+    body{padding:18px 14px 70px;}
+    h1{font-size:1.55rem;}
+    .row .name{font-size:.86rem;}
+    .tick{font-size:.64rem;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="index.html">← Back to curriculum</a>
+
+  <h1>Subject Timeline <span class="accent">— where each thread starts and ends</span></h1>
+  <p class="tag">One horizontal axis, from first grade to graduate school. Every line is a topic: it begins where the idea is first introduced and runs to where formal study tapers off. An arrow (→) means the thread never really ends — it keeps deepening for as long as you keep going.</p>
+
+  <div class="legend">
+    <div class="item"><span class="swatch" style="background:var(--math)"></span> Mathematics</div>
+    <div class="item"><span class="swatch" style="background:var(--phys)"></span> Physics</div>
+    <div class="item"><span class="swatch" style="background:var(--chem)"></span> Chemistry</div>
+    <div class="item"><span class="mono" style="font-size:.95rem">→</span> continues open-ended</div>
+  </div>
+
+  <div class="chart" id="chart"></div>
+
+  <p class="note">
+    Positions are a teaching map, not a strict standard — exact grades vary by country and track. The point is the <span class="mono">shape</span>: foundational threads (numbers, geometry) start at grade one and never close, while specialised ones (complex numbers, quantum atoms) open late and immediately run off the right edge into university and research.
+  </p>
+
+</div>
+
+<script>
+  // ── Axis: 14 stops, grade 1 → graduate ──────────────────────────
+  const COLS = [
+    {label:'1'},{label:'2'},{label:'3'},{label:'4'},{label:'5'},{label:'6'},
+    {label:'7'},{label:'8'},{label:'9'},{label:'10'},{label:'11'},{label:'12'},
+    {label:'Uni', major:true},{label:'Grad', major:true}
+  ];
+  const N = COLS.length; // 14
+
+  // ── Topics: start / end are column numbers (1..14). end:null = open ──
+  const GROUPS = [
+    {
+      name:'Mathematics', color:'var(--math)',
+      topics:[
+        {name:'Numbers',        sub:'counting → integers → reals → number theory', start:1,  end:null},
+        {name:'Geometry',       sub:'shapes → proofs → differential geometry',     start:1,  end:null},
+        {name:'Trigonometry',   sub:'angles, sine/cosine, identities',             start:9,  end:13},
+        {name:'Complex numbers',sub:'i → the complex plane → complex analysis',    start:11, end:null},
+      ]
+    },
+    {
+      name:'Physics', color:'var(--phys)',
+      topics:[
+        {name:'The Universe',          sub:'astronomy → cosmology → relativity',        start:5, end:null},
+        {name:'Sound & waves',         sub:'vibration, pitch, resonance, acoustics',     start:6, end:13},
+        {name:'Light & optics',        sub:'reflection → optics → electromagnetism',     start:7, end:13},
+        {name:'Electricity & magnetism',sub:'circuits → fields → Maxwell → QED',         start:8, end:null},
+        {name:'Atoms',                 sub:'particle model → atomic → quantum mechanics', start:9, end:null},
+      ]
+    },
+    {
+      name:'Chemistry', color:'var(--chem)',
+      topics:[
+        {name:'Chemistry',  sub:'matter → reactions → periodic table → physical chem', start:7, end:null},
+      ]
+    }
+  ];
+
+  const chart = document.getElementById('chart');
+
+  // ── Axis header ─────────────────────────────────────────────────
+  const axis = document.createElement('div');
+  axis.className = 'axis';
+  axis.innerHTML = '<div class="axis-title">Grade level →</div>';
+  const ticks = document.createElement('div');
+  ticks.className = 'ticks';
+  ticks.style.gridTemplateColumns = `repeat(${N}, 1fr)`;
+  COLS.forEach(c=>{
+    const t = document.createElement('div');
+    t.className = 'tick' + (c.major ? ' major' : '');
+    t.textContent = c.label;
+    ticks.appendChild(t);
+  });
+  axis.appendChild(ticks);
+  chart.appendChild(axis);
+
+  // ── Rows ────────────────────────────────────────────────────────
+  const pct = n => (n / N * 100);
+
+  GROUPS.forEach(group=>{
+    const gl = document.createElement('div');
+    gl.className = 'group-label';
+    gl.style.color = group.color;
+    gl.textContent = group.name;
+    chart.appendChild(gl);
+
+    group.topics.forEach(topic=>{
+      const row = document.createElement('div');
+      row.className = 'row';
+
+      const name = document.createElement('div');
+      name.className = 'name';
+      name.innerHTML = topic.name + (topic.sub ? `<span class="sub">${topic.sub}</span>` : '');
+      row.appendChild(name);
+
+      const track = document.createElement('div');
+      track.className = 'track';
+
+      // gridlines
+      for(let i=0;i<N;i++){
+        const g = document.createElement('div');
+        g.className = 'gridcell';
+        g.style.left = pct(i) + '%';
+        g.style.width = pct(1) + '%';
+        track.appendChild(g);
+      }
+
+      // bar
+      const open = topic.end === null;
+      const endCol = open ? N : topic.end;
+      const left = pct(topic.start - 1);
+      const width = pct(endCol - (topic.start - 1));
+
+      const bar = document.createElement('div');
+      bar.className = 'bar' + (open ? ' open' : '');
+      bar.style.left = left + '%';
+      bar.style.width = width + '%';
+      bar.style.background = group.color;
+      bar.style.color = group.color;
+      bar.title = `${topic.name}: starts grade ${topic.start}` +
+                  (open ? ', continues open-ended' : `, through ${COLS[topic.end-1].label}`);
+
+      const startCap = document.createElement('span');
+      startCap.className = 'cap start';
+      bar.appendChild(startCap);
+
+      if(open){
+        const arr = document.createElement('span');
+        arr.className = 'arrow';
+        arr.textContent = '→';
+        bar.appendChild(arr);
+      }
+
+      track.appendChild(bar);
+      row.appendChild(track);
+      chart.appendChild(row);
+    });
+  });
+</script>
+</body>
+</html>
