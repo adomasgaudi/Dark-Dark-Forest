@@ -1766,6 +1766,56 @@ function loadSettings(){
 }
 function saveSettings(){ try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(SET)); }catch{} }
 function saveNav(){ try{ localStorage.setItem(NAV_KEY, JSON.stringify(NAV)); }catch{} }
+function applyRouteFromUrl(){
+  const params = new URLSearchParams(window.location.search);
+  const topic = params.get('topic');
+  if(topic && TOPICS[topic]){
+    SET.topic = topic;
+    saveSettings();
+    openSettings(topic);
+    return true;
+  }
+
+  const numberType = params.get('numberType');
+  if(!numberType) return false;
+  const numberDef = NUMBER_TYPES.find(n => n.key === numberType && n.enabled);
+  if(!numberDef) return false;
+
+  NAV.numberType = numberType;
+  saveNav();
+
+  const category = params.get('category');
+  if(!category){
+    openCategories(numberType);
+    return true;
+  }
+
+  const categoryDef = categoriesFor(numberType).find(c => c.key === category && c.enabled);
+  if(!categoryDef){
+    openCategories(numberType);
+    return true;
+  }
+
+  NAV.category = category;
+  saveNav();
+
+  const operation = params.get('operation');
+  if(!operation){
+    openOperations(category);
+    return true;
+  }
+
+  const operationDef = operationsFor(numberType, category).find(o => o.key === operation && o.enabled && o.topic);
+  if(!operationDef){
+    openOperations(category);
+    return true;
+  }
+
+  NAV.operation = operation;
+  saveNav();
+  openSettings(operationDef.topic);
+  return true;
+}
 
 /* Game loop */
 function startGame(){
@@ -2112,6 +2162,7 @@ $('homeVersionTag').textContent = APP_VERSION;
 renderNumberList();
 renderRecents();
 renderUserChip();
+applyRouteFromUrl();
 updateNavbar();
 </script>
 </body>

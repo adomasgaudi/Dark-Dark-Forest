@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operations Atlas - practice by operation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f8f7f2;
+    --panel:#fffdf8;
+    --ink:#171717;
+    --muted:#757575;
+    --line:#e8e2d8;
+    --accent:#c2410c;
+    --blue:#2563eb;
+    --blue-soft:#eff6ff;
+    --green:#15803d;
+    --green-soft:#f0fdf4;
+    --violet:#7c3aed;
+    --violet-soft:#f5f3ff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Fredoka',sans-serif;
+    background:
+      radial-gradient(circle at top left, #fff7ed 0, transparent 28%),
+      radial-gradient(circle at top right, #eef4ff 0, transparent 32%),
+      var(--bg);
+    color:var(--ink);
+    min-height:100vh;
+    padding:24px 18px 72px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:980px;margin:0 auto;}
+  .mono{font-family:'DM Mono',monospace;}
+  .back{display:inline-block;text-decoration:none;color:var(--muted);font-size:.95rem;margin-bottom:28px;}
+  .back:hover{color:var(--ink);}
+  .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:22px;align-items:start;margin-bottom:28px;}
+  .eyebrow{font-family:'DM Mono',monospace;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;}
+  h1{font-size:clamp(2.3rem,6vw,4.4rem);line-height:.98;letter-spacing:-.04em;margin-bottom:18px;}
+  .intro{color:#4f4f4f;font-size:1.02rem;line-height:1.65;max-width:640px;}
+  .hero-note{background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:24px;padding:20px 22px;backdrop-filter:blur(10px);}
+  .hero-note .label{font-family:'DM Mono',monospace;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px;}
+  .hero-note p{font-size:.96rem;line-height:1.6;color:#4a4a4a;}
+  .family{background:rgba(255,253,248,.88);border:1px solid var(--line);border-radius:28px;padding:28px;margin-top:24px;box-shadow:0 10px 30px rgba(23,23,23,.04);}
+  .family-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;margin-bottom:22px;}
+  .family-tag{font-family:'DM Mono',monospace;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px;}
+  .family h2{font-size:1.8rem;line-height:1.05;letter-spacing:-.03em;}
+  .family-desc{color:#5d5d5d;max-width:620px;line-height:1.6;}
+  .family-badge{font-family:'DM Mono',monospace;font-size:.82rem;padding:8px 12px;border-radius:999px;white-space:nowrap;align-self:flex-start;}
+  .badge-blue{background:var(--blue-soft);color:var(--blue);}
+  .badge-green{background:var(--green-soft);color:var(--green);}
+  .badge-violet{background:var(--violet-soft);color:var(--violet);}
+  .lane-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;}
+  .lane{border:1px solid var(--line);border-radius:20px;background:#fff;padding:18px;}
+  .lane h3{font-size:1.08rem;margin-bottom:6px;}
+  .lane p{font-size:.95rem;color:#666;line-height:1.55;margin-bottom:14px;}
+  .links{display:flex;flex-wrap:wrap;gap:8px;}
+  .pill{display:inline-flex;align-items:center;gap:7px;text-decoration:none;border-radius:999px;padding:9px 12px;font-size:.88rem;color:var(--ink);border:1px solid var(--line);background:#fcfbf8;transition:transform .14s,border-color .14s,background .14s;}
+  .pill:hover{transform:translateY(-1px);border-color:#cfc6b7;background:#fff;}
+  .pill .mono{font-size:.8rem;color:var(--muted);}
+  .footer-note{margin-top:28px;color:#707070;font-size:.92rem;line-height:1.6;}
+  @media (max-width:760px){
+    .hero{grid-template-columns:1fr;}
+    .family-head{display:block;}
+    .family-badge{display:inline-block;margin-top:14px;}
+    .lane-grid{grid-template-columns:1fr;}
+    .family{padding:22px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">&larr; Back to curriculum</a>
+
+  <section class="hero">
+    <div>
+      <div class="eyebrow">Practice hub</div>
+      <h1>Operations Atlas</h1>
+      <p class="intro">The old menu sorted drills by material only: natural numbers, integers, reals, vectors. Useful, but a little one-eyed. This page sorts by what you are actually doing: adding, dividing, raising to powers. Pick the operation family first, then drop into the right practice lane.</p>
+    </div>
+    <aside class="hero-note">
+      <div class="label">Why this page exists</div>
+      <p>Powers of 10 were never the problem. The menu was. Operations cut across multiple number systems, so this page gives them their own front door instead of pretending exponentiation belongs to just one material.</p>
+    </aside>
+  </section>
+
+  <section class="family">
+    <div class="family-head">
+      <div>
+        <div class="family-tag">Family 01</div>
+        <h2>Addition and subtraction</h2>
+        <p class="family-desc">Start where combination and cancellation first appear, then watch the same structure survive across signs, coordinates, and dimensions.</p>
+      </div>
+      <div class="family-badge badge-blue">combine / remove / balance</div>
+    </div>
+    <div class="lane-grid">
+      <article class="lane">
+        <h3>Counting and crossing zero</h3>
+        <p>Basic addition and subtraction in natural numbers and integers.</p>
+        <div class="links">
+          <a class="pill" href="riemann-surface.html?numberType=natural&amp;category=arithmetic&amp;operation=add">Natural add <span class="mono">+</span></a>
+          <a class="pill" href="riemann-surface.html?numberType=natural&amp;category=arithmetic&amp;operation=sub">Natural sub <span class="mono">-</span></a>
+          <a class="pill" href="riemann-surface.html?numberType=integers&amp;category=arithmetic&amp;operation=add">Integer add <span class="mono">Z +</span></a>
+          <a class="pill" href="riemann-surface.html?numberType=integers&amp;category=arithmetic&amp;operation=sub">Integer sub <span class="mono">Z -</span></a>
+        </div>
+      </article>
+      <article class="lane">
+        <h3>Coordinates and vectors</h3>
+        <p>The same move in 2D and 3D: combine components, track direction, preserve structure.</p>
+        <div class="links">
+          <a class="pill" href="riemann-surface.html?numberType=vcm&amp;category=arithmetic&amp;operation=add">2D add <span class="mono">x,y</span></a>
+          <a class="pill" href="riemann-surface.html?numberType=vcm&amp;category=arithmetic&amp;operation=sub">2D sub <span class="mono">x,y</span></a>
+          <a class="pill" href="riemann-surface.html?numberType=threeD&amp;category=arithmetic&amp;operation=add">3D add <span class="mono">x,y,z</span></a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="family">
+    <div class="family-head">
+      <div>
+        <div class="family-tag">Family 02</div>
+        <h2>Multiplication and division</h2>
+        <p class="family-desc">Repeated groups, scaling, exact sharing, decimal shifts, and then the weirder cousins: dot products, cross products, and matrix multiplication.</p>
+      </div>
+      <div class="family-badge badge-green">scale / split / transform</div>
+    </div>
+    <div class="lane-grid">
+      <article class="lane">
+        <h3>Arithmetic scaling</h3>
+        <p>Times tables, exact division, fraction-to-decimal conversion, and decimal-place shifts in real numbers.</p>
+        <div class="links">
+          <a class="pill" href="riemann-surface.html?numberType=natural&amp;category=arithmetic&amp;operation=mul">Natural mul <span class="mono">x</span></a>
+          <a class="pill" href="riemann-surface.html?numberType=natural&amp;category=arithmetic&amp;operation=div">Natural div <span class="mono">/</span></a>
+          <a class="pill" href="riemann-surface.html?numberType=fractions&amp;category=arithmetic&amp;operation=div">Fractions div <span class="mono">n/d</span></a>
+          <a class="pill" href="riemann-surface.html?numberType=real&amp;category=arithmetic&amp;operation=mul">Real mul <span class="mono">x10</span></a>
+          <a class="pill" href="riemann-surface.html?numberType=real&amp;category=arithmetic&amp;operation=div">Real div <span class="mono">/10</span></a>
+        </div>
+      </article>
+      <article class="lane">
+        <h3>Structured products</h3>
+        <p>When multiplication stops meaning "just bigger" and starts meaning rotation, projection, area, or transformation.</p>
+        <div class="links">
+          <a class="pill" href="riemann-surface.html?numberType=vcm&amp;category=arithmetic&amp;operation=mul">2D product <span class="mono">C</span></a>
+          <a class="pill" href="riemann-surface.html?numberType=vcm&amp;category=arithmetic&amp;operation=dot">Dot product <span class="mono">u.v</span></a>
+          <a class="pill" href="riemann-surface.html?numberType=vcm&amp;category=arithmetic&amp;operation=wedge">Wedge product <span class="mono">u^v</span></a>
+          <a class="pill" href="riemann-surface.html?numberType=vcm&amp;category=arithmetic&amp;operation=matmul">Matrix product <span class="mono">AB</span></a>
+          <a class="pill" href="riemann-surface.html?numberType=threeD&amp;category=arithmetic&amp;operation=dot">3D dot <span class="mono">u.v</span></a>
+          <a class="pill" href="riemann-surface.html?numberType=threeD&amp;category=arithmetic&amp;operation=cross">3D cross <span class="mono">u x v</span></a>
+          <a class="pill" href="riemann-surface.html?numberType=threeD&amp;category=arithmetic&amp;operation=quat">Quaternion <span class="mono">qp</span></a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="family">
+    <div class="family-head">
+      <div>
+        <div class="family-tag">Family 03</div>
+        <h2>Exponentiation</h2>
+        <p class="family-desc">Repeated multiplication across different materials: whole-number powers, sign-sensitive integer powers, and decimal-base scaling for small real numbers.</p>
+      </div>
+      <div class="family-badge badge-violet">repeat / grow / shrink</div>
+    </div>
+    <div class="lane-grid">
+      <article class="lane">
+        <h3>Whole numbers and signs</h3>
+        <p>Natural-number powers first, then integer powers where the sign finally stops behaving politely.</p>
+        <div class="links">
+          <a class="pill" href="riemann-surface.html?numberType=natural&amp;category=arithmetic&amp;operation=exp">Natural exp <span class="mono">a^n</span></a>
+          <a class="pill" href="riemann-surface.html?numberType=integers&amp;category=arithmetic&amp;operation=exp">Integer exp <span class="mono">(-a)^n</span></a>
+        </div>
+      </article>
+      <article class="lane">
+        <h3>Decimal powers</h3>
+        <p>Small powers of decimals, the bridge toward scientific notation, powers of 10, and orders of magnitude thinking.</p>
+        <div class="links">
+          <a class="pill" href="riemann-surface.html?numberType=real&amp;category=arithmetic&amp;operation=exp">Real exp <span class="mono">0.1^n</span></a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <p class="footer-note">Each link opens the existing <span class="mono">riemann-surface.html</span> practice system at the matching drill lane. If you want, the next step can be a visible toggle inside that page between <span class="mono">materials</span> and <span class="mono">operations</span> so this stops living as a separate doorway.</p>
+</div>
+</body>
+</html>
